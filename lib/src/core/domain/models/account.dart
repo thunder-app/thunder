@@ -28,29 +28,19 @@ class Account {
   /// The platform of the account (lemmy, piefed, etc.)
   final ThreadiversePlatform? platform;
 
-  const Account({
-    required this.id,
-    required this.index,
-    this.anonymous = false,
-    required this.instance,
-    this.username,
-    this.displayName,
-    this.jwt,
-    this.userId,
-    this.platform,
-  });
+  const Account({required this.id, required this.index, this.anonymous = false, required this.instance, this.username, this.displayName, this.jwt, this.userId, this.platform});
 
   Account copyWith({String? id, int? index, ThreadiversePlatform? platform}) => Account(
-        id: id ?? this.id,
-        index: index ?? this.index,
-        anonymous: anonymous,
-        instance: instance,
-        username: username,
-        displayName: displayName,
-        jwt: jwt,
-        userId: userId,
-        platform: platform ?? this.platform,
-      );
+    id: id ?? this.id,
+    index: index ?? this.index,
+    anonymous: anonymous,
+    instance: instance,
+    username: username,
+    displayName: displayName,
+    jwt: jwt,
+    userId: userId,
+    platform: platform ?? this.platform,
+  );
 
   String get actorId => 'https://$instance/u/$username';
 }

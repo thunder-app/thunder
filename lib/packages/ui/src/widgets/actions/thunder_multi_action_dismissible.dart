@@ -4,21 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:thunder/packages/ui/src/widgets/actions/thunder_swipe_action_background.dart';
 
 /// Builds the swipe background for [ThunderMultiActionDismissible].
-typedef ThunderSwipeBackgroundBuilder<T> = Widget Function(
-  BuildContext context,
-  DismissDirection effectiveDirection,
-  double progress,
-  ThunderSwipeAction<T>? action,
-);
+typedef ThunderSwipeBackgroundBuilder<T> = Widget Function(BuildContext context, DismissDirection effectiveDirection, double progress, ThunderSwipeAction<T>? action);
 
 /// Swipe action definition with icon and dynamic background color.
 @immutable
 class ThunderSwipeAction<T> {
-  const ThunderSwipeAction({
-    required this.value,
-    this.icon,
-    required this.color,
-  });
+  const ThunderSwipeAction({required this.value, this.icon, required this.color});
 
   /// Payload returned when this action is triggered.
   final T value;
@@ -178,13 +169,11 @@ class _ThunderMultiActionDismissibleState<T> extends State<ThunderMultiActionDis
         key: _dismissibleKey,
         direction: _overrideSwipe ? DismissDirection.none : widget.direction,
         resizeDuration: Duration.zero,
-        dismissThresholds: const {
-          DismissDirection.endToStart: 1,
-          DismissDirection.startToEnd: 1,
-        },
+        dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
         confirmDismiss: (_) async => false,
         onUpdate: _onUpdate,
-        background: widget.backgroundBuilder?.call(context, _currentDirection, _progress, _currentAction) ??
+        background:
+            widget.backgroundBuilder?.call(context, _currentDirection, _progress, _currentAction) ??
             _ThunderSwipeDefaultBackground<T>(
               currentDirection: _currentDirection,
               progress: _progress,
@@ -198,13 +187,7 @@ class _ThunderMultiActionDismissibleState<T> extends State<ThunderMultiActionDis
       );
     }
 
-    return Listener(
-      behavior: HitTestBehavior.opaque,
-      onPointerDown: (_) => widget.onPointerDown?.call(),
-      onPointerMove: _handlePointerMove,
-      onPointerUp: (_) => _handlePointerUp(),
-      child: content,
-    );
+    return Listener(behavior: HitTestBehavior.opaque, onPointerDown: (_) => widget.onPointerDown?.call(), onPointerMove: _handlePointerMove, onPointerUp: (_) => _handlePointerUp(), child: content);
   }
 }
 
@@ -253,11 +236,6 @@ class _ThunderSwipeDefaultBackground<T> extends StatelessWidget {
 
     final width = MediaQuery.sizeOf(context).width * backgroundMaxWidthFactor * progress;
 
-    return ThunderSwipeActionBackground(
-      alignment: alignment,
-      backgroundColor: backgroundColor,
-      width: width,
-      icon: currentAction?.icon,
-    );
+    return ThunderSwipeActionBackground(alignment: alignment, backgroundColor: backgroundColor, width: width, icon: currentAction?.icon);
   }
 }

@@ -16,13 +16,7 @@ import 'package:thunder/src/core/config/global_context.dart';
 /// Page for composing and sending a direct message.
 class CreatePrivateMessagePage extends StatefulWidget {
   /// Creates a direct-message composer for [account].
-  const CreatePrivateMessagePage({
-    super.key,
-    required this.account,
-    this.recipient,
-    this.initialContent,
-    this.onMessageSent,
-  });
+  const CreatePrivateMessagePage({super.key, required this.account, this.recipient, this.initialContent, this.onMessageSent});
 
   /// Account used to send the message.
   final Account account;
@@ -55,10 +49,7 @@ class _CreatePrivateMessagePageState extends State<CreatePrivateMessagePage> {
     _bodyController.addListener(() => context.read<CreatePrivateMessageCubit>().updateContent(_bodyController.text));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CreatePrivateMessageCubit>().initialize(
-            recipient: widget.recipient,
-            content: widget.initialContent,
-          );
+      context.read<CreatePrivateMessageCubit>().initialize(recipient: widget.recipient, content: widget.initialContent);
       _bodyFocusNode.requestFocus();
     });
   }
@@ -73,12 +64,7 @@ class _CreatePrivateMessagePageState extends State<CreatePrivateMessagePage> {
   void _selectRecipient(Account account) {
     final l10n = GlobalContext.l10n;
 
-    showUserInputDialog(
-      context,
-      title: l10n.selectRecipient,
-      account: account,
-      onUserSelected: (user) => context.read<CreatePrivateMessageCubit>().setRecipient(user),
-    );
+    showUserInputDialog(context, title: l10n.selectRecipient, account: account, onUserSelected: (user) => context.read<CreatePrivateMessageCubit>().setRecipient(user));
   }
 
   Future<void> _submit() async {
@@ -121,10 +107,7 @@ class _CreatePrivateMessagePageState extends State<CreatePrivateMessagePage> {
             controller: _keyboardDetectionController,
             child: Scaffold(
               resizeToAvoidBottomInset: false,
-              appBar: AppBar(
-                title: Text(l10n.directMessage),
-                centerTitle: false,
-              ),
+              appBar: AppBar(title: Text(l10n.directMessage), centerTitle: false),
               body: SafeArea(
                 bottom: false,
                 child: Column(
@@ -137,25 +120,15 @@ class _CreatePrivateMessagePageState extends State<CreatePrivateMessagePage> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 16.0, top: 8.0),
-                              child: UserSelector(
-                                account: account,
-                                enableAccountSwitching: false,
-                              ),
+                              child: UserSelector(account: account, enableAccountSwitching: false),
                             ),
                             const SizedBox(height: 10),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: CreatePrivateMessageRecipientTile(
-                                recipient: state.recipient,
-                                onTap: () => _selectRecipient(account),
-                              ),
+                              child: CreatePrivateMessageRecipientTile(recipient: state.recipient, onTap: () => _selectRecipient(account)),
                             ),
                             const SizedBox(height: 10),
-                            CreatePrivateMessageEditorSection(
-                              controller: _bodyController,
-                              focusNode: _bodyFocusNode,
-                              showPreview: _showPreview,
-                            ),
+                            CreatePrivateMessageEditorSection(controller: _bodyController, focusNode: _bodyFocusNode, showPreview: _showPreview),
                           ],
                         ),
                       ),
@@ -171,10 +144,7 @@ class _CreatePrivateMessagePageState extends State<CreatePrivateMessagePage> {
                       onTogglePreview: _togglePreview,
                       onSubmit: _submit,
                     ),
-                    Container(
-                      height: MediaQuery.of(context).padding.bottom,
-                      color: theme.cardColor,
-                    ),
+                    Container(height: MediaQuery.of(context).padding.bottom, color: theme.cardColor),
                   ],
                 ),
               ),

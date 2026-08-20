@@ -3,14 +3,7 @@ part of 'private_message_thread_cubit.dart';
 const _privateMessageThreadStateUnset = Object();
 
 /// Lifecycle status for a direct-message thread.
-enum PrivateMessageThreadStatus {
-  initial,
-  loading,
-  refreshing,
-  sending,
-  success,
-  error,
-}
+enum PrivateMessageThreadStatus { initial, loading, refreshing, sending, success, error }
 
 /// State for a direct-message thread.
 class PrivateMessageThreadState extends Equatable {

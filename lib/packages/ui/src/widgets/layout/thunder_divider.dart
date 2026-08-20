@@ -5,14 +5,7 @@ import 'package:thunder/packages/ui/src/widgets/layout/thunder_conditional_paren
 /// A themed divider that can render inside a sliver list or a box layout.
 @immutable
 class ThunderDivider extends StatelessWidget {
-  const ThunderDivider({
-    super.key,
-    required this.sliver,
-    this.padding = true,
-    this.thickness = 2.0,
-    this.color,
-    this.height,
-  });
+  const ThunderDivider({super.key, required this.sliver, this.padding = true, this.thickness = 2.0, this.color, this.height});
 
   /// When true, wraps the divider in a [SliverToBoxAdapter].
   final bool sliver;
@@ -38,13 +31,7 @@ class ThunderDivider extends StatelessWidget {
     return ThunderConditionalParent(
       condition: sliver,
       parentBuilder: (Widget child) => SliverToBoxAdapter(child: child),
-      child: Divider(
-        indent: padding ? 32.0 : 0,
-        height: dividerHeight,
-        endIndent: padding ? 32.0 : 0,
-        thickness: thickness,
-        color: dividerColor,
-      ),
+      child: Divider(indent: padding ? 32.0 : 0, height: dividerHeight, endIndent: padding ? 32.0 : 0, thickness: thickness, color: dividerColor),
     );
   }
 }

@@ -47,12 +47,7 @@ class ApiErrorException implements ApiException {
   @override
   final String? platformName;
 
-  ApiErrorException(
-    this.message, {
-    this.errorCode,
-    this.statusCode,
-    this.platformName,
-  });
+  ApiErrorException(this.message, {this.errorCode, this.statusCode, this.platformName});
 
   @override
   String toString() => '${platformName ?? 'API'} Error [$statusCode]: $message';

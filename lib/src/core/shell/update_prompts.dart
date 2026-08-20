@@ -9,11 +9,7 @@ import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
 class UpdateNotificationCoordinator {
   bool _hasShownNotification = false;
 
-  Version? nextNotification({
-    required Version? version,
-    required bool profileIsUsable,
-    required bool enabled,
-  }) {
+  Version? nextNotification({required Version? version, required bool profileIsUsable, required bool enabled}) {
     if (_hasShownNotification || !profileIsUsable || !enabled || version?.hasUpdate != true) return null;
 
     _hasShownNotification = true;
@@ -31,14 +27,8 @@ void showUpdateNotification(BuildContext context, Version? version) {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            AppLocalizations.of(context)!.updateReleased(version?.latestVersion ?? ''),
-            style: theme.textTheme.titleMedium,
-          ),
-          Icon(
-            Icons.arrow_forward,
-            color: theme.colorScheme.onSurface,
-          ),
+          Text(AppLocalizations.of(context)!.updateReleased(version?.latestVersion ?? ''), style: theme.textTheme.titleMedium),
+          Icon(Icons.arrow_forward, color: theme.colorScheme.onSurface),
         ],
       ),
       onTap: () {

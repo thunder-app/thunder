@@ -73,11 +73,7 @@ class _ThunderMarqueeState extends State<ThunderMarquee> {
       if (_scrollController.hasClients) {
         await Future.delayed(widget.pauseDuration);
         if (_scrollController.hasClients) {
-          await _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: widget.animationDuration,
-            curve: widget.forwardAnimation,
-          );
+          await _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: widget.animationDuration, curve: widget.forwardAnimation);
         }
         await Future.delayed(widget.pauseDuration);
         if (_scrollController.hasClients) {
@@ -105,11 +101,7 @@ class _ThunderMarqueeState extends State<ThunderMarquee> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: widget.textDirection,
-      child: SingleChildScrollView(
-        scrollDirection: widget.direction,
-        controller: _scrollController,
-        child: widget.child,
-      ),
+      child: SingleChildScrollView(scrollDirection: widget.direction, controller: _scrollController, child: widget.child),
     );
   }
 }

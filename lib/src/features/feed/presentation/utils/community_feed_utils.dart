@@ -27,11 +27,7 @@ Future<void> toggleFavoriteCommunity(BuildContext context, ThunderCommunity comm
       return;
     }
 
-    Favorite favorite = Favorite(
-      id: '',
-      communityId: community.id,
-      accountId: account.id,
-    );
+    Favorite favorite = Favorite(id: '', communityId: community.id, accountId: account.id);
 
     await createFavoriteRepository().insertFavorite(favorite);
     if (context.mounted) {

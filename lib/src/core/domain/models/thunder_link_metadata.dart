@@ -21,22 +21,12 @@ class ThunderLinkMetadata extends Equatable {
 
   /// Creates a new ThunderLinkMetadata from a Lemmy site metadata.
   factory ThunderLinkMetadata.fromLemmySiteMetadata(Map<String, dynamic> metadata, {required String url}) {
-    return ThunderLinkMetadata(
-      url: url,
-      title: _stringOrNull(metadata['title']),
-      description: _stringOrNull(metadata['description']),
-      imageUrl: _stringOrNull(metadata['image']),
-    );
+    return ThunderLinkMetadata(url: url, title: _stringOrNull(metadata['title']), description: _stringOrNull(metadata['description']), imageUrl: _stringOrNull(metadata['image']));
   }
 
   /// Creates a new ThunderLinkMetadata from a PieFed site metadata.
   factory ThunderLinkMetadata.fromPiefedSiteMetadata(Map<String, dynamic> metadata, {required String url}) {
-    return ThunderLinkMetadata(
-      url: url,
-      title: _stringOrNull(metadata['title']),
-      description: _stringOrNull(metadata['description']),
-      imageUrl: _stringOrNull(metadata['image']),
-    );
+    return ThunderLinkMetadata(url: url, title: _stringOrNull(metadata['title']), description: _stringOrNull(metadata['description']), imageUrl: _stringOrNull(metadata['image']));
   }
 
   static String? _stringOrNull(dynamic value) {

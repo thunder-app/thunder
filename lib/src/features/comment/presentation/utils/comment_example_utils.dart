@@ -28,13 +28,7 @@ ThunderComment createExampleComment({
     languageId: 0,
     status: const CommentStatus(deleted: false, removed: false, local: false, distinguished: false),
     counts: CommentCounts(score: commentScore ?? 0, upvotes: commentUpvotes ?? 0, downvotes: commentDownvotes ?? 0, childCount: commentChildCount ?? 0),
-    context: CommentContext(
-      creatorBannedFromCommunity: false,
-      bannedFromCommunity: false,
-      creatorIsModerator: false,
-      creatorIsAdmin: isPersonAdmin ?? false,
-      saved: saved ?? false,
-    ),
+    context: CommentContext(creatorBannedFromCommunity: false, bannedFromCommunity: false, creatorIsModerator: false, creatorIsAdmin: isPersonAdmin ?? false, saved: saved ?? false),
     creator: ThunderUser(
       id: 1,
       name: personName ?? 'Example Username',

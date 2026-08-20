@@ -8,15 +8,7 @@ import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
 /// and [icon] is ignored.
 @immutable
 class ThunderMediaPreviewError extends StatelessWidget {
-  const ThunderMediaPreviewError({
-    super.key,
-    required this.icon,
-    this.blur = false,
-    this.viewed = false,
-    this.canRetry = false,
-    this.onRetry,
-    this.retryTooltip = 'Retry',
-  });
+  const ThunderMediaPreviewError({super.key, required this.icon, this.blur = false, this.viewed = false, this.canRetry = false, this.onRetry, this.retryTooltip = 'Retry'});
 
   /// Icon shown when retry is unavailable or [onRetry] is null.
   final IconData icon;
@@ -43,9 +35,7 @@ class ThunderMediaPreviewError extends StatelessWidget {
 
     if (blur) return const SizedBox.shrink();
 
-    final iconColor = theme.colorScheme.onSecondaryContainer.withValues(
-      alpha: viewed ? thunderTheme.mutedTextAlpha : 1.0,
-    );
+    final iconColor = theme.colorScheme.onSecondaryContainer.withValues(alpha: viewed ? thunderTheme.mutedTextAlpha : 1.0);
 
     if (canRetry && onRetry != null) {
       return GestureDetector(
@@ -60,8 +50,6 @@ class ThunderMediaPreviewError extends StatelessWidget {
       );
     }
 
-    return Center(
-      child: Icon(icon, color: iconColor),
-    );
+    return Center(child: Icon(icon, color: iconColor));
   }
 }

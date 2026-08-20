@@ -63,18 +63,10 @@ class LoginCredentialsFields extends StatelessWidget {
                     controller: usernameController,
                     focusNode: usernameFocusNode,
                     autofillHints: const [AutofillHints.username],
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: l10n.username,
-                    ),
+                    decoration: InputDecoration(border: const OutlineInputBorder(), labelText: l10n.username),
                     enableSuggestions: false,
                   ),
-                  _LoginPasswordField(
-                    usernameController: usernameController,
-                    passwordController: passwordController,
-                    isSubmitting: isSubmitting,
-                    onSubmit: onSubmit,
-                  ),
+                  _LoginPasswordField(usernameController: usernameController, passwordController: passwordController, isSubmitting: isSubmitting, onSubmit: onSubmit),
                 ],
               ),
             ),
@@ -86,11 +78,7 @@ class LoginCredentialsFields extends StatelessWidget {
                 maxLength: 6,
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: l10n.totp,
-                  hintText: '000000',
-                ),
+                decoration: InputDecoration(border: const OutlineInputBorder(), labelText: l10n.totp, hintText: '000000'),
                 enableSuggestions: false,
               ),
           ],
@@ -101,12 +89,7 @@ class LoginCredentialsFields extends StatelessWidget {
 }
 
 class _LoginPasswordField extends StatefulWidget {
-  const _LoginPasswordField({
-    required this.usernameController,
-    required this.passwordController,
-    required this.isSubmitting,
-    required this.onSubmit,
-  });
+  const _LoginPasswordField({required this.usernameController, required this.passwordController, required this.isSubmitting, required this.onSubmit});
 
   final TextEditingController usernameController;
   final TextEditingController passwordController;
@@ -147,10 +130,7 @@ class _LoginPasswordFieldState extends State<_LoginPasswordField> {
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: IconButton(
                     key: const Key('login-password-visibility'),
-                    icon: Icon(
-                      _obscurePassword ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                      semanticLabel: _obscurePassword ? l10n.showPassword : l10n.hidePassword,
-                    ),
+                    icon: Icon(_obscurePassword ? Icons.visibility_off_rounded : Icons.visibility_rounded, semanticLabel: _obscurePassword ? l10n.showPassword : l10n.hidePassword),
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
                 ),

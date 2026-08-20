@@ -43,13 +43,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
         featuredCommunity: json['featured_community'] ?? false,
         featuredLocal: json['featured_local'] ?? false,
       ),
-      counts: PostCounts(
-        comments: json['comments'],
-        score: json['score'],
-        upvotes: json['upvotes'],
-        downvotes: json['downvotes'],
-        newestCommentAt: mapperDate(json['newest_comment_time_at']),
-      ),
+      counts: PostCounts(comments: json['comments'], score: json['score'], upvotes: json['upvotes'], downvotes: json['downvotes'], newestCommentAt: mapperDate(json['newest_comment_time_at'])),
       media: media,
     );
   }
@@ -89,12 +83,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
       apId: json['ap_id'],
       path: json['path'],
       languageId: json['language_id'],
-      counts: CommentCounts(
-        score: json['score'],
-        upvotes: json['upvotes'],
-        downvotes: json['downvotes'],
-        childCount: json['child_count'],
-      ),
+      counts: CommentCounts(score: json['score'], upvotes: json['upvotes'], downvotes: json['downvotes'], childCount: json['child_count']),
       status: CommentStatus(
         deleted: json['deleted'] ?? false,
         removed: json['removed'] ?? false,
@@ -157,11 +146,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
     final person = user(json['person']);
     final actions = json['person_actions'];
     return person.copyWith(
-      context: UserContext(
-        isAdmin: json['is_admin'],
-        blocked: actions?['blocked_at'] != null,
-        note: actions?['note'],
-      ),
+      context: UserContext(isAdmin: json['is_admin'], blocked: actions?['blocked_at'] != null, note: actions?['note']),
     );
   }
 
@@ -287,12 +272,7 @@ class LemmyV4PrimitiveMapper extends LemmyV3PrimitiveMapper {
   @override
   ThunderReport commentReportView(Map<String, dynamic> json) {
     final report = json['comment_report'];
-    final mappedComment = json['comment'] is Map<String, dynamic>
-        ? commentView({
-            ...json,
-            'creator': json['comment_creator'],
-          })
-        : null;
+    final mappedComment = json['comment'] is Map<String, dynamic> ? commentView({...json, 'creator': json['comment_creator']}) : null;
 
     return ThunderReport(
       id: report['id'],
@@ -367,8 +347,5 @@ ThunderLocalUser localUserFromLemmyV4(Map<String, dynamic> localUser) {
 
 ThunderLocalUserView localUserViewFromLemmyV4(Map<String, dynamic> localUserView) {
   const mapper = LemmyV4PrimitiveMapper();
-  return ThunderLocalUserView(
-    localUser: localUserFromLemmyV4(localUserView['local_user']),
-    person: mapper.user(localUserView['person']),
-  );
+  return ThunderLocalUserView(localUser: localUserFromLemmyV4(localUserView['local_user']), person: mapper.user(localUserView['person']));
 }

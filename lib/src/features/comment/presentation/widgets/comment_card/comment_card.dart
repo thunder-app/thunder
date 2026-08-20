@@ -96,19 +96,13 @@ class _CommentCardState extends State<CommentCard> {
 
     if (commentAction == null) return;
 
-    final updatedComment = await onCommentAction(
-      context,
-      widget.account,
-      commentAction,
-      widget.comment,
-      {
-        'voteType': resolvedSwipeAction == SwipeAction.upvote
-            ? 1
-            : resolvedSwipeAction == SwipeAction.downvote
-                ? -1
-                : 0,
-      },
-    );
+    final updatedComment = await onCommentAction(context, widget.account, commentAction, widget.comment, {
+      'voteType': resolvedSwipeAction == SwipeAction.upvote
+          ? 1
+          : resolvedSwipeAction == SwipeAction.downvote
+          ? -1
+          : 0,
+    });
 
     if (commentAction == CommentAction.reply && updatedComment != null) {
       widget.onCommentInserted?.call(updatedComment);
@@ -192,7 +186,7 @@ class _CommentCardState extends State<CommentCard> {
         rightActions: rightActions.map((action) => ThunderSwipeAction(value: action, icon: action.getIcon(), color: (context) => action.getColor(context))).toList(),
         actionThresholds: actionThresholds,
         enableBackSwipeOverride: true,
-        onProgressChanged: (progress, _, __) {
+        onProgressChanged: (progress, _, _) {
           final dragged = progress > 0;
           if (dragged != _dragged) setState(() => _dragged = dragged);
         },
@@ -215,13 +209,7 @@ class _CommentCardState extends State<CommentCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           child,
-          CommentCardRepliesLoader(
-            comment: widget.comment,
-            level: widget.level,
-            replies: widget.replies,
-            collapsed: widget.collapsed,
-            hideReplyCount: widget.hideReplyCount,
-          ),
+          CommentCardRepliesLoader(comment: widget.comment, level: widget.level, replies: widget.replies, collapsed: widget.collapsed, hideReplyCount: widget.hideReplyCount),
         ],
       ),
       crossFadeState: widget.hidden ? CrossFadeState.showFirst : CrossFadeState.showSecond,

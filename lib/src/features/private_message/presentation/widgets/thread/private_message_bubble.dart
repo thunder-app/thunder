@@ -7,11 +7,7 @@ import 'package:thunder/src/shared/theme/color_utils.dart';
 /// Chat bubble for one private message in a direct-message thread.
 class PrivateMessageBubble extends StatefulWidget {
   /// Creates a bubble aligned based on whether the message was sent by [account].
-  const PrivateMessageBubble({
-    super.key,
-    required this.account,
-    required this.message,
-  });
+  const PrivateMessageBubble({super.key, required this.account, required this.message});
 
   /// Account viewing the thread.
   final Account account;

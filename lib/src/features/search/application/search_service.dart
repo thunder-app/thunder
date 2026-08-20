@@ -39,13 +39,7 @@ class SearchService {
     );
 
     if (!isValidUrl(query)) {
-      return SearchResults(
-        type: response.type,
-        comments: response.comments,
-        posts: await parsePosts(response.posts),
-        communities: response.communities,
-        users: response.users,
-      );
+      return SearchResults(type: response.type, comments: response.comments, posts: await parsePosts(response.posts), communities: response.communities, users: response.users);
     }
 
     final resolveResponse = await _searchRepository.resolve(query: query);
@@ -65,12 +59,6 @@ class SearchService {
       comments.add(resolveResponse.comment!);
     }
 
-    return SearchResults(
-      type: response.type,
-      comments: comments,
-      posts: await parsePosts(posts),
-      communities: communities,
-      users: users,
-    );
+    return SearchResults(type: response.type, comments: comments, posts: await parsePosts(posts), communities: communities, users: users);
   }
 }

@@ -12,12 +12,7 @@ MarkdownStyleSheet getSpoilerStyleSheet(BuildContext context) {
     a: const TextStyle(color: Colors.transparent),
     p: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
     pPadding: EdgeInsets.zero,
-    code: theme.textTheme.bodyMedium!.copyWith(
-      backgroundColor: Colors.transparent,
-      fontFamily: 'monospace',
-      fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.85,
-      color: Colors.transparent,
-    ),
+    code: theme.textTheme.bodyMedium!.copyWith(backgroundColor: Colors.transparent, fontFamily: 'monospace', fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.85, color: Colors.transparent),
     h1: theme.textTheme.headlineSmall!.copyWith(color: Colors.transparent),
     h1Padding: EdgeInsets.zero,
     h2: theme.textTheme.titleLarge!.copyWith(color: Colors.transparent),
@@ -53,12 +48,11 @@ MarkdownStyleSheet getSpoilerStyleSheet(BuildContext context) {
       border: Border(left: BorderSide(color: Colors.transparent, width: 4)),
     ),
     codeblockPadding: const EdgeInsets.all(8.0),
-    codeblockDecoration: BoxDecoration(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(2.0),
-    ),
+    codeblockDecoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(2.0)),
     horizontalRuleDecoration: BoxDecoration(
-      border: Border(top: BorderSide(width: theme.textTheme.bodyMedium!.fontSize!, color: Colors.transparent)),
+      border: Border(
+        top: BorderSide(width: theme.textTheme.bodyMedium!.fontSize!, color: Colors.transparent),
+      ),
     ),
   );
 }
@@ -75,24 +69,11 @@ MarkdownStyleSheet getNormalStyleSheet(BuildContext context) {
       borderRadius: BorderRadius.circular(5),
     ),
     codeblockDecoration: BoxDecoration(color: surface, borderRadius: BorderRadius.circular(10)),
-    code: theme.textTheme.bodyMedium?.copyWith(
-      backgroundColor: surface,
-      fontFamily: 'monospace',
-      fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.85,
-    ),
-    tableBorder: TableBorder.all(
-      color: Colors.grey,
-      width: 1,
-      borderRadius: const BorderRadius.all(Radius.circular(5)),
-    ),
+    code: theme.textTheme.bodyMedium?.copyWith(backgroundColor: surface, fontFamily: 'monospace', fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.85),
+    tableBorder: TableBorder.all(color: Colors.grey, width: 1, borderRadius: const BorderRadius.all(Radius.circular(5))),
     horizontalRuleDecoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(5)),
-      border: Border(
-        top: BorderSide(
-          width: 3,
-          color: theme.colorScheme.primary.withValues(alpha: 0.75),
-        ),
-      ),
+      border: Border(top: BorderSide(width: 3, color: theme.colorScheme.primary.withValues(alpha: 0.75))),
     ),
   );
 }

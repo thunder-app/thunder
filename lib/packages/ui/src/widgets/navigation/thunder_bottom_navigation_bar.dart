@@ -190,12 +190,7 @@ class _ThunderBottomNavigationBarState extends State<ThunderBottomNavigationBar>
           onPointerMove: (event) => _handlePointerMove(event, constraints.maxWidth),
           onPointerUp: _handlePointerEnd,
           onPointerCancel: _handlePointerEnd,
-          child: NavigationBar(
-            selectedIndex: widget.selectedIndex,
-            labelBehavior: widget.labelBehavior,
-            destinations: widget.destinations,
-            onDestinationSelected: _handleDestinationSelected,
-          ),
+          child: NavigationBar(selectedIndex: widget.selectedIndex, labelBehavior: widget.labelBehavior, destinations: widget.destinations, onDestinationSelected: _handleDestinationSelected),
         ),
       ),
     );

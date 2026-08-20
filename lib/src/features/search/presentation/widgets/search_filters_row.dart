@@ -29,14 +29,7 @@ class SearchFiltersRow extends StatefulWidget {
   /// Called to show the sort picker.
   final VoidCallback onShowSortPicker;
 
-  const SearchFiltersRow({
-    super.key,
-    required this.searchOptions,
-    required this.community,
-    required this.account,
-    required this.onSearch,
-    required this.onShowSortPicker,
-  });
+  const SearchFiltersRow({super.key, required this.searchOptions, required this.community, required this.account, required this.onSearch, required this.onShowSortPicker});
 
   @override
   State<SearchFiltersRow> createState() => _SearchFiltersRowState();
@@ -81,17 +74,11 @@ class _SearchFiltersRowState extends State<SearchFiltersRow> {
                   ],
 
                   // Search type chip
-                  _SearchTypeChip(
-                    searchOptions: widget.searchOptions,
-                    onSearch: widget.onSearch,
-                  ),
+                  _SearchTypeChip(searchOptions: widget.searchOptions, onSearch: widget.onSearch),
                   const SizedBox(width: 10),
 
                   // URL/Text toggle for posts
-                  if (state.searchType == MetaSearchType.posts) ...[
-                    _UrlTextChip(onSearch: widget.onSearch),
-                    const SizedBox(width: 10),
-                  ],
+                  if (state.searchType == MetaSearchType.posts) ...[_UrlTextChip(onSearch: widget.onSearch), const SizedBox(width: 10)],
 
                   // Sort, feed type, and filter chips (except for instances)
                   if (state.searchType != MetaSearchType.instances) ...[
@@ -101,18 +88,12 @@ class _SearchFiltersRowState extends State<SearchFiltersRow> {
                       _FeedTypeChip(onSearch: widget.onSearch),
                       if (!(state.searchType == MetaSearchType.users || state.searchType == MetaSearchType.communities)) ...[
                         const SizedBox(width: 10),
-                        _CommunityFilterChip(
-                          account: widget.account,
-                          onSearch: widget.onSearch,
-                        ),
-                      ]
+                        _CommunityFilterChip(account: widget.account, onSearch: widget.onSearch),
+                      ],
                     ],
                     if (!(state.searchType == MetaSearchType.users || state.searchType == MetaSearchType.communities || widget.account.platform == ThreadiversePlatform.piefed)) ...[
                       const SizedBox(width: 10),
-                      _CreatorFilterChip(
-                        account: widget.account,
-                        onSearch: widget.onSearch,
-                      ),
+                      _CreatorFilterChip(account: widget.account, onSearch: widget.onSearch),
                     ],
                   ],
                 ],
@@ -130,10 +111,7 @@ class _SearchTypeChip extends StatelessWidget {
   final List<ThunderListPickerItem<MetaSearchType>> searchOptions;
   final VoidCallback onSearch;
 
-  const _SearchTypeChip({
-    required this.searchOptions,
-    required this.onSearch,
-  });
+  const _SearchTypeChip({required this.searchOptions, required this.onSearch});
 
   @override
   Widget build(BuildContext context) {
@@ -222,12 +200,7 @@ class _SortChip extends StatelessWidget {
       builder: (context, data) {
         final (sortTypeIcon, sortTypeLabel) = data;
 
-        return ThunderActionChip(
-          icon: sortTypeIcon,
-          trailingIcon: Icons.arrow_drop_down_rounded,
-          label: sortTypeLabel ?? l10n.sortBy,
-          onPressed: onShowSortPicker,
-        );
+        return ThunderActionChip(icon: sortTypeIcon, trailingIcon: Icons.arrow_drop_down_rounded, label: sortTypeLabel ?? l10n.sortBy, onPressed: onShowSortPicker);
       },
     );
   }
@@ -298,10 +271,7 @@ class _CommunityFilterChip extends StatelessWidget {
   final Account account;
   final VoidCallback onSearch;
 
-  const _CommunityFilterChip({
-    required this.account,
-    required this.onSearch,
-  });
+  const _CommunityFilterChip({required this.account, required this.onSearch});
 
   @override
   Widget build(BuildContext context) {
@@ -329,16 +299,11 @@ class _CommunityFilterChip extends StatelessWidget {
                 account: account,
                 onCommunitySelected: (ThunderCommunity community) {
                   context.read<SearchBloc>().add(
-                        SearchFiltersUpdated(
-                          communityFilter: community.id,
-                          communityFilterName: generateCommunityFullName(
-                            context,
-                            community.name,
-                            community.title,
-                            fetchInstanceNameFromUrl(community.actorId),
-                          ),
-                        ),
-                      );
+                    SearchFiltersUpdated(
+                      communityFilter: community.id,
+                      communityFilterName: generateCommunityFullName(context, community.name, community.title, fetchInstanceNameFromUrl(community.actorId)),
+                    ),
+                  );
                   onSearch();
                 },
               );
@@ -355,10 +320,7 @@ class _CreatorFilterChip extends StatelessWidget {
   final Account account;
   final VoidCallback onSearch;
 
-  const _CreatorFilterChip({
-    required this.account,
-    required this.onSearch,
-  });
+  const _CreatorFilterChip({required this.account, required this.onSearch});
 
   @override
   Widget build(BuildContext context) {
@@ -386,16 +348,8 @@ class _CreatorFilterChip extends StatelessWidget {
                 account: account,
                 onUserSelected: (user) {
                   context.read<SearchBloc>().add(
-                        SearchFiltersUpdated(
-                          creatorFilter: user.id,
-                          creatorFilterName: generateUserFullName(
-                            context,
-                            user.name,
-                            user.displayName,
-                            fetchInstanceNameFromUrl(user.actorId),
-                          ),
-                        ),
-                      );
+                    SearchFiltersUpdated(creatorFilter: user.id, creatorFilterName: generateUserFullName(context, user.name, user.displayName, fetchInstanceNameFromUrl(user.actorId))),
+                  );
                   onSearch();
                 },
               );

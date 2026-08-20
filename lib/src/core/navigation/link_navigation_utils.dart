@@ -86,10 +86,7 @@ void handleLink(BuildContext context, {required String url, bool forceOpenInBrow
     try {
       await navigateToModlogPage(
         context,
-        modlogActionType: ModlogActionType.values.firstWhere(
-          (type) => type.name.toLowerCase() == uri.queryParameters['actionType']?.toLowerCase(),
-          orElse: () => ModlogActionType.all,
-        ),
+        modlogActionType: ModlogActionType.values.firstWhere((type) => type.name.toLowerCase() == uri.queryParameters['actionType']?.toLowerCase(), orElse: () => ModlogActionType.all),
         communityId: int.tryParse(uri.queryParameters['communityId'] ?? ''),
         userId: int.tryParse(uri.queryParameters['userId'] ?? ''),
         moderatorId: int.tryParse(uri.queryParameters['modId'] ?? ''),

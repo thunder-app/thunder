@@ -40,12 +40,7 @@ void navigateToReportPage(BuildContext context) {
       canOnlySwipeFromEdge: true,
       builder: (_) {
         return MultiBlocProvider(
-          providers: routeScope.providers(
-            provideThunderCubit: true,
-            extraProviders: [
-              BlocProvider<FeedBloc>.value(value: feedBloc),
-            ],
-          ),
+          providers: routeScope.providers(provideThunderCubit: true, extraProviders: [BlocProvider<FeedBloc>.value(value: feedBloc)]),
           child: const ReportFeedPage(),
         );
       },
@@ -80,18 +75,13 @@ Future<void> navigateToModlogPage(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
         : reduceAnimations
-            ? const Duration(milliseconds: 100)
-            : null,
+        ? const Duration(milliseconds: 100)
+        : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,
     builder: (context) => MultiBlocProvider(
-      providers: routeScope.providers(
-        provideThunderCubit: true,
-        extraProviders: [
-          BlocProvider<FeedBloc>.value(value: feedBloc),
-        ],
-      ),
+      providers: routeScope.providers(provideThunderCubit: true, extraProviders: [BlocProvider<FeedBloc>.value(value: feedBloc)]),
       child: ModlogFeedPage(
         account: effectiveAccount,
         modlogActionType: modlogActionType,

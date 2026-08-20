@@ -47,17 +47,17 @@ Future<void> triggerRefresh(BuildContext context) async {
   FeedState state = context.read<FeedBloc>().state;
 
   context.read<FeedBloc>().add(
-        FeedFetchedEvent(
-          feedType: state.feedType,
-          feedListType: state.feedListType,
-          postSortType: state.postSortType,
-          communityId: state.communityId,
-          communityName: state.communityName,
-          userId: state.userId,
-          username: state.username,
-          reset: true,
-          showHidden: state.showHidden,
-          showSaved: state.showSaved,
-        ),
-      );
+    FeedFetchedEvent(
+      feedType: state.feedType,
+      feedListType: state.feedListType,
+      postSortType: state.postSortType,
+      communityId: state.communityId,
+      communityName: state.communityName,
+      userId: state.userId,
+      username: state.username,
+      reset: true,
+      showHidden: state.showHidden,
+      showSaved: state.showSaved,
+    ),
+  );
 }

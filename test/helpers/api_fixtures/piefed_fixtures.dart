@@ -66,7 +66,7 @@ Map<String, dynamic> piefedSiteResponse({String version = '1.6.0'}) => {
 
 Map<String, dynamic> piefedPostListResponse({String? nextCursor}) => {
       'posts': [piefedPostView()],
-      if (nextCursor != null) 'next_cursor': nextCursor,
+      'next_cursor': ?nextCursor,
     };
 
 Map<String, dynamic> piefedPostReportView({int reportId = 5, bool resolved = false}) => {

@@ -60,10 +60,7 @@ class _CreatePostTitleFieldState extends State<CreatePostTitleField> {
         key: const Key('create-post-title-field'),
         controller: textEditingController,
         focusNode: focusNode,
-        decoration: InputDecoration(
-          labelText: l10n.postTitle,
-          border: const OutlineInputBorder(),
-        ),
+        decoration: InputDecoration(labelText: l10n.postTitle, border: const OutlineInputBorder()),
       ),
       hideOnEmpty: true,
       hideOnLoading: true,
@@ -82,9 +79,6 @@ class _SuggestionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
-    return ListTile(
-      title: Text(suggestion),
-      subtitle: Text(l10n.suggestedTitle),
-    );
+    return ListTile(title: Text(suggestion), subtitle: Text(l10n.suggestedTitle));
   }
 }

@@ -33,102 +33,55 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final CommunityRepository communityRepository;
   final UserRepository userRepository;
 
-  FeedBloc({
-    required this.account,
-    required this.postRepository,
-    required this.communityRepository,
-    required this.userRepository,
-  }) : super(const FeedState()) {
+  FeedBloc({required this.account, required this.postRepository, required this.communityRepository, required this.userRepository}) : super(const FeedState()) {
     /// Handles resetting the feed to its initial state
-    on<ResetFeedEvent>(
-      _onResetFeed,
-      transformer: restartable(),
-    );
+    on<ResetFeedEvent>(_onResetFeed, transformer: restartable());
 
     /// Handles fetching the feed
-    on<FeedFetchedEvent>(
-      _onFeedFetched,
-      transformer: restartable(),
-    );
+    on<FeedFetchedEvent>(_onFeedFetched, transformer: restartable());
 
     /// Handles fetching the next page for the currently loaded feed.
-    on<FeedPaginatedEvent>(
-      _onFeedPaginated,
-      transformer: droppable(),
-    );
+    on<FeedPaginatedEvent>(_onFeedPaginated, transformer: droppable());
 
     /// Handles changing the sort type of the feed
-    on<FeedChangePostSortTypeEvent>(
-      _onFeedChangePostSortType,
-      transformer: restartable(),
-    );
+    on<FeedChangePostSortTypeEvent>(_onFeedChangePostSortType, transformer: restartable());
 
     /// Handles updating a given item within the feed
-    on<FeedItemUpdatedEvent>(
-      _onFeedItemUpdated,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<FeedItemUpdatedEvent>(_onFeedItemUpdated, transformer: throttleDroppable(Duration.zero));
 
-    on<FeedCommunityUpdatedEvent>(
-      _onFeedCommunityUpdated,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<FeedCommunityUpdatedEvent>(_onFeedCommunityUpdated, transformer: throttleDroppable(Duration.zero));
 
     /// Handles actions on a given item within the feed
-    on<FeedItemActionedEvent>(
-      _onFeedItemActioned,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<FeedItemActionedEvent>(_onFeedItemActioned, transformer: throttleDroppable(Duration.zero));
 
     /// Handles clearing any messages from the state
-    on<FeedClearMessageEvent>(
-      _onFeedClearMessage,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<FeedClearMessageEvent>(_onFeedClearMessage, transformer: throttleDroppable(Duration.zero));
 
     /// Handles hiding posts from the feed
-    on<FeedHidePostsFromViewEvent>(
-      _onFeedHidePostsFromView,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<FeedHidePostsFromViewEvent>(_onFeedHidePostsFromView, transformer: throttleDroppable(Duration.zero));
 
     /// Handles creating a new post
-    on<CreatePostEvent>(
-      _onCreatePost,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<CreatePostEvent>(_onCreatePost, transformer: throttleDroppable(Duration.zero));
 
-    on<PopulatePostsEvent>(
-      _onPopulatePosts,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<PopulatePostsEvent>(_onPopulatePosts, transformer: throttleDroppable(Duration.zero));
   }
 
   /// Handles hiding posts from the feed. This will remove any posts from the feed for the given post ids
   Future<void> _onFeedHidePostsFromView(FeedHidePostsFromViewEvent event, Emitter<FeedState> emit) async {
     if (event.postIds.isEmpty) return;
 
-    final posts = hidePostsByIds(
-      posts: state.posts,
-      postIds: event.postIds.toSet(),
-    );
+    final posts = hidePostsByIds(posts: state.posts, postIds: event.postIds.toSet());
 
     if (posts.length == state.posts.length) return;
 
-    emit(state.copyWith(
-      status: FeedStatus.success,
-      posts: posts,
-      errorReason: null,
-    ));
+    emit(state.copyWith(status: FeedStatus.success, posts: posts, errorReason: null));
   }
 
   /// Handles clearing any messages from the state
   Future<void> _onFeedClearMessage(FeedClearMessageEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(
-      status: state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser ? state.status : FeedStatus.success,
-      message: null,
-      errorReason: null,
-    ));
+    emit(
+      state.copyWith(status: state.status == FeedStatus.failureLoadingCommunity || state.status == FeedStatus.failureLoadingUser ? state.status : FeedStatus.success, message: null, errorReason: null),
+    );
   }
 
   /// Handles post related actions on a given item within the feed
@@ -496,58 +449,64 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   Future<void> _onResetFeed(ResetFeedEvent event, Emitter<FeedState> emit) async {
     if (event.softReset && state.feedType == FeedType.account) {
       // This is only used when FeedType is set to account
-      emit(FeedState(
-        status: FeedStatus.fetching,
-        feedType: FeedType.account,
-        posts: const <ThunderPost>[],
-        comments: const <ThunderComment>[],
-        hasReachedPostsEnd: false,
-        hasReachedCommentsEnd: false,
-        cursor: null,
-        userId: state.userId,
-        username: state.username,
-        user: state.user,
-        userModerates: state.userModerates,
-      ));
+      emit(
+        FeedState(
+          status: FeedStatus.fetching,
+          feedType: FeedType.account,
+          posts: const <ThunderPost>[],
+          comments: const <ThunderComment>[],
+          hasReachedPostsEnd: false,
+          hasReachedCommentsEnd: false,
+          cursor: null,
+          userId: state.userId,
+          username: state.username,
+          user: state.user,
+          userModerates: state.userModerates,
+        ),
+      );
 
       return;
     }
 
-    emit(FeedState(
-      status: FeedStatus.initial,
-      posts: <ThunderPost>[],
-      comments: <ThunderComment>[],
-      hasReachedPostsEnd: false,
-      hasReachedCommentsEnd: false,
-      feedType: FeedType.general,
-      feedListType: state.feedListType,
-      postSortType: state.postSortType,
-      community: null,
-      communityInstance: null,
-      communityModerators: [],
-      user: null,
-      userModerates: [],
-      communityId: null,
-      communityName: null,
-      userId: null,
-      username: null,
-      cursor: null,
-    ));
+    emit(
+      FeedState(
+        status: FeedStatus.initial,
+        posts: <ThunderPost>[],
+        comments: <ThunderComment>[],
+        hasReachedPostsEnd: false,
+        hasReachedCommentsEnd: false,
+        feedType: FeedType.general,
+        feedListType: state.feedListType,
+        postSortType: state.postSortType,
+        community: null,
+        communityInstance: null,
+        communityModerators: [],
+        user: null,
+        userModerates: [],
+        communityId: null,
+        communityName: null,
+        userId: null,
+        username: null,
+        cursor: null,
+      ),
+    );
   }
 
   /// Changes the current sort type of the feed, and refreshes the feed
   Future<void> _onFeedChangePostSortType(FeedChangePostSortTypeEvent event, Emitter<FeedState> emit) async {
-    add(FeedFetchedEvent(
-      feedType: state.feedType,
-      feedListType: state.feedListType,
-      postSortType: event.postSortType,
-      communityId: state.communityId,
-      communityName: state.communityName,
-      userId: state.userId,
-      username: state.username,
-      reset: true,
-      showHidden: state.showHidden,
-    ));
+    add(
+      FeedFetchedEvent(
+        feedType: state.feedType,
+        feedListType: state.feedListType,
+        postSortType: event.postSortType,
+        communityId: state.communityId,
+        communityName: state.communityName,
+        userId: state.userId,
+        username: state.username,
+        reset: true,
+        showHidden: state.showHidden,
+      ),
+    );
   }
 
   /// Fetches the posts, community information, and user information for the feed
@@ -588,18 +547,17 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
               communityModerators = result.moderators;
             } catch (e) {
               // If we are given a community feed, but we can't load the community, that's a problem! Emit an error.
-              return emit(state.copyWith(
-                status: FeedStatus.failureLoadingCommunity,
-                message: getExceptionErrorMessage(e, additionalInfo: event.communityName),
-                feedType: event.feedType,
-                errorReason: AppErrorReason.unexpected(
-                  message: getExceptionErrorMessage(
-                    e,
-                    additionalInfo: event.communityName,
+              return emit(
+                state.copyWith(
+                  status: FeedStatus.failureLoadingCommunity,
+                  message: getExceptionErrorMessage(e, additionalInfo: event.communityName),
+                  feedType: event.feedType,
+                  errorReason: AppErrorReason.unexpected(
+                    message: getExceptionErrorMessage(e, additionalInfo: event.communityName),
+                    details: e.toString(),
                   ),
-                  details: e.toString(),
                 ),
-              ));
+              );
             }
             break;
           case FeedType.user:
@@ -611,18 +569,17 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
               userModerates = response?.moderates ?? [];
             } catch (e) {
               // If we are given a user feed, but we can't load the user, that's a problem! Emit an error.
-              return emit(state.copyWith(
-                status: FeedStatus.failureLoadingUser,
-                message: getExceptionErrorMessage(e, additionalInfo: event.username),
-                feedType: event.feedType,
-                errorReason: AppErrorReason.unexpected(
-                  message: getExceptionErrorMessage(
-                    e,
-                    additionalInfo: event.username,
+              return emit(
+                state.copyWith(
+                  status: FeedStatus.failureLoadingUser,
+                  message: getExceptionErrorMessage(e, additionalInfo: event.username),
+                  feedType: event.feedType,
+                  errorReason: AppErrorReason.unexpected(
+                    message: getExceptionErrorMessage(e, additionalInfo: event.username),
+                    details: e.toString(),
                   ),
-                  details: e.toString(),
                 ),
-              ));
+              );
             }
             break;
           case FeedType.general:
@@ -654,61 +611,61 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         bool hasReachedCommentsEnd = feedItemResult.hasReachedCommentsEnd;
         String? cursor = feedItemResult.cursor;
 
-        return emit(state.copyWith(
-          status: FeedStatus.success,
-          posts: posts,
-          comments: comments,
-          hasReachedPostsEnd: hasReachedPostsEnd,
-          hasReachedCommentsEnd: hasReachedCommentsEnd,
-          feedType: event.feedType,
-          feedListType: event.feedListType,
-          postSortType: event.postSortType,
-          community: community,
-          communityInstance: communityInstance,
-          communityModerators: communityModerators,
-          user: user,
-          userModerates: userModerates,
-          communityId: event.communityId,
-          communityName: event.communityName,
-          userId: event.userId ?? user?.id,
-          username: event.username,
-          cursor: cursor,
-          showHidden: event.showHidden,
-          showSaved: event.showSaved,
-          errorReason: null,
-        ));
+        return emit(
+          state.copyWith(
+            status: FeedStatus.success,
+            posts: posts,
+            comments: comments,
+            hasReachedPostsEnd: hasReachedPostsEnd,
+            hasReachedCommentsEnd: hasReachedCommentsEnd,
+            feedType: event.feedType,
+            feedListType: event.feedListType,
+            postSortType: event.postSortType,
+            community: community,
+            communityInstance: communityInstance,
+            communityModerators: communityModerators,
+            user: user,
+            userModerates: userModerates,
+            communityId: event.communityId,
+            communityName: event.communityName,
+            userId: event.userId ?? user?.id,
+            username: event.username,
+            cursor: cursor,
+            showHidden: event.showHidden,
+            showSaved: event.showSaved,
+            errorReason: null,
+          ),
+        );
       }
 
-      return _fetchNextFeedPage(event.feedTypeSubview, emit);
+      return await _fetchNextFeedPage(event.feedTypeSubview, emit);
     } catch (e) {
       debugPrint('Error fetching feed: $e');
       final message = getExceptionErrorMessage(e);
-      return emit(state.copyWith(
-        status: FeedStatus.failure,
-        message: message,
-        errorReason: AppErrorReason.unexpected(
+      return emit(
+        state.copyWith(
+          status: FeedStatus.failure,
           message: message,
-          details: e.toString(),
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
         ),
-      ));
+      );
     }
   }
 
   /// Fetches the next page for the current feed state.
   Future<void> _onFeedPaginated(FeedPaginatedEvent event, Emitter<FeedState> emit) async {
     try {
-      return _fetchNextFeedPage(event.feedTypeSubview, emit);
+      return await _fetchNextFeedPage(event.feedTypeSubview, emit);
     } catch (e) {
       debugPrint('Error fetching feed page: $e');
       final message = getExceptionErrorMessage(e);
-      return emit(state.copyWith(
-        status: FeedStatus.failure,
-        message: message,
-        errorReason: AppErrorReason.unexpected(
+      return emit(
+        state.copyWith(
+          status: FeedStatus.failure,
           message: message,
-          details: e.toString(),
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
         ),
-      ));
+      );
     }
   }
 
@@ -749,16 +706,18 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     posts.addAll(filteredPosts);
     comments.addAll(feedItemResult.comments);
 
-    return emit(state.copyWith(
-      status: FeedStatus.success,
-      insertedPostIds: newInsertedPostIds.toList(),
-      posts: posts,
-      comments: comments,
-      hasReachedPostsEnd: feedItemResult.hasReachedPostsEnd,
-      hasReachedCommentsEnd: feedItemResult.hasReachedCommentsEnd,
-      cursor: feedItemResult.cursor,
-      errorReason: null,
-    ));
+    return emit(
+      state.copyWith(
+        status: FeedStatus.success,
+        insertedPostIds: newInsertedPostIds.toList(),
+        posts: posts,
+        comments: comments,
+        hasReachedPostsEnd: feedItemResult.hasReachedPostsEnd,
+        hasReachedCommentsEnd: feedItemResult.hasReachedCommentsEnd,
+        cursor: feedItemResult.cursor,
+        errorReason: null,
+      ),
+    );
   }
 
   /// This function is used to create a post. We can pass in a communityId directly to determine the community to post to.
@@ -766,33 +725,22 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(state.copyWith(status: FeedStatus.fetching));
 
     try {
-      final post = await postRepository.create(
-        communityId: event.communityId,
-        name: event.name,
-        body: event.body,
-        url: event.url,
-        nsfw: event.nsfw,
-      );
+      final post = await postRepository.create(communityId: event.communityId, name: event.name, body: event.body, url: event.url, nsfw: event.nsfw);
 
       // Add the post to the state
       List<ThunderPost> updatedPosts = List.from(state.posts);
       updatedPosts.insert(0, post);
 
-      emit(state.copyWith(
-        status: FeedStatus.success,
-        posts: updatedPosts,
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: FeedStatus.success, posts: updatedPosts, errorReason: null));
     } catch (e) {
       final message = e.toString();
-      return emit(state.copyWith(
-        status: FeedStatus.failure,
-        message: message,
-        errorReason: AppErrorReason.unexpected(
+      return emit(
+        state.copyWith(
+          status: FeedStatus.failure,
           message: message,
-          details: e.toString(),
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
         ),
-      ));
+      );
     }
   }
 

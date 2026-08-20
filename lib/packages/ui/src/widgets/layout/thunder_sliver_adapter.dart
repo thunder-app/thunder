@@ -5,13 +5,7 @@ import 'package:thunder/packages/ui/src/widgets/layout/thunder_conditional_paren
 /// Wraps [child] in a sliver container when [sliver] is true.
 @immutable
 class ThunderSliverAdapter extends StatelessWidget {
-  const ThunderSliverAdapter({
-    super.key,
-    required this.sliver,
-    required this.child,
-    this.fillRemaining = false,
-    this.hasScrollBody = false,
-  });
+  const ThunderSliverAdapter({super.key, required this.sliver, required this.child, this.fillRemaining = false, this.hasScrollBody = false});
 
   /// When true, wraps [child] in a sliver widget.
   final bool sliver;

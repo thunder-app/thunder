@@ -86,29 +86,14 @@ class SearchBody extends StatelessWidget {
       case SearchStatus.success:
       case SearchStatus.done:
       case SearchStatus.performingCommentAction:
-        return _SearchResultsView(
-          account: account,
-          scrollController: scrollController,
-          communityToSearch: communityToSearch,
-          onSetSearchType: onSetSearchType,
-          state: state,
-        );
+        return _SearchResultsView(account: account, scrollController: scrollController, communityToSearch: communityToSearch, onSetSearchType: onSetSearchType, state: state);
       case SearchStatus.empty:
-        return ThunderStateView(
-          mode: ThunderStateViewMode.empty,
-          title: l10n.empty,
-        );
+        return ThunderStateView(mode: ThunderStateViewMode.empty, title: l10n.empty);
       case SearchStatus.failure:
         return ThunderStateView(
           title: l10n.somethingWentWrong,
           message: state.message,
-          actions: [
-            ThunderStateAction(
-              label: l10n.retry,
-              onPressed: onSearch,
-              primary: true,
-            ),
-          ],
+          actions: [ThunderStateAction(label: l10n.retry, onPressed: onSearch, primary: true)],
         );
     }
   }
@@ -141,20 +126,9 @@ class _SearchInitialView extends StatelessWidget {
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 250),
       crossFadeState: showTrending ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-      firstChild: _SearchEmptyPrompt(
-        communityToSearch: communityToSearch,
-        accountInstance: accountInstance,
-        isQueryEmpty: isQueryEmpty,
-        onViewAll: onViewAll,
-        searchType: searchType,
-      ),
+      firstChild: _SearchEmptyPrompt(communityToSearch: communityToSearch, accountInstance: accountInstance, isQueryEmpty: isQueryEmpty, onViewAll: onViewAll, searchType: searchType),
       secondChild: showTrending
-          ? _SearchTrendingView(
-              favorites: favorites,
-              trendingCommunities: trendingCommunities!,
-              accountInstance: accountInstance,
-              onViewAll: onViewAll,
-            )
+          ? _SearchTrendingView(favorites: favorites, trendingCommunities: trendingCommunities!, accountInstance: accountInstance, onViewAll: onViewAll)
           : const SizedBox.shrink(),
     );
   }
@@ -168,13 +142,7 @@ class _SearchEmptyPrompt extends StatelessWidget {
   final VoidCallback onViewAll;
   final MetaSearchType searchType;
 
-  const _SearchEmptyPrompt({
-    required this.communityToSearch,
-    required this.accountInstance,
-    required this.isQueryEmpty,
-    required this.onViewAll,
-    required this.searchType,
-  });
+  const _SearchEmptyPrompt({required this.communityToSearch, required this.accountInstance, required this.isQueryEmpty, required this.onViewAll, required this.searchType});
 
   @override
   Widget build(BuildContext context) {
@@ -204,13 +172,7 @@ class _SearchEmptyPrompt extends StatelessWidget {
             ),
           ),
         ],
-        if (isQueryEmpty) ...[
-          const SizedBox(height: 30),
-          ThunderActionChip(
-            label: l10n.viewAll,
-            onPressed: onViewAll,
-          ),
-        ],
+        if (isQueryEmpty) ...[const SizedBox(height: 30), ThunderActionChip(label: l10n.viewAll, onPressed: onViewAll)],
       ],
     );
   }
@@ -223,12 +185,7 @@ class _SearchTrendingView extends StatelessWidget {
   final String accountInstance;
   final VoidCallback onViewAll;
 
-  const _SearchTrendingView({
-    required this.favorites,
-    required this.trendingCommunities,
-    required this.accountInstance,
-    required this.onViewAll,
-  });
+  const _SearchTrendingView({required this.favorites, required this.trendingCommunities, required this.accountInstance, required this.onViewAll});
 
   @override
   Widget build(BuildContext context) {
@@ -290,22 +247,12 @@ class _SearchResultsView extends StatelessWidget {
   final ValueChanged<MetaSearchType> onSetSearchType;
   final SearchState state;
 
-  const _SearchResultsView({
-    required this.account,
-    required this.scrollController,
-    required this.communityToSearch,
-    required this.onSetSearchType,
-    required this.state,
-  });
+  const _SearchResultsView({required this.account, required this.scrollController, required this.communityToSearch, required this.onSetSearchType, required this.state});
 
   @override
   Widget build(BuildContext context) {
     if (searchIsEmpty(state.searchType, searchState: state)) {
-      return _SearchNoResultsView(
-        searchType: state.searchType,
-        communityToSearch: communityToSearch,
-        onSetSearchType: onSetSearchType,
-      );
+      return _SearchNoResultsView(searchType: state.searchType, communityToSearch: communityToSearch, onSetSearchType: onSetSearchType);
     }
 
     return switch (state.searchType) {
@@ -325,11 +272,7 @@ class _SearchNoResultsView extends StatelessWidget {
   final ThunderCommunity? communityToSearch;
   final ValueChanged<MetaSearchType> onSetSearchType;
 
-  const _SearchNoResultsView({
-    required this.searchType,
-    required this.communityToSearch,
-    required this.onSetSearchType,
-  });
+  const _SearchNoResultsView({required this.searchType, required this.communityToSearch, required this.onSetSearchType});
 
   @override
   Widget build(BuildContext context) {
@@ -366,10 +309,7 @@ class _SearchNoResultsView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (searchType != MetaSearchType.posts) ...[
-                ThunderActionChip(label: l10n.posts, onPressed: () => onSetSearchType(MetaSearchType.posts)),
-                const SizedBox(width: 5),
-              ],
+              if (searchType != MetaSearchType.posts) ...[ThunderActionChip(label: l10n.posts, onPressed: () => onSetSearchType(MetaSearchType.posts)), const SizedBox(width: 5)],
               if (searchType != MetaSearchType.comments) ThunderActionChip(label: l10n.comments, onPressed: () => onSetSearchType(MetaSearchType.comments)),
             ],
           ),

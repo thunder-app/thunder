@@ -19,13 +19,7 @@ class CommentCardBackground extends StatelessWidget {
   /// The direction of the swipe action
   final DismissDirection dismissDirection;
 
-  const CommentCardBackground({
-    super.key,
-    this.swipeAction,
-    required this.firstActionThreshold,
-    required this.dismissThreshold,
-    required this.dismissDirection,
-  });
+  const CommentCardBackground({super.key, this.swipeAction, required this.firstActionThreshold, required this.dismissThreshold, required this.dismissDirection});
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +31,6 @@ class CommentCardBackground extends StatelessWidget {
 
     final backgroundColor = swipeAction != null ? swipeAction!.getColor(context) : defaultColor.withValues(alpha: dismissThreshold / firstActionThreshold);
 
-    return ThunderSwipeActionBackground(
-      alignment: alignment,
-      backgroundColor: backgroundColor,
-      width: MediaQuery.sizeOf(context).width * dismissThreshold,
-      icon: swipeAction?.getIcon(),
-    );
+    return ThunderSwipeActionBackground(alignment: alignment, backgroundColor: backgroundColor, width: MediaQuery.sizeOf(context).width * dismissThreshold, icon: swipeAction?.getIcon());
   }
 }

@@ -63,30 +63,17 @@ class ProfileAnonymousInstanceTile extends StatelessWidget {
       selectedColor: selectedColor,
       onTap: onTap,
       child: ListTile(
-        leading: ProfileInstanceStatusAvatar(
-          placeholderIcon: Icons.language,
-          iconUrl: row.instanceIcon,
-          alive: row.alive,
-          selectedColor: selectedColor,
-          active: active,
-        ),
+        leading: ProfileInstanceStatusAvatar(placeholderIcon: Icons.language, iconUrl: row.instanceIcon, alive: row.alive, selectedColor: selectedColor, active: active),
         title: Row(
           children: [
             const Icon(Icons.person_off_rounded, size: 15.0),
             const SizedBox(width: 5.0),
             Flexible(
-              child: Text(
-                l10n.anonymous,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleMedium,
-              ),
+              child: Text(l10n.anonymous, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleMedium),
             ),
           ],
         ),
-        subtitle: ThunderMetadataRow(
-          primary: row.account.instance,
-          secondary: row.version == null ? null : 'v${row.version}',
-        ),
+        subtitle: ThunderMetadataRow(primary: row.account.instance, secondary: row.version == null ? null : 'v${row.version}'),
         trailing: ProfileTrailingAction(
           active: active,
           reordering: areReordering,

@@ -13,9 +13,7 @@ enum UserAction {
   /// Admin level user actions
   // purge(permissionType: PermissionType.admin);
 
-  const UserAction({
-    required this.permissionType,
-  });
+  const UserAction({required this.permissionType});
 
   final PermissionType permissionType;
 }

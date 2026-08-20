@@ -33,12 +33,7 @@ import 'package:thunder/src/features/account/domain/models/account_settings_upda
 class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   static const _mapper = PiefedPrimitiveMapper();
 
-  PiefedApiClient({
-    required super.account,
-    super.debug,
-    required super.version,
-    super.httpClient,
-  });
+  PiefedApiClient({required super.account, super.debug, required super.version, super.httpClient});
 
   @override
   String get basePath => '/api/alpha';
@@ -57,10 +52,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       throw UnsupportedFeatureException('TOTP authentication', platformName: platformName);
     }
 
-    final json = await request(HttpMethod.post, '$basePath/user/login', {
-      'username': username,
-      'password': password,
-    });
+    final json = await request(HttpMethod.post, '$basePath/user/login', {'username': username, 'password': password});
     return json['jwt'] as String?;
   }
 
@@ -81,9 +73,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<GetPostResponse> getPost(int postId, {int? commentId}) async {
-    final json = await request(HttpMethod.get, '$basePath/post', {
-      'id': postId,
-    });
+    final json = await request(HttpMethod.get, '$basePath/post', {'id': postId});
 
     final post = _mapper.postView(json['post_view']);
     final moderators = (json['moderators'] as List).map<ThunderUser>((mu) => _mapper.user(mu['moderator'])).toList();
@@ -140,16 +130,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<ThunderPost> createPost({
-    required String title,
-    required int communityId,
-    String? url,
-    String? contents,
-    bool? nsfw,
-    int? languageId,
-    String? customThumbnail,
-    String? altText,
-  }) async {
+  Future<ThunderPost> createPost({required String title, required int communityId, String? url, String? contents, bool? nsfw, int? languageId, String? customThumbnail, String? altText}) async {
     final json = await request(HttpMethod.post, '$basePath/post', {
       'title': title,
       'community_id': communityId,
@@ -175,16 +156,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     List<String>? tags,
     List<int>? flairIds,
   }) async {
-    ThunderPost post = await createPost(
-      title: title,
-      communityId: communityId,
-      url: url,
-      contents: contents,
-      nsfw: nsfw,
-      languageId: languageId,
-      customThumbnail: customThumbnail,
-      altText: altText,
-    );
+    ThunderPost post = await createPost(title: title, communityId: communityId, url: url, contents: contents, nsfw: nsfw, languageId: languageId, customThumbnail: customThumbnail, altText: altText);
 
     return _applyPostMetadata(
       post: post,
@@ -201,17 +173,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<ThunderPost> editPost({
-    required int postId,
-    required String title,
-    String? url,
-    String? contents,
-    String? altText,
-    String? tags,
-    bool? nsfw,
-    int? languageId,
-    String? customThumbnail,
-  }) async {
+  Future<ThunderPost> editPost({required int postId, required String title, String? url, String? contents, String? altText, String? tags, bool? nsfw, int? languageId, String? customThumbnail}) async {
     final json = await request(HttpMethod.put, '$basePath/post', {
       'post_id': postId,
       'title': title,
@@ -238,16 +200,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     List<String>? tags,
     List<int>? flairIds,
   }) async {
-    ThunderPost post = await editPost(
-      postId: postId,
-      title: title,
-      url: url,
-      contents: contents,
-      altText: altText,
-      nsfw: nsfw,
-      languageId: languageId,
-      customThumbnail: customThumbnail,
-    );
+    ThunderPost post = await editPost(postId: postId, title: title, url: url, contents: contents, altText: altText, nsfw: nsfw, languageId: languageId, customThumbnail: customThumbnail);
 
     return _applyPostMetadata(
       post: post,
@@ -265,108 +218,74 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<ThunderPost> votePost({required int postId, required int score}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/like', {
-      'post_id': postId,
-      'score': score,
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/like', {'post_id': postId, 'score': score});
     return _mapper.postView(json['post_view']);
   }
 
   @override
   Future<ThunderPost> savePost({required int postId, required bool save}) async {
-    final json = await request(HttpMethod.put, '$basePath/post/save', {
-      'post_id': postId,
-      'save': save,
-    });
+    final json = await request(HttpMethod.put, '$basePath/post/save', {'post_id': postId, 'save': save});
     return _mapper.postView(json['post_view']);
   }
 
   @override
   Future<bool> readPost({required List<int> postIds, required bool read}) async {
     for (final postId in postIds) {
-      await request(HttpMethod.post, '$basePath/post/mark_as_read', {
-        'post_id': postId,
-        'read': read,
-      });
+      await request(HttpMethod.post, '$basePath/post/mark_as_read', {'post_id': postId, 'read': read});
     }
     return true;
   }
 
   @override
   Future<bool> hidePost({required int postId, required bool hide}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/hide', {
-      'post_id': postId,
-      'hidden': hide,
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/hide', {'post_id': postId, 'hidden': hide});
     final post = _mapper.postView(json['post_view']);
     return post.context.hidden == hide;
   }
 
   @override
   Future<bool> deletePost({required int postId, required bool deleted}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/delete', {
-      'post_id': postId,
-      'deleted': deleted,
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/delete', {'post_id': postId, 'deleted': deleted});
     final post = _mapper.postView(json['post_view']);
     return post.status.deleted == deleted;
   }
 
   @override
   Future<bool> lockPost({required int postId, required bool locked}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/lock', {
-      'post_id': postId,
-      'locked': locked,
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/lock', {'post_id': postId, 'locked': locked});
     final post = _mapper.postView(json['post_view']);
     return post.status.locked == locked;
   }
 
   @override
   Future<bool> pinPost({required int postId, required bool pinned}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/feature', {
-      'post_id': postId,
-      'featured': pinned,
-      'feature_type': 'Community',
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/feature', {'post_id': postId, 'featured': pinned, 'feature_type': 'Community'});
     final post = _mapper.postView(json['post_view']);
     return post.status.featuredCommunity == pinned;
   }
 
   @override
   Future<bool> removePost({required int postId, required bool removed, required String reason}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/remove', {
-      'post_id': postId,
-      'removed': removed,
-      'reason': reason,
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/remove', {'post_id': postId, 'removed': removed, 'reason': reason});
     final post = _mapper.postView(json['post_view']);
     return post.status.removed == removed;
   }
 
   @override
   Future<void> reportPost({required int postId, required String reason}) async {
-    await request(HttpMethod.post, '$basePath/post/report', {
-      'post_id': postId,
-      'reason': reason,
-    });
+    await request(HttpMethod.post, '$basePath/post/report', {'post_id': postId, 'reason': reason});
   }
 
   /// Assign flair to a post.
   Future<ThunderPost> setPostFlair({required int postId, List<int>? flairIds}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/assign_flair', {
-      'post_id': postId,
-      'flair_id_list': flairIds,
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/assign_flair', {'post_id': postId, 'flair_id_list': flairIds});
     return _mapper.postView(json);
   }
 
   /// Get site metadata for a URL.
   @override
   Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
-    final response = await request(HttpMethod.get, '$basePath/post/site_metadata', {
-      'url': url,
-    });
+    final response = await request(HttpMethod.get, '$basePath/post/site_metadata', {'url': url});
 
     final metadata = response['metadata'];
     if (metadata is! Map<String, dynamic>) return null;
@@ -375,72 +294,24 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<ThunderPage<ThunderReport>> getReports({
-    ReportKind? kind,
-    int? postId,
-    int? commentId,
-    int page = 1,
-    String? cursor,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  }) async {
+  Future<ThunderPage<ThunderReport>> getReports({ReportKind? kind, int? postId, int? commentId, int page = 1, String? cursor, int limit = 20, bool unresolved = false, int? communityId}) async {
     final pageNumber = cursor != null ? int.tryParse(cursor) ?? page : page;
     final reports = switch (kind) {
-      ReportKind.comment => await _getCommentReports(
-          commentId: commentId,
-          page: pageNumber,
-          limit: limit,
-          unresolved: unresolved,
-          communityId: communityId,
-        ),
+      ReportKind.comment => await _getCommentReports(commentId: commentId, page: pageNumber, limit: limit, unresolved: unresolved, communityId: communityId),
       ReportKind.privateMessage || ReportKind.community => <ThunderReport>[],
-      _ => await _getPostReports(
-          postId: postId,
-          page: pageNumber,
-          limit: limit,
-          unresolved: unresolved,
-          communityId: communityId,
-        ),
+      _ => await _getPostReports(postId: postId, page: pageNumber, limit: limit, unresolved: unresolved, communityId: communityId),
     };
 
-    return ThunderPage(
-      items: reports,
-      nextPage: reports.length < limit ? null : (pageNumber + 1).toString(),
-    );
+    return ThunderPage(items: reports, nextPage: reports.length < limit ? null : (pageNumber + 1).toString());
   }
 
-  Future<List<ThunderReport>> _getPostReports({
-    int? postId,
-    int page = 1,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  }) async {
-    final json = await request(HttpMethod.get, '$basePath/post/report/list', {
-      'post_id': postId,
-      'page': page,
-      'limit': limit,
-      'unresolved_only': unresolved,
-      'community_id': communityId,
-    });
+  Future<List<ThunderReport>> _getPostReports({int? postId, int page = 1, int limit = 20, bool unresolved = false, int? communityId}) async {
+    final json = await request(HttpMethod.get, '$basePath/post/report/list', {'post_id': postId, 'page': page, 'limit': limit, 'unresolved_only': unresolved, 'community_id': communityId});
     return (json['post_reports'] as List).map<ThunderReport>((report) => _mapper.postReportView(report)).toList();
   }
 
-  Future<List<ThunderReport>> _getCommentReports({
-    int? commentId,
-    int page = 1,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  }) async {
-    final json = await request(HttpMethod.get, '$basePath/comment/report/list', {
-      'comment_id': commentId,
-      'page': page,
-      'limit': limit,
-      'unresolved_only': unresolved,
-      'community_id': communityId,
-    });
+  Future<List<ThunderReport>> _getCommentReports({int? commentId, int page = 1, int limit = 20, bool unresolved = false, int? communityId}) async {
+    final json = await request(HttpMethod.get, '$basePath/comment/report/list', {'comment_id': commentId, 'page': page, 'limit': limit, 'unresolved_only': unresolved, 'community_id': communityId});
     return (json['comment_reports'] as List).map<ThunderReport>((report) => _mapper.commentReportView(report)).toList();
   }
 
@@ -451,10 +322,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       ReportKind.comment => '$basePath/comment/report/resolve',
       _ => throw UnsupportedFeatureException('${kind.name} reports', platformName: platformName),
     };
-    final json = await request(HttpMethod.put, endpoint, {
-      'report_id': reportId,
-      'resolved': resolved,
-    });
+    final json = await request(HttpMethod.put, endpoint, {'report_id': reportId, 'resolved': resolved});
     return switch (kind) {
       ReportKind.post => _mapper.postReportView(json['post_report_view']),
       ReportKind.comment => _mapper.commentReportView(json['comment_report_view']),
@@ -473,16 +341,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<GetCommentsResponse> getComments({
-    required int postId,
-    int? page,
-    String? cursor,
-    int? limit,
-    int? maxDepth,
-    int? communityId,
-    int? parentId,
-    CommentSortType? commentSortType,
-  }) async {
+  Future<GetCommentsResponse> getComments({required int postId, int? page, String? cursor, int? limit, int? maxDepth, int? communityId, int? parentId, CommentSortType? commentSortType}) async {
     final json = await request(HttpMethod.get, '$basePath/post/replies', {
       'sort': commentSortType?.value,
       'max_depth': maxDepth,
@@ -501,11 +360,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   /// Flattens nested PieFed reply structure, ensuring nested replies inherit post/community.
-  List<dynamic> _flattenReplies(
-    List<dynamic> comments, {
-    Map<String, dynamic>? fallbackPost,
-    Map<String, dynamic>? fallbackCommunity,
-  }) {
+  List<dynamic> _flattenReplies(List<dynamic> comments, {Map<String, dynamic>? fallbackPost, Map<String, dynamic>? fallbackCommunity}) {
     final flattened = <dynamic>[];
     for (final comment in comments) {
       if (comment is! Map) continue;
@@ -523,81 +378,45 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       flattened.add(commentMap);
 
       if (commentMap['replies'] is List && (commentMap['replies'] as List).isNotEmpty) {
-        flattened.addAll(
-          _flattenReplies(
-            commentMap['replies'] as List,
-            fallbackPost: post,
-            fallbackCommunity: community,
-          ),
-        );
+        flattened.addAll(_flattenReplies(commentMap['replies'] as List, fallbackPost: post, fallbackCommunity: community));
       }
     }
     return flattened;
   }
 
   @override
-  Future<ThunderComment> createComment({
-    required int postId,
-    required String content,
-    int? parentId,
-    int? languageId,
-  }) async {
-    final json = await request(HttpMethod.post, '$basePath/comment', {
-      'post_id': postId,
-      'body': content,
-      'parent_id': parentId,
-      'language_id': languageId,
-    });
+  Future<ThunderComment> createComment({required int postId, required String content, int? parentId, int? languageId}) async {
+    final json = await request(HttpMethod.post, '$basePath/comment', {'post_id': postId, 'body': content, 'parent_id': parentId, 'language_id': languageId});
     return _mapper.commentView(json['comment_view']);
   }
 
   @override
-  Future<ThunderComment> editComment({
-    required int commentId,
-    required String content,
-    int? languageId,
-  }) async {
-    final json = await request(HttpMethod.put, '$basePath/comment', {
-      'comment_id': commentId,
-      'body': content,
-      'language_id': languageId,
-    });
+  Future<ThunderComment> editComment({required int commentId, required String content, int? languageId}) async {
+    final json = await request(HttpMethod.put, '$basePath/comment', {'comment_id': commentId, 'body': content, 'language_id': languageId});
     return _mapper.commentView(json['comment_view']);
   }
 
   @override
   Future<ThunderComment> voteComment({required int commentId, required int score}) async {
-    final json = await request(HttpMethod.post, '$basePath/comment/like', {
-      'comment_id': commentId,
-      'score': score,
-    });
+    final json = await request(HttpMethod.post, '$basePath/comment/like', {'comment_id': commentId, 'score': score});
     return _mapper.commentView(json['comment_view']);
   }
 
   @override
   Future<ThunderComment> saveComment({required int commentId, required bool save}) async {
-    final json = await request(HttpMethod.put, '$basePath/comment/save', {
-      'comment_id': commentId,
-      'save': save,
-    });
+    final json = await request(HttpMethod.put, '$basePath/comment/save', {'comment_id': commentId, 'save': save});
     return _mapper.commentView(json['comment_view']);
   }
 
   @override
   Future<ThunderComment> deleteComment({required int commentId, required bool deleted}) async {
-    final json = await request(HttpMethod.post, '$basePath/comment/delete', {
-      'comment_id': commentId,
-      'deleted': deleted,
-    });
+    final json = await request(HttpMethod.post, '$basePath/comment/delete', {'comment_id': commentId, 'deleted': deleted});
     return _mapper.commentView(json['comment_view']);
   }
 
   @override
   Future<void> reportComment({required int commentId, required String reason}) async {
-    await request(HttpMethod.post, '$basePath/comment/report', {
-      'comment_id': commentId,
-      'reason': reason,
-    });
+    await request(HttpMethod.post, '$basePath/comment/report', {'comment_id': commentId, 'reason': reason});
   }
 
   // =============================================================
@@ -606,10 +425,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<GetCommunityResponse> getCommunity({int? id, String? name}) async {
-    final json = await request(HttpMethod.get, '$basePath/community', {
-      'id': id,
-      'name': name,
-    });
+    final json = await request(HttpMethod.get, '$basePath/community', {'id': id, 'name': name});
 
     return (
       community: _mapper.communityView(json['community_view']),
@@ -649,47 +465,28 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
     }
 
     if (flairIds != null) {
-      updatedPost = await setPostFlair(
-        postId: post.id,
-        flairIds: normalizePiefedFlairIds(flairIds),
-      );
+      updatedPost = await setPostFlair(postId: post.id, flairIds: normalizePiefedFlairIds(flairIds));
     }
 
     return updatedPost;
   }
 
   @override
-  Future<List<ThunderCommunity>> getCommunities({
-    int? page,
-    int? limit,
-    FeedListType? feedListType,
-    PostSortType? postSortType,
-  }) async {
-    final json = await request(HttpMethod.get, '$basePath/community/list', {
-      'page': page,
-      'limit': limit,
-      'type_': feedListType?.value,
-      'sort': postSortType?.value,
-    });
+  Future<List<ThunderCommunity>> getCommunities({int? page, int? limit, FeedListType? feedListType, PostSortType? postSortType}) async {
+    final json = await request(HttpMethod.get, '$basePath/community/list', {'page': page, 'limit': limit, 'type_': feedListType?.value, 'sort': postSortType?.value});
     return (json['communities'] as List).map<ThunderCommunity>((cv) => _mapper.communityView(cv)).toList();
   }
 
   @override
   Future<ThunderCommunity> subscribeToCommunity({required int communityId, required bool follow}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/follow', {
-      'community_id': communityId,
-      'follow': follow,
-    });
+    final json = await request(HttpMethod.post, '$basePath/community/follow', {'community_id': communityId, 'follow': follow});
     // The API response should include the updated subscription status
     return _mapper.communityView(json['community_view']);
   }
 
   @override
   Future<ThunderCommunity> blockCommunity({required int communityId, required bool block}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/block', {
-      'community_id': communityId,
-      'block': block,
-    });
+    final json = await request(HttpMethod.post, '$basePath/community/block', {'community_id': communityId, 'block': block});
     return _mapper.communityView(json['community_view']);
   }
 
@@ -698,16 +495,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   // =============================================================
 
   @override
-  Future<GetUserResponse> getUser({
-    int? userId,
-    String? username,
-    PostSortType? sort,
-    int? page,
-    String? cursor,
-    int? limit,
-    bool? saved,
-    bool? includeContent,
-  }) async {
+  Future<GetUserResponse> getUser({int? userId, String? username, PostSortType? sort, int? page, String? cursor, int? limit, bool? saved, bool? includeContent}) async {
     final pageNumber = page ?? int.tryParse(cursor ?? '') ?? 1;
     final json = await request(HttpMethod.get, '$basePath/user', {
       'person_id': userId,
@@ -733,27 +521,14 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<ThunderUser> blockUser({required int userId, required bool block}) async {
-    final json = await request(HttpMethod.post, '$basePath/user/block', {
-      'person_id': userId,
-      'block': block,
-    });
+    final json = await request(HttpMethod.post, '$basePath/user/block', {'person_id': userId, 'block': block});
     return _mapper.userView(json['person_view']);
   }
 
   @override
-  Future<ThunderUser> banUserFromCommunity({
-    required int userId,
-    required int communityId,
-    required bool ban,
-    bool? removeData,
-    String? reason,
-    int? expires,
-  }) async {
+  Future<ThunderUser> banUserFromCommunity({required int userId, required int communityId, required bool ban, bool? removeData, String? reason, int? expires}) async {
     if (!ban) {
-      final json = await request(HttpMethod.put, '$basePath/community/moderate/unban', {
-        'community_id': communityId,
-        'user_id': userId,
-      });
+      final json = await request(HttpMethod.put, '$basePath/community/moderate/unban', {'community_id': communityId, 'user_id': userId});
       return _mapper.user(json['banned_user']);
     }
 
@@ -778,16 +553,8 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   }
 
   @override
-  Future<List<ThunderUser>> addModerator({
-    required int userId,
-    required int communityId,
-    required bool added,
-  }) async {
-    final json = await request(HttpMethod.post, '$basePath/community/mod', {
-      'person_id': userId,
-      'community_id': communityId,
-      'added': added,
-    });
+  Future<List<ThunderUser>> addModerator({required int userId, required int communityId, required bool added}) async {
+    final json = await request(HttpMethod.post, '$basePath/community/mod', {'person_id': userId, 'community_id': communityId, 'added': added});
     return (json['moderators'] as List).map<ThunderUser>((cmv) => _mapper.user(cmv['moderator'])).toList();
   }
 
@@ -850,26 +617,12 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   @override
   Future<UnreadCountResponse> unreadCount() async {
     final json = await request(HttpMethod.get, '$basePath/user/unread_count', {});
-    return (
-      replies: json['replies'] as int? ?? 0,
-      mentions: json['mentions'] as int? ?? 0,
-      privateMessages: json['private_messages'] as int? ?? 0,
-    );
+    return (replies: json['replies'] as int? ?? 0, mentions: json['mentions'] as int? ?? 0, privateMessages: json['private_messages'] as int? ?? 0);
   }
 
   @override
-  Future<List<ThunderComment>> getCommentReplies({
-    int? page,
-    int? limit,
-    CommentSortType? sort,
-    bool unread = false,
-  }) async {
-    final response = await request(HttpMethod.get, '$basePath/user/replies', {
-      'page': page,
-      'limit': limit,
-      'sort': sort?.value,
-      'unread_only': unread,
-    });
+  Future<List<ThunderComment>> getCommentReplies({int? page, int? limit, CommentSortType? sort, bool unread = false}) async {
+    final response = await request(HttpMethod.get, '$basePath/user/replies', {'page': page, 'limit': limit, 'sort': sort?.value, 'unread_only': unread});
 
     return (response['replies'] as List).map<ThunderComment>((crv) {
       final comment = _mapper.commentView(crv);
@@ -888,25 +641,12 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<void> markCommentReplyAsRead({required int replyId, required bool read}) async {
-    await request(HttpMethod.post, '$basePath/comment/mark_as_read', {
-      'comment_reply_id': replyId,
-      'read': read,
-    });
+    await request(HttpMethod.post, '$basePath/comment/mark_as_read', {'comment_reply_id': replyId, 'read': read});
   }
 
   @override
-  Future<List<ThunderComment>> getCommentMentions({
-    int? page,
-    int? limit,
-    CommentSortType? sort,
-    bool unread = false,
-  }) async {
-    final response = await request(HttpMethod.get, '$basePath/user/mentions', {
-      'page': page,
-      'limit': limit,
-      'sort': sort?.value,
-      'unread_only': unread,
-    });
+  Future<List<ThunderComment>> getCommentMentions({int? page, int? limit, CommentSortType? sort, bool unread = false}) async {
+    final response = await request(HttpMethod.get, '$basePath/user/mentions', {'page': page, 'limit': limit, 'sort': sort?.value, 'unread_only': unread});
 
     return (response['replies'] as List).map<ThunderComment>((mention) {
       final comment = _mapper.commentView(mention);
@@ -925,10 +665,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<void> markCommentMentionAsRead({required int mentionId, required bool read}) async {
-    await request(HttpMethod.post, '$basePath/comment/mark_as_read', {
-      'comment_reply_id': mentionId,
-      'read': read,
-    });
+    await request(HttpMethod.post, '$basePath/comment/mark_as_read', {'comment_reply_id': mentionId, 'read': read});
   }
 
   @override
@@ -941,53 +678,28 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   // =============================================================
 
   @override
-  Future<List<ThunderPrivateMessage>> getPrivateMessages({
-    int? page,
-    int? limit,
-    bool unread = false,
-    int? creatorId,
-  }) async {
-    final response = await request(HttpMethod.get, '$basePath/private_message/list', {
-      'page': page,
-      'limit': limit,
-      'unread_only': unread,
-    });
+  Future<List<ThunderPrivateMessage>> getPrivateMessages({int? page, int? limit, bool unread = false, int? creatorId}) async {
+    final response = await request(HttpMethod.get, '$basePath/private_message/list', {'page': page, 'limit': limit, 'unread_only': unread});
 
     return (response['private_messages'] as List).map<ThunderPrivateMessage>((pmv) => _parsePrivateMessageView(pmv)).toList();
   }
 
   @override
   Future<void> markPrivateMessageAsRead({required int notificationId, required bool read}) async {
-    await request(HttpMethod.post, '$basePath/private_message/mark_as_read', {
-      'private_message_id': notificationId,
-      'read': read,
-    });
+    await request(HttpMethod.post, '$basePath/private_message/mark_as_read', {'private_message_id': notificationId, 'read': read});
   }
 
   /// Create a private message.
   @override
   Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content}) async {
-    final json = await request(HttpMethod.post, '$basePath/private_message', {
-      'recipient_id': recipientId,
-      'content': content,
-    });
+    final json = await request(HttpMethod.post, '$basePath/private_message', {'recipient_id': recipientId, 'content': content});
     return _parsePrivateMessageView(json['private_message_view']);
   }
 
   /// Get private message conversation.
   @override
-  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
-    required int personId,
-    int? conversationId,
-    int? page,
-    int? limit,
-  }) async {
-    final response = await request(HttpMethod.get, '$basePath/private_message/conversation', {
-      'person_id': personId,
-      'conversation_id': conversationId,
-      'page': page,
-      'limit': limit,
-    });
+  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({required int personId, int? conversationId, int? page, int? limit}) async {
+    final response = await request(HttpMethod.get, '$basePath/private_message/conversation', {'person_id': personId, 'conversation_id': conversationId, 'page': page, 'limit': limit});
     return (response['private_messages'] as List).map<ThunderPrivateMessage>((pmv) => _parsePrivateMessageView(pmv)).toList();
   }
 
@@ -1019,16 +731,10 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<ThunderPage<AccountMediaItem>> media({int? page, int? limit}) async {
-    final json = await request(HttpMethod.get, '$basePath/user/media', {
-      'page': page,
-      'limit': limit,
-    });
+    final json = await request(HttpMethod.get, '$basePath/user/media', {'page': page, 'limit': limit});
     final rawItems = (json['images'] as List?) ?? (json['items'] as List?) ?? const [];
     final items = rawItems.whereType<Map<String, dynamic>>().map((image) => _accountMediaItemFromPiefed(image, account.instance)).toList();
-    return ThunderPage(
-      items: items,
-      nextPage: limit != null && items.length < limit ? null : ((page ?? 1) + 1).toString(),
-    );
+    return ThunderPage(items: items, nextPage: limit != null && items.length < limit ? null : ((page ?? 1) + 1).toString());
   }
 
   // =============================================================
@@ -1036,15 +742,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
   // =============================================================
 
   @override
-  Future<List<ModlogEvent>> getModlog({
-    int? page,
-    int? limit,
-    ModlogActionType? modlogActionType,
-    int? communityId,
-    int? userId,
-    int? moderatorId,
-    int? commentId,
-  }) async {
+  Future<List<ModlogEvent>> getModlog({int? page, int? limit, ModlogActionType? modlogActionType, int? communityId, int? userId, int? moderatorId, int? commentId}) async {
     final response = await request(HttpMethod.get, '$basePath/modlog', {
       'page': page,
       'limit': limit,
@@ -1069,10 +767,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<bool> blockInstance({required int instanceId, required bool block}) async {
-    final json = await request(HttpMethod.post, '$basePath/site/block', {
-      'instance_id': instanceId,
-      'block': block,
-    });
+    final json = await request(HttpMethod.post, '$basePath/site/block', {'instance_id': instanceId, 'block': block});
     return json['blocked'] as bool? ?? block;
   }
 
@@ -1087,9 +782,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
 
   @override
   Future<void> deleteImage({required String file, String? token}) async {
-    await request(HttpMethod.post, '$basePath/image/delete', {
-      'file': file,
-    });
+    await request(HttpMethod.post, '$basePath/image/delete', {'file': file});
   }
 
   ThunderPrivateMessage _parsePrivateMessageView(Map<String, dynamic> privateMessageView) {
@@ -1105,12 +798,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       content: privateMessage['content'],
       deleted: privateMessage['deleted'],
       published: DateTime.parse(privateMessage['published']),
-      notification: NotificationRef(
-        id: privateMessage['id'],
-        kind: NotificationKind.privateMessage,
-        read: privateMessage['read'] ?? false,
-        createdAt: DateTime.parse(privateMessage['published']),
-      ),
+      notification: NotificationRef(id: privateMessage['id'], kind: NotificationKind.privateMessage, read: privateMessage['read'] ?? false, createdAt: DateTime.parse(privateMessage['published'])),
       recipient: recipient != null ? _mapper.user(recipient) : null,
       creator: creator != null ? _mapper.user(creator) : null,
     );
@@ -1125,11 +813,7 @@ class PiefedApiClient extends BaseApiClient implements ThunderApiClient {
       filePath: filePath,
       platformName: platformName,
     );
-    return parseUploadImageUrl(
-      decoded,
-      instance: account.instance,
-      platformName: platformName,
-    );
+    return parseUploadImageUrl(decoded, instance: account.instance, platformName: platformName);
   }
 
   // =============================================================

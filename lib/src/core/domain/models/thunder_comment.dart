@@ -80,25 +80,7 @@ class ThunderComment extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-        id,
-        creatorId,
-        postId,
-        content,
-        published,
-        updated,
-        apId,
-        path,
-        languageId,
-        recipient,
-        creator,
-        post,
-        community,
-        status,
-        counts,
-        context,
-        notification,
-      ];
+  List<Object?> get props => [id, creatorId, postId, content, published, updated, apId, path, languageId, recipient, creator, post, community, status, counts, context, notification];
 
   ThunderComment copyWith({
     int? id,
@@ -157,13 +139,7 @@ class CommentStatus extends Equatable {
   /// Whether replies are locked for the comment.
   final bool locked;
 
-  const CommentStatus({
-    required this.deleted,
-    required this.removed,
-    required this.local,
-    required this.distinguished,
-    this.locked = false,
-  });
+  const CommentStatus({required this.deleted, required this.removed, required this.local, required this.distinguished, this.locked = false});
 
   @override
   List<Object?> get props => [deleted, removed, local, distinguished, locked];
@@ -198,12 +174,7 @@ class CommentCounts extends Equatable {
   List<Object?> get props => [score, upvotes, downvotes, childCount];
 
   CommentCounts copyWith({int? score, int? upvotes, int? downvotes, int? childCount}) {
-    return CommentCounts(
-      score: score ?? this.score,
-      upvotes: upvotes ?? this.upvotes,
-      downvotes: downvotes ?? this.downvotes,
-      childCount: childCount ?? this.childCount,
-    );
+    return CommentCounts(score: score ?? this.score, upvotes: upvotes ?? this.upvotes, downvotes: downvotes ?? this.downvotes, childCount: childCount ?? this.childCount);
   }
 }
 
@@ -248,17 +219,7 @@ class CommentContext extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-        subscribed,
-        saved,
-        creatorBlocked,
-        creatorBannedFromCommunity,
-        bannedFromCommunity,
-        creatorIsModerator,
-        creatorIsAdmin,
-        canModerate,
-        vote,
-      ];
+  List<Object?> get props => [subscribed, saved, creatorBlocked, creatorBannedFromCommunity, bannedFromCommunity, creatorIsModerator, creatorIsAdmin, canModerate, vote];
 
   CommentContext copyWith({
     SubscriptionStatus? subscribed,

@@ -20,21 +20,9 @@ class InstanceTypeState<T> extends Equatable {
   /// The list of items for the instance type
   final List<T> items;
 
-  const InstanceTypeState({
-    this.status = InstancePageStatus.none,
-    this.message,
-    this.errorReason,
-    this.page = 1,
-    this.items = const [],
-  });
+  const InstanceTypeState({this.status = InstancePageStatus.none, this.message, this.errorReason, this.page = 1, this.items = const []});
 
-  InstanceTypeState<T> copyWith({
-    InstancePageStatus? status,
-    Object? message = _instancePageUnset,
-    Object? errorReason = _instancePageUnset,
-    int? page,
-    List<T>? items,
-  }) {
+  InstanceTypeState<T> copyWith({InstancePageStatus? status, Object? message = _instancePageUnset, Object? errorReason = _instancePageUnset, int? page, List<T>? items}) {
     return InstanceTypeState<T>(
       status: status ?? this.status,
       message: identical(message, _instancePageUnset) ? this.message : message as String?,

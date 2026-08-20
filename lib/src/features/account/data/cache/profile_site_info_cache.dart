@@ -72,10 +72,6 @@ class _CacheEntry {
   _CacheEntry({required this.response, required this.fetchedAt, required this.isDirty});
 
   _CacheEntry copyWith({ThunderSiteResponse? response, DateTime? fetchedAt, bool? isDirty}) {
-    return _CacheEntry(
-      response: response ?? this.response,
-      fetchedAt: fetchedAt ?? this.fetchedAt,
-      isDirty: isDirty ?? this.isDirty,
-    );
+    return _CacheEntry(response: response ?? this.response, fetchedAt: fetchedAt ?? this.fetchedAt, isDirty: isDirty ?? this.isDirty);
   }
 }

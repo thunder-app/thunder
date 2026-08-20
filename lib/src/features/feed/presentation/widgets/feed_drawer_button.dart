@@ -10,12 +10,7 @@ import 'package:thunder/src/shared/avatars/user_avatar.dart';
 
 /// Leading app bar button that opens the drawer on root feeds or pops pushed feeds.
 class FeedDrawerButton extends StatelessWidget {
-  const FeedDrawerButton({
-    super.key,
-    required this.showProfilePicture,
-    required this.onTap,
-    required this.isRoot,
-  });
+  const FeedDrawerButton({super.key, required this.showProfilePicture, required this.onTap, required this.isRoot});
 
   /// Whether the feed is the main feed with a subscriptions drawer.
   final bool isRoot;
@@ -41,13 +36,14 @@ class FeedDrawerButton extends StatelessWidget {
         label: MaterialLocalizations.of(context).openAppDrawerTooltip,
         child: Stack(
           children: [
-            if (state.user != null) Align(alignment: Alignment.center, child: UserAvatar(user: state.user!)),
+            if (state.user != null)
+              Align(
+                alignment: Alignment.center,
+                child: UserAvatar(user: state.user!),
+              ),
             Material(
               color: Colors.transparent,
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: onTap,
-              ),
+              child: InkWell(customBorder: const CircleBorder(), onTap: onTap),
             ),
           ],
         ),

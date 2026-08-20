@@ -9,13 +9,7 @@ import 'package:thunder/src/shared/input_dialogs.dart';
 
 /// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language.
 class LanguageSelector extends StatefulWidget {
-  const LanguageSelector({
-    super.key,
-    required this.account,
-    this.languages,
-    this.languageId,
-    required this.onLanguageSelected,
-  });
+  const LanguageSelector({super.key, required this.account, this.languages, this.languageId, required this.onLanguageSelected});
 
   /// Account used to determine available languages.
   final Account account;
@@ -97,10 +91,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             TextSpan(
               children: [
                 TextSpan(text: language != null ? '${l10n.language}: ${language.name}' : l10n.selectLanguage),
-                const WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: Icon(Icons.chevron_right_rounded),
-                ),
+                const WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.chevron_right_rounded)),
               ],
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
             ),

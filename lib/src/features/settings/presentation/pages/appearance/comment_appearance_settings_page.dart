@@ -156,22 +156,19 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     );
 
     ThunderComment replyCommentSecond = createExampleComment(
-        id: 2,
-        commentCreatorId: 2,
-        path: '0.1.2',
-        personName: 'Lightning',
-        commentContent: 'Check out [GitHub](https://github.com/thunder-app/thunder) for more details.',
-        commentChildCount: 20,
-        isBotAccount: true,
-        personAvatar: 'https://raw.githubusercontent.com/thunder-app/thunder/refs/heads/develop/assets/logo.png');
+      id: 2,
+      commentCreatorId: 2,
+      path: '0.1.2',
+      personName: 'Lightning',
+      commentContent: 'Check out [GitHub](https://github.com/thunder-app/thunder) for more details.',
+      commentChildCount: 20,
+      isBotAccount: true,
+      personAvatar: 'https://raw.githubusercontent.com/thunder-app/thunder/refs/heads/develop/assets/logo.png',
+    );
 
     if (context.mounted) {
       setState(() {
-        exampleCommentNode = Future.value(buildCommentTree([
-          comment,
-          replyComment,
-          replyCommentSecond,
-        ]));
+        exampleCommentNode = Future.value(buildCommentTree([comment, replyComment, replyCommentSecond]));
       });
     }
   }
@@ -189,11 +186,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
         Timer(const Duration(milliseconds: 500), () {
           if (settingToHighlightKey.currentContext != null) {
             // Ensure that the selected setting is visible on the screen
-            Scrollable.ensureVisible(
-              settingToHighlightKey.currentContext!,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-            );
+            Scrollable.ensureVisible(settingToHighlightKey.currentContext!, duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
           }
 
           // Give time for the highlighting to appear, then turn it off
@@ -220,10 +213,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
             pinned: true,
             actions: [
               IconButton(
-                icon: Icon(
-                  Icons.restart_alt_rounded,
-                  semanticLabel: l10n.resetCommentPreferences,
-                ),
+                icon: Icon(Icons.restart_alt_rounded, semanticLabel: l10n.resetCommentPreferences),
                 onPressed: () {
                   showThunderDialog(
                     context: context,
@@ -255,12 +245,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                       padding: const EdgeInsets.only(left: 16.0, right: 8.0),
                       child: Row(
                         children: [
-                          Expanded(
-                            child: Text(
-                              l10n.preview,
-                              style: theme.textTheme.titleMedium,
-                            ),
-                          ),
+                          Expanded(child: Text(l10n.preview, style: theme.textTheme.titleMedium)),
                           IconButton(
                             icon: Icon(
                               expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
@@ -270,18 +255,13 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                               expandableController.toggle();
                               setState(() {});
                             },
-                          )
+                          ),
                         ],
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                      child: Text(
-                        l10n.commentPreview,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                        ),
-                      ),
+                      child: Text(l10n.commentPreview, style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8))),
                     ),
                     Expandable(
                       controller: expandableController,
@@ -302,11 +282,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
                                 children: flattenedComments.map((commentNode) {
-                                  return CommentCard(
-                                    account: account,
-                                    comment: commentNode.comment!,
-                                    level: commentNode.depth,
-                                  );
+                                  return CommentCard(account: account, comment: commentNode.comment!, level: commentNode.depth);
                                 }).toList(),
                               ),
                             ),
@@ -326,76 +302,83 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
               // Comment Settings
               ThunderToggleOption(
-                  title: l10n.showCommentActionButtons,
-                  value: showCommentButtonActions,
-                  iconEnabled: Icons.mode_comment_rounded,
-                  iconDisabled: Icons.mode_comment_outlined,
-                  onChanged: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
-                  highlightKey: settingToHighlightKey,
-                  onLongPress: () => shareLocalSetting(context, LocalSettings.showCommentActionButtons),
-                  highlighted: settingToHighlight == LocalSettings.showCommentActionButtons),
+                title: l10n.showCommentActionButtons,
+                value: showCommentButtonActions,
+                iconEnabled: Icons.mode_comment_rounded,
+                iconDisabled: Icons.mode_comment_outlined,
+                onChanged: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
+                highlightKey: settingToHighlightKey,
+                onLongPress: () => shareLocalSetting(context, LocalSettings.showCommentActionButtons),
+                highlighted: settingToHighlight == LocalSettings.showCommentActionButtons,
+              ),
               ThunderToggleOption(
-                  title: l10n.combineCommentScoresLabel,
-                  value: combineCommentScores,
-                  iconEnabled: Icons.onetwothree_rounded,
-                  iconDisabled: Icons.onetwothree_rounded,
-                  onChanged: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
-                  highlightKey: settingToHighlightKey,
-                  onLongPress: () => shareLocalSetting(context, LocalSettings.combineCommentScores),
-                  highlighted: settingToHighlight == LocalSettings.combineCommentScores),
+                title: l10n.combineCommentScoresLabel,
+                value: combineCommentScores,
+                iconEnabled: Icons.onetwothree_rounded,
+                iconDisabled: Icons.onetwothree_rounded,
+                onChanged: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
+                highlightKey: settingToHighlightKey,
+                onLongPress: () => shareLocalSetting(context, LocalSettings.combineCommentScores),
+                highlighted: settingToHighlight == LocalSettings.combineCommentScores,
+              ),
 
               ThunderToggleOption(
-                  title: l10n.commentShowUserInstance,
-                  value: commentShowUserInstance,
-                  iconEnabled: Icons.dns_sharp,
-                  iconDisabled: Icons.dns_outlined,
-                  onChanged: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
-                  highlightKey: settingToHighlightKey,
-                  onLongPress: () => shareLocalSetting(context, LocalSettings.commentShowUserInstance),
-                  highlighted: settingToHighlight == LocalSettings.commentShowUserInstance),
+                title: l10n.commentShowUserInstance,
+                value: commentShowUserInstance,
+                iconEnabled: Icons.dns_sharp,
+                iconDisabled: Icons.dns_outlined,
+                onChanged: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
+                highlightKey: settingToHighlightKey,
+                onLongPress: () => shareLocalSetting(context, LocalSettings.commentShowUserInstance),
+                highlighted: settingToHighlight == LocalSettings.commentShowUserInstance,
+              ),
               ThunderToggleOption(
-                  title: l10n.commentShowUserAvatar,
-                  value: commentShowUserAvatar,
-                  iconEnabled: Icons.account_circle,
-                  iconDisabled: Icons.account_circle_outlined,
-                  onChanged: (bool value) => setPreferences(LocalSettings.commentShowUserAvatar, value),
-                  highlightKey: settingToHighlightKey,
-                  onLongPress: () => shareLocalSetting(context, LocalSettings.commentShowUserAvatar),
-                  highlighted: settingToHighlight == LocalSettings.commentShowUserAvatar),
-
-              ThunderListOption(
-                  title: l10n.nestedCommentIndicatorStyle,
-                  value: ThunderListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
-                  options: [
-                    ThunderListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
-                    ThunderListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
-                  ],
-                  leading: Icon(Icons.format_list_bulleted_rounded),
-                  onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
-                  highlightKey: settingToHighlightKey,
-                  onLongPress: () => shareLocalSetting(context, LocalSettings.nestedCommentIndicatorStyle),
-                  highlighted: settingToHighlight == LocalSettings.nestedCommentIndicatorStyle),
+                title: l10n.commentShowUserAvatar,
+                value: commentShowUserAvatar,
+                iconEnabled: Icons.account_circle,
+                iconDisabled: Icons.account_circle_outlined,
+                onChanged: (bool value) => setPreferences(LocalSettings.commentShowUserAvatar, value),
+                highlightKey: settingToHighlightKey,
+                onLongPress: () => shareLocalSetting(context, LocalSettings.commentShowUserAvatar),
+                highlighted: settingToHighlight == LocalSettings.commentShowUserAvatar,
+              ),
 
               ThunderListOption(
-                  title: l10n.nestedCommentIndicatorColor,
-                  value: ThunderListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
-                  options: [
-                    ThunderListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
-                    ThunderListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
-                  ],
-                  leading: Icon(Icons.color_lens_outlined),
-                  onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
-                  highlightKey: settingToHighlightKey,
-                  onLongPress: () => shareLocalSetting(context, LocalSettings.nestedCommentIndicatorColor),
-                  highlighted: settingToHighlight == LocalSettings.nestedCommentIndicatorColor),
+                title: l10n.nestedCommentIndicatorStyle,
+                value: ThunderListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
+                options: [
+                  ThunderListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
+                  ThunderListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
+                ],
+                leading: Icon(Icons.format_list_bulleted_rounded),
+                onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
+                highlightKey: settingToHighlightKey,
+                onLongPress: () => shareLocalSetting(context, LocalSettings.nestedCommentIndicatorStyle),
+                highlighted: settingToHighlight == LocalSettings.nestedCommentIndicatorStyle,
+              ),
+
+              ThunderListOption(
+                title: l10n.nestedCommentIndicatorColor,
+                value: ThunderListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
+                options: [
+                  ThunderListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
+                  ThunderListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
+                ],
+                leading: Icon(Icons.color_lens_outlined),
+                onChanged: (value) async => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+                highlightKey: settingToHighlightKey,
+                onLongPress: () => shareLocalSetting(context, LocalSettings.nestedCommentIndicatorColor),
+                highlighted: settingToHighlight == LocalSettings.nestedCommentIndicatorColor,
+              ),
 
               ThunderSettingsTile(
-                  leading: Icon(Icons.alternate_email_rounded),
-                  title: l10n.usernameFormattingRedirect,
-                  trailing: const ThunderSettingsChevronTrailing(),
-                  onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearanceTheming, settingToHighlight: LocalSettings.userStyle),
-                  highlightKey: settingToHighlightKey,
-                  highlighted: false),
+                leading: Icon(Icons.alternate_email_rounded),
+                title: l10n.usernameFormattingRedirect,
+                trailing: const ThunderSettingsChevronTrailing(),
+                onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAppearanceTheming, settingToHighlight: LocalSettings.userStyle),
+                highlightKey: settingToHighlightKey,
+                highlighted: false,
+              ),
 
               SizedBox(height: 128.0),
             ],

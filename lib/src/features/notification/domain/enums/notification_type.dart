@@ -28,8 +28,4 @@ enum NotificationType {
 }
 
 /// Denotes the different kinds of inbox messages
-enum NotificationInboxType {
-  reply,
-  mention,
-  message,
-}
+enum NotificationInboxType { reply, mention, message }

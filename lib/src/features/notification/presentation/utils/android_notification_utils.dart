@@ -35,14 +35,7 @@ Future<void> showNotificationGroups({required NotificationType type, required Li
       final inboxStyleInformationSummary = InboxStyleInformation(
         [],
         contentTitle: '',
-        summaryText: generateUserFullName(
-          null,
-          account.username!,
-          account.displayName,
-          account.instance,
-          userSeparator: userSeparator,
-          useDisplayName: useDisplayNamesForUsers,
-        ),
+        summaryText: generateUserFullName(null, account.username!, account.displayName, account.instance, userSeparator: userSeparator, useDisplayName: useDisplayNamesForUsers),
       );
 
       final androidNotificationDetailsSummary = AndroidNotificationDetails(
@@ -69,12 +62,7 @@ Future<void> showNotificationGroups({required NotificationType type, required Li
         title: '',
         body: '',
         notificationDetails: notificationDetailsSummary,
-        payload: jsonEncode(NotificationPayload(
-          type: type,
-          accountId: account.id,
-          inboxType: inboxType,
-          group: true,
-        ).toJson()),
+        payload: jsonEncode(NotificationPayload(type: type, accountId: account.id, inboxType: inboxType, group: true).toJson()),
       );
     }
   }
@@ -123,12 +111,7 @@ Future<void> showTestAndroidNotification() async {
   const androidNotificationDetails = AndroidNotificationDetails(
     _testChannelId,
     _testChannelName,
-    styleInformation: BigTextStyleInformation(
-      'Test',
-      contentTitle: 'Test',
-      summaryText: 'Test',
-      htmlFormatBigText: true,
-    ),
+    styleInformation: BigTextStyleInformation('Test', contentTitle: 'Test', summaryText: 'Test', htmlFormatBigText: true),
     groupKey: 'test',
   );
 
@@ -150,12 +133,7 @@ Future<void> showBackgroundCheckNotification() async {
   final androidNotificationDetails = AndroidNotificationDetails(
     _testChannelId,
     _testChannelName,
-    styleInformation: BigTextStyleInformation(
-      'Notification check running at $timestamp',
-      contentTitle: 'Notification Check',
-      summaryText: 'Thunder',
-      htmlFormatBigText: false,
-    ),
+    styleInformation: BigTextStyleInformation('Notification check running at $timestamp', contentTitle: 'Notification Check', summaryText: 'Thunder', htmlFormatBigText: false),
     importance: Importance.min,
     silent: true,
     autoCancel: true,

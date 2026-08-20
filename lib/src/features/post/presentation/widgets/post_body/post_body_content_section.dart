@@ -67,12 +67,7 @@ class PostBodyContentSection extends StatelessWidget {
 
     return Expandable(
       controller: controller,
-      collapsed: PostBodyPreview(
-        post: post,
-        viewSource: viewSource,
-        gradientBackgroundColor: showReplyEditorButtons ? getBackgroundColor(context) : null,
-        onTap: onExpand,
-      ),
+      collapsed: PostBodyPreview(post: post, viewSource: viewSource, gradientBackgroundColor: showReplyEditorButtons ? getBackgroundColor(context) : null, onTap: onExpand),
       expanded: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: ThunderConditionalParent(
@@ -83,10 +78,7 @@ class PostBodyContentSection extends StatelessWidget {
               // See comments on [SelectableTextModal] regarding the next two properties.
               selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
               contextMenuBuilder: (context, selectableRegionState) {
-                return AdaptiveTextSelectionToolbar.buttonItems(
-                  buttonItems: selectableRegionState.contextMenuButtonItems,
-                  anchors: selectableRegionState.contextMenuAnchors,
-                );
+                return AdaptiveTextSelectionToolbar.buttonItems(buttonItems: selectableRegionState.contextMenuButtonItems, anchors: selectableRegionState.contextMenuAnchors);
               },
               onSelectionChanged: (value) => onSelectionChanged?.call(value?.plainText),
               child: child,

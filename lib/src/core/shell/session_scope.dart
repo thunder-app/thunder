@@ -49,10 +49,7 @@ class SessionScope extends StatelessWidget {
         BlocProvider(create: (context) => searchBloc(account)),
         BlocProvider(create: (context) => feedBloc(account)),
       ],
-      child: BlocBuilder<ProfileBloc, ProfileState>(
-        buildWhen: (previous, current) => previous.account.id != current.account.id,
-        builder: builder,
-      ),
+      child: BlocBuilder<ProfileBloc, ProfileState>(buildWhen: (previous, current) => previous.account.id != current.account.id, builder: builder),
     );
   }
 }

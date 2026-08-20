@@ -34,12 +34,9 @@ class ReportRepositoryImpl implements ReportRepository {
   /// Creates a new [ReportRepositoryImpl].
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  ReportRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  ReportRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
   Future<ThunderPage<ThunderReport>> getReports({
@@ -62,16 +59,7 @@ class ReportRepositoryImpl implements ReportRepository {
       throw UnsupportedFeatureException('${kind.name} reports', platformName: api.platformName);
     }
 
-    return api.getReports(
-      kind: kind,
-      postId: postId,
-      commentId: commentId,
-      page: page,
-      cursor: cursor,
-      limit: limit,
-      unresolved: unresolved,
-      communityId: communityId,
-    );
+    return api.getReports(kind: kind, postId: postId, commentId: commentId, page: page, cursor: cursor, limit: limit, unresolved: unresolved, communityId: communityId);
   }
 
   @override

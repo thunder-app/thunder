@@ -34,11 +34,7 @@ class MediaManagementPage extends StatelessWidget {
     return BlocConsumer<UserMediaCubit, UserMediaState>(
       listener: (context, state) {
         if (state.status == UserMediaStatus.loadFailure && state.errorMessage?.isNotEmpty == true) {
-          showThunderSnackbar(
-            state.errorMessage!,
-            trailingIcon: Icons.refresh_rounded,
-            trailingAction: () => context.read<UserMediaCubit>().loadMedia(),
-          );
+          showThunderSnackbar(state.errorMessage!, trailingIcon: Icons.refresh_rounded, trailingAction: () => context.read<UserMediaCubit>().loadMedia());
         }
       },
       builder: (context, state) {
@@ -53,20 +49,12 @@ class MediaManagementPage extends StatelessWidget {
                     pinned: true,
                     toolbarHeight: APP_BAR_HEIGHT,
                     title: ListTile(
-                      title: Text(
-                        l10n.manageMedia,
-                        style: theme.textTheme.titleLarge,
-                      ),
+                      title: Text(l10n.manageMedia, style: theme.textTheme.titleLarge),
                       subtitle: UserFullNameWidget(name: account.username, displayName: account.displayName, instance: account.instance),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                     ),
                   ),
-                  if (state.status == UserMediaStatus.loading)
-                    const SliverFillRemaining(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
+                  if (state.status == UserMediaStatus.loading) const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),
                   if (state.status == UserMediaStatus.searching ||
                       state.status == UserMediaStatus.searchSuccess ||
                       state.status == UserMediaStatus.deleting ||
@@ -100,10 +88,7 @@ class MediaManagementPage extends StatelessWidget {
                                             width: double.infinity,
                                             child: Align(
                                               alignment: Alignment.center,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(16.0),
-                                                child: Text(l10n.loading),
-                                              ),
+                                              child: Padding(padding: const EdgeInsets.all(16.0), child: Text(l10n.loading)),
                                             ),
                                           ),
                                           errorWidget: (context, url, error) => SizedBox(
@@ -114,9 +99,7 @@ class MediaManagementPage extends StatelessWidget {
                                                 padding: const EdgeInsets.all(16.0),
                                                 child: Text(
                                                   l10n.unableToLoadImageFrom(account.instance),
-                                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
-                                                  ),
+                                                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
                                                 ),
                                               ),
                                             ),
@@ -125,9 +108,7 @@ class MediaManagementPage extends StatelessWidget {
                                         Positioned.fill(
                                           child: Material(
                                             color: Colors.transparent,
-                                            child: InkWell(
-                                              onTap: () => showImageViewer(context, url: image.url),
-                                            ),
+                                            child: InkWell(onTap: () => showImageViewer(context, url: image.url)),
                                           ),
                                         ),
                                       ],
@@ -162,12 +143,7 @@ class MediaManagementPage extends StatelessWidget {
                                                         child: Column(
                                                           children: [
                                                             if (state.status == UserMediaStatus.searching)
-                                                              const SizedBox(
-                                                                height: 200,
-                                                                child: Center(
-                                                                  child: CircularProgressIndicator(),
-                                                                ),
-                                                              )
+                                                              const SizedBox(height: 200, child: Center(child: CircularProgressIndicator()))
                                                             else if (state.status == UserMediaStatus.searchSuccess) ...[
                                                               if (state.imageSearchPosts?.isNotEmpty == true)
                                                                 BlocProvider.value(
@@ -182,7 +158,7 @@ class MediaManagementPage extends StatelessWidget {
                                                                         markPostReadOnScroll: false,
                                                                         disableSwiping: true,
                                                                         indicateRead: false,
-                                                                      )
+                                                                      ),
                                                                     ],
                                                                   ),
                                                                 ),
@@ -266,15 +242,10 @@ class MediaManagementPage extends StatelessWidget {
                         child: Container(
                           color: theme.dividerColor.withValues(alpha: 0.1),
                           padding: const EdgeInsets.symmetric(vertical: 32.0),
-                          child: ThunderScalableText(
-                            l10n.noImages,
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.titleSmall,
-                            textScaleFactor: metadataFontSizeScale.textScaleFactor,
-                          ),
+                          child: ThunderScalableText(l10n.noImages, textAlign: TextAlign.center, style: theme.textTheme.titleSmall, textScaleFactor: metadataFontSizeScale.textScaleFactor),
                         ),
                       ),
-                  ]
+                  ],
                 ],
               ),
             ),

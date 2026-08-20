@@ -17,9 +17,7 @@ class SpoilerInlineSyntax extends md.InlineSyntax {
     final body = match[2]!;
 
     final md.Node spoiler = md.Element('span', [
-      md.Element('spoiler', [
-        md.UnparsedContent('_inline:::$body'),
-      ]),
+      md.Element('spoiler', [md.UnparsedContent('_inline:::$body')]),
     ]);
 
     parser.addNode(spoiler);
@@ -59,9 +57,7 @@ class SpoilerBlockSyntax extends md.BlockSyntax {
     }
 
     final md.Node spoiler = md.Element('p', [
-      md.Element('spoiler', [
-        md.Text('${title ?? '_block'}:::/-/:::${body.join('\n')}'),
-      ]),
+      md.Element('spoiler', [md.Text('${title ?? '_block'}:::/-/:::${body.join('\n')}')]),
     ]);
 
     return spoiler;
@@ -106,17 +102,8 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
     final theme = Theme.of(context);
 
     return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSpoilerHeader(theme),
-          _buildSpoilerContent(),
-        ],
-      ),
+      decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerHighest, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildSpoilerHeader(theme), _buildSpoilerContent()]),
     );
   }
 
@@ -142,10 +129,7 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
               ),
               const SizedBox(width: 5),
               Expanded(
-                child: Text(
-                  widget.title ?? 'Spoiler',
-                  style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                ),
+                child: Text(widget.title ?? 'Spoiler', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
               ),
             ],
           ),
@@ -160,10 +144,7 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
       collapsed: const SizedBox.shrink(),
       expanded: Padding(
         padding: const EdgeInsets.only(left: 4, right: 4, bottom: 4),
-        child: CommonMarkdownBody(
-          body: widget.body ?? '',
-          isComment: true,
-        ),
+        child: CommonMarkdownBody(body: widget.body ?? '', isComment: true),
       ),
     );
   }

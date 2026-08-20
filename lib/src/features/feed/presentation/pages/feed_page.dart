@@ -105,17 +105,19 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
       FeedBloc bloc = context.read<FeedBloc>();
 
       if (widget.useGlobalFeedBloc && bloc.state.status == FeedStatus.initial) {
-        bloc.add(FeedFetchedEvent(
-          feedType: widget.feedType,
-          feedListType: widget.feedListType,
-          postSortType: widget.postSortType,
-          communityId: widget.communityId,
-          communityName: widget.communityName,
-          userId: widget.userId,
-          username: widget.username,
-          reset: true,
-          showHidden: widget.showHidden,
-        ));
+        bloc.add(
+          FeedFetchedEvent(
+            feedType: widget.feedType,
+            feedListType: widget.feedListType,
+            postSortType: widget.postSortType,
+            communityId: widget.communityId,
+            communityName: widget.communityName,
+            userId: widget.userId,
+            username: widget.username,
+            reset: true,
+            showHidden: widget.showHidden,
+          ),
+        );
       }
     } catch (e) {
       // ignore and continue if we cannot fetch the feed bloc
@@ -135,12 +137,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
         value: bloc,
         child: FeedActionScope(
           controller: _actionController,
-          child: FeedView(
-            actionController: _actionController,
-            scaffoldStateKey: widget.scaffoldStateKey,
-            feedType: widget.feedType,
-            isActive: widget.isActive,
-          ),
+          child: FeedView(actionController: _actionController, scaffoldStateKey: widget.scaffoldStateKey, feedType: widget.feedType, isActive: widget.isActive),
         ),
       );
     }
@@ -149,25 +146,22 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
 
     return BlocProvider<FeedBloc>(
       create: (_) => createFeedBloc(account)
-        ..add(FeedFetchedEvent(
-          feedType: widget.feedType,
-          feedListType: widget.feedListType,
-          postSortType: widget.postSortType,
-          communityId: widget.communityId,
-          communityName: widget.communityName,
-          userId: widget.userId,
-          username: widget.username,
-          reset: true,
-          showHidden: widget.showHidden,
-        )),
+        ..add(
+          FeedFetchedEvent(
+            feedType: widget.feedType,
+            feedListType: widget.feedListType,
+            postSortType: widget.postSortType,
+            communityId: widget.communityId,
+            communityName: widget.communityName,
+            userId: widget.userId,
+            username: widget.username,
+            reset: true,
+            showHidden: widget.showHidden,
+          ),
+        ),
       child: FeedActionScope(
         controller: _actionController,
-        child: FeedView(
-          actionController: _actionController,
-          scaffoldStateKey: widget.scaffoldStateKey,
-          feedType: widget.feedType,
-          isActive: widget.isActive,
-        ),
+        child: FeedView(actionController: _actionController, scaffoldStateKey: widget.scaffoldStateKey, feedType: widget.feedType, isActive: widget.isActive),
       ),
     );
   }
@@ -396,9 +390,7 @@ class _FeedViewState extends State<FeedView> {
                   onChangeFeedType: (feedType) => setState(() => selectedSubview = feedType),
                 ),
                 const FeedFabOverlay(),
-                ThunderTopBarScrim(
-                  visible: context.select<ThunderCubit, bool>((bloc) => bloc.state.hideTopBarOnScroll),
-                ),
+                ThunderTopBarScrim(visible: context.select<ThunderCubit, bool>((bloc) => bloc.state.hideTopBarOnScroll)),
               ],
             ),
           ),
@@ -409,10 +401,12 @@ class _FeedViewState extends State<FeedView> {
 
   bool _shouldHandleFeedSideEffect(FeedState previous, FeedState current) {
     final excessiveApiCallsStarted = !previous.excessiveApiCalls && current.excessiveApiCalls;
-    final hasNewFailureMessage = current.message != null &&
+    final hasNewFailureMessage =
+        current.message != null &&
         (current.status == FeedStatus.failure || current.status == FeedStatus.failureLoadingCommunity || current.status == FeedStatus.failureLoadingUser) &&
         (previous.message != current.message || previous.status != current.status);
-    final contentChangedAfterSuccess = current.status == FeedStatus.success &&
+    final contentChangedAfterSuccess =
+        current.status == FeedStatus.success &&
         (previous.status != FeedStatus.success ||
             previous.posts.length != current.posts.length ||
             previous.comments.length != current.comments.length ||
@@ -453,14 +447,7 @@ class _FeedViewState extends State<FeedView> {
       final postSortType = authBloc.state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType;
 
       feedBloc.add(
-        FeedFetchedEvent(
-          postSortType: postSortType,
-          reset: true,
-          feedListType: desiredFeedListType,
-          feedType: FeedType.general,
-          communityId: null,
-          showHidden: feedCubit.state.showHiddenPosts,
-        ),
+        FeedFetchedEvent(postSortType: postSortType, reset: true, feedListType: desiredFeedListType, feedType: FeedType.general, communityId: null, showHidden: feedCubit.state.showHiddenPosts),
       );
 
       return true;

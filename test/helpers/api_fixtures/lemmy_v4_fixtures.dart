@@ -72,12 +72,12 @@ Map<String, dynamic> lemmyV4SiteResponse({String version = '1.0.0'}) => {
 
 Map<String, dynamic> lemmyV4PagedPosts({String? nextPage}) => {
       'items': [lemmyV4PostView()],
-      if (nextPage != null) 'next_page': nextPage,
+      'next_page': ?nextPage,
     };
 
 Map<String, dynamic> lemmyV4PagedComments({String? nextPage}) => {
       'items': [lemmyV4CommentView()],
-      if (nextPage != null) 'next_page': nextPage,
+      'next_page': ?nextPage,
     };
 
 Map<String, dynamic> lemmyV4ModlogItem() => {

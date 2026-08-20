@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -18,8 +19,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get accessibility => 'Alirebleco';
 
   @override
-  String get accessibilityProfilesDescription =>
-      'Alireblecaj profiloj permesas apliki plurajn agordojn samtempe por alĝustigi apartan alireblecon.';
+  String get accessibilityProfilesDescription => 'Alireblecaj profiloj permesas apliki plurajn agordojn samtempe por alĝustigi apartan alireblecon.';
 
   @override
   String account(num count) {
@@ -32,8 +32,7 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get accountSettingOverrideWarning =>
-      'Your account settings override the following settings';
+  String get accountSettingOverrideWarning => 'Your account settings override the following settings';
 
   @override
   String get accountSettings => 'Kontagordoj';
@@ -44,8 +43,7 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get accountSettingsImportedSuccessfully =>
-      'Lemmy account settings imported successfully!';
+  String get accountSettingsImportedSuccessfully => 'Lemmy account settings imported successfully!';
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
@@ -134,8 +132,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get allPosts => 'Ĉiuj Afiŝoj';
 
   @override
-  String get allowOpenSupportedLinks =>
-      'Permesi al aplikaĵo malfermi subtenatajn ligilojn.';
+  String get allowOpenSupportedLinks => 'Permesi al aplikaĵo malfermi subtenatajn ligilojn.';
 
   @override
   String get alreadyPostedTo => 'Jam afiŝiĝis al';
@@ -208,8 +205,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get backToTop => 'Reiri al Supro';
 
   @override
-  String get backgroundCheckWarning =>
-      'Atentu, ke sciigaj kontroloj konsumos plian baterion';
+  String get backgroundCheckWarning => 'Atentu, ke sciigaj kontroloj konsumos plian baterion';
 
   @override
   String get ban => 'Ban';
@@ -289,8 +285,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get cancel => 'Nuligi';
 
   @override
-  String get cannotReportOwnComment =>
-      'Vi ne rajtas sendi raporton por via propra komento.';
+  String get cannotReportOwnComment => 'Vi ne rajtas sendi raporton por via propra komento.';
 
   @override
   String get cantBlockAdmin => 'Vi ne rajtas bari instancan administranton.';
@@ -320,8 +315,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get changePassword => 'Change Password';
 
   @override
-  String get changePasswordWarning =>
-      'To change your password, you will be redirected to your instance site. \n\nAre you sure you want to continue?';
+  String get changePasswordWarning => 'To change your password, you will be redirected to your instance site. \n\nAre you sure you want to continue?';
 
   @override
   String get changeSort => 'Ŝanĝi Ordigon';
@@ -347,8 +341,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get clearedCache => 'Viŝiĝis kaŝmemoro sukcese.';
 
   @override
-  String get clearedDatabase =>
-      'Loka datumbazo viŝiĝis. Rekomencu Thunder por ke novaj ŝanĝoj efektiviĝu.';
+  String get clearedDatabase => 'Loka datumbazo viŝiĝis. Rekomencu Thunder por ke novaj ŝanĝoj efektiviĝu.';
 
   @override
   String get clearedUserPreferences => 'Viŝiĝis ĉiuj uzantpreferoj';
@@ -366,8 +359,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get collapseInformation => 'Maletendi Informojn';
 
   @override
-  String get collapseParentCommentBodyOnGesture =>
-      'Kaŝi Gepatran Komenton kiam ĝi estas maletenda';
+  String get collapseParentCommentBodyOnGesture => 'Kaŝi Gepatran Komenton kiam ĝi estas maletenda';
 
   @override
   String get collapsePost => 'Maletendi Afiŝon';
@@ -400,12 +392,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get combineCommentScoresLabel => 'Kombini Komentajn Poentojn';
 
   @override
-  String get combineNavAndFab =>
-      'Flosanta Ago-Butono estos montrita inter navigaj butonoj.';
+  String get combineNavAndFab => 'Flosanta Ago-Butono estos montrita inter navigaj butonoj.';
 
   @override
-  String get combineNavAndFabDescription =>
-      'Flosanta Ago-Butono estos montrita inter navigadaj butonoj.';
+  String get combineNavAndFabDescription => 'Flosanta Ago-Butono estos montrita inter navigadaj butonoj.';
 
   @override
   String get comfortable => 'Comfortable';
@@ -423,8 +413,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get commentFontScale => 'Komento-Enhava Tipara Grandeco';
 
   @override
-  String get commentPreview =>
-      'Montri antaŭrigardon de la komentoj kun la donitaj agordoj';
+  String get commentPreview => 'Montri antaŭrigardon de la komentoj kun la donitaj agordoj';
 
   @override
   String get commentReported => 'La komento estis markita por revizio.';
@@ -445,8 +434,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get commentSwipeActions => 'Komentaj Ŝovumaj Agoj';
 
   @override
-  String get commentSwipeGesturesHint =>
-      'Ĉu vi volas uzi butonojn anstataŭe? Ebligu ilin en la sekcio de komentoj en ĝeneralaj agordoj.';
+  String get commentSwipeGesturesHint => 'Ĉu vi volas uzi butonojn anstataŭe? Ebligu ilin en la sekcio de komentoj en ĝeneralaj agordoj.';
 
   @override
   String get comments => 'Komentoj';
@@ -487,8 +475,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get compactView => 'Kompakta Vido';
 
   @override
-  String get compactViewDescription =>
-      'Ebligu kompaktan vidon por ĝustigi agordojn';
+  String get compactViewDescription => 'Ebligu kompaktan vidon por ĝustigi agordojn';
 
   @override
   String get compactViewSettings => 'Agordoj de Kompakta Vido';
@@ -506,19 +493,16 @@ class AppLocalizationsEo extends AppLocalizations {
   String get confirmLogOutTitle => 'Ĉu elsaluti?';
 
   @override
-  String get confirmMarkAllAsReadBody =>
-      'Ĉu vi certas, ke vi volas marki ĉiujn mesaĝojn kiel legitajn?';
+  String get confirmMarkAllAsReadBody => 'Ĉu vi certas, ke vi volas marki ĉiujn mesaĝojn kiel legitajn?';
 
   @override
   String get confirmMarkAllAsReadTitle => 'Ĉu marki ĉiun kiel legita?';
 
   @override
-  String get confirmResetCommentPreferences =>
-      'Ĉi tio restarigos ĉiujn defaŭltajn komentajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?';
+  String get confirmResetCommentPreferences => 'Ĉi tio restarigos ĉiujn defaŭltajn komentajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?';
 
   @override
-  String get confirmResetPostPreferences =>
-      'Ĉi tio restarigos ĉiujn defaŭltajn afiŝajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?';
+  String get confirmResetPostPreferences => 'Ĉi tio restarigos ĉiujn defaŭltajn afiŝajn preferojn. Ĉu vi certas, ke vi volas daŭrigi?';
 
   @override
   String get confirmUnsubscription => 'Are you sure you want to unsubscribe?';
@@ -553,20 +537,16 @@ class AppLocalizationsEo extends AppLocalizations {
   String get copyText => 'Kopii Tekston';
 
   @override
-  String get couldNotDetermineCommentDelete =>
-      'Eraro: Ne eblis determini afiŝon por forviŝi la komenton.';
+  String get couldNotDetermineCommentDelete => 'Eraro: Ne eblis determini afiŝon por forviŝi la komenton.';
 
   @override
-  String get couldNotDeterminePostComment =>
-      'Eraro: Ne eblis determini afiŝon al komenti.';
+  String get couldNotDeterminePostComment => 'Eraro: Ne eblis determini afiŝon al komenti.';
 
   @override
-  String get couldntCreateReport =>
-      'Via komenta raporto ne povus esti sendita nuntempe. Bonvolu reprovi poste';
+  String get couldntCreateReport => 'Via komenta raporto ne povus esti sendita nuntempe. Bonvolu reprovi poste';
 
   @override
-  String get couldntFindPost =>
-      'Unable to load the requested post. It may have been deleted or removed.';
+  String get couldntFindPost => 'Unable to load the requested post. It may have been deleted or removed.';
 
   @override
   String countComments(Object count) {
@@ -665,8 +645,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get dark => 'Malhela';
 
   @override
-  String get databaseExportWarning =>
-      'The database may contain sensitive information related to your Lemmy account. If you export it, you should not share it with anyone. Do you want to proceed?';
+  String get databaseExportWarning => 'The database may contain sensitive information related to your Lemmy account. If you export it, you should not share it with anyone. Do you want to proceed?';
 
   @override
   String databaseExportedSuccessfully(Object savedFilePath) {
@@ -674,16 +653,13 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get databaseImportedSuccessfully =>
-      'The database was imported successfully!';
+  String get databaseImportedSuccessfully => 'The database was imported successfully!';
 
   @override
-  String get databaseNotExportedSuccessfully =>
-      'The database was not exported successfully or the operation was canceled.';
+  String get databaseNotExportedSuccessfully => 'The database was not exported successfully or the operation was canceled.';
 
   @override
-  String get databaseNotImportedSuccessfully =>
-      'The database was not imported successfully, or the operation was canceled.';
+  String get databaseNotImportedSuccessfully => 'The database was not imported successfully, or the operation was canceled.';
 
   @override
   String get dateFormat => 'Date Format';
@@ -692,12 +668,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get debug => 'Sencimigi';
 
   @override
-  String get debugDescription =>
-      'La sekvaj sencimigaj agordoj devas esti uzataj nur por problemsolvi.';
+  String get debugDescription => 'La sekvaj sencimigaj agordoj devas esti uzataj nur por problemsolvi.';
 
   @override
-  String get debugNotificationsDescription =>
-      'Use the following options to troubleshoot issues related to notifications.';
+  String get debugNotificationsDescription => 'Use the following options to troubleshoot issues related to notifications.';
 
   @override
   String get decline => 'Decline';
@@ -721,19 +695,16 @@ class AppLocalizationsEo extends AppLocalizations {
   String get deleteAccount => 'Forviŝi Konton';
 
   @override
-  String get deleteAccountDescription =>
-      'Por permanente forviŝi vian konton, vi estos redirektita al via instanca retejo.\n\nĈu vi certas, ke vi volas daŭrigi?';
+  String get deleteAccountDescription => 'Por permanente forviŝi vian konton, vi estos redirektita al via instanca retejo.\n\nĈu vi certas, ke vi volas daŭrigi?';
 
   @override
   String get deleteComment => 'Delete Comment';
 
   @override
-  String get deleteDraftConfirmation =>
-      'Are you sure you want to delete this draft?';
+  String get deleteDraftConfirmation => 'Are you sure you want to delete this draft?';
 
   @override
-  String get deleteImageConfirmMessage =>
-      'Are you sure you want to delete this image?';
+  String get deleteImageConfirmMessage => 'Are you sure you want to delete this image?';
 
   @override
   String get deleteImageConfirmTitle => 'Delete?';
@@ -742,22 +713,19 @@ class AppLocalizationsEo extends AppLocalizations {
   String get deleteLocalDatabase => 'Forviŝi Lokan Datenbazon';
 
   @override
-  String get deleteLocalDatabaseDescription =>
-      'Ĉi tiu ago forviŝos la lokan datumbazon kaj elsalutos vin el ĉiuj viaj kontoj.\n\nĈu vi certas, ke vi volas daŭrigi?';
+  String get deleteLocalDatabaseDescription => 'Ĉi tiu ago forviŝos la lokan datumbazon kaj elsalutos vin el ĉiuj viaj kontoj.\n\nĈu vi certas, ke vi volas daŭrigi?';
 
   @override
   String get deleteLocalPreferences => 'Forviŝi Lokajn Preferojn';
 
   @override
-  String get deleteLocalPreferencesDescription =>
-      'Ĉi tio viŝos ĉiujn viajn uzantpreferojn kaj agordojn en Thunder.\n\nĈu vi volas daŭrigi?';
+  String get deleteLocalPreferencesDescription => 'Ĉi tio viŝos ĉiujn viajn uzantpreferojn kaj agordojn en Thunder.\n\nĈu vi volas daŭrigi?';
 
   @override
   String get deletePost => 'Delete Post';
 
   @override
-  String get deleteUserLabelConfirmation =>
-      'Are you sure you want to delete the label?';
+  String get deleteUserLabelConfirmation => 'Are you sure you want to delete the label?';
 
   @override
   String get deleted => 'Deleted';
@@ -775,8 +743,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get deletedPost => 'Deleted post';
 
   @override
-  String get deselectUndeterminedWarning =>
-      'If you deselect Undetermined, you will not see most content.';
+  String get deselectUndeterminedWarning => 'If you deselect Undetermined, you will not see most content.';
 
   @override
   String detailedReason(Object reason) {
@@ -802,8 +769,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get discussionLanguages => 'Discussion Languages';
 
   @override
-  String get discussionLanguagesTooltip =>
-      'Content is filtered to the selected languages.';
+  String get discussionLanguagesTooltip => 'Content is filtered to the selected languages.';
 
   @override
   String get dismissRead => 'Forĵeti Legita';
@@ -821,8 +787,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get doNotShowAgain => 'Do Not Show Again';
 
   @override
-  String get doNotSupportMultipleUnifiedPushApps =>
-      'Found multiple compatible apps; please install only one';
+  String get doNotSupportMultipleUnifiedPushApps => 'Found multiple compatible apps; please install only one';
 
   @override
   String get downloadingMedia => 'Elŝutiĝas amaskomunikilaro por kunhavigi…';
@@ -837,8 +802,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get downvoted => 'Downvoted';
 
   @override
-  String get downvotesDisabled =>
-      'Subenvoĉdonoj estas malŝaltitaj en ĉi tiu instanco.';
+  String get downvotesDisabled => 'Subenvoĉdonoj estas malŝaltitaj en ĉi tiu instanco.';
 
   @override
   String get drafts => 'Drafts';
@@ -862,8 +826,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get emptyInbox => 'Malplena Ricevujo';
 
   @override
-  String get emptyUri =>
-      'La ligilo estas malplena. Bonvolu provizi validan dinamikan ligilon por daŭrigi.';
+  String get emptyUri => 'La ligilo estas malplena. Bonvolu provizi validan dinamikan ligilon por daŭrigi.';
 
   @override
   String get enableCommentNavigation => 'Enable Comment Navigation';
@@ -903,42 +866,34 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get errorImportingAccountSettings =>
-      'There was an error importing the settings. The file might not be in the right format.';
+  String get errorImportingAccountSettings => 'There was an error importing the settings. The file might not be in the right format.';
 
   @override
   String get errorInitializingClient => 'Error initializing client';
 
   @override
-  String get errorLoadingAccountSettings =>
-      'There was an error loading the settings file or the operation was canceled.';
+  String get errorLoadingAccountSettings => 'There was an error loading the settings file or the operation was canceled.';
 
   @override
-  String get errorMarkingReplyRead =>
-      'There was an error marking the reply as read.';
+  String get errorMarkingReplyRead => 'There was an error marking the reply as read.';
 
   @override
-  String get errorMarkingReplyUnread =>
-      'There was an error marking the reply as unread.';
+  String get errorMarkingReplyUnread => 'There was an error marking the reply as unread.';
 
   @override
   String get errorNoActiveInstance => 'No active instance found';
 
   @override
-  String get errorParsingJson =>
-      'There was an error parsing the selected file. It may not be valid JSON.';
+  String get errorParsingJson => 'There was an error parsing the selected file. It may not be valid JSON.';
 
   @override
-  String get errorSavingAccountSettings =>
-      'There was an error saving the settings file or the operation was canceled.';
+  String get errorSavingAccountSettings => 'There was an error saving the settings file or the operation was canceled.';
 
   @override
-  String get exceptionProcessingUri =>
-      'Okazis eraro dum prilaborado de la ligilo. Ĝi eble ne estas disponebla en via instanco.';
+  String get exceptionProcessingUri => 'Okazis eraro dum prilaborado de la ligilo. Ĝi eble ne estas disponebla en via instanco.';
 
   @override
-  String get excessiveApiCallsWarning =>
-      'Your feed may be taking a while to load due to keyword filters.';
+  String get excessiveApiCallsWarning => 'Your feed may be taking a while to load due to keyword filters.';
 
   @override
   String get expand => 'Expand';
@@ -968,8 +923,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get experimentalFeatures => 'Experimental Features';
 
   @override
-  String get experimentalFeaturesDescription =>
-      'These features are still in development and may be unstable. Use them at your own risk. You must restart Thunder to take effect.';
+  String get experimentalFeaturesDescription => 'These features are still in development and may be unstable. Use them at your own risk. You must restart Thunder to take effect.';
 
   @override
   String get exploreInstance => 'Explore instance';
@@ -978,16 +932,13 @@ class AppLocalizationsEo extends AppLocalizations {
   String get exportDatabase => 'Export Database';
 
   @override
-  String get exportDatabaseSubtitle =>
-      'The database contains info about accounts, favorites, anonymous subscriptions, and user labels.';
+  String get exportDatabaseSubtitle => 'The database contains info about accounts, favorites, anonymous subscriptions, and user labels.';
 
   @override
-  String get exportLemmyAccountSettingsDescription =>
-      'Export Lemmy account settings';
+  String get exportLemmyAccountSettingsDescription => 'Export Lemmy account settings';
 
   @override
-  String get exportSettingsSubtitle =>
-      'The settings includes all of the preferences that you have configured in Thunder.';
+  String get exportSettingsSubtitle => 'The settings includes all of the preferences that you have configured in Thunder.';
 
   @override
   String get extraLarge => 'Extra Large';
@@ -998,8 +949,7 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String failedToCommunicateWithThunderNotificationServer(
-      Object serverAddress) {
+  String failedToCommunicateWithThunderNotificationServer(Object serverAddress) {
     return 'Failed to communicate with Thunder notification server at $serverAddress.';
   }
 
@@ -1023,8 +973,7 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get failedToUpdateNotificationSettings =>
-      'Failed to update notification settings';
+  String get failedToUpdateNotificationSettings => 'Failed to update notification settings';
 
   @override
   String get favorite => 'Favorite';
@@ -1066,12 +1015,10 @@ class AppLocalizationsEo extends AppLocalizations {
       'Thunder havas plene agordeblan FAB-sperton, kiu subtenas kelkajn gestojn.\n- Ŝovumu supren por malkaŝi pliajn agojn de FAB\n- Ŝovumu malsupren/supren por kaŝi aŭ malkaŝi la FAB\n\nPor personecigi la ĉefajn kaj duarangajn agojn por la FAB, longe premu unu el la subaj agoj.';
 
   @override
-  String get floatingActionButtonLongPressDescription =>
-      'indikas la longa-preman agon de la FAB.';
+  String get floatingActionButtonLongPressDescription => 'indikas la longa-preman agon de la FAB.';
 
   @override
-  String get floatingActionButtonSinglePressDescription =>
-      'indikas la unu-preman agon de la FAB.';
+  String get floatingActionButtonSinglePressDescription => 'indikas la unu-preman agon de la FAB.';
 
   @override
   String get fonts => 'Fonts';
@@ -1080,12 +1027,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get forward => 'Forward';
 
   @override
-  String get foundUnifiedPushDistribtorApp =>
-      'Found compatible app; restart Thunder to connect';
+  String get foundUnifiedPushDistribtorApp => 'Found compatible app; restart Thunder to connect';
 
   @override
-  String get fullScreenNavigationSwipeDescription =>
-      'Ŝovumu ie ajn por reiri kiam gestoj de maldekstre al dekstre estas malŝaltitaj';
+  String get fullScreenNavigationSwipeDescription => 'Ŝovumu ie ajn por reiri kiam gestoj de maldekstre al dekstre estas malŝaltitaj';
 
   @override
   String get fullscreen => 'Fullscreen';
@@ -1112,12 +1057,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get guestModeFeedSettings => 'Guest Mode Feed Settings';
 
   @override
-  String get guestModeFeedSettingsLabel =>
-      'The following settings are only applied to guest accounts. To adjust feed settings for your account, go to Account Settings.';
+  String get guestModeFeedSettingsLabel => 'The following settings are only applied to guest accounts. To adjust feed settings for your account, go to Account Settings.';
 
   @override
-  String get havingIssuesWithNotifications =>
-      'Having issues with notifications?';
+  String get havingIssuesWithNotifications => 'Having issues with notifications?';
 
   @override
   String get hidCommunity => 'Hid Community';
@@ -1165,8 +1108,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get imagePeekDuration => 'Image Peek Duration';
 
   @override
-  String get imagePeekDurationDescription =>
-      'Duration of long press before image peek is triggered';
+  String get imagePeekDurationDescription => 'Duration of long press before image peek is triggered';
 
   @override
   String get importDatabase => 'Import Database';
@@ -1175,12 +1117,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get importExportDatabase => 'Import/Export Thunder Database';
 
   @override
-  String get importExportLemmyAccountSettings =>
-      'Import/Export Lemmy Account Settings';
+  String get importExportLemmyAccountSettings => 'Import/Export Lemmy Account Settings';
 
   @override
-  String get importExportLemmyAccountSettingsSubtitle =>
-      'Includes subscribed communities, blocklists, and account preferences';
+  String get importExportLemmyAccountSettingsSubtitle => 'Includes subscribed communities, blocklists, and account preferences';
 
   @override
   String get importExportSettings => 'Importi/Eksporti Agordojn';
@@ -1189,8 +1129,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get importExportThunderSettings => 'Import/Export Thunder Settings';
 
   @override
-  String get importLemmyAccountSettingsDescription =>
-      'Import Lemmy account settings';
+  String get importLemmyAccountSettingsDescription => 'Import Lemmy account settings';
 
   @override
   String get importSettings => 'Importi Agordojn';
@@ -1264,8 +1203,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get instances => 'Instances';
 
   @override
-  String get internetOrInstanceIssues =>
-      'Vi eble ne estas konektita al la Interreto, aŭ via instanco eble nuntempe ne disponeblas.';
+  String get internetOrInstanceIssues => 'Vi eble ne estas konektita al la Interreto, aŭ via instanco eble nuntempe ne disponeblas.';
 
   @override
   String get invalidUrl => 'Invalid URL format';
@@ -1276,8 +1214,7 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get keywordFilterDescription =>
-      'Tiu ĉi filtrigas afiŝojn enhavantajn ajnajn ŝlosilvortojn en la titolo aŭ korpo';
+  String get keywordFilterDescription => 'Tiu ĉi filtrigas afiŝojn enhavantajn ajnajn ŝlosilvortojn en la titolo aŭ korpo';
 
   @override
   String get keywordFilters => 'Ŝlosilvortaj Filtriloj';
@@ -1292,8 +1229,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get languageFilters => 'Looking for language filters?';
 
   @override
-  String get languageNotAllowed =>
-      'La komunumo al kiu vi afiŝas al ne permesas afiŝojn en la lingvo, kiun vi elektis. Provu alian lingvon.';
+  String get languageNotAllowed => 'La komunumo al kiu vi afiŝas al ne permesas afiŝojn en la lingvo, kiun vi elektis. Provu alian lingvon.';
 
   @override
   String get large => 'Large';
@@ -1309,13 +1245,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String link(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Ligiloj',
-      one: 'Ligilo',
-      zero: 'Ligilo',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Ligiloj', one: 'Ligilo', zero: 'Ligilo');
     return '$_temp0 ';
   }
 
@@ -1398,19 +1328,16 @@ class AppLocalizationsEo extends AppLocalizations {
   String get loginSucceeded => 'Ensalutiĝis.';
 
   @override
-  String get loginToPerformAction =>
-      'Vi devas esti ensalutinta por plenumi ĉi tiun taskon.';
+  String get loginToPerformAction => 'Vi devas esti ensalutinta por plenumi ĉi tiun taskon.';
 
   @override
   String get loginToSeeInbox => 'Ensalutu por vidi vian ricevujon';
 
   @override
-  String get lookingForAccountSpecificFeedSettings =>
-      'Looking for account-specific feed settings?';
+  String get lookingForAccountSpecificFeedSettings => 'Looking for account-specific feed settings?';
 
   @override
-  String get malformedUri =>
-      'La ligilo, kiun vi provizis, estas en nesubtenata formato. Bonvolu certigi, ke ĝi estas valida ligilo.';
+  String get malformedUri => 'La ligilo, kiun vi provizis, estas en nesubtenata formato. Bonvolu certigi, ke ĝi estas valida ligilo.';
 
   @override
   String get manageAccounts => 'Manipuli Kontojn';
@@ -1447,13 +1374,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String mention(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Mencioj',
-      one: 'Mencio',
-      zero: 'Mencio',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Mencioj', one: 'Mencio', zero: 'Mencio');
     return '$_temp0';
   }
 
@@ -1462,13 +1383,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String message(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Mesaĝoj',
-      one: 'Mesaĝo',
-      zero: 'Mesaĝo',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Mesaĝoj', one: 'Mesaĝo', zero: 'Mesaĝo');
     return '$_temp0';
   }
 
@@ -1516,13 +1431,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String moderator(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Moderators',
-      one: 'Moderator',
-      zero: 'Moderator',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Moderators', one: 'Moderator', zero: 'Moderator');
     return '$_temp0';
   }
 
@@ -1569,8 +1478,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get nestedCommentIndicatorStyle => 'Nested Comment Indicator Style';
 
   @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
+  String get networkErrorMessage => 'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get never => 'Never';
@@ -1654,8 +1562,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get noProfileBioSet => 'No profile bio set';
 
   @override
-  String get noReferencesToImage =>
-      'No posts or comments were found containing this image. However, it may be used elsewhere on the internet.';
+  String get noReferencesToImage => 'No posts or comments were found containing this image. However, it may be used elsewhere on the internet.';
 
   @override
   String get noReplies => 'No replies';
@@ -1676,8 +1583,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get noUsersFound => 'Neniuj uzantoj trovitaj';
 
   @override
-  String get noVisibleComments =>
-      'Comments may not be visible because the community is blocked.';
+  String get noVisibleComments => 'Comments may not be visible because the community is blocked.';
 
   @override
   String get none => 'None';
@@ -1701,13 +1607,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String notifications(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Sciigoj',
-      one: 'Sciigo',
-      zero: 'Sciigo',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Sciigoj', one: 'Sciigo', zero: 'Sciigo');
     return '$_temp0';
   }
 
@@ -1715,8 +1615,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get notificationsBehaviourSettings => 'Sciigoj';
 
   @override
-  String get notificationsNotAllowed =>
-      'Notifications are not allowed for Thunder in system settings';
+  String get notificationsNotAllowed => 'Notifications are not allowed for Thunder in system settings';
 
   @override
   String get notificationsWarningDialog =>
@@ -1747,8 +1646,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get onWifi => 'On Wifi';
 
   @override
-  String get onlyModsCanPostInCommunity =>
-      'Nur kontrolantoj povas afiŝi en ĉi tiu komunumo';
+  String get onlyModsCanPostInCommunity => 'Nur kontrolantoj povas afiŝi en ĉi tiu komunumo';
 
   @override
   String get open => 'Malfermi';
@@ -1798,12 +1696,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get permissionDenied => 'Permeso Rifuzita';
 
   @override
-  String get permissionDeniedMessage =>
-      'Thunder postulas iujn permesojn por konservi ĉi tiun bildon, kiuj estis rifuzitaj.';
+  String get permissionDeniedMessage => 'Thunder postulas iujn permesojn por konservi ĉi tiun bildon, kiuj estis rifuzitaj.';
 
   @override
-  String get piefedSupportBeta =>
-      'PieFed support is currently in beta.\nNot all features are supported yet.';
+  String get piefedSupportBeta => 'PieFed support is currently in beta.\nNot all features are supported yet.';
 
   @override
   String get pinPostToCommunity => 'Pin Post to Community';
@@ -1840,8 +1736,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get postBodySettings => 'Post Body Settings';
 
   @override
-  String get postBodySettingsDescription =>
-      'These settings affect the display of the post body';
+  String get postBodySettingsDescription => 'These settings affect the display of the post body';
 
   @override
   String get postBodyShowCommunityInstance => 'Show Community Instance';
@@ -1862,22 +1757,19 @@ class AppLocalizationsEo extends AppLocalizations {
   String get postFlairs => 'Flairs';
 
   @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postFlairsUnavailable => 'No flair options available for this community';
 
   @override
   String get postLocked => 'Afiŝo ŝlosita. Neniuj respondoj permesitaj.';
 
   @override
-  String get postMetadataInstructions =>
-      'You can customize the metadata information by dragging and dropping the desired information';
+  String get postMetadataInstructions => 'You can customize the metadata information by dragging and dropping the desired information';
 
   @override
   String get postNSFW => 'Marki kiel NSFW';
 
   @override
-  String get postPreview =>
-      'Montri antaŭrigardon de la afiŝo kun la donitaj agordoj';
+  String get postPreview => 'Montri antaŭrigardon de la afiŝo kun la donitaj agordoj';
 
   @override
   String get postSavedAsDraft => 'Afiŝo konservita kiel malneto';
@@ -1889,8 +1781,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get postSwipeActions => 'Post Swipe Actions';
 
   @override
-  String get postSwipeGesturesHint =>
-      'Ĉu vi volas uzi butonojn anstataŭe? Ŝanĝu kiajn butonojn aperas sur afiŝkartoj en ĝeneralaj agordoj.';
+  String get postSwipeGesturesHint => 'Ĉu vi volas uzi butonojn anstataŭe? Ŝanĝu kiajn butonojn aperas sur afiŝkartoj en ĝeneralaj agordoj.';
 
   @override
   String get postTags => 'Tags';
@@ -1987,8 +1878,7 @@ class AppLocalizationsEo extends AppLocalizations {
       'Configure the push notification server. The server must be properly configured to send push notifications to your device.\n\n **Only enter a server that you trust with your credentials.**';
 
   @override
-  String get rateLimitErrorMessage =>
-      'You have hit the rate limit for this request. Please wait and try again later.';
+  String get rateLimitErrorMessage => 'You have hit the rate limit for this request. Please wait and try again later.';
 
   @override
   String get reachedTheBottom => 'Hmmm. Ŝajnas, ke vi atingis la fundon.';
@@ -2086,13 +1976,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String reply(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Respondoj',
-      one: 'Respondo',
-      zero: 'Respondo',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Respondoj', one: 'Respondo', zero: 'Respondo');
     return '$_temp0';
   }
 
@@ -2100,8 +1984,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get replyColor => 'Reply Color';
 
   @override
-  String get replyNotSupported =>
-      'Respondi el ĉi tiu vido estas nuntempe ankoraŭ ne subtenata';
+  String get replyNotSupported => 'Respondi el ĉi tiu vido estas nuntempe ankoraŭ ne subtenata';
 
   @override
   String get replyToComment => 'Reply to Comment';
@@ -2207,8 +2090,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get screenReaderProfile => 'Ekrano-Leganta Profilo';
 
   @override
-  String get screenReaderProfileDescription =>
-      'Optimumigas Thunder por ekranlegiloj reduktante ĝeneralajn elementojn kaj forigante eble konfliktajn gestojn.';
+  String get screenReaderProfileDescription => 'Optimumigas Thunder por ekranlegiloj reduktante ĝeneralajn elementojn kaj forigante eble konfliktajn gestojn.';
 
   @override
   String get search => 'Serĉi';
@@ -2289,27 +2171,22 @@ class AppLocalizationsEo extends AppLocalizations {
   String get send => 'Send';
 
   @override
-  String get sendBackgroundTestLocalNotification =>
-      'Send background test local notification';
+  String get sendBackgroundTestLocalNotification => 'Send background test local notification';
 
   @override
-  String get sendBackgroundTestUnifiedPushNotification =>
-      'Send background test UnifiedPush notification';
+  String get sendBackgroundTestUnifiedPushNotification => 'Send background test UnifiedPush notification';
 
   @override
   String get sendTestLocalNotification => 'Send test local notification';
 
   @override
-  String get sendTestUnifiedPushNotification =>
-      'Send test UnifiedPush notification';
+  String get sendTestUnifiedPushNotification => 'Send test UnifiedPush notification';
 
   @override
-  String get sensitiveContentWarning =>
-      'May contain sensitive content. Tap to reveal.';
+  String get sensitiveContentWarning => 'May contain sensitive content. Tap to reveal.';
 
   @override
-  String get sentRequestForTestNotification =>
-      'Sent request for test notification.';
+  String get sentRequestForTestNotification => 'Sent request for test notification.';
 
   @override
   String serverErrorComments(Object message) {
@@ -2326,8 +2203,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get setShortPress => 'Agordi kiel mallongprema ago';
 
   @override
-  String get settingOverrideLabel =>
-      'These settings override Thunder\'s default settings.';
+  String get settingOverrideLabel => 'These settings override Thunder\'s default settings.';
 
   @override
   String settingTypeNotSupported(Object settingType) {
@@ -2343,20 +2219,16 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get settingsFeedCards =>
-      'Ĉi tiuj agordoj aplikas por la kartoj en la ĉefa fluo, agoj ĉiam estas disponebla kiam efektive malfermas afiŝojn.';
+  String get settingsFeedCards => 'Ĉi tiuj agordoj aplikas por la kartoj en la ĉefa fluo, agoj ĉiam estas disponebla kiam efektive malfermas afiŝojn.';
 
   @override
-  String get settingsImportedSuccessfully =>
-      'Settings were imported successfully!';
+  String get settingsImportedSuccessfully => 'Settings were imported successfully!';
 
   @override
-  String get settingsNotExportedSuccessfully =>
-      'Settings were not saved successfully, or the operation was canceled.';
+  String get settingsNotExportedSuccessfully => 'Settings were not saved successfully, or the operation was canceled.';
 
   @override
-  String get settingsNotImportedSuccessfully =>
-      'Settings were not imported successfully or the operation was canceled.';
+  String get settingsNotImportedSuccessfully => 'Settings were not imported successfully or the operation was canceled.';
 
   @override
   String get settingsPage => 'Settings Page';
@@ -2503,8 +2375,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get showHiddenPosts => 'Show Hidden Posts';
 
   @override
-  String get showInAppUpdateNotifications =>
-      'Get Notified of new GitHub Releases';
+  String get showInAppUpdateNotifications => 'Get Notified of new GitHub Releases';
 
   @override
   String get showLess => 'Montri malpli';
@@ -2516,8 +2387,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get showNavigationLabels => 'Show Navigation Labels';
 
   @override
-  String get showNavigationLabelsDescription =>
-      'Whether to display labels beneath the bottom navigation buttons';
+  String get showNavigationLabelsDescription => 'Whether to display labels beneath the bottom navigation buttons';
 
   @override
   String get showNsfwContent => 'Show NSFW Content';
@@ -2532,8 +2402,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get showPostAuthor => 'Show Post Author';
 
   @override
-  String get showPostAuthorSubtitle =>
-      'Post author is always shown in community feeds';
+  String get showPostAuthorSubtitle => 'Post author is always shown in community feeds';
 
   @override
   String get showPostCommunityFirst => 'Show Community and Author First';
@@ -2578,8 +2447,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get showUpdateChangelogs => 'Show Update Changelogs';
 
   @override
-  String get showUpdateChangelogsSubtitle =>
-      'Display a list of changes after an update';
+  String get showUpdateChangelogsSubtitle => 'Display a list of changes after an update';
 
   @override
   String get showUserAvatar => 'Show User Avatar';
@@ -2594,12 +2462,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get sidebar => 'Flankbreto';
 
   @override
-  String get sidebarBottomNavDoubleTapDescription =>
-      'Duoble premu la malsupran navigilon por malfermi la flankbreton';
+  String get sidebarBottomNavDoubleTapDescription => 'Duoble premu la malsupran navigilon por malfermi la flankbreton';
 
   @override
-  String get sidebarBottomNavSwipeDescription =>
-      'Glitu malsupran navigilon por malfermi la flankbreton';
+  String get sidebarBottomNavSwipeDescription => 'Glitu malsupran navigilon por malfermi la flankbreton';
 
   @override
   String get small => 'Small';
@@ -2700,8 +2566,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get systemDarkMode => 'Pure Black';
 
   @override
-  String get systemDarkModeDescription =>
-      'Enable pure black theme for dark mode';
+  String get systemDarkModeDescription => 'Enable pure black theme for dark mode';
 
   @override
   String get tabletMode => 'Tablet Mode (2-column view)';
@@ -2716,12 +2581,10 @@ class AppLocalizationsEo extends AppLocalizations {
   String get teal => 'Teal';
 
   @override
-  String get testBackgroundNotificationDescription =>
-      'Thunder will close itself and then attempt to generate a notification in the background. (It will take at least 15 minutes.)';
+  String get testBackgroundNotificationDescription => 'Thunder will close itself and then attempt to generate a notification in the background. (It will take at least 15 minutes.)';
 
   @override
-  String get testBackgroundUnifiedPushNotificationDescription =>
-      'Thunder will ask the notification server to send a delayed notification and then close itself. (It may take a few minutes.)';
+  String get testBackgroundUnifiedPushNotificationDescription => 'Thunder will ask the notification server to send a delayed notification and then close itself. (It may take a few minutes.)';
 
   @override
   String get text => 'Teksto';
@@ -2767,27 +2630,22 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get timeoutComments =>
-      'Eraro: Eltempiĝo kiam oni provas alporti komentojn';
+  String get timeoutComments => 'Eraro: Eltempiĝo kiam oni provas alporti komentojn';
 
   @override
   String get timeoutErrorMessage => 'Estis eltempiĝo atendante respondon.';
 
   @override
-  String get timeoutSaveComment =>
-      'Eraro: Eltempiĝo kiam oni provas konservi komenton';
+  String get timeoutSaveComment => 'Eraro: Eltempiĝo kiam oni provas konservi komenton';
 
   @override
-  String get timeoutSavingPost =>
-      'Eraro: Eltempiĝo kiam vi provas konservi afiŝon.';
+  String get timeoutSavingPost => 'Eraro: Eltempiĝo kiam vi provas konservi afiŝon.';
 
   @override
-  String get timeoutUpvoteComment =>
-      'Eraro: Eltempiĝo kiam oni provas voĉdoni sur komento';
+  String get timeoutUpvoteComment => 'Eraro: Eltempiĝo kiam oni provas voĉdoni sur komento';
 
   @override
-  String get timeoutVotingPost =>
-      'Eraro: Eltempiĝo kiam oni provas voĉdoni afiŝon.';
+  String get timeoutVotingPost => 'Eraro: Eltempiĝo kiam oni provas voĉdoni afiŝon.';
 
   @override
   String get toggelRead => 'Baskuligi Legita';
@@ -2845,8 +2703,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get transferredModToCommunity => 'Transferred Community';
 
   @override
-  String get translationsMayNotBeComplete =>
-      'Bonvolu noti, ke la tradukoj eble ne estas kompletaj';
+  String get translationsMayNotBeComplete => 'Bonvolu noti, ke la tradukoj eble ne estas kompletaj';
 
   @override
   String get trendingCommunities => 'Tendencaj Komunumoj';
@@ -2863,8 +2720,7 @@ class AppLocalizationsEo extends AppLocalizations {
   }
 
   @override
-  String get unableToFindCommunityOnInstance =>
-      'Unable to find the selected community on the selected user\'s instance.';
+  String get unableToFindCommunityOnInstance => 'Unable to find the selected community on the selected user\'s instance.';
 
   @override
   String get unableToFindInstance => 'Ne eblas trovi instancon';
@@ -3045,8 +2901,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get upvoted => 'Upvoted';
 
   @override
-  String get uriNotSupported =>
-      'Ĉi tiu tipo de ligilo ne estas subtenata nuntempe.';
+  String get uriNotSupported => 'Ĉi tiu tipo de ligilo ne estas subtenata nuntempe.';
 
   @override
   String get url => 'URL';
@@ -3058,33 +2913,28 @@ class AppLocalizationsEo extends AppLocalizations {
   String get useApplePushNotifications => 'Use APNs Notifications';
 
   @override
-  String get useApplePushNotificationsDescription =>
-      'Uses Apple\'s Push Notification service';
+  String get useApplePushNotificationsDescription => 'Uses Apple\'s Push Notification service';
 
   @override
-  String get useCompactView =>
-      'Ŝalti por malgrandaj afiŝoj, malŝalti por grandaj.';
+  String get useCompactView => 'Ŝalti por malgrandaj afiŝoj, malŝalti por grandaj.';
 
   @override
   String get useLocalNotifications => 'Use Local Notifications (Experimental)';
 
   @override
-  String get useLocalNotificationsDescription =>
-      'Periodically checks for notifications in the background';
+  String get useLocalNotificationsDescription => 'Periodically checks for notifications in the background';
 
   @override
   String get useMaterialYouTheme => 'Use Material You Theme';
 
   @override
-  String get useMaterialYouThemeDescription =>
-      'Overrides the selected custom theme';
+  String get useMaterialYouThemeDescription => 'Overrides the selected custom theme';
 
   @override
   String get useProfilePictureForDrawer => 'Use Profile Picture for Drawer';
 
   @override
-  String get useProfilePictureForDrawerSubtitle =>
-      'When logged in, shows the user\'s profile picture in place of the drawer icon';
+  String get useProfilePictureForDrawerSubtitle => 'When logged in, shows the user\'s profile picture in place of the drawer icon';
 
   @override
   String useSuggestedTitle(Object title) {
@@ -3095,8 +2945,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get useUnifiedPushNotifications => 'Use UnifiedPush Notifications';
 
   @override
-  String get useUnifiedPushNotificationsDescription =>
-      'Requires a compatible app';
+  String get useUnifiedPushNotificationsDescription => 'Requires a compatible app';
 
   @override
   String get user => 'User';
@@ -3119,8 +2968,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get userLabels => 'User Labels';
 
   @override
-  String get userLabelsSettingsPageDescription =>
-      'You can add, modify, or remove labels associated with users.';
+  String get userLabelsSettingsPageDescription => 'You can add, modify, or remove labels associated with users.';
 
   @override
   String get userNameColor => 'User Name Color';
@@ -3135,8 +2983,7 @@ class AppLocalizationsEo extends AppLocalizations {
   String get userProfiles => 'Uzantprofiloj';
 
   @override
-  String get userSettingDescription =>
-      'Ĉi tiuj agordoj sinkronigas kun via Lemmy-konto kaj estas aplikataj nur po-konta.';
+  String get userSettingDescription => 'Ĉi tiuj agordoj sinkronigas kun via Lemmy-konto kaj estas aplikataj nur po-konta.';
 
   @override
   String get userStyle => 'User Style';
@@ -3249,13 +3096,7 @@ class AppLocalizationsEo extends AppLocalizations {
 
   @override
   String xYearsOld(num count, Object x) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$x years old',
-      one: '$x year old',
-      zero: '$x year old',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$x years old', one: '$x year old', zero: '$x year old');
     return '$_temp0';
   }
 

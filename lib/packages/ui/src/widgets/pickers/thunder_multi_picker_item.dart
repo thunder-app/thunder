@@ -3,13 +3,7 @@ import 'package:flutter/material.dart';
 /// Configuration for a single button in [ThunderMultiPickerItem].
 @immutable
 class ThunderMultiPickerItemData {
-  const ThunderMultiPickerItemData({
-    required this.label,
-    required this.icon,
-    this.backgroundColor,
-    this.foregroundColor,
-    required this.onSelected,
-  });
+  const ThunderMultiPickerItemData({required this.label, required this.icon, this.backgroundColor, this.foregroundColor, required this.onSelected});
 
   /// Button label used for tooltips and semantics.
   final String label;
@@ -51,12 +45,7 @@ class ThunderMultiPickerItem extends StatelessWidget {
                 child: TextButton(
                   onPressed: p.onSelected,
                   style: TextButton.styleFrom(foregroundColor: p.backgroundColor),
-                  child: Icon(
-                    p.icon,
-                    size: 24.0,
-                    semanticLabel: p.label,
-                    color: p.onSelected == null ? null : p.foregroundColor ?? theme.textTheme.bodyMedium?.color,
-                  ),
+                  child: Icon(p.icon, size: 24.0, semanticLabel: p.label, color: p.onSelected == null ? null : p.foregroundColor ?? theme.textTheme.bodyMedium?.color),
                 ),
               ),
             ),

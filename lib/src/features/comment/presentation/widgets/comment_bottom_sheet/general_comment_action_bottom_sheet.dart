@@ -52,36 +52,11 @@ enum GeneralCommentAction {
 }
 
 enum GeneralQuickCommentAction {
-  upvote(
-    enabledIcon: Icons.arrow_upward_rounded,
-    disabledIcon: Icons.arrow_upward_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  downvote(
-    enabledIcon: Icons.arrow_downward_rounded,
-    disabledIcon: Icons.arrow_downward_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  save(
-    enabledIcon: Icons.star_rounded,
-    disabledIcon: Icons.star_outline_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  reply(
-    enabledIcon: Icons.reply_rounded,
-    disabledIcon: Icons.reply_outlined,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  edit(
-    enabledIcon: Icons.edit_rounded,
-    disabledIcon: Icons.edit_outlined,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  );
+  upvote(enabledIcon: Icons.arrow_upward_rounded, disabledIcon: Icons.arrow_upward_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  downvote(enabledIcon: Icons.arrow_downward_rounded, disabledIcon: Icons.arrow_downward_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  save(enabledIcon: Icons.star_rounded, disabledIcon: Icons.star_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  reply(enabledIcon: Icons.reply_rounded, disabledIcon: Icons.reply_outlined, permissionType: PermissionType.user, requiresAuthentication: true),
+  edit(enabledIcon: Icons.edit_rounded, disabledIcon: Icons.edit_outlined, permissionType: PermissionType.user, requiresAuthentication: true);
 
   /// The icon to use for the action when it is enabled
   final IconData enabledIcon;
@@ -293,11 +268,11 @@ class _GeneralCommentActionBottomSheetPageState extends State<GeneralCommentActi
             onTap: () => widget.onSwitchActivePage(page),
             onLongPress: switch (page) {
               GeneralCommentAction.user => () => copyActivityPubFullName(
-                    type: ActivityPubFullNameType.user,
-                    name: widget.comment.creator?.name,
-                    displayName: widget.comment.creator?.displayName,
-                    instance: fetchInstanceNameFromUrl(widget.comment.creator?.actorId),
-                  ),
+                type: ActivityPubFullNameType.user,
+                name: widget.comment.creator?.name,
+                displayName: widget.comment.creator?.displayName,
+                instance: fetchInstanceNameFromUrl(widget.comment.creator?.actorId),
+              ),
               _ => null,
             },
           ),

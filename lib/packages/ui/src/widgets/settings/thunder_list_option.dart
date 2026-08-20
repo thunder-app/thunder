@@ -127,18 +127,18 @@ class ThunderListOption<T> extends StatelessWidget {
       onTap: disabled
           ? null
           : () => showThunderListPicker<T>(
-                context: context,
-                title: title,
-                items: options,
-                selected: value,
-                onSelect: onChanged,
-                heading: bottomSheetHeading,
-                onUpdateHeading: onUpdateHeading,
-                closeOnSelect: closeOnSelect,
-                isScrollControlled: isBottomModalScrollControlled ?? false,
-                saveButtonLabel: saveButtonLabel,
-                customPicker: customListPicker,
-              ),
+              context: context,
+              title: title,
+              items: options,
+              selected: value,
+              onSelect: onChanged,
+              heading: bottomSheetHeading,
+              onUpdateHeading: onUpdateHeading,
+              closeOnSelect: closeOnSelect,
+              isScrollControlled: isBottomModalScrollControlled ?? false,
+              saveButtonLabel: saveButtonLabel,
+              customPicker: customListPicker,
+            ),
       subtitleMaxLines: subtitleWidget == null ? null : 1,
     );
   }
@@ -163,9 +163,7 @@ class _ThunderListOptionValueLabel<T> extends StatelessWidget {
     return Text(
       label,
       textAlign: TextAlign.right,
-      style: theme.textTheme.titleSmall?.copyWith(
-        color: disabled ? theme.colorScheme.onSurface.withValues(alpha: thunderTheme.settingsTileDisabledAlpha) : theme.colorScheme.onSurface,
-      ),
+      style: theme.textTheme.titleSmall?.copyWith(color: disabled ? theme.colorScheme.onSurface.withValues(alpha: thunderTheme.settingsTileDisabledAlpha) : theme.colorScheme.onSurface),
     );
   }
 }

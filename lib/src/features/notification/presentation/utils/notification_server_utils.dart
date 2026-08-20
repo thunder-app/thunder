@@ -20,12 +20,7 @@ import 'package:thunder/src/core/app/repository_factories.dart';
 ///
 /// The [token] describes the endpoint to send the notification to. This is generally the UnifiedPush endpoint, or device token for APNs.
 /// The [instance] and [jwt] are required in order for the push server to act on behalf of the user to poll for notifications.
-Future<bool> sendAuthTokenToNotificationServer({
-  required NotificationType type,
-  required String token,
-  required String jwt,
-  required String instance,
-}) async {
+Future<bool> sendAuthTokenToNotificationServer({required NotificationType type, required String token, required String jwt, required String instance}) async {
   try {
     final prefs = const UserPreferencesStore();
     String pushNotificationServer = prefs.getLocalSetting<String>(LocalSettings.pushNotificationServer) ?? THUNDER_SERVER_URL;
@@ -34,12 +29,7 @@ Future<bool> sendAuthTokenToNotificationServer({
     http.Response response = await http.post(
       Uri.parse('$pushNotificationServer/notifications'),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode({
-        'type': type.name,
-        'token': token,
-        'jwt': jwt,
-        'instance': instance,
-      }),
+      body: jsonEncode({'type': type.name, 'token': token, 'jwt': jwt, 'instance': instance}),
     );
 
     // Check if the request was successful
@@ -63,11 +53,7 @@ Future<bool> deleteAccountFromNotificationServer() async {
     List<String> jwts = accounts.map((Account account) => account.jwt!).toList();
 
     // Send POST request to notification server
-    http.Response response = await http.delete(
-      Uri.parse('$pushNotificationServer/notifications'),
-      headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode({'jwts': jwts}),
-    );
+    http.Response response = await http.delete(Uri.parse('$pushNotificationServer/notifications'), headers: {'Content-Type': 'application/json; charset=UTF-8'}, body: jsonEncode({'jwts': jwts}));
 
     // Check if the request was successful
     if (response.statusCode == 200) return true;
@@ -86,11 +72,7 @@ Future<String?> requestTestNotification(Account account) async {
     if (account.anonymous) throw Exception(l10n.userNotLoggedIn);
 
     // Send POST request to notification server
-    http.Response response = await http.post(
-      Uri.parse('$pushNotificationServer/test'),
-      headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode({'jwt': account.jwt}),
-    );
+    http.Response response = await http.post(Uri.parse('$pushNotificationServer/test'), headers: {'Content-Type': 'application/json; charset=UTF-8'}, body: jsonEncode({'jwt': account.jwt}));
 
     // Check if the request was successful
     if (response.statusCode == 201) return null;

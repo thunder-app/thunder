@@ -20,66 +20,28 @@ import 'package:thunder/src/features/account/domain/models/account_media.dart';
 import 'package:thunder/src/features/account/domain/models/account_settings_update.dart';
 
 /// Result for a single post lookup.
-typedef GetPostResponse = ({
-  ThunderPost post,
-  List<ThunderUser> moderators,
-  List<ThunderPost> crossPosts,
-});
+typedef GetPostResponse = ({ThunderPost post, List<ThunderUser> moderators, List<ThunderPost> crossPosts});
 
 /// Result for a post list.
-typedef GetPostsResponse = ({
-  List<ThunderPost> posts,
-  String? nextPage,
-});
+typedef GetPostsResponse = ({List<ThunderPost> posts, String? nextPage});
 
 /// Result for a comment list.
-typedef GetCommentsResponse = ({
-  List<ThunderComment> comments,
-  String? nextPage,
-});
+typedef GetCommentsResponse = ({List<ThunderComment> comments, String? nextPage});
 
 /// Result for a community lookup.
-typedef GetCommunityResponse = ({
-  ThunderCommunity community,
-  ThunderSite? site,
-  List<ThunderUser> moderators,
-  List<int> discussionLanguages,
-  List<ThunderFlair> flairs,
-});
+typedef GetCommunityResponse = ({ThunderCommunity community, ThunderSite? site, List<ThunderUser> moderators, List<int> discussionLanguages, List<ThunderFlair> flairs});
 
 /// Result for a user lookup.
-typedef GetUserResponse = ({
-  ThunderUser user,
-  ThunderSite? site,
-  List<ThunderPost> posts,
-  List<ThunderComment> comments,
-  List<ThunderCommunity> moderates,
-  String? nextPage,
-});
+typedef GetUserResponse = ({ThunderUser user, ThunderSite? site, List<ThunderPost> posts, List<ThunderComment> comments, List<ThunderCommunity> moderates, String? nextPage});
 
 /// Result for resolving a link or handle.
-typedef ResolveResponse = ({
-  ThunderCommunity? community,
-  ThunderPost? post,
-  ThunderComment? comment,
-  ThunderUser? user,
-});
+typedef ResolveResponse = ({ThunderCommunity? community, ThunderPost? post, ThunderComment? comment, ThunderUser? user});
 
 /// Unread inbox counts.
-typedef UnreadCountResponse = ({
-  int replies,
-  int mentions,
-  int privateMessages,
-});
+typedef UnreadCountResponse = ({int replies, int mentions, int privateMessages});
 
 /// Search results grouped by content type.
-typedef SearchResponse = ({
-  MetaSearchType type,
-  List<ThunderPost> posts,
-  List<ThunderComment> comments,
-  List<ThunderCommunity> communities,
-  List<ThunderUser> users,
-});
+typedef SearchResponse = ({MetaSearchType type, List<ThunderPost> posts, List<ThunderComment> comments, List<ThunderCommunity> communities, List<ThunderUser> users});
 
 /// Shared contract for talking to Lemmy and PieFed.
 ///
@@ -139,29 +101,10 @@ abstract class ThunderApiClient {
   Future<ThunderLinkMetadata?> getLinkMetadata({required String url});
 
   /// Create a new post.
-  Future<ThunderPost> createPost({
-    required String title,
-    required int communityId,
-    String? url,
-    String? contents,
-    bool? nsfw,
-    int? languageId,
-    String? customThumbnail,
-    String? altText,
-  });
+  Future<ThunderPost> createPost({required String title, required int communityId, String? url, String? contents, bool? nsfw, int? languageId, String? customThumbnail, String? altText});
 
   /// Edit an existing post.
-  Future<ThunderPost> editPost({
-    required int postId,
-    required String title,
-    String? url,
-    String? contents,
-    String? altText,
-    String? tags,
-    bool? nsfw,
-    int? languageId,
-    String? customThumbnail,
-  });
+  Future<ThunderPost> editPost({required int postId, required String title, String? url, String? contents, String? altText, String? tags, bool? nsfw, int? languageId, String? customThumbnail});
 
   /// Create a new post with any extra tags or flair the platform supports.
   ///
@@ -178,16 +121,7 @@ abstract class ThunderApiClient {
     List<String>? tags,
     List<int>? flairIds,
   }) async {
-    return createPost(
-      title: title,
-      communityId: communityId,
-      url: url,
-      contents: contents,
-      nsfw: nsfw,
-      languageId: languageId,
-      customThumbnail: customThumbnail,
-      altText: altText,
-    );
+    return createPost(title: title, communityId: communityId, url: url, contents: contents, nsfw: nsfw, languageId: languageId, customThumbnail: customThumbnail, altText: altText);
   }
 
   /// Edit an existing post with any extra tags or flair the platform supports.
@@ -205,16 +139,7 @@ abstract class ThunderApiClient {
     List<String>? tags,
     List<int>? flairIds,
   }) async {
-    return editPost(
-      postId: postId,
-      title: title,
-      url: url,
-      contents: contents,
-      altText: altText,
-      nsfw: nsfw,
-      languageId: languageId,
-      customThumbnail: customThumbnail,
-    );
+    return editPost(postId: postId, title: title, url: url, contents: contents, altText: altText, nsfw: nsfw, languageId: languageId, customThumbnail: customThumbnail);
   }
 
   /// Vote on a post.
@@ -247,16 +172,7 @@ abstract class ThunderApiClient {
   /// Get reports using Thunder's report model.
   ///
   /// Pass [cursor] from the previous page, when the platform provides one.
-  Future<ThunderPage<ThunderReport>> getReports({
-    ReportKind? kind,
-    int? postId,
-    int? commentId,
-    int page = 1,
-    String? cursor,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  });
+  Future<ThunderPage<ThunderReport>> getReports({ReportKind? kind, int? postId, int? commentId, int page = 1, String? cursor, int limit = 20, bool unresolved = false, int? communityId});
 
   /// Mark a report of the given [kind] as resolved or unresolved.
   Future<ThunderReport> resolveReport({required int reportId, required ReportKind kind, required bool resolved});
@@ -271,31 +187,13 @@ abstract class ThunderApiClient {
   /// Fetch comments for a post.
   ///
   /// Pass [cursor] from the previous response's `nextPage`, when loading more.
-  Future<GetCommentsResponse> getComments({
-    required int postId,
-    int? page,
-    String? cursor,
-    int? limit,
-    int? maxDepth,
-    int? communityId,
-    int? parentId,
-    CommentSortType? commentSortType,
-  });
+  Future<GetCommentsResponse> getComments({required int postId, int? page, String? cursor, int? limit, int? maxDepth, int? communityId, int? parentId, CommentSortType? commentSortType});
 
   /// Create a new comment.
-  Future<ThunderComment> createComment({
-    required int postId,
-    required String content,
-    int? parentId,
-    int? languageId,
-  });
+  Future<ThunderComment> createComment({required int postId, required String content, int? parentId, int? languageId});
 
   /// Edit an existing comment.
-  Future<ThunderComment> editComment({
-    required int commentId,
-    required String content,
-    int? languageId,
-  });
+  Future<ThunderComment> editComment({required int commentId, required String content, int? languageId});
 
   /// Vote on a comment.
   Future<ThunderComment> voteComment({required int commentId, required int score});
@@ -317,12 +215,7 @@ abstract class ThunderApiClient {
   Future<GetCommunityResponse> getCommunity({int? id, String? name});
 
   /// Fetch a list of communities.
-  Future<List<ThunderCommunity>> getCommunities({
-    int? page,
-    int? limit,
-    FeedListType? feedListType,
-    PostSortType? postSortType,
-  });
+  Future<List<ThunderCommunity>> getCommunities({int? page, int? limit, FeedListType? feedListType, PostSortType? postSortType});
 
   /// Subscribe or unsubscribe from a community.
   Future<ThunderCommunity> subscribeToCommunity({required int communityId, required bool follow});
@@ -337,36 +230,16 @@ abstract class ThunderApiClient {
   /// Fetch a user profile and their content.
   ///
   /// Pass [cursor] from the previous response's `nextPage`, when loading more.
-  Future<GetUserResponse> getUser({
-    int? userId,
-    String? username,
-    PostSortType? sort,
-    int? page,
-    String? cursor,
-    int? limit,
-    bool? saved,
-    bool? includeContent,
-  });
+  Future<GetUserResponse> getUser({int? userId, String? username, PostSortType? sort, int? page, String? cursor, int? limit, bool? saved, bool? includeContent});
 
   /// Block or unblock a user.
   Future<ThunderUser> blockUser({required int userId, required bool block});
 
   /// Ban a user from a community.
-  Future<ThunderUser> banUserFromCommunity({
-    required int userId,
-    required int communityId,
-    required bool ban,
-    bool? removeData,
-    String? reason,
-    int? expires,
-  });
+  Future<ThunderUser> banUserFromCommunity({required int userId, required int communityId, required bool ban, bool? removeData, String? reason, int? expires});
 
   /// Add or remove a moderator from a community.
-  Future<List<ThunderUser>> addModerator({
-    required int userId,
-    required int communityId,
-    required bool added,
-  });
+  Future<List<ThunderUser>> addModerator({required int userId, required int communityId, required bool added});
 
   // =============================================================
   // Search
@@ -398,23 +271,13 @@ abstract class ThunderApiClient {
   Future<UnreadCountResponse> unreadCount();
 
   /// Get comment replies.
-  Future<List<ThunderComment>> getCommentReplies({
-    int? page,
-    int? limit,
-    CommentSortType? sort,
-    bool unread = false,
-  });
+  Future<List<ThunderComment>> getCommentReplies({int? page, int? limit, CommentSortType? sort, bool unread = false});
 
   /// Mark a comment reply as read.
   Future<void> markCommentReplyAsRead({required int replyId, required bool read});
 
   /// Get comment mentions.
-  Future<List<ThunderComment>> getCommentMentions({
-    int? page,
-    int? limit,
-    CommentSortType? sort,
-    bool unread = false,
-  });
+  Future<List<ThunderComment>> getCommentMentions({int? page, int? limit, CommentSortType? sort, bool unread = false});
 
   /// Mark a comment mention as read.
   Future<void> markCommentMentionAsRead({required int mentionId, required bool read});
@@ -427,12 +290,7 @@ abstract class ThunderApiClient {
   // =============================================================
 
   /// Get private messages.
-  Future<List<ThunderPrivateMessage>> getPrivateMessages({
-    int? page,
-    int? limit,
-    bool unread = false,
-    int? creatorId,
-  });
+  Future<List<ThunderPrivateMessage>> getPrivateMessages({int? page, int? limit, bool unread = false, int? creatorId});
 
   /// Mark a private-message notification as read.
   ///
@@ -440,18 +298,10 @@ abstract class ThunderApiClient {
   Future<void> markPrivateMessageAsRead({required int notificationId, required bool read});
 
   /// Create a private message.
-  Future<ThunderPrivateMessage> createPrivateMessage({
-    required int recipientId,
-    required String content,
-  });
+  Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content});
 
   /// Get private messages for a conversation with a user.
-  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
-    required int personId,
-    int? conversationId,
-    int? page,
-    int? limit,
-  });
+  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({required int personId, int? conversationId, int? page, int? limit});
 
   // =============================================================
   // Account Settings
@@ -474,15 +324,7 @@ abstract class ThunderApiClient {
   // =============================================================
 
   /// Get modlog entries.
-  Future<List<ModlogEvent>> getModlog({
-    int? page,
-    int? limit,
-    ModlogActionType? modlogActionType,
-    int? communityId,
-    int? userId,
-    int? moderatorId,
-    int? commentId,
-  });
+  Future<List<ModlogEvent>> getModlog({int? page, int? limit, ModlogActionType? modlogActionType, int? communityId, int? userId, int? moderatorId, int? commentId});
 
   // =============================================================
   // Instance

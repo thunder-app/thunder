@@ -3,15 +3,7 @@ import 'package:thunder/src/core/utils/media_url_utils.dart';
 
 /// The Media class represents information for a given media source.
 class Media {
-  Media({
-    this.thumbnailUrl,
-    this.mediaUrl,
-    this.originalUrl,
-    this.width,
-    this.height,
-    this.nsfw = false,
-    required this.mediaType,
-  });
+  Media({this.thumbnailUrl, this.mediaUrl, this.originalUrl, this.width, this.height, this.nsfw = false, required this.mediaType});
 
   /// The original external URL of the post
   String? originalUrl;

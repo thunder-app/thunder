@@ -51,13 +51,7 @@ typedef ThunderParentBuilder = Widget Function(Widget child);
 @immutable
 class ThunderConditionalParent extends StatelessWidget {
   /// {@macro conditionalParent}
-  const ThunderConditionalParent({
-    super.key,
-    required this.condition,
-    required this.parentBuilder,
-    this.parentBuilderElse,
-    required this.child,
-  });
+  const ThunderConditionalParent({super.key, required this.condition, required this.parentBuilder, this.parentBuilderElse, required this.child});
 
   /// The [condition] which controls how/whether the [child] is wrapped.
   final bool condition;

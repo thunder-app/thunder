@@ -14,40 +14,17 @@ typedef InstanceRepositoryFactory = InstanceRepository Function(Account account)
 ///
 /// This includes the instance name, version, icon, and user count.
 /// If the URL is invalid or the instance is unreachable, it returns a default [ThunderInstanceInfo] with success set to false.
-Future<ThunderInstanceInfo> getInstanceInfo(
-  String? url, {
-  int? id,
-  Duration? timeout,
-  PlatformDetector? platformDetector,
-  InstanceRepositoryFactory? instanceRepositoryFactory,
-}) async {
-  final discovery = await discoverInstance(
-    url,
-    timeout: timeout,
-    platformDetector: platformDetector,
-  );
+Future<ThunderInstanceInfo> getInstanceInfo(String? url, {int? id, Duration? timeout, PlatformDetector? platformDetector, InstanceRepositoryFactory? instanceRepositoryFactory}) async {
+  final discovery = await discoverInstance(url, timeout: timeout, platformDetector: platformDetector);
   if (discovery == null) {
-    return ThunderInstanceInfo(
-      domain: '',
-      name: '',
-      success: false,
-    );
+    return ThunderInstanceInfo(domain: '', name: '', success: false);
   }
 
-  return loadInstanceInfo(
-    discovery,
-    id: id,
-    timeout: timeout,
-    instanceRepositoryFactory: instanceRepositoryFactory,
-  );
+  return loadInstanceInfo(discovery, id: id, timeout: timeout, instanceRepositoryFactory: instanceRepositoryFactory);
 }
 
 /// Detects a supported instance and immediately caches its platform version.
-Future<InstanceDiscoveryResult?> discoverInstance(
-  String? url, {
-  Duration? timeout,
-  PlatformDetector? platformDetector,
-}) async {
+Future<InstanceDiscoveryResult?> discoverInstance(String? url, {Duration? timeout, PlatformDetector? platformDetector}) async {
   final instanceHost = normalizeInstanceHost(url);
   if (instanceHost == null) return null;
 
@@ -60,11 +37,7 @@ Future<InstanceDiscoveryResult?> discoverInstance(
     final version = platformInfo?['version']?.toString();
     PlatformVersionCache().trySet(instanceHost, version);
 
-    return InstanceDiscoveryResult(
-      host: instanceHost,
-      platform: platform,
-      version: version,
-    );
+    return InstanceDiscoveryResult(host: instanceHost, platform: platform, version: version);
   } catch (_) {
     return null;
   }
@@ -73,12 +46,7 @@ Future<InstanceDiscoveryResult?> discoverInstance(
 /// Loads full site metadata for an already detected [discovery].
 ///
 /// This function does not repeat NodeInfo detection.
-Future<ThunderInstanceInfo> loadInstanceInfo(
-  InstanceDiscoveryResult discovery, {
-  int? id,
-  Duration? timeout,
-  InstanceRepositoryFactory? instanceRepositoryFactory,
-}) async {
+Future<ThunderInstanceInfo> loadInstanceInfo(InstanceDiscoveryResult discovery, {int? id, Duration? timeout, InstanceRepositoryFactory? instanceRepositoryFactory}) async {
   try {
     final repositoryFactory = instanceRepositoryFactory ?? _defaultInstanceRepositoryFactory;
     final account = Account(instance: discovery.host, id: '', index: -1, platform: discovery.platform);
@@ -100,13 +68,7 @@ Future<ThunderInstanceInfo> loadInstanceInfo(
   } catch (e) {
     debugPrint('Error getting instance info: $e');
 
-    return ThunderInstanceInfo(
-      domain: discovery.host,
-      name: discovery.host,
-      version: discovery.version,
-      platform: discovery.platform,
-      success: false,
-    );
+    return ThunderInstanceInfo(domain: discovery.host, name: discovery.host, version: discovery.version, platform: discovery.platform, success: false);
   }
 }
 

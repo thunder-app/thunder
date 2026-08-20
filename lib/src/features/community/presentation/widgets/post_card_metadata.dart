@@ -79,8 +79,9 @@ class PostCardMetadata extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final postCardMetadataItems = context
-        .select<FeedPreferencesCubit, List<PostCardMetadataItem>>((cubit) => postCardViewType == ViewMode.compact ? cubit.state.compactPostCardMetadataItems : cubit.state.cardPostCardMetadataItems);
+    final postCardMetadataItems = context.select<FeedPreferencesCubit, List<PostCardMetadataItem>>(
+      (cubit) => postCardViewType == ViewMode.compact ? cubit.state.compactPostCardMetadataItems : cubit.state.cardPostCardMetadataItems,
+    );
     bool showScores = true;
 
     try {
@@ -100,42 +101,13 @@ class PostCardMetadata extends StatelessWidget {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: postCardMetadataItems.map((PostCardMetadataItem postCardMetadataItem) {
         return switch (postCardMetadataItem) {
-          PostCardMetadataItem.score => ScorePostCardMetaData(
-              score: score,
-              voteType: voteType,
-              dim: dim,
-              showScores: showScores,
-            ),
-          PostCardMetadataItem.upvote => UpvotePostCardMetaData(
-              upvotes: upvoteCount,
-              upvoted: voteType == 1,
-              dim: dim,
-              showScores: showScores,
-            ),
-          PostCardMetadataItem.downvote => DownvotePostCardMetaData(
-              downvotes: downvoteCount,
-              downvoted: voteType == -1,
-              dim: dim,
-              showScores: showScores,
-            ),
-          PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(
-              commentCount: commentCount,
-              unreadCommentCount: unreadCommentCount,
-              dim: dim,
-            ),
-          PostCardMetadataItem.dateTime => DateTimePostCardMetaData(
-              dateTime: dateTime!,
-              dim: dim,
-              edited: edited,
-            ),
-          PostCardMetadataItem.url => UrlPostCardMetaData(
-              url: url,
-              dim: dim,
-            ),
-          PostCardMetadataItem.language => LanguagePostCardMetaData(
-              languageId: languageId,
-              hasBeenRead: dim,
-            ),
+          PostCardMetadataItem.score => ScorePostCardMetaData(score: score, voteType: voteType, dim: dim, showScores: showScores),
+          PostCardMetadataItem.upvote => UpvotePostCardMetaData(upvotes: upvoteCount, upvoted: voteType == 1, dim: dim, showScores: showScores),
+          PostCardMetadataItem.downvote => DownvotePostCardMetaData(downvotes: downvoteCount, downvoted: voteType == -1, dim: dim, showScores: showScores),
+          PostCardMetadataItem.commentCount => CommentCountPostCardMetaData(commentCount: commentCount, unreadCommentCount: unreadCommentCount, dim: dim),
+          PostCardMetadataItem.dateTime => DateTimePostCardMetaData(dateTime: dateTime!, dim: dim, edited: edited),
+          PostCardMetadataItem.url => UrlPostCardMetaData(url: url, dim: dim),
+          PostCardMetadataItem.language => LanguagePostCardMetaData(languageId: languageId, hasBeenRead: dim),
         };
       }).toList(),
     );
@@ -156,13 +128,7 @@ class ScorePostCardMetaData extends StatelessWidget {
   /// Whether or not the scores should be displayed. Defaults to true.
   final bool showScores;
 
-  const ScorePostCardMetaData({
-    super.key,
-    this.score = 0,
-    this.voteType = 0,
-    this.dim = false,
-    this.showScores = true,
-  });
+  const ScorePostCardMetaData({super.key, this.score = 0, this.voteType = 0, this.dim = false, this.showScores = true});
 
   @override
   Widget build(BuildContext context) {
@@ -240,13 +206,7 @@ class UpvotePostCardMetaData extends StatelessWidget {
   /// Whether or not the scores should be displayed. Defaults to true.
   final bool showScores;
 
-  const UpvotePostCardMetaData({
-    super.key,
-    this.upvotes = 0,
-    this.upvoted = false,
-    this.dim = false,
-    this.showScores = true,
-  });
+  const UpvotePostCardMetaData({super.key, this.upvotes = 0, this.upvoted = false, this.dim = false, this.showScores = true});
 
   @override
   Widget build(BuildContext context) {
@@ -292,13 +252,7 @@ class DownvotePostCardMetaData extends StatelessWidget {
   /// Whether or not the scores should be displayed. Defaults to true.
   final bool showScores;
 
-  const DownvotePostCardMetaData({
-    super.key,
-    this.downvotes = 0,
-    this.downvoted = false,
-    this.dim = false,
-    this.showScores = true,
-  });
+  const DownvotePostCardMetaData({super.key, this.downvotes = 0, this.downvoted = false, this.dim = false, this.showScores = true});
 
   @override
   Widget build(BuildContext context) {
@@ -341,12 +295,7 @@ class CommentCountPostCardMetaData extends StatelessWidget {
   /// Whether or not to dim the color of the text and icons. This is usually used to indicate that the post has been read.
   final bool dim;
 
-  const CommentCountPostCardMetaData({
-    super.key,
-    this.commentCount = 0,
-    this.unreadCommentCount = 0,
-    this.dim = false,
-  });
+  const CommentCountPostCardMetaData({super.key, this.commentCount = 0, this.unreadCommentCount = 0, this.dim = false});
 
   @override
   Widget build(BuildContext context) {
@@ -485,12 +434,7 @@ class LanguagePostCardMetaData extends StatefulWidget {
   /// Optional explicit account used to resolve languages in overlays.
   final Account? account;
 
-  const LanguagePostCardMetaData({
-    super.key,
-    this.languageId,
-    this.hasBeenRead = false,
-    this.account,
-  });
+  const LanguagePostCardMetaData({super.key, this.languageId, this.hasBeenRead = false, this.account});
 
   @override
   State<LanguagePostCardMetaData> createState() => _LanguagePostCardMetaDataState();
@@ -648,12 +592,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 dim: dim,
                 feedListType: feedListType,
               ),
-              UserPostCardMetadata(
-                username: user.name,
-                displayName: user.displayName,
-                actorId: user.actorId,
-                dim: dim,
-              ),
+              UserPostCardMetadata(username: user.name, displayName: user.displayName, actorId: user.actorId, dim: dim),
             ],
           )
         else if (showCommunityName)
@@ -666,27 +605,14 @@ class PostCommunityAndAuthor extends StatelessWidget {
             feedListType: feedListType,
           )
         else if (showUsername)
-          UserPostCardMetadata(
-            username: user.name,
-            displayName: user.displayName,
-            actorId: user.actorId,
-            dim: dim,
-          ),
+          UserPostCardMetadata(username: user.name, displayName: user.displayName, actorId: user.actorId, dim: dim),
       ],
     );
   }
 }
 
 class CommunityPostCardMetadata extends StatelessWidget {
-  const CommunityPostCardMetadata({
-    super.key,
-    this.communityName,
-    this.displayName,
-    this.actorId,
-    required this.dim,
-    required this.subscribed,
-    this.feedListType,
-  });
+  const CommunityPostCardMetadata({super.key, this.communityName, this.displayName, this.actorId, required this.dim, required this.subscribed, this.feedListType});
 
   /// The name of the community
   final String? communityName;
@@ -734,13 +660,7 @@ class CommunityPostCardMetadata extends StatelessWidget {
 }
 
 class UserPostCardMetadata extends StatelessWidget {
-  const UserPostCardMetadata({
-    super.key,
-    this.username,
-    this.displayName,
-    this.actorId,
-    required this.dim,
-  });
+  const UserPostCardMetadata({super.key, this.username, this.displayName, this.actorId, required this.dim});
 
   /// The username of the user
   final String? username;
@@ -764,6 +684,12 @@ class UserPostCardMetadata extends StatelessWidget {
     final instanceName = actorId != null ? fetchInstanceNameFromUrl(actorId) : null;
 
     return UserFullNameWidget(
-        name: username, displayName: displayName, instance: instanceName, includeInstance: postShowUserInstance, fontScale: metadataFontSizeScale, transformColor: _transformColor);
+      name: username,
+      displayName: displayName,
+      instance: instanceName,
+      includeInstance: postShowUserInstance,
+      fontScale: metadataFontSizeScale,
+      transformColor: _transformColor,
+    );
   }
 }

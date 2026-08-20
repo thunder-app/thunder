@@ -47,12 +47,5 @@ class VideoPreferencesState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        videoAutoFullscreen,
-        videoAutoLoop,
-        videoAutoMute,
-        videoAutoPlay,
-        videoDefaultPlaybackSpeed,
-        videoPlayerMode,
-      ];
+  List<Object?> get props => [videoAutoFullscreen, videoAutoLoop, videoAutoMute, videoAutoPlay, videoDefaultPlaybackSpeed, videoPlayerMode];
 }

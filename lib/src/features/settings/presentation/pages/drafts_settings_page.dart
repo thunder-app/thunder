@@ -69,12 +69,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
             } catch (_) {}
           }
 
-          return _DraftListItemData(
-            draft: draft,
-            icon: Icons.article_rounded,
-            title: _resolvePostDraftTitle(draft),
-            subtitle: _resolveCommunitySubtitle(community),
-          );
+          return _DraftListItemData(draft: draft, icon: Icons.article_rounded, title: _resolvePostDraftTitle(draft), subtitle: _resolveCommunitySubtitle(community));
         case DraftType.postEdit:
           ThunderCommunity? community;
 
@@ -88,12 +83,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
             } catch (_) {}
           }
 
-          return _DraftListItemData(
-            draft: draft,
-            icon: Icons.article_rounded,
-            title: _resolvePostDraftTitle(draft),
-            subtitle: _resolveCommunitySubtitle(community),
-          );
+          return _DraftListItemData(draft: draft, icon: Icons.article_rounded, title: _resolvePostDraftTitle(draft), subtitle: _resolveCommunitySubtitle(community));
         case DraftType.commentCreateFromPost:
           ThunderCommunity? community;
 
@@ -107,12 +97,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
             } catch (_) {}
           }
 
-          return _DraftListItemData(
-            draft: draft,
-            icon: Icons.comment_rounded,
-            title: _resolveCommentDraftTitle(draft),
-            subtitle: _resolveCommentSubtitle(l10n.replyToPost, community),
-          );
+          return _DraftListItemData(draft: draft, icon: Icons.comment_rounded, title: _resolveCommentDraftTitle(draft), subtitle: _resolveCommentSubtitle(l10n.replyToPost, community));
         case DraftType.commentCreateFromComment:
           ThunderCommunity? community;
 
@@ -123,12 +108,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
             } catch (_) {}
           }
 
-          return _DraftListItemData(
-            draft: draft,
-            icon: Icons.comment_rounded,
-            title: _resolveCommentDraftTitle(draft),
-            subtitle: _resolveCommentSubtitle(l10n.replyToComment, community),
-          );
+          return _DraftListItemData(draft: draft, icon: Icons.comment_rounded, title: _resolveCommentDraftTitle(draft), subtitle: _resolveCommentSubtitle(l10n.replyToComment, community));
         case DraftType.commentEdit:
           ThunderCommunity? community;
 
@@ -139,12 +119,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
             } catch (_) {}
           }
 
-          return _DraftListItemData(
-            draft: draft,
-            icon: Icons.comment_rounded,
-            title: _resolveCommentDraftTitle(draft),
-            subtitle: _resolveCommentSubtitle(l10n.editComment, community),
-          );
+          return _DraftListItemData(draft: draft, icon: Icons.comment_rounded, title: _resolveCommentDraftTitle(draft), subtitle: _resolveCommentSubtitle(l10n.editComment, community));
         case DraftType.commentCreate:
           ThunderCommunity? community;
           var contextLabel = l10n.replyToComment;
@@ -166,12 +141,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
             }
           }
 
-          return _DraftListItemData(
-            draft: draft,
-            icon: Icons.comment_rounded,
-            title: _resolveCommentDraftTitle(draft),
-            subtitle: _resolveCommentSubtitle(contextLabel, community),
-          );
+          return _DraftListItemData(draft: draft, icon: Icons.comment_rounded, title: _resolveCommentDraftTitle(draft), subtitle: _resolveCommentSubtitle(contextLabel, community));
       }
     } catch (_) {
       return _DraftListItemData(
@@ -213,12 +183,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
   String? _resolveCommunityLabel(ThunderCommunity? community) {
     if (community == null) return null;
 
-    return generateCommunityFullName(
-      context,
-      community.name,
-      community.title,
-      fetchInstanceNameFromUrl(community.actorId),
-    );
+    return generateCommunityFullName(context, community.name, community.title, fetchInstanceNameFromUrl(community.actorId));
   }
 
   Future<void> _deleteDraft(_DraftListItemData item) async {
@@ -240,11 +205,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
 
     if (!confirmed) return;
 
-    await _draftRepository.deleteDraft(
-      item.draft.draftType,
-      item.draft.existingId,
-      item.draft.replyId,
-    );
+    await _draftRepository.deleteDraft(item.draft.draftType, item.draft.existingId, item.draft.replyId);
 
     if (!mounted) return;
 
@@ -265,48 +226,27 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
       onPostCreateRestore: (account, communityId, community) async {
         if (!mounted) return;
 
-        await navigateToCreatePostPage(
-          context,
-          account: account,
-          communityId: communityId,
-          community: community,
-        );
+        await navigateToCreatePostPage(context, account: account, communityId: communityId, community: community);
       },
       onPostEditRestore: (account, post) async {
         if (!mounted) return;
 
-        await navigateToCreatePostPage(
-          context,
-          account: account,
-          post: post,
-        );
+        await navigateToCreatePostPage(context, account: account, post: post);
       },
       onCommentCreateFromPostRestore: (account, post) async {
         if (!mounted) return;
 
-        await navigateToCreateCommentPage(
-          context,
-          account: account,
-          post: post,
-        );
+        await navigateToCreateCommentPage(context, account: account, post: post);
       },
       onCommentCreateFromCommentRestore: (account, comment) async {
         if (!mounted) return;
 
-        await navigateToCreateCommentPage(
-          context,
-          account: account,
-          parentComment: comment,
-        );
+        await navigateToCreateCommentPage(context, account: account, parentComment: comment);
       },
       onCommentEditRestore: (account, comment) async {
         if (!mounted) return;
 
-        await navigateToCreateCommentPage(
-          context,
-          account: account,
-          comment: comment,
-        );
+        await navigateToCreateCommentPage(context, account: account, comment: comment);
       },
     );
 
@@ -326,12 +266,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            title: Text(l10n.drafts),
-            centerTitle: false,
-            toolbarHeight: APP_BAR_HEIGHT,
-            pinned: true,
-          ),
+          SliverAppBar(title: Text(l10n.drafts), centerTitle: false, toolbarHeight: APP_BAR_HEIGHT, pinned: true),
           SliverList.list(
             children: [
               if (_loading)
@@ -342,12 +277,7 @@ class _DraftsSettingsPageState extends State<DraftsSettingsPage> with SingleTick
               else if (_draftItems.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    l10n.noDrafts,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                    ),
-                  ),
+                  child: Text(l10n.noDrafts, style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8))),
                 )
               else
                 ListView.builder(

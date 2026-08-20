@@ -14,57 +14,25 @@ import 'package:thunder/packages/ui/ui.dart';
 
 /// Defines the actions that can be taken on a post when sharing
 enum ShareBottomSheetAction {
-  shareComment(
-    icon: Icons.comment_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  shareCommentLocal(
-    icon: Icons.comment_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  sharePost(
-    icon: Icons.share_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  sharePostLocal(
-    icon: Icons.share_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  shareImage(
-    icon: Icons.image_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  shareMedia(
-    icon: Icons.personal_video_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  shareLink(
-    icon: Icons.link_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  shareAdvanced(
-    icon: Icons.screen_share_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  );
+  shareComment(icon: Icons.comment_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  shareCommentLocal(icon: Icons.comment_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  sharePost(icon: Icons.share_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  sharePostLocal(icon: Icons.share_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  shareImage(icon: Icons.image_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  shareMedia(icon: Icons.personal_video_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  shareLink(icon: Icons.link_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  shareAdvanced(icon: Icons.screen_share_rounded, permissionType: PermissionType.all, requiresAuthentication: false);
 
   String get name => switch (this) {
-        ShareBottomSheetAction.shareComment => GlobalContext.l10n.shareComment,
-        ShareBottomSheetAction.shareCommentLocal => GlobalContext.l10n.shareCommentLocal,
-        ShareBottomSheetAction.sharePost => GlobalContext.l10n.sharePost,
-        ShareBottomSheetAction.sharePostLocal => GlobalContext.l10n.sharePostLocal,
-        ShareBottomSheetAction.shareImage => GlobalContext.l10n.shareImage,
-        ShareBottomSheetAction.shareMedia => GlobalContext.l10n.shareMediaLink,
-        ShareBottomSheetAction.shareLink => GlobalContext.l10n.shareLink,
-        ShareBottomSheetAction.shareAdvanced => GlobalContext.l10n.advanced,
-      };
+    ShareBottomSheetAction.shareComment => GlobalContext.l10n.shareComment,
+    ShareBottomSheetAction.shareCommentLocal => GlobalContext.l10n.shareCommentLocal,
+    ShareBottomSheetAction.sharePost => GlobalContext.l10n.sharePost,
+    ShareBottomSheetAction.sharePostLocal => GlobalContext.l10n.sharePostLocal,
+    ShareBottomSheetAction.shareImage => GlobalContext.l10n.shareImage,
+    ShareBottomSheetAction.shareMedia => GlobalContext.l10n.shareMediaLink,
+    ShareBottomSheetAction.shareLink => GlobalContext.l10n.shareLink,
+    ShareBottomSheetAction.shareAdvanced => GlobalContext.l10n.advanced,
+  };
 
   /// The icon to use for the action
   final IconData icon;
@@ -124,10 +92,7 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
         mediaFile = await DefaultCacheManager().getSingleFile(url);
       }
 
-      await SharePlus.instance.share(ShareParams(
-        files: [XFile(mediaFile!.path)],
-        sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-      ));
+      await SharePlus.instance.share(ShareParams(files: [XFile(mediaFile!.path)], sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
     } catch (e) {
       showThunderSnackbar(l10n.errorDownloadingMedia(e));
     }
@@ -139,44 +104,26 @@ class _ShareActionBottomSheetState extends State<ShareActionBottomSheet> {
 
     switch (action) {
       case ShareBottomSheetAction.shareComment:
-        SharePlus.instance.share(ShareParams(
-          uri: Uri.parse(comment!.apId),
-          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-        ));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(comment!.apId), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
         break;
       case ShareBottomSheetAction.shareCommentLocal:
-        SharePlus.instance.share(ShareParams(
-          uri: Uri.parse(generateCommentUrl(comment!.id)),
-          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-        ));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(generateCommentUrl(comment!.id)), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
         break;
       case ShareBottomSheetAction.sharePost:
-        SharePlus.instance.share(ShareParams(
-          uri: Uri.parse(post!.apId),
-          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-        ));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.apId), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
         break;
       case ShareBottomSheetAction.sharePostLocal:
-        SharePlus.instance.share(ShareParams(
-          uri: Uri.parse(generatePostUrl(post!.id)),
-          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-        ));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(generatePostUrl(post!.id)), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
         break;
       case ShareBottomSheetAction.shareImage:
         retrieveMedia(post!.media.first.imageUrl!);
         break;
       case ShareBottomSheetAction.shareMedia:
-        SharePlus.instance.share(ShareParams(
-          uri: Uri.parse(post!.media.first.mediaUrl!),
-          sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-        ));
+        SharePlus.instance.share(ShareParams(uri: Uri.parse(post!.media.first.mediaUrl!), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
         break;
       case ShareBottomSheetAction.shareLink:
         if (post!.media.first.originalUrl != null) {
-          SharePlus.instance.share(ShareParams(
-            uri: Uri.parse(post.media.first.originalUrl!),
-            sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-          ));
+          SharePlus.instance.share(ShareParams(uri: Uri.parse(post.media.first.originalUrl!), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
         }
         break;
       case ShareBottomSheetAction.shareAdvanced:

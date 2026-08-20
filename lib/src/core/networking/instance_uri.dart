@@ -37,22 +37,12 @@ bool _isPrivateIpv4Address(String host) {
 }
 
 /// Builds an API or media URI for an instance authority.
-Uri buildInstanceUri(
-  String instance,
-  String path, {
-  Map<String, String>? queryParameters,
-}) {
+Uri buildInstanceUri(String instance, String path, {Map<String, String>? queryParameters}) {
   final authority = normalizeInstanceAuthority(instance) ?? instance;
   final authorityUri = Uri.parse('https://$authority');
   final scheme = isLocalInstanceAuthority(authority) ? 'http' : 'https';
 
-  return Uri(
-    scheme: scheme,
-    host: authorityUri.host,
-    port: authorityUri.hasPort ? authorityUri.port : null,
-    path: path,
-    queryParameters: queryParameters?.isEmpty == true ? null : queryParameters,
-  );
+  return Uri(scheme: scheme, host: authorityUri.host, port: authorityUri.hasPort ? authorityUri.port : null, path: path, queryParameters: queryParameters?.isEmpty == true ? null : queryParameters);
 }
 
 /// Builds a URL string for an instance authority.

@@ -34,11 +34,7 @@ class CommunityAvatar extends StatelessWidget {
     return Stack(
       children: [
         ThunderAvatar(
-          data: ThunderAvatarData(
-            fallbackLabel: community.titleOrName,
-            imageUrl: imageUrl,
-            radius: radius,
-          ),
+          data: ThunderAvatarData(fallbackLabel: community.titleOrName, imageUrl: imageUrl, radius: radius),
         ),
         if (community.status.postingRestrictedToMods && showCommunityStatus)
           Positioned(
@@ -48,16 +44,8 @@ class CommunityAvatar extends StatelessWidget {
               message: l10n.onlyModsCanPostInCommunity,
               child: Container(
                 padding: const EdgeInsets.all(4.0),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.lock,
-                  color: theme.colorScheme.error,
-                  size: 18.0,
-                  semanticLabel: l10n.onlyModsCanPostInCommunity,
-                ),
+                decoration: BoxDecoration(color: theme.colorScheme.surface, shape: BoxShape.circle),
+                child: Icon(Icons.lock, color: theme.colorScheme.error, size: 18.0, semanticLabel: l10n.onlyModsCanPostInCommunity),
               ),
             ),
           ),

@@ -11,11 +11,7 @@ class ThunderPage<T> extends Equatable {
   /// Bookmark for the previous page, when there is one.
   final String? previousPage;
 
-  const ThunderPage({
-    required this.items,
-    this.nextPage,
-    this.previousPage,
-  });
+  const ThunderPage({required this.items, this.nextPage, this.previousPage});
 
   @override
   List<Object?> get props => [items, nextPage, previousPage];

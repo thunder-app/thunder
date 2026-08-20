@@ -11,56 +11,16 @@ import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on a post
 enum PostPostAction {
-  reportPost(
-    icon: Icons.flag_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  editPost(
-    icon: Icons.edit_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  deletePost(
-    icon: Icons.delete_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  restorePost(
-    icon: Icons.restore_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  lockPost(
-    icon: Icons.lock_rounded,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  ),
-  unlockPost(
-    icon: Icons.lock_open_rounded,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  ),
-  removePost(
-    icon: Icons.delete_rounded,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  ),
-  restorePostAsModerator(
-    icon: Icons.restore_rounded,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  ),
-  pinPostToCommunity(
-    icon: Icons.pin,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  ),
-  unpinPostFromCommunity(
-    icon: Icons.pin,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  );
+  reportPost(icon: Icons.flag_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  editPost(icon: Icons.edit_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  deletePost(icon: Icons.delete_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  restorePost(icon: Icons.restore_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  lockPost(icon: Icons.lock_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  unlockPost(icon: Icons.lock_open_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  removePost(icon: Icons.delete_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  restorePostAsModerator(icon: Icons.restore_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  pinPostToCommunity(icon: Icons.pin, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  unpinPostFromCommunity(icon: Icons.pin, permissionType: PermissionType.moderator, requiresAuthentication: true);
 
   String get name {
     final l10n = GlobalContext.l10n;
@@ -93,14 +53,7 @@ enum PostPostAction {
 
 /// A bottom sheet that allows the user to perform actions on the post.
 class PostPostActionBottomSheet extends StatefulWidget {
-  const PostPostActionBottomSheet({
-    super.key,
-    required this.context,
-    required this.account,
-    required this.moderatedCommunities,
-    required this.post,
-    required this.onAction,
-  });
+  const PostPostActionBottomSheet({super.key, required this.context, required this.account, required this.moderatedCommunities, required this.post, required this.onAction});
 
   /// The outer context
   final BuildContext context;
@@ -200,10 +153,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       secondaryButtonText: l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: l10n.message(0),
-        ),
+        decoration: InputDecoration(border: const OutlineInputBorder(), labelText: l10n.message(0)),
         autofocus: true,
         controller: controller,
         maxLines: 4,
@@ -232,10 +182,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
       secondaryButtonText: l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: l10n.message(0),
-        ),
+        decoration: InputDecoration(border: const OutlineInputBorder(), labelText: l10n.message(0)),
         autofocus: true,
         controller: controller,
         maxLines: 4,
@@ -294,13 +241,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ...userActions.map<Widget>(
-          (postPostAction) => ThunderBottomSheetAction(
-            leading: Icon(postPostAction.icon),
-            title: postPostAction.name,
-            onTap: () => performAction(postPostAction),
-          ),
-        ),
+        ...userActions.map<Widget>((postPostAction) => ThunderBottomSheetAction(leading: Icon(postPostAction.icon), title: postPostAction.name, onTap: () => performAction(postPostAction))),
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
           ...moderatorActions.map<Widget>(
@@ -308,11 +249,7 @@ class _PostPostActionBottomSheetState extends State<PostPostActionBottomSheet> {
               leading: Icon(postPostAction.icon),
               trailing: Padding(
                 padding: const EdgeInsets.only(left: 1),
-                child: Icon(
-                  ThunderIcon.shield,
-                  size: 20,
-                  color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-                ),
+                child: Icon(ThunderIcon.shield, size: 20, color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green)),
               ),
               title: postPostAction.name,
               onTap: () => performAction(postPostAction),

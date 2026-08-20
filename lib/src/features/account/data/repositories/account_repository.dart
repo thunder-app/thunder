@@ -47,12 +47,9 @@ class AccountRepositoryImpl implements AccountRepository {
   /// Creates a new AccountRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  AccountRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  AccountRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
   Future<String?> login({required String username, required String password, String? totp}) async {

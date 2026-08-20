@@ -15,120 +15,217 @@ final class Schema2 extends i0.VersionedSchema {
     userLabels,
   ];
   late final Shape0 accounts = Shape0(
-      source: i0.VersionedTable(
-        entityName: 'accounts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_1,
-          _column_2,
-          _column_3,
-          _column_4,
-          _column_5,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape1 favorites = Shape1(
-      source: i0.VersionedTable(
-        entityName: 'favorites',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_6,
-          _column_7,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'favorites',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_6, _column_7],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape2 localSubscriptions = Shape2(
-      source: i0.VersionedTable(
-        entityName: 'local_subscriptions',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_8,
-          _column_9,
-          _column_10,
-          _column_11,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'local_subscriptions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_8, _column_9, _column_10, _column_11],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape3 userLabels = Shape3(
-      source: i0.VersionedTable(
-        entityName: 'user_labels',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_12,
-          _column_13,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'user_labels',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_12, _column_13],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
 }
 
 class Shape0 extends i0.VersionedTable {
   Shape0({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get username => columnsByName['username']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get jwt => columnsByName['jwt']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get instance => columnsByName['instance']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<bool> get anonymous => columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
-  i1.GeneratedColumn<int> get userId => columnsByName['user_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get username =>
+      columnsByName['username']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get jwt =>
+      columnsByName['jwt']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get instance =>
+      columnsByName['instance']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get anonymous =>
+      columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<int> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<int>;
 }
 
 i1.GeneratedColumn<int> _column_0(String aliasedName) =>
-    i1.GeneratedColumn<int>('id', aliasedName, false, hasAutoIncrement: true, type: i1.DriftSqlType.int, defaultConstraints: i1.GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-i1.GeneratedColumn<String> _column_1(String aliasedName) => i1.GeneratedColumn<String>('username', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_2(String aliasedName) => i1.GeneratedColumn<String>('jwt', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_3(String aliasedName) => i1.GeneratedColumn<String>('instance', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<bool> _column_4(String aliasedName) => i1.GeneratedColumn<bool>('anonymous', aliasedName, false,
-    type: i1.DriftSqlType.bool, defaultConstraints: i1.GeneratedColumn.constraintIsAlways('CHECK ("anonymous" IN (0, 1))'), defaultValue: const CustomExpression('0'));
-i1.GeneratedColumn<int> _column_5(String aliasedName) => i1.GeneratedColumn<int>('user_id', aliasedName, true, type: i1.DriftSqlType.int);
+    i1.GeneratedColumn<int>(
+      'id',
+      aliasedName,
+      false,
+      hasAutoIncrement: true,
+      type: i1.DriftSqlType.int,
+      defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+        'PRIMARY KEY AUTOINCREMENT',
+      ),
+    );
+i1.GeneratedColumn<String> _column_1(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'username',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_2(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'jwt',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_3(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'instance',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<bool> _column_4(String aliasedName) =>
+    i1.GeneratedColumn<bool>(
+      'anonymous',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.bool,
+      defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+        'CHECK ("anonymous" IN (0, 1))',
+      ),
+      defaultValue: const CustomExpression('0'),
+    );
+i1.GeneratedColumn<int> _column_5(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'user_id',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+    );
 
 class Shape1 extends i0.VersionedTable {
   Shape1({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get accountId => columnsByName['account_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get communityId => columnsByName['community_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get accountId =>
+      columnsByName['account_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get communityId =>
+      columnsByName['community_id']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_6(String aliasedName) => i1.GeneratedColumn<int>('account_id', aliasedName, false, type: i1.DriftSqlType.int);
-i1.GeneratedColumn<int> _column_7(String aliasedName) => i1.GeneratedColumn<int>('community_id', aliasedName, false, type: i1.DriftSqlType.int);
+i1.GeneratedColumn<int> _column_6(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'account_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
+i1.GeneratedColumn<int> _column_7(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'community_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
 
 class Shape2 extends i0.VersionedTable {
   Shape2({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get name => columnsByName['name']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get title => columnsByName['title']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get actorId => columnsByName['actor_id']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get icon => columnsByName['icon']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get actorId =>
+      columnsByName['actor_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get icon =>
+      columnsByName['icon']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_8(String aliasedName) => i1.GeneratedColumn<String>('name', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_9(String aliasedName) => i1.GeneratedColumn<String>('title', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_10(String aliasedName) => i1.GeneratedColumn<String>('actor_id', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_11(String aliasedName) => i1.GeneratedColumn<String>('icon', aliasedName, true, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_8(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'name',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_9(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'title',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_10(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'actor_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_11(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'icon',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
 
 class Shape3 extends i0.VersionedTable {
   Shape3({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get username => columnsByName['username']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get label => columnsByName['label']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get username =>
+      columnsByName['username']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get label =>
+      columnsByName['label']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_12(String aliasedName) => i1.GeneratedColumn<String>('username', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_13(String aliasedName) => i1.GeneratedColumn<String>('label', aliasedName, false, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_12(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'username',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_13(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'label',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+    );
 
 final class Schema3 extends i0.VersionedSchema {
   Schema3({required super.database}) : super(version: 3);
@@ -141,103 +238,137 @@ final class Schema3 extends i0.VersionedSchema {
     drafts,
   ];
   late final Shape0 accounts = Shape0(
-      source: i0.VersionedTable(
-        entityName: 'accounts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_1,
-          _column_2,
-          _column_3,
-          _column_4,
-          _column_5,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape1 favorites = Shape1(
-      source: i0.VersionedTable(
-        entityName: 'favorites',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_6,
-          _column_7,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'favorites',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_6, _column_7],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape2 localSubscriptions = Shape2(
-      source: i0.VersionedTable(
-        entityName: 'local_subscriptions',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_8,
-          _column_9,
-          _column_10,
-          _column_11,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'local_subscriptions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_8, _column_9, _column_10, _column_11],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape3 userLabels = Shape3(
-      source: i0.VersionedTable(
-        entityName: 'user_labels',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_12,
-          _column_13,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'user_labels',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_12, _column_13],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape4 drafts = Shape4(
-      source: i0.VersionedTable(
-        entityName: 'drafts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_14,
-          _column_15,
-          _column_16,
-          _column_17,
-          _column_18,
-          _column_19,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'drafts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_14,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_19,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
 }
 
 class Shape4 extends i0.VersionedTable {
   Shape4({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get draftType => columnsByName['draft_type']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<int> get existingId => columnsByName['existing_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get replyId => columnsByName['reply_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get title => columnsByName['title']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get url => columnsByName['url']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get body => columnsByName['body']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get draftType =>
+      columnsByName['draft_type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get existingId =>
+      columnsByName['existing_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get replyId =>
+      columnsByName['reply_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get url =>
+      columnsByName['url']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get body =>
+      columnsByName['body']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_14(String aliasedName) => i1.GeneratedColumn<String>('draft_type', aliasedName, false, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_15(String aliasedName) => i1.GeneratedColumn<int>('existing_id', aliasedName, true, type: i1.DriftSqlType.int);
-i1.GeneratedColumn<int> _column_16(String aliasedName) => i1.GeneratedColumn<int>('reply_id', aliasedName, true, type: i1.DriftSqlType.int);
-i1.GeneratedColumn<String> _column_17(String aliasedName) => i1.GeneratedColumn<String>('title', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_18(String aliasedName) => i1.GeneratedColumn<String>('url', aliasedName, true, type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_19(String aliasedName) => i1.GeneratedColumn<String>('body', aliasedName, true, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_14(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'draft_type',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<int> _column_15(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'existing_id',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+    );
+i1.GeneratedColumn<int> _column_16(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'reply_id',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+    );
+i1.GeneratedColumn<String> _column_17(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'title',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_18(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'url',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_19(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'body',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
 
 final class Schema4 extends i0.VersionedSchema {
   Schema4({required super.database}) : super(version: 4);
@@ -250,100 +381,105 @@ final class Schema4 extends i0.VersionedSchema {
     drafts,
   ];
   late final Shape0 accounts = Shape0(
-      source: i0.VersionedTable(
-        entityName: 'accounts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_1,
-          _column_2,
-          _column_3,
-          _column_4,
-          _column_5,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape1 favorites = Shape1(
-      source: i0.VersionedTable(
-        entityName: 'favorites',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_6,
-          _column_7,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'favorites',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_6, _column_7],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape2 localSubscriptions = Shape2(
-      source: i0.VersionedTable(
-        entityName: 'local_subscriptions',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_8,
-          _column_9,
-          _column_10,
-          _column_11,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'local_subscriptions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_8, _column_9, _column_10, _column_11],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape3 userLabels = Shape3(
-      source: i0.VersionedTable(
-        entityName: 'user_labels',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_12,
-          _column_13,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'user_labels',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_12, _column_13],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape5 drafts = Shape5(
-      source: i0.VersionedTable(
-        entityName: 'drafts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_14,
-          _column_15,
-          _column_16,
-          _column_17,
-          _column_18,
-          _column_20,
-          _column_19,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'drafts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_14,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_20,
+        _column_19,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
 }
 
 class Shape5 extends i0.VersionedTable {
   Shape5({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get draftType => columnsByName['draft_type']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<int> get existingId => columnsByName['existing_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get replyId => columnsByName['reply_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get title => columnsByName['title']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get url => columnsByName['url']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get customThumbnail => columnsByName['custom_thumbnail']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get body => columnsByName['body']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get draftType =>
+      columnsByName['draft_type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get existingId =>
+      columnsByName['existing_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get replyId =>
+      columnsByName['reply_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get url =>
+      columnsByName['url']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get customThumbnail =>
+      columnsByName['custom_thumbnail']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get body =>
+      columnsByName['body']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_20(String aliasedName) => i1.GeneratedColumn<String>('custom_thumbnail', aliasedName, true, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_20(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'custom_thumbnail',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
 
 final class Schema5 extends i0.VersionedSchema {
   Schema5({required super.database}) : super(version: 5);
@@ -356,100 +492,105 @@ final class Schema5 extends i0.VersionedSchema {
     drafts,
   ];
   late final Shape6 accounts = Shape6(
-      source: i0.VersionedTable(
-        entityName: 'accounts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_1,
-          _column_2,
-          _column_3,
-          _column_4,
-          _column_5,
-          _column_21,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_21,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape1 favorites = Shape1(
-      source: i0.VersionedTable(
-        entityName: 'favorites',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_6,
-          _column_7,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'favorites',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_6, _column_7],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape2 localSubscriptions = Shape2(
-      source: i0.VersionedTable(
-        entityName: 'local_subscriptions',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_8,
-          _column_9,
-          _column_10,
-          _column_11,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'local_subscriptions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_8, _column_9, _column_10, _column_11],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape3 userLabels = Shape3(
-      source: i0.VersionedTable(
-        entityName: 'user_labels',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_12,
-          _column_13,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'user_labels',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_12, _column_13],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape5 drafts = Shape5(
-      source: i0.VersionedTable(
-        entityName: 'drafts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_14,
-          _column_15,
-          _column_16,
-          _column_17,
-          _column_18,
-          _column_20,
-          _column_19,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'drafts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_14,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_20,
+        _column_19,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
 }
 
 class Shape6 extends i0.VersionedTable {
   Shape6({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get username => columnsByName['username']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get jwt => columnsByName['jwt']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get instance => columnsByName['instance']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<bool> get anonymous => columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
-  i1.GeneratedColumn<int> get userId => columnsByName['user_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get listIndex => columnsByName['list_index']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get username =>
+      columnsByName['username']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get jwt =>
+      columnsByName['jwt']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get instance =>
+      columnsByName['instance']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get anonymous =>
+      columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<int> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get listIndex =>
+      columnsByName['list_index']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_21(String aliasedName) => i1.GeneratedColumn<int>('list_index', aliasedName, false, type: i1.DriftSqlType.int, defaultValue: const CustomExpression('-1'));
+i1.GeneratedColumn<int> _column_21(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'list_index',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      defaultValue: const CustomExpression('-1'),
+    );
 
 final class Schema6 extends i0.VersionedSchema {
   Schema6({required super.database}) : super(version: 6);
@@ -462,103 +603,109 @@ final class Schema6 extends i0.VersionedSchema {
     drafts,
   ];
   late final Shape6 accounts = Shape6(
-      source: i0.VersionedTable(
-        entityName: 'accounts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_1,
-          _column_2,
-          _column_3,
-          _column_4,
-          _column_5,
-          _column_21,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_21,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape1 favorites = Shape1(
-      source: i0.VersionedTable(
-        entityName: 'favorites',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_6,
-          _column_7,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'favorites',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_6, _column_7],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape2 localSubscriptions = Shape2(
-      source: i0.VersionedTable(
-        entityName: 'local_subscriptions',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_8,
-          _column_9,
-          _column_10,
-          _column_11,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'local_subscriptions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_8, _column_9, _column_10, _column_11],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape3 userLabels = Shape3(
-      source: i0.VersionedTable(
-        entityName: 'user_labels',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_12,
-          _column_13,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'user_labels',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_12, _column_13],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape7 drafts = Shape7(
-      source: i0.VersionedTable(
-        entityName: 'drafts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_14,
-          _column_15,
-          _column_16,
-          _column_17,
-          _column_18,
-          _column_20,
-          _column_22,
-          _column_19,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'drafts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_14,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_20,
+        _column_22,
+        _column_19,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
 }
 
 class Shape7 extends i0.VersionedTable {
   Shape7({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get draftType => columnsByName['draft_type']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<int> get existingId => columnsByName['existing_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get replyId => columnsByName['reply_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get title => columnsByName['title']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get url => columnsByName['url']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get customThumbnail => columnsByName['custom_thumbnail']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get altText => columnsByName['alt_text']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get body => columnsByName['body']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get draftType =>
+      columnsByName['draft_type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get existingId =>
+      columnsByName['existing_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get replyId =>
+      columnsByName['reply_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get url =>
+      columnsByName['url']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get customThumbnail =>
+      columnsByName['custom_thumbnail']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get altText =>
+      columnsByName['alt_text']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get body =>
+      columnsByName['body']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_22(String aliasedName) => i1.GeneratedColumn<String>('alt_text', aliasedName, true, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_22(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'alt_text',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
 
 final class Schema7 extends i0.VersionedSchema {
   Schema7({required super.database}) : super(version: 7);
@@ -571,103 +718,108 @@ final class Schema7 extends i0.VersionedSchema {
     drafts,
   ];
   late final Shape8 accounts = Shape8(
-      source: i0.VersionedTable(
-        entityName: 'accounts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_1,
-          _column_2,
-          _column_3,
-          _column_4,
-          _column_5,
-          _column_21,
-          _column_23,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_21,
+        _column_23,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape1 favorites = Shape1(
-      source: i0.VersionedTable(
-        entityName: 'favorites',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_6,
-          _column_7,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'favorites',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_6, _column_7],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape2 localSubscriptions = Shape2(
-      source: i0.VersionedTable(
-        entityName: 'local_subscriptions',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_8,
-          _column_9,
-          _column_10,
-          _column_11,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'local_subscriptions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_8, _column_9, _column_10, _column_11],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape3 userLabels = Shape3(
-      source: i0.VersionedTable(
-        entityName: 'user_labels',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_12,
-          _column_13,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'user_labels',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_12, _column_13],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape7 drafts = Shape7(
-      source: i0.VersionedTable(
-        entityName: 'drafts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_14,
-          _column_15,
-          _column_16,
-          _column_17,
-          _column_18,
-          _column_20,
-          _column_22,
-          _column_19,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'drafts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_14,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_20,
+        _column_22,
+        _column_19,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
 }
 
 class Shape8 extends i0.VersionedTable {
   Shape8({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get username => columnsByName['username']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get jwt => columnsByName['jwt']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get instance => columnsByName['instance']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<bool> get anonymous => columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
-  i1.GeneratedColumn<int> get userId => columnsByName['user_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get listIndex => columnsByName['list_index']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get platform => columnsByName['platform']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get username =>
+      columnsByName['username']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get jwt =>
+      columnsByName['jwt']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get instance =>
+      columnsByName['instance']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get anonymous =>
+      columnsByName['anonymous']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<int> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get listIndex =>
+      columnsByName['list_index']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get platform =>
+      columnsByName['platform']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_23(String aliasedName) => i1.GeneratedColumn<String>('platform', aliasedName, true, type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_23(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'platform',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
 
 final class Schema8 extends i0.VersionedSchema {
   Schema8({required super.database}) : super(version: 8);
@@ -680,157 +832,365 @@ final class Schema8 extends i0.VersionedSchema {
     drafts,
   ];
   late final Shape9 accounts = Shape9(
-      source: i0.VersionedTable(
-        entityName: 'accounts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_25,
-          _column_26,
-          _column_27,
-          _column_28,
-          _column_29,
-          _column_30,
-          _column_31,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_24,
+        _column_25,
+        _column_26,
+        _column_27,
+        _column_28,
+        _column_29,
+        _column_30,
+        _column_31,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape1 favorites = Shape1(
-      source: i0.VersionedTable(
-        entityName: 'favorites',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_32,
-          _column_33,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'favorites',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_24, _column_32, _column_33],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape2 localSubscriptions = Shape2(
-      source: i0.VersionedTable(
-        entityName: 'local_subscriptions',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_34,
-          _column_35,
-          _column_36,
-          _column_37,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'local_subscriptions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_24, _column_34, _column_35, _column_36, _column_37],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape3 userLabels = Shape3(
-      source: i0.VersionedTable(
-        entityName: 'user_labels',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_38,
-          _column_39,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'user_labels',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_24, _column_38, _column_39],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape10 drafts = Shape10(
-      source: i0.VersionedTable(
-        entityName: 'drafts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_40,
-          _column_41,
-          _column_42,
-          _column_43,
-          _column_44,
-          _column_45,
-          _column_46,
-          _column_47,
-          _column_48,
-          _column_49,
-          _column_50,
-          _column_51,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'drafts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_24,
+        _column_40,
+        _column_41,
+        _column_42,
+        _column_43,
+        _column_44,
+        _column_45,
+        _column_46,
+        _column_47,
+        _column_48,
+        _column_49,
+        _column_50,
+        _column_51,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
 }
 
 class Shape9 extends i0.VersionedTable {
   Shape9({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get username => columnsByName['username']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get jwt => columnsByName['jwt']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get instance => columnsByName['instance']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<int> get anonymous => columnsByName['anonymous']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get userId => columnsByName['user_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get listIndex => columnsByName['list_index']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get platform => columnsByName['platform']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get username =>
+      columnsByName['username']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get jwt =>
+      columnsByName['jwt']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get instance =>
+      columnsByName['instance']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get anonymous =>
+      columnsByName['anonymous']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get listIndex =>
+      columnsByName['list_index']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get platform =>
+      columnsByName['platform']! as i1.GeneratedColumn<String>;
 }
 
 i1.GeneratedColumn<int> _column_24(String aliasedName) =>
-    i1.GeneratedColumn<int>('id', aliasedName, false, hasAutoIncrement: true, type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT');
-i1.GeneratedColumn<String> _column_25(String aliasedName) => i1.GeneratedColumn<String>('username', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_26(String aliasedName) => i1.GeneratedColumn<String>('jwt', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_27(String aliasedName) => i1.GeneratedColumn<String>('instance', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<int> _column_28(String aliasedName) => i1.GeneratedColumn<int>('anonymous', aliasedName, false,
-    type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL DEFAULT 0 CHECK (anonymous IN (0, 1))', defaultValue: const i1.CustomExpression('0'));
-i1.GeneratedColumn<int> _column_29(String aliasedName) => i1.GeneratedColumn<int>('user_id', aliasedName, true, type: i1.DriftSqlType.int, $customConstraints: 'NULL');
+    i1.GeneratedColumn<int>(
+      'id',
+      aliasedName,
+      false,
+      hasAutoIncrement: true,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT',
+    );
+i1.GeneratedColumn<String> _column_25(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'username',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<String> _column_26(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'jwt',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<String> _column_27(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'instance',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<int> _column_28(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'anonymous',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL DEFAULT 0 CHECK (anonymous IN (0, 1))',
+      defaultValue: const i1.CustomExpression('0'),
+    );
+i1.GeneratedColumn<int> _column_29(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'user_id',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NULL',
+    );
 i1.GeneratedColumn<int> _column_30(String aliasedName) =>
-    i1.GeneratedColumn<int>('list_index', aliasedName, false, type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL DEFAULT (-1)', defaultValue: const i1.CustomExpression('-1'));
-i1.GeneratedColumn<String> _column_31(String aliasedName) => i1.GeneratedColumn<String>('platform', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<int> _column_32(String aliasedName) => i1.GeneratedColumn<int>('account_id', aliasedName, false, type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<int> _column_33(String aliasedName) => i1.GeneratedColumn<int>('community_id', aliasedName, false, type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_34(String aliasedName) => i1.GeneratedColumn<String>('name', aliasedName, false, type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_35(String aliasedName) => i1.GeneratedColumn<String>('title', aliasedName, false, type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_36(String aliasedName) => i1.GeneratedColumn<String>('actor_id', aliasedName, false, type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_37(String aliasedName) => i1.GeneratedColumn<String>('icon', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_38(String aliasedName) => i1.GeneratedColumn<String>('username', aliasedName, false, type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<String> _column_39(String aliasedName) => i1.GeneratedColumn<String>('label', aliasedName, false, type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+    i1.GeneratedColumn<int>(
+      'list_index',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL DEFAULT (-1)',
+      defaultValue: const i1.CustomExpression('-1'),
+    );
+i1.GeneratedColumn<String> _column_31(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'platform',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<int> _column_32(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'account_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL',
+    );
+i1.GeneratedColumn<int> _column_33(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'community_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL',
+    );
+i1.GeneratedColumn<String> _column_34(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'name',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NOT NULL',
+    );
+i1.GeneratedColumn<String> _column_35(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'title',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NOT NULL',
+    );
+i1.GeneratedColumn<String> _column_36(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'actor_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NOT NULL',
+    );
+i1.GeneratedColumn<String> _column_37(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'icon',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<String> _column_38(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'username',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NOT NULL',
+    );
+i1.GeneratedColumn<String> _column_39(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'label',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NOT NULL',
+    );
 
 class Shape10 extends i0.VersionedTable {
   Shape10({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get id => columnsByName['id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get draftType => columnsByName['draft_type']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<int> get existingId => columnsByName['existing_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get replyId => columnsByName['reply_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get active => columnsByName['active']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get accountId => columnsByName['account_id']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get title => columnsByName['title']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get url => columnsByName['url']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get customThumbnail => columnsByName['custom_thumbnail']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<String> get altText => columnsByName['alt_text']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<int> get nsfw => columnsByName['nsfw']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get languageId => columnsByName['language_id']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<String> get body => columnsByName['body']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get draftType =>
+      columnsByName['draft_type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get existingId =>
+      columnsByName['existing_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get replyId =>
+      columnsByName['reply_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get active =>
+      columnsByName['active']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get accountId =>
+      columnsByName['account_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get url =>
+      columnsByName['url']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get customThumbnail =>
+      columnsByName['custom_thumbnail']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get altText =>
+      columnsByName['alt_text']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get nsfw =>
+      columnsByName['nsfw']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get languageId =>
+      columnsByName['language_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get body =>
+      columnsByName['body']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_40(String aliasedName) => i1.GeneratedColumn<String>('draft_type', aliasedName, false, type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
-i1.GeneratedColumn<int> _column_41(String aliasedName) => i1.GeneratedColumn<int>('existing_id', aliasedName, true, type: i1.DriftSqlType.int, $customConstraints: 'NULL');
-i1.GeneratedColumn<int> _column_42(String aliasedName) => i1.GeneratedColumn<int>('reply_id', aliasedName, true, type: i1.DriftSqlType.int, $customConstraints: 'NULL');
+i1.GeneratedColumn<String> _column_40(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'draft_type',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NOT NULL',
+    );
+i1.GeneratedColumn<int> _column_41(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'existing_id',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<int> _column_42(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'reply_id',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NULL',
+    );
 i1.GeneratedColumn<int> _column_43(String aliasedName) =>
-    i1.GeneratedColumn<int>('active', aliasedName, false, type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL DEFAULT 0 CHECK (active IN (0, 1))', defaultValue: const i1.CustomExpression('0'));
-i1.GeneratedColumn<String> _column_44(String aliasedName) => i1.GeneratedColumn<String>('account_id', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_45(String aliasedName) => i1.GeneratedColumn<String>('title', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_46(String aliasedName) => i1.GeneratedColumn<String>('url', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_47(String aliasedName) => i1.GeneratedColumn<String>('custom_thumbnail', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_48(String aliasedName) => i1.GeneratedColumn<String>('alt_text', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
+    i1.GeneratedColumn<int>(
+      'active',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL DEFAULT 0 CHECK (active IN (0, 1))',
+      defaultValue: const i1.CustomExpression('0'),
+    );
+i1.GeneratedColumn<String> _column_44(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'account_id',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<String> _column_45(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'title',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<String> _column_46(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'url',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<String> _column_47(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'custom_thumbnail',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<String> _column_48(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'alt_text',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
 i1.GeneratedColumn<int> _column_49(String aliasedName) =>
-    i1.GeneratedColumn<int>('nsfw', aliasedName, false, type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL DEFAULT 0 CHECK (nsfw IN (0, 1))', defaultValue: const i1.CustomExpression('0'));
-i1.GeneratedColumn<int> _column_50(String aliasedName) => i1.GeneratedColumn<int>('language_id', aliasedName, true, type: i1.DriftSqlType.int, $customConstraints: 'NULL');
-i1.GeneratedColumn<String> _column_51(String aliasedName) => i1.GeneratedColumn<String>('body', aliasedName, true, type: i1.DriftSqlType.string, $customConstraints: 'NULL');
+    i1.GeneratedColumn<int>(
+      'nsfw',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL DEFAULT 0 CHECK (nsfw IN (0, 1))',
+      defaultValue: const i1.CustomExpression('0'),
+    );
+i1.GeneratedColumn<int> _column_50(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'language_id',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NULL',
+    );
+i1.GeneratedColumn<String> _column_51(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'body',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
 
 final class Schema9 extends i0.VersionedSchema {
   Schema9({required super.database}) : super(version: 9);
@@ -844,119 +1204,121 @@ final class Schema9 extends i0.VersionedSchema {
     sessionState,
   ];
   late final Shape9 accounts = Shape9(
-      source: i0.VersionedTable(
-        entityName: 'accounts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_25,
-          _column_26,
-          _column_27,
-          _column_28,
-          _column_29,
-          _column_30,
-          _column_31,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_24,
+        _column_25,
+        _column_26,
+        _column_27,
+        _column_28,
+        _column_29,
+        _column_30,
+        _column_31,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape1 favorites = Shape1(
-      source: i0.VersionedTable(
-        entityName: 'favorites',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_32,
-          _column_33,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'favorites',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_24, _column_32, _column_33],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape2 localSubscriptions = Shape2(
-      source: i0.VersionedTable(
-        entityName: 'local_subscriptions',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_34,
-          _column_35,
-          _column_36,
-          _column_37,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'local_subscriptions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_24, _column_34, _column_35, _column_36, _column_37],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape3 userLabels = Shape3(
-      source: i0.VersionedTable(
-        entityName: 'user_labels',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_38,
-          _column_39,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'user_labels',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_24, _column_38, _column_39],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape10 drafts = Shape10(
-      source: i0.VersionedTable(
-        entityName: 'drafts',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_24,
-          _column_40,
-          _column_41,
-          _column_42,
-          _column_43,
-          _column_44,
-          _column_45,
-          _column_46,
-          _column_47,
-          _column_48,
-          _column_49,
-          _column_50,
-          _column_51,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'drafts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_24,
+        _column_40,
+        _column_41,
+        _column_42,
+        _column_43,
+        _column_44,
+        _column_45,
+        _column_46,
+        _column_47,
+        _column_48,
+        _column_49,
+        _column_50,
+        _column_51,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
   late final Shape11 sessionState = Shape11(
-      source: i0.VersionedTable(
-        entityName: 'session_state',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [
-          'PRIMARY KEY(singleton)',
-        ],
-        columns: [
-          _column_52,
-          _column_53,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
+    source: i0.VersionedTable(
+      entityName: 'session_state',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(singleton)'],
+      columns: [_column_52, _column_53],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
 }
 
 class Shape11 extends i0.VersionedTable {
   Shape11({required super.source, required super.alias}) : super.aliased();
-  i1.GeneratedColumn<int> get singleton => columnsByName['singleton']! as i1.GeneratedColumn<int>;
-  i1.GeneratedColumn<int> get accountId => columnsByName['account_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get singleton =>
+      columnsByName['singleton']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get accountId =>
+      columnsByName['account_id']! as i1.GeneratedColumn<int>;
 }
 
 i1.GeneratedColumn<int> _column_52(String aliasedName) =>
-    i1.GeneratedColumn<int>('singleton', aliasedName, false, type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL DEFAULT 0', defaultValue: const i1.CustomExpression('0'));
+    i1.GeneratedColumn<int>(
+      'singleton',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NOT NULL DEFAULT 0',
+      defaultValue: const i1.CustomExpression('0'),
+    );
 i1.GeneratedColumn<int> _column_53(String aliasedName) =>
-    i1.GeneratedColumn<int>('account_id', aliasedName, true, type: i1.DriftSqlType.int, $customConstraints: 'NULL REFERENCES accounts(id)ON DELETE SET NULL');
+    i1.GeneratedColumn<int>(
+      'account_id',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+      $customConstraints: 'NULL REFERENCES accounts(id)ON DELETE SET NULL',
+    );
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
@@ -1024,15 +1386,15 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
   required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
   required Future<void> Function(i1.Migrator m, Schema9 schema) from8To9,
-}) =>
-    i0.VersionedSchema.stepByStepHelper(
-        step: migrationSteps(
-      from1To2: from1To2,
-      from2To3: from2To3,
-      from3To4: from3To4,
-      from4To5: from4To5,
-      from5To6: from5To6,
-      from6To7: from6To7,
-      from7To8: from7To8,
-      from8To9: from8To9,
-    ));
+}) => i0.VersionedSchema.stepByStepHelper(
+  step: migrationSteps(
+    from1To2: from1To2,
+    from2To3: from2To3,
+    from3To4: from3To4,
+    from4To5: from4To5,
+    from5To6: from5To6,
+    from6To7: from6To7,
+    from7To8: from7To8,
+    from8To9: from8To9,
+  ),
+);

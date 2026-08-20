@@ -33,15 +33,7 @@ Future<ThunderPost?> createExamplePost({
     published: DateTime.now(),
     apId: '',
     languageId: 0,
-    status: PostStatus(
-      deleted: false,
-      removed: false,
-      locked: locked ?? false,
-      nsfw: nsfw ?? false,
-      local: false,
-      featuredCommunity: pinned ?? false,
-      featuredLocal: false,
-    ),
+    status: PostStatus(deleted: false, removed: false, locked: locked ?? false, nsfw: nsfw ?? false, local: false, featuredCommunity: pinned ?? false, featuredLocal: false),
     creator: ThunderUser(
       id: 1,
       name: personName ?? 'Example Username',
@@ -62,13 +54,7 @@ Future<ThunderPost?> createExamplePost({
       status: const CommunityStatus(removed: false, deleted: false, nsfw: false, local: false, hidden: false, postingRestrictedToMods: false),
     ),
     counts: PostCounts(comments: commentCount ?? 0, score: scoreCount ?? 0, upvotes: 0, downvotes: 0, newestCommentAt: DateTime.now(), unreadComments: 0),
-    context: PostContext(
-      creatorBannedFromCommunity: false,
-      subscribed: SubscriptionStatus.notSubscribed,
-      saved: saved ?? false,
-      read: read ?? false,
-      creatorBlocked: false,
-    ),
+    context: PostContext(creatorBannedFromCommunity: false, subscribed: SubscriptionStatus.notSubscribed, saved: saved ?? false, read: read ?? false, creatorBlocked: false),
   );
 
   final posts = await parsePosts([post]);

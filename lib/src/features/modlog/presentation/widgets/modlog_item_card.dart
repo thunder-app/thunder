@@ -62,19 +62,12 @@ class ModlogItemCard extends StatelessWidget {
                 message: modName,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                  decoration: BoxDecoration(
-                    color: event.getModlogEventColor().withValues(alpha: 0.2),
-                    borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-                  ),
+                  decoration: BoxDecoration(color: event.getModlogEventColor().withValues(alpha: 0.2), borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))),
                   child: Row(
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 4.0),
-                        child: Icon(
-                          event.getModlogEventIcon(),
-                          size: 16.0 * metadataFontSizeScale.textScaleFactor,
-                          color: theme.colorScheme.onSurface,
-                        ),
+                        child: Icon(event.getModlogEventIcon(), size: 16.0 * metadataFontSizeScale.textScaleFactor, color: theme.colorScheme.onSurface),
                       ),
                       ThunderScalableText(
                         event.getModlogEventTypeName(),
@@ -105,9 +98,7 @@ class ModlogItemCard extends StatelessWidget {
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                     textScaleFactor: contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90),
-                    ),
+                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.90)),
                   ),
                 ),
               ],

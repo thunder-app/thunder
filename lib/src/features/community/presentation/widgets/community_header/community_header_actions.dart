@@ -26,12 +26,7 @@ class CommunityHeaderActions extends StatelessWidget {
   /// List of moderators for the community
   final List<ThunderUser> moderators;
 
-  const CommunityHeaderActions({
-    super.key,
-    required this.community,
-    this.instance,
-    required this.moderators,
-  });
+  const CommunityHeaderActions({super.key, required this.community, this.instance, required this.moderators});
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +45,7 @@ class _CommunityActionsContent extends StatelessWidget {
   /// List of moderators for the community
   final List<ThunderUser> moderators;
 
-  const _CommunityActionsContent({
-    required this.community,
-    this.instance,
-    required this.moderators,
-  });
+  const _CommunityActionsContent({required this.community, this.instance, required this.moderators});
 
   @override
   Widget build(BuildContext context) {
@@ -79,11 +70,7 @@ class _ActionChipsList extends StatelessWidget {
   /// List of moderators for the community
   final List<ThunderUser> moderators;
 
-  const _ActionChipsList({
-    required this.community,
-    this.instance,
-    required this.moderators,
-  });
+  const _ActionChipsList({required this.community, this.instance, required this.moderators});
 
   @override
   Widget build(BuildContext context) {
@@ -340,11 +327,7 @@ class _SearchActionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
-    return ThunderActionChip(
-      icon: Icons.search_rounded,
-      label: l10n.search,
-      onPressed: () => navigateToSearchPage(context),
-    );
+    return ThunderActionChip(icon: Icons.search_rounded, label: l10n.search, onPressed: () => navigateToSearchPage(context));
   }
 }
 
@@ -362,16 +345,8 @@ class _ModlogActionChip extends StatelessWidget {
     return ThunderActionChip(
       icon: Icons.shield_rounded,
       label: l10n.modlog,
-      onPressed: () => navigateToModlogPage(
-        context,
-        communityId: community.id,
-        subtitle: generateCommunityFullName(
-          context,
-          community.name,
-          community.title,
-          fetchInstanceNameFromUrl(community.actorId),
-        ),
-      ),
+      onPressed: () =>
+          navigateToModlogPage(context, communityId: community.id, subtitle: generateCommunityFullName(context, community.name, community.title, fetchInstanceNameFromUrl(community.actorId))),
     );
   }
 }
@@ -387,10 +362,6 @@ class _ShareActionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = GlobalContext.l10n;
 
-    return ThunderActionChip(
-      icon: Icons.share_rounded,
-      label: l10n.share,
-      onPressed: () => showCommunityShareSheet(context, community),
-    );
+    return ThunderActionChip(icon: Icons.share_rounded, label: l10n.share, onPressed: () => showCommunityShareSheet(context, community));
   }
 }

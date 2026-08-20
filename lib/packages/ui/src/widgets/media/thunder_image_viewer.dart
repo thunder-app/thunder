@@ -23,16 +23,10 @@ sealed class ThunderImageViewerSource {
   const ThunderImageViewerSource({this.contentType});
 
   /// Creates a source backed by raw in-memory image bytes.
-  const factory ThunderImageViewerSource.memory(
-    Uint8List bytes, {
-    String? contentType,
-  }) = ThunderImageViewerMemorySource;
+  const factory ThunderImageViewerSource.memory(Uint8List bytes, {String? contentType}) = ThunderImageViewerMemorySource;
 
   /// Creates a source backed by a network image URL.
-  const factory ThunderImageViewerSource.network(
-    String url, {
-    String? contentType,
-  }) = ThunderImageViewerNetworkSource;
+  const factory ThunderImageViewerSource.network(String url, {String? contentType}) = ThunderImageViewerNetworkSource;
 
   /// The MIME content type associated with this image, if known.
   final String? contentType;
@@ -58,11 +52,7 @@ class ThunderImageViewerNetworkSource extends ThunderImageViewerSource {
   final String url;
 }
 
-enum _ViewerGestureMode {
-  idle,
-  transform,
-  dismiss,
-}
+enum _ViewerGestureMode { idle, transform, dismiss }
 
 class ThunderImageViewer extends StatefulWidget {
   /// Creates an interactive image viewer.
@@ -93,8 +83,8 @@ class ThunderImageViewer extends StatefulWidget {
     this.onScaleChanged,
     this.onTap,
     this.semanticLabel,
-  })  : assert(minScale > 0),
-        assert(maxScale >= minScale);
+  }) : assert(minScale > 0),
+       assert(maxScale >= minScale);
 
   /// The color painted behind the image.
   ///
@@ -326,10 +316,7 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
     final scaledWidth = baseContentSize.width * scale;
     final scaledHeight = baseContentSize.height * scale;
 
-    return Offset(
-      math.max((scaledWidth - _viewportSize.width) / 2, 0),
-      math.max((scaledHeight - _viewportSize.height) / 2, 0),
-    );
+    return Offset(math.max((scaledWidth - _viewportSize.width) / 2, 0), math.max((scaledHeight - _viewportSize.height) / 2, 0));
   }
 
   Offset _clampOffset(Offset offset, Size baseContentSize, double scale) {
@@ -339,19 +326,10 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
 
     final maxOffset = _maxPanOffset(baseContentSize, scale);
 
-    return Offset(
-      offset.dx.clamp(-maxOffset.dx, maxOffset.dx),
-      offset.dy.clamp(-maxOffset.dy, maxOffset.dy),
-    );
+    return Offset(offset.dx.clamp(-maxOffset.dx, maxOffset.dx), offset.dy.clamp(-maxOffset.dy, maxOffset.dy));
   }
 
-  Offset _anchoredOffsetForScale({
-    required Offset baseAnchor,
-    required Offset targetAnchor,
-    required Offset baseOffset,
-    required double baseScale,
-    required double targetScale,
-  }) {
+  Offset _anchoredOffsetForScale({required Offset baseAnchor, required Offset targetAnchor, required Offset baseOffset, required double baseScale, required double targetScale}) {
     final viewportCenter = _viewportSize.center(Offset.zero);
     final contentPoint = (baseAnchor - viewportCenter - baseOffset) / baseScale;
     final targetOffset = targetAnchor - viewportCenter - contentPoint * targetScale;
@@ -388,13 +366,7 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
     final targetScale = _nextDoubleTapScale();
     final targetOffset = targetScale <= widget.minScale + _gestureEpsilon
         ? Offset.zero
-        : _anchoredOffsetForScale(
-            baseAnchor: anchor,
-            targetAnchor: anchor,
-            baseOffset: _offset,
-            baseScale: _scale,
-            targetScale: targetScale,
-          );
+        : _anchoredOffsetForScale(baseAnchor: anchor, targetAnchor: anchor, baseOffset: _offset, baseScale: _scale, targetScale: targetScale);
 
     _animateTo(targetScale: targetScale, targetOffset: targetOffset);
   }
@@ -420,13 +392,7 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
     final targetScale = (_doubleTapBaseScale * (1 + scaleDelta)).clamp(widget.minScale, widget.maxScale);
     final targetOffset = targetScale <= widget.minScale + _gestureEpsilon
         ? Offset.zero
-        : _anchoredOffsetForScale(
-            baseAnchor: anchor,
-            targetAnchor: anchor,
-            baseOffset: _doubleTapBaseOffset,
-            baseScale: _doubleTapBaseScale,
-            targetScale: targetScale,
-          );
+        : _anchoredOffsetForScale(baseAnchor: anchor, targetAnchor: anchor, baseOffset: _doubleTapBaseOffset, baseScale: _doubleTapBaseScale, targetScale: targetScale);
 
     setState(() {
       _setScale(targetScale);
@@ -571,13 +537,7 @@ class _ThunderImageViewerState extends State<ThunderImageViewer> with TickerProv
       final nextScale = (_gestureStartScale * details.scale).clamp(widget.minScale, widget.maxScale);
       final nextOffset = nextScale <= widget.minScale + _gestureEpsilon
           ? Offset.zero
-          : _anchoredOffsetForScale(
-              baseAnchor: gestureStartFocalPoint,
-              targetAnchor: focalPoint,
-              baseOffset: _gestureStartOffset,
-              baseScale: _gestureStartScale,
-              targetScale: nextScale,
-            );
+          : _anchoredOffsetForScale(baseAnchor: gestureStartFocalPoint, targetAnchor: focalPoint, baseOffset: _gestureStartOffset, baseScale: _gestureStartScale, targetScale: nextScale);
 
       setState(() {
         _setScale(nextScale);
@@ -716,12 +676,7 @@ class _ThunderImageViewerImage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (source is ThunderImageViewerMemorySource) {
       final memorySource = source as ThunderImageViewerMemorySource;
-      return Image.memory(
-        memorySource.bytes,
-        filterQuality: filterQuality,
-        fit: BoxFit.contain,
-        semanticLabel: semanticLabel,
-      );
+      return Image.memory(memorySource.bytes, filterQuality: filterQuality, fit: BoxFit.contain, semanticLabel: semanticLabel);
     }
 
     final networkSource = source as ThunderImageViewerNetworkSource;
@@ -742,12 +697,7 @@ class _ThunderImageViewerImage extends StatelessWidget {
       fadeOutDuration: Duration.zero,
       fit: BoxFit.contain,
       imageBuilder: (context, imageProvider) {
-        return Image(
-          image: imageProvider,
-          filterQuality: filterQuality,
-          fit: BoxFit.contain,
-          semanticLabel: semanticLabel,
-        );
+        return Image(image: imageProvider, filterQuality: filterQuality, fit: BoxFit.contain, semanticLabel: semanticLabel);
       },
       placeholder: (context, url) => loadingBuilder?.call(context) ?? const _ThunderImageViewerLoader(),
       errorWidget: (context, url, error) {

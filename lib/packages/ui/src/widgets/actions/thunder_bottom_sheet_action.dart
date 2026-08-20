@@ -7,15 +7,7 @@ import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
 /// Can provide optional [leading] and [trailing] widgets. When tapped, calls [onTap].
 @immutable
 class ThunderBottomSheetAction extends StatelessWidget {
-  const ThunderBottomSheetAction({
-    super.key,
-    required this.leading,
-    this.trailing,
-    required this.title,
-    this.subtitle,
-    required this.onTap,
-    this.onLongPress,
-  });
+  const ThunderBottomSheetAction({super.key, required this.leading, this.trailing, required this.title, this.subtitle, required this.onTap, this.onLongPress});
 
   /// The leading widget.
   final Widget leading;

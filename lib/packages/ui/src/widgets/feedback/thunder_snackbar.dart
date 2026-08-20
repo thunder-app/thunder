@@ -57,15 +57,7 @@ void showThunderSnackbar(
 
 /// Row content for [ThunderSnackbar] with icons and actions.
 class _ThunderSnackbarContent extends StatelessWidget {
-  const _ThunderSnackbarContent({
-    required this.text,
-    required this.closable,
-    this.leadingIcon,
-    this.leadingIconColor,
-    this.trailingIcon,
-    this.trailingIconColor,
-    this.trailingAction,
-  });
+  const _ThunderSnackbarContent({required this.text, required this.closable, this.leadingIcon, this.leadingIconColor, this.trailingIcon, this.trailingIconColor, this.trailingAction});
 
   /// The snackbar message text.
   final String text;
@@ -96,10 +88,7 @@ class _ThunderSnackbarContent extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        if (leadingIcon != null) ...[
-          Icon(leadingIcon, color: leadingIconColor),
-          const SizedBox(width: 8.0),
-        ],
+        if (leadingIcon != null) ...[Icon(leadingIcon, color: leadingIconColor), const SizedBox(width: 8.0)],
         Expanded(child: Text(text)),
         if (trailingIcon != null)
           Padding(
@@ -152,16 +141,9 @@ class _ThunderSnackbarNotificationState extends State<_ThunderSnackbarNotificati
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: _snackBarTransitionDuration,
-    );
+    _controller = AnimationController(vsync: this, duration: _snackBarTransitionDuration);
     _fadeInM3Animation = CurvedAnimation(parent: _controller, curve: _snackBarM3FadeInCurve, reverseCurve: _snackBarFadeOutCurve);
-    _heightM3Animation = CurvedAnimation(
-      parent: _controller,
-      curve: _snackBarM3HeightCurve,
-      reverseCurve: const Threshold(0.0),
-    );
+    _heightM3Animation = CurvedAnimation(parent: _controller, curve: _snackBarM3HeightCurve, reverseCurve: const Threshold(0.0));
   }
 
   @override
@@ -190,11 +172,7 @@ class _ThunderSnackbarNotificationState extends State<_ThunderSnackbarNotificati
       child: AnimatedBuilder(
         animation: _heightM3Animation,
         builder: (BuildContext context, Widget? child) {
-          return Align(
-            alignment: AlignmentDirectional.bottomStart,
-            heightFactor: _heightM3Animation.value,
-            child: child,
-          );
+          return Align(alignment: AlignmentDirectional.bottomStart, heightFactor: _heightM3Animation.value, child: child);
         },
         child: widget.builder(context),
       ),
@@ -204,12 +182,7 @@ class _ThunderSnackbarNotificationState extends State<_ThunderSnackbarNotificati
 
 /// Material snackbar body positioned above the bottom navigation bar.
 class ThunderSnackbar extends StatefulWidget {
-  const ThunderSnackbar({
-    super.key,
-    required this.content,
-    this.closable = true,
-    this.backgroundColor,
-  });
+  const ThunderSnackbar({super.key, required this.content, this.closable = true, this.backgroundColor});
 
   /// Snackbar body content, typically a [Row] of text and action icons.
   final Widget content;

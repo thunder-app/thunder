@@ -1,28 +1,18 @@
 import 'package:thunder/src/features/post/post.dart';
 
-List<ThunderPost> hidePostsByIds({
-  required List<ThunderPost> posts,
-  required Set<int> postIds,
-}) {
+List<ThunderPost> hidePostsByIds({required List<ThunderPost> posts, required Set<int> postIds}) {
   final updatedPosts = List<ThunderPost>.from(posts);
   updatedPosts.removeWhere((post) => postIds.contains(post.id));
   return updatedPosts;
 }
 
-List<ThunderPost> replaceAt({
-  required List<ThunderPost> source,
-  required int index,
-  required ThunderPost value,
-}) {
+List<ThunderPost> replaceAt({required List<ThunderPost> source, required int index, required ThunderPost value}) {
   final updated = List<ThunderPost>.from(source);
   updated[index] = value;
   return updated;
 }
 
-({List<int> indexes, List<int> ids, List<ThunderPost> posts}) collectByIds({
-  required List<ThunderPost> source,
-  required List<int> ids,
-}) {
+({List<int> indexes, List<int> ids, List<ThunderPost> posts}) collectByIds({required List<ThunderPost> source, required List<int> ids}) {
   final indexes = <int>[];
   final postIds = <int>[];
   final posts = <ThunderPost>[];

@@ -3,13 +3,7 @@ import 'package:flutter/material.dart';
 /// Title row for Thunder bottom sheets with optional leading and trailing slots.
 @immutable
 class ThunderBottomSheetHeader extends StatelessWidget {
-  const ThunderBottomSheetHeader({
-    super.key,
-    required this.title,
-    this.subtitle,
-    this.leading,
-    this.trailing,
-  });
+  const ThunderBottomSheetHeader({super.key, required this.title, this.subtitle, this.leading, this.trailing});
 
   /// Primary heading text.
   final String title;
@@ -32,23 +26,17 @@ class ThunderBottomSheetHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (leading != null) ...[
-            leading!,
-            const SizedBox(width: 12.0),
-          ],
+          if (leading != null) ...[leading!, const SizedBox(width: 12.0)],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: theme.textTheme.titleLarge),
-                if (subtitle != null) ...[
-                  const SizedBox(height: 2.0),
-                  Text(subtitle!, style: theme.textTheme.bodySmall),
-                ],
+                if (subtitle != null) ...[const SizedBox(height: 2.0), Text(subtitle!, style: theme.textTheme.bodySmall)],
               ],
             ),
           ),
-          if (trailing != null) trailing!,
+          ?trailing,
         ],
       ),
     );
@@ -57,14 +45,7 @@ class ThunderBottomSheetHeader extends StatelessWidget {
 
 /// Multi-page bottom sheet navigator with a shared header and back/close controls.
 class ThunderBottomSheetNavigator<T> extends StatefulWidget {
-  const ThunderBottomSheetNavigator({
-    super.key,
-    required this.initialPage,
-    required this.pageBuilder,
-    required this.titleBuilder,
-    this.canPop,
-    this.onClose,
-  });
+  const ThunderBottomSheetNavigator({super.key, required this.initialPage, required this.pageBuilder, required this.titleBuilder, this.canPop, this.onClose});
 
   /// The first page pushed onto the internal navigation stack.
   final T initialPage;
@@ -116,12 +97,7 @@ class _ThunderBottomSheetNavigatorState<T> extends State<ThunderBottomSheetNavig
         children: [
           ThunderBottomSheetHeader(
             title: widget.titleBuilder(context, _current),
-            leading: canPop
-                ? IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded),
-                    onPressed: _goBack,
-                  )
-                : null,
+            leading: canPop ? IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: _goBack) : null,
             trailing: IconButton(
               icon: const Icon(Icons.close_rounded),
               onPressed: () {
@@ -131,10 +107,7 @@ class _ThunderBottomSheetNavigatorState<T> extends State<ThunderBottomSheetNavig
             ),
           ),
           Flexible(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 150),
-              child: widget.pageBuilder(context, _current, _goTo, _goBack),
-            ),
+            child: AnimatedSwitcher(duration: const Duration(milliseconds: 150), child: widget.pageBuilder(context, _current, _goTo, _goBack)),
           ),
         ],
       ),

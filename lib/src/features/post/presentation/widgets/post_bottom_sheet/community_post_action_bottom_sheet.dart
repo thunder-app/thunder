@@ -11,31 +11,11 @@ import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on a community
 enum CommunityPostAction {
-  viewCommunity(
-    icon: Icons.home_work_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  subscribeToCommunity(
-    icon: Icons.add_circle_outline_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  unsubscribeFromCommunity(
-    icon: Icons.remove_circle_outline_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  blockCommunity(
-    icon: Icons.block_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  unblockCommunity(
-    icon: Icons.block_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  );
+  viewCommunity(icon: Icons.home_work_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  subscribeToCommunity(icon: Icons.add_circle_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  unsubscribeFromCommunity(icon: Icons.remove_circle_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  blockCommunity(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  unblockCommunity(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true);
 
   String get name {
     final l10n = GlobalContext.l10n;
@@ -193,11 +173,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
       mainAxisSize: MainAxisSize.min,
       children: [
         ...userActions.map<Widget>(
-          (communityPostAction) => ThunderBottomSheetAction(
-            leading: Icon(communityPostAction.icon),
-            title: communityPostAction.name,
-            onTap: () => performAction(communityPostAction),
-          ),
+          (communityPostAction) => ThunderBottomSheetAction(leading: Icon(communityPostAction.icon), title: communityPostAction.name, onTap: () => performAction(communityPostAction)),
         ),
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
@@ -206,11 +182,7 @@ class _CommunityPostActionBottomSheetState extends State<CommunityPostActionBott
               leading: Icon(communityPostAction.icon),
               trailing: Padding(
                 padding: const EdgeInsets.only(left: 1),
-                child: Icon(
-                  ThunderIcon.shield,
-                  size: 20,
-                  color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-                ),
+                child: Icon(ThunderIcon.shield, size: 20, color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green)),
               ),
               title: communityPostAction.name,
               onTap: () => performAction(communityPostAction),

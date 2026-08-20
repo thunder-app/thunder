@@ -25,26 +25,12 @@ class AccountPlaceholder extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ThunderStateIcon(
-            icon: Icons.people_rounded,
-            color: theme.dividerColor,
-          ),
+          ThunderStateIcon(icon: Icons.people_rounded, color: theme.dividerColor),
           const SizedBox(height: 16),
-          ThunderStateText(
-            title: l10n.browsingAnonymously(account.instance),
-            message: l10n.addAccountToSeeProfile,
-            titleStyle: bodyStyle,
-            messageStyle: bodyStyle,
-          ),
+          ThunderStateText(title: l10n.browsingAnonymously(account.instance), message: l10n.addAccountToSeeProfile, titleStyle: bodyStyle, messageStyle: bodyStyle),
           const SizedBox(height: 24),
           ThunderStateActions(
-            actions: [
-              ThunderStateAction(
-                label: l10n.manageAccounts,
-                onPressed: () => showProfileModalSheet(context),
-                primary: true,
-              ),
-            ],
+            actions: [ThunderStateAction(label: l10n.manageAccounts, onPressed: () => showProfileModalSheet(context), primary: true)],
           ),
         ],
       ),

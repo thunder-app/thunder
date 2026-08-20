@@ -59,16 +59,8 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
               showSelectedIcon: false,
               style: SegmentedButton.styleFrom(visualDensity: VisualDensity.compact, minimumSize: Size.zero),
               segments: <ButtonSegment<ReportResolveStatus>>[
-                ButtonSegment<ReportResolveStatus>(
-                  value: ReportResolveStatus.unresolved,
-                  label: Text(l10n.unresolved),
-                  icon: const Icon(Icons.remove_done_rounded),
-                ),
-                ButtonSegment<ReportResolveStatus>(
-                  value: ReportResolveStatus.all,
-                  label: Text(l10n.all),
-                  icon: const Icon(Icons.list_alt_rounded),
-                ),
+                ButtonSegment<ReportResolveStatus>(value: ReportResolveStatus.unresolved, label: Text(l10n.unresolved), icon: const Icon(Icons.remove_done_rounded)),
+                ButtonSegment<ReportResolveStatus>(value: ReportResolveStatus.all, label: Text(l10n.all), icon: const Icon(Icons.list_alt_rounded)),
               ],
               selected: <ReportResolveStatus>{status},
               onSelectionChanged: (Set<ReportResolveStatus> newSelection) {
@@ -88,10 +80,7 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
             ),
             Align(
               alignment: Alignment.bottomRight,
-              child: TextButton(
-                onPressed: () => widget.onSubmit(status, community),
-                child: Text(l10n.apply),
-              ),
+              child: TextButton(onPressed: () => widget.onSubmit(status, community), child: Text(l10n.apply)),
             ),
           ],
         ),

@@ -17,28 +17,16 @@ class NotificationPayload {
   /// Whether or not this notification is a group
   final bool group;
 
-  NotificationPayload({
-    required this.type,
-    this.id,
-    required this.accountId,
-    required this.inboxType,
-    required this.group,
-  });
+  NotificationPayload({required this.type, this.id, required this.accountId, required this.inboxType, required this.group});
 
   NotificationPayload.fromJson(Map<String, dynamic> json)
-      : type = NotificationType.values.byName(json['type'] as String),
-        id = json['id'] as int?,
-        accountId = json['accountId'] as String,
-        inboxType = NotificationInboxType.values.byName(json['inboxType'] as String),
-        group = json['group'] as bool;
+    : type = NotificationType.values.byName(json['type'] as String),
+      id = json['id'] as int?,
+      accountId = json['accountId'] as String,
+      inboxType = NotificationInboxType.values.byName(json['inboxType'] as String),
+      group = json['group'] as bool;
 
-  Map<String, dynamic> toJson() => {
-        'type': type.name,
-        'id': id,
-        'accountId': accountId,
-        'inboxType': inboxType.name,
-        'group': group,
-      };
+  Map<String, dynamic> toJson() => {'type': type.name, 'id': id, 'accountId': accountId, 'inboxType': inboxType.name, 'group': group};
 }
 
 class NotificationGroupKey {

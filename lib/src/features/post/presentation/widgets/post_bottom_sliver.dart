@@ -15,10 +15,7 @@ class PostBottomSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: PostPageFeedEnd(
-        key: ValueKey(postKey),
-        appBarKey: appBarKey,
-      ),
+      child: PostPageFeedEnd(key: ValueKey(postKey), appBarKey: appBarKey),
     );
   }
 }

@@ -18,9 +18,7 @@ enum CommentAction {
   /// Admin level post actions
   purge(permissionType: PermissionType.admin);
 
-  const CommentAction({
-    required this.permissionType,
-  });
+  const CommentAction({required this.permissionType});
 
   final PermissionType permissionType;
 }

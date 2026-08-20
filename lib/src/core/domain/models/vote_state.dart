@@ -10,10 +10,10 @@ enum VoteState {
 
   /// Score value used when an API expects `1`, `0`, or `-1`.
   int get score => switch (this) {
-        VoteState.up => 1,
-        VoteState.down => -1,
-        VoteState.none => 0,
-      };
+    VoteState.up => 1,
+    VoteState.down => -1,
+    VoteState.none => 0,
+  };
 
   /// Creates a vote state from a score-style value.
   static VoteState fromScore(int? score) {

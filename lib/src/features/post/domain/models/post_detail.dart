@@ -13,11 +13,7 @@ class PostDetail extends Equatable {
   /// Cross-posted versions of the post, when available.
   final List<ThunderPost> crossPosts;
 
-  const PostDetail({
-    required this.post,
-    this.moderators = const [],
-    this.crossPosts = const [],
-  });
+  const PostDetail({required this.post, this.moderators = const [], this.crossPosts = const []});
 
   @override
   List<Object?> get props => [post, moderators, crossPosts];

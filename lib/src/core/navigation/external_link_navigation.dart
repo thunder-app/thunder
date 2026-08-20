@@ -50,14 +50,8 @@ void openExternalLink(BuildContext context, {required String url, bool isVideo =
     launchUrl(
       Uri.parse(url),
       customTabsOptions: CustomTabsOptions(
-        browser: const CustomTabsBrowserConfiguration(
-          prefersDefaultBrowser: true,
-        ),
-        colorSchemes: CustomTabsColorSchemes(
-          defaultPrams: CustomTabsColorSchemeParams(
-            toolbarColor: Theme.of(context).canvasColor,
-          ),
-        ),
+        browser: const CustomTabsBrowserConfiguration(prefersDefaultBrowser: true),
+        colorSchemes: CustomTabsColorSchemes(defaultPrams: CustomTabsColorSchemeParams(toolbarColor: Theme.of(context).canvasColor)),
         shareState: CustomTabsShareState.browserDefault,
         urlBarHidingEnabled: true,
         showTitle: true,
@@ -133,8 +127,8 @@ void navigateToWebView(BuildContext context, String url) {
     transitionDuration: isLoadingPageShown
         ? Duration.zero
         : reduceAnimations
-            ? const Duration(milliseconds: 100)
-            : null,
+        ? const Duration(milliseconds: 100)
+        : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,

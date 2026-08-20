@@ -70,22 +70,21 @@ class Draft {
     bool? nsfw,
     int? languageId,
     String? body,
-  }) =>
-      Draft(
-        id: id ?? this.id,
-        draftType: draftType ?? this.draftType,
-        existingId: existingId ?? this.existingId,
-        replyId: replyId ?? this.replyId,
-        active: active ?? this.active,
-        accountId: accountId ?? this.accountId,
-        title: title ?? this.title,
-        url: url ?? this.url,
-        customThumbnail: customThumbnail ?? this.customThumbnail,
-        altText: altText ?? this.altText,
-        nsfw: nsfw ?? this.nsfw,
-        languageId: languageId ?? this.languageId,
-        body: body ?? this.body,
-      );
+  }) => Draft(
+    id: id ?? this.id,
+    draftType: draftType ?? this.draftType,
+    existingId: existingId ?? this.existingId,
+    replyId: replyId ?? this.replyId,
+    active: active ?? this.active,
+    accountId: accountId ?? this.accountId,
+    title: title ?? this.title,
+    url: url ?? this.url,
+    customThumbnail: customThumbnail ?? this.customThumbnail,
+    altText: altText ?? this.altText,
+    nsfw: nsfw ?? this.nsfw,
+    languageId: languageId ?? this.languageId,
+    body: body ?? this.body,
+  );
 
   /// See whether this draft contains enough info to save for a post
   bool get isPostNotEmpty =>

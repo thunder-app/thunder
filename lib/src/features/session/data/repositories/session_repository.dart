@@ -26,10 +26,7 @@ abstract class SessionRepository {
   Future<void> removeSession(String sessionKey);
 
   /// Atomically updates the display order of authenticated and anonymous profiles.
-  Future<void> updateSessionOrder({
-    required List<Account> authenticatedSessions,
-    required List<Account> anonymousSessions,
-  });
+  Future<void> updateSessionOrder({required List<Account> authenticatedSessions, required List<Account> anonymousSessions});
 }
 
 /// Implementation of [SessionRepository] backed by local Drift storage.
@@ -148,17 +145,12 @@ class SessionRepositoryImpl implements SessionRepository {
   }
 
   @override
-  Future<void> updateSessionOrder({
-    required List<Account> authenticatedSessions,
-    required List<Account> anonymousSessions,
-  }) async {
+  Future<void> updateSessionOrder({required List<Account> authenticatedSessions, required List<Account> anonymousSessions}) async {
     await database.transaction(() async {
       final sessions = [...authenticatedSessions, ...anonymousSessions];
       for (var index = 0; index < sessions.length; index++) {
         final accountId = int.parse(sessions[index].id);
-        final updatedRows = await (database.update(database.accounts)..where((table) => table.id.equals(accountId))).write(
-          AccountsCompanion(listIndex: Value(index)),
-        );
+        final updatedRows = await (database.update(database.accounts)..where((table) => table.id.equals(accountId))).write(AccountsCompanion(listIndex: Value(index)));
         if (updatedRows != 1) throw StateError('Unable to update profile order for account $accountId');
       }
     });

@@ -41,15 +41,7 @@ class CommonMarkdownBody extends StatefulWidget {
   /// Optional source context used for link handling when this markdown is shown in an overlay.
   final BuildContext? launchContext;
 
-  const CommonMarkdownBody({
-    super.key,
-    required this.body,
-    this.hidden = false,
-    this.nsfw = false,
-    this.isComment,
-    this.imageMaxWidth,
-    this.launchContext,
-  });
+  const CommonMarkdownBody({super.key, required this.body, this.hidden = false, this.nsfw = false, this.isComment, this.imageMaxWidth, this.launchContext});
 
   @override
   State<CommonMarkdownBody> createState() => _CommonMarkdownBodyState();
@@ -77,26 +69,15 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
   static md.ExtensionSet _getExtensionSet() {
     final base = md.ExtensionSet.gitHubFlavored;
 
-    return md.ExtensionSet(
-      [...base.blockSyntaxes, SpoilerBlockSyntax()],
-      [...base.inlineSyntaxes, SuperscriptInlineSyntax(), SubscriptInlineSyntax()],
-    );
+    return md.ExtensionSet([...base.blockSyntaxes, SpoilerBlockSyntax()], [...base.inlineSyntaxes, SuperscriptInlineSyntax(), SubscriptInlineSyntax()]);
   }
 
   static List<md.InlineSyntax> _getInlineSyntaxes() {
-    return [
-      LemmyLinkSyntax(),
-      SubscriptInlineSyntax(),
-      SuperscriptInlineSyntax(),
-    ];
+    return [LemmyLinkSyntax(), SubscriptInlineSyntax(), SuperscriptInlineSyntax()];
   }
 
   static Map<String, MarkdownElementBuilder> _getBuilders() {
-    return {
-      'spoiler': SpoilerElementBuilder(),
-      'sub': SubscriptElementBuilder(),
-      'sup': SuperscriptElementBuilder(),
-    };
+    return {'spoiler': SpoilerElementBuilder(), 'sub': SubscriptElementBuilder(), 'sup': SuperscriptElementBuilder()};
   }
 
   TextScaler _getTextScaler() {
@@ -127,15 +108,8 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
           extensionSet: _customExtensionSet,
           inlineSyntaxes: _inlineSyntaxes,
           builders: _builders,
-          sizedImageBuilder: (config) => widget.hidden
-              ? const SizedBox.shrink()
-              : MarkdownImageWidget(
-                  uri: config.uri,
-                  alt: config.alt,
-                  nsfw: widget.nsfw,
-                  isComment: widget.isComment,
-                  imageMaxWidth: widget.imageMaxWidth,
-                ),
+          sizedImageBuilder: (config) =>
+              widget.hidden ? const SizedBox.shrink() : MarkdownImageWidget(uri: config.uri, alt: config.alt, nsfw: widget.nsfw, isComment: widget.isComment, imageMaxWidth: widget.imageMaxWidth),
           onTapLink: (text, url, title) {
             if (url != null) handleLink(navigationContext, url: url);
           },
@@ -166,14 +140,7 @@ class MarkdownImageWidget extends StatefulWidget {
   /// The maximum width of the image.
   final double? imageMaxWidth;
 
-  const MarkdownImageWidget({
-    super.key,
-    required this.uri,
-    required this.alt,
-    required this.nsfw,
-    this.isComment,
-    this.imageMaxWidth,
-  });
+  const MarkdownImageWidget({super.key, required this.uri, required this.alt, required this.nsfw, this.isComment, this.imageMaxWidth});
 
   /// Holds a cache of previously retrieved SVG results.
   static final Map<String, bool> _svgCache = {};
@@ -213,12 +180,7 @@ class _MarkdownImageWidgetState extends State<MarkdownImageWidget> {
       dimensions = await retrieveImageDimensions(imageUrl: uri!);
       if (dimensions == null) return;
 
-      dimensions = getScaledMediaSize(
-        width: dimensions!.width,
-        height: dimensions!.height,
-        offset: 0,
-        tabletMode: true,
-      )!;
+      dimensions = getScaledMediaSize(width: dimensions!.width, height: dimensions!.height, offset: 0, tabletMode: true)!;
       if (mounted) setState(() {});
     } catch (e) {
       debugPrint('Error getting image dimensions: $uri - $e');
@@ -269,21 +231,11 @@ class _MarkdownImageWidgetState extends State<MarkdownImageWidget> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           isSvg
-              ? _MarkdownSvgWidget(
-                  uri: widget.uri,
-                  isComment: widget.isComment,
-                  imageMaxWidth: widget.imageMaxWidth,
-                )
+              ? _MarkdownSvgWidget(uri: widget.uri, isComment: widget.isComment, imageMaxWidth: widget.imageMaxWidth)
               : MediaView(
                   viewMode: ViewMode.comment,
                   hideNsfwPreviews: widget.nsfw,
-                  media: Media(
-                    mediaType: MediaType.image,
-                    mediaUrl: uri,
-                    nsfw: widget.nsfw,
-                    width: dimensions?.width,
-                    height: dimensions?.height,
-                  ),
+                  media: Media(mediaType: MediaType.image, mediaUrl: uri, nsfw: widget.nsfw, width: dimensions?.width, height: dimensions?.height),
                 ),
         ],
       ),

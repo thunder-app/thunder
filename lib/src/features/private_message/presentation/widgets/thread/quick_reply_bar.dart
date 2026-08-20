@@ -6,14 +6,7 @@ import 'package:thunder/src/core/config/global_context.dart';
 /// Reply field for sending a short direct-messages.
 class QuickReplyBar extends StatelessWidget {
   /// Creates a compact reply bar with a shortcut to the full editor.
-  const QuickReplyBar({
-    super.key,
-    required this.controller,
-    required this.canSend,
-    required this.sending,
-    required this.onOpenComposer,
-    required this.onSend,
-  });
+  const QuickReplyBar({super.key, required this.controller, required this.canSend, required this.sending, required this.onOpenComposer, required this.onSend});
 
   /// Controls the quick reply text field.
   final TextEditingController controller;

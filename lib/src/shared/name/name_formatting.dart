@@ -1,11 +1,6 @@
 import 'package:thunder/src/shared/name/name_style.dart';
 
-String formatUserFullNamePrefix(
-  String? name,
-  String? displayName, {
-  required FullNameSeparator separator,
-  required bool useDisplayName,
-}) {
+String formatUserFullNamePrefix(String? name, String? displayName, {required FullNameSeparator separator, required bool useDisplayName}) {
   final resolvedName = (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '';
 
   return switch (separator) {
@@ -15,10 +10,7 @@ String formatUserFullNamePrefix(
   };
 }
 
-String formatUserFullNameSuffix(
-  String? instance, {
-  required FullNameSeparator separator,
-}) {
+String formatUserFullNameSuffix(String? instance, {required FullNameSeparator separator}) {
   return switch (separator) {
     FullNameSeparator.dot => ' · $instance',
     FullNameSeparator.at => '@$instance',
@@ -26,12 +18,7 @@ String formatUserFullNameSuffix(
   };
 }
 
-String formatCommunityFullNamePrefix(
-  String? name,
-  String? displayName, {
-  required FullNameSeparator separator,
-  required bool useDisplayName,
-}) {
+String formatCommunityFullNamePrefix(String? name, String? displayName, {required FullNameSeparator separator, required bool useDisplayName}) {
   final resolvedName = (useDisplayName && displayName?.isNotEmpty == true ? displayName : name) ?? '';
 
   return switch (separator) {
@@ -41,10 +28,7 @@ String formatCommunityFullNamePrefix(
   };
 }
 
-String formatCommunityFullNameSuffix(
-  String? instance, {
-  required FullNameSeparator separator,
-}) {
+String formatCommunityFullNameSuffix(String? instance, {required FullNameSeparator separator}) {
   return switch (separator) {
     FullNameSeparator.dot => ' · $instance',
     FullNameSeparator.at => '@$instance',

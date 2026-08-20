@@ -20,11 +20,7 @@ class InstancePage extends StatefulWidget {
   /// The instance to display.
   final ThunderInstanceInfo instance;
 
-  const InstancePage({
-    super.key,
-    required this.account,
-    required this.instance,
-  });
+  const InstancePage({super.key, required this.account, required this.instance});
 
   @override
   State<InstancePage> createState() => _InstancePageState();
@@ -120,10 +116,7 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => createInstancePageBloc(
-            account: account,
-            instanceInfo: widget.instance,
-          ),
+          create: (context) => createInstancePageBloc(account: account, instanceInfo: widget.instance),
         ),
       ],
       child: BlocBuilder<InstancePageBloc, InstancePageState>(
@@ -155,36 +148,11 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
                           isScrollable: true,
                           tabAlignment: TabAlignment.start,
                           tabs: [
-                            Tab(
-                              child: Row(
-                                spacing: 6.0,
-                                children: [const Icon(Icons.info_outline_rounded, size: 20.0), Text(l10n.about)],
-                              ),
-                            ),
-                            Tab(
-                              child: Row(
-                                spacing: 6.0,
-                                children: [const Icon(Icons.groups_outlined, size: 20.0), Text(l10n.communities)],
-                              ),
-                            ),
-                            Tab(
-                              child: Row(
-                                spacing: 6.0,
-                                children: [const Icon(Icons.people_outlined, size: 20.0), Text(l10n.users)],
-                              ),
-                            ),
-                            Tab(
-                              child: Row(
-                                spacing: 6.0,
-                                children: [const Icon(Icons.splitscreen_rounded, size: 20.0), Text(l10n.posts)],
-                              ),
-                            ),
-                            Tab(
-                              child: Row(
-                                spacing: 6.0,
-                                children: [const Icon(Icons.comment_outlined, size: 20.0), Text(l10n.comments)],
-                              ),
-                            ),
+                            Tab(child: Row(spacing: 6.0, children: [const Icon(Icons.info_outline_rounded, size: 20.0), Text(l10n.about)])),
+                            Tab(child: Row(spacing: 6.0, children: [const Icon(Icons.groups_outlined, size: 20.0), Text(l10n.communities)])),
+                            Tab(child: Row(spacing: 6.0, children: [const Icon(Icons.people_outlined, size: 20.0), Text(l10n.users)])),
+                            Tab(child: Row(spacing: 6.0, children: [const Icon(Icons.splitscreen_rounded, size: 20.0), Text(l10n.posts)])),
+                            Tab(child: Row(spacing: 6.0, children: [const Icon(Icons.comment_outlined, size: 20.0), Text(l10n.comments)])),
                           ],
                         ),
                       ),
@@ -195,22 +163,22 @@ class _InstancePageState extends State<InstancePage> with SingleTickerProviderSt
                   controller: _tabController,
                   children: [
                     // About Tab
-                    Builder(builder: (context) {
-                      return CustomScrollView(
-                        key: const PageStorageKey('about'),
-                        slivers: [
-                          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
-                          SliverToBoxAdapter(
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Material(
-                                child: InstanceInformation(instance: widget.instance),
+                    Builder(
+                      builder: (context) {
+                        return CustomScrollView(
+                          key: const PageStorageKey('about'),
+                          slivers: [
+                            SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Material(child: InstanceInformation(instance: widget.instance)),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    }),
+                          ],
+                        );
+                      },
+                    ),
                     InstanceCommunityTab(
                       account: account,
                       query: query,

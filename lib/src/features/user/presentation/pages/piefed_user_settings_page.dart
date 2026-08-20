@@ -46,11 +46,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
 
       Timer(const Duration(milliseconds: 500), () {
         if (settingToHighlightKey.currentContext != null) {
-          Scrollable.ensureVisible(
-            settingToHighlightKey.currentContext!,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-          );
+          Scrollable.ensureVisible(settingToHighlightKey.currentContext!, duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
         }
 
         Timer(const Duration(seconds: 1), () {
@@ -67,25 +63,14 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
   }
 
   List<ThunderListPickerItem<PostSortType>> _defaultSortOptions(Account account) {
-    const allowedSortTypes = {
-      PostSortType.hot,
-      PostSortType.new_,
-      PostSortType.active,
-      PostSortType.old,
-      PostSortType.scaled,
-    };
+    const allowedSortTypes = {PostSortType.hot, PostSortType.new_, PostSortType.active, PostSortType.old, PostSortType.scaled};
 
-    return [
-      ...getDefaultPostSortTypeItems(account: account),
-      ...getTopPostSortTypeItems(account: account),
-    ].where((item) => allowedSortTypes.contains(item.payload)).toList();
+    return [...getDefaultPostSortTypeItems(account: account), ...getTopPostSortTypeItems(account: account)].where((item) => allowedSortTypes.contains(item.payload)).toList();
   }
 
   List<ThunderListPickerItem<FeedListType>> _feedTypeOptions(Account account) {
     return FeedListType.values
-        .where(
-          (type) => type.platform == null || type.platform == account.platform,
-        )
+        .where((type) => type.platform == null || type.platform == account.platform)
         .map(
           (type) => ThunderListPickerItem<FeedListType>(
             payload: type,
@@ -103,13 +88,8 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
         .toList();
   }
 
-  ThunderListPickerItem<FeedListType> _currentFeedTypeOption(
-    Account account,
-    FeedListType? currentType,
-  ) {
-    return _feedTypeOptions(account).firstWhereOrNull(
-          (item) => item.payload == currentType,
-        ) ??
+  ThunderListPickerItem<FeedListType> _currentFeedTypeOption(Account account, FeedListType? currentType) {
+    return _feedTypeOptions(account).firstWhereOrNull((item) => item.payload == currentType) ??
         ThunderListPickerItem<FeedListType>(
           payload: currentType ?? FeedListType.subscribed,
           icon: Icons.feed_rounded,
@@ -118,10 +98,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
         );
   }
 
-  ThunderListPickerItem<PostSortType> _currentSortOption({
-    required Account account,
-    required PostSortType? currentSortType,
-  }) {
+  ThunderListPickerItem<PostSortType> _currentSortOption({required Account account, required PostSortType? currentSortType}) {
     final options = _defaultSortOptions(account);
 
     if (currentSortType == null) return options.first;
@@ -129,19 +106,11 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
     return options.firstWhereOrNull((item) => item.payload == currentSortType) ??
         allPostSortTypeItems.firstWhere(
           (item) => item.payload == currentSortType,
-          orElse: () => ThunderListPickerItem<PostSortType>(
-            payload: currentSortType,
-            icon: Icons.sort_rounded,
-            label: currentSortType.value,
-            capitalizeLabel: false,
-          ),
+          orElse: () => ThunderListPickerItem<PostSortType>(payload: currentSortType, icon: Icons.sort_rounded, label: currentSortType.value, capitalizeLabel: false),
         );
   }
 
-  String _discussionLanguagesSubtitle(
-    List<ThunderLanguage> allLanguages,
-    List<int> selectedLanguageIds,
-  ) {
+  String _discussionLanguagesSubtitle(List<ThunderLanguage> allLanguages, List<int> selectedLanguageIds) {
     final l10n = GlobalContext.l10n;
 
     if (selectedLanguageIds.isEmpty) return l10n.noDiscussionLanguages;
@@ -166,10 +135,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
         final localUser = myUser?.localUserView.localUser;
         final person = myUser?.localUserView.person;
         final currentFeedTypeOption = _currentFeedTypeOption(account, localUser?.defaultListingType);
-        final currentSortOption = _currentSortOption(
-          account: account,
-          currentSortType: localUser?.defaultSortType,
-        );
+        final currentSortOption = _currentSortOption(account: account, currentSortType: localUser?.defaultSortType);
         final languages = state.siteResponse?.allLanguages ?? const <ThunderLanguage>[];
         final selectedLanguageIds = myUser?.discussionLanguages ?? const <int>[];
 
@@ -186,10 +152,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             onLongPress: () => shareLocalSetting(context, LocalSettings.accountProfileBio),
             highlighted: settingToHighlight == LocalSettings.accountProfileBio,
           ),
-          ThunderSectionHeader(
-            title: l10n.feedSettings,
-            description: l10n.settingOverrideLabel,
-          ),
+          ThunderSectionHeader(title: l10n.feedSettings, description: l10n.settingOverrideLabel),
           ThunderListOption(
             title: l10n.defaultFeedSortType,
             value: currentSortOption,
@@ -203,26 +166,18 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
               items: _defaultSortOptions(account),
               previouslySelected: localUser?.defaultSortType,
               onSelect: (value) async {
-                context.read<AccountSettingsCubit>().updateSettings(
-                      defaultPostSortType: value.payload,
-                    );
+                context.read<AccountSettingsCubit>().updateSettings(defaultPostSortType: value.payload);
               },
             ),
             valueDisplay: Row(
               children: [
                 Icon(currentSortOption.icon, size: 13),
                 const SizedBox(width: 4),
-                Text(
-                  currentSortOption.label,
-                  style: theme.textTheme.titleSmall,
-                ),
+                Text(currentSortOption.label, style: theme.textTheme.titleSmall),
               ],
             ),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountDefaultFeedSortType,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountDefaultFeedSortType),
             highlighted: settingToHighlight == LocalSettings.accountDefaultFeedSortType,
           ),
           ThunderToggleOption(
@@ -233,10 +188,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             onChanged: (value) => context.read<AccountSettingsCubit>().updateSettings(showNsfw: value),
             disabled: isUpdating,
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountShowNsfwContent,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowNsfwContent),
             highlighted: settingToHighlight == LocalSettings.accountShowNsfwContent,
           ),
           ThunderToggleOption(
@@ -256,10 +208,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             onChanged: (value) => context.read<AccountSettingsCubit>().updateSettings(showReadPosts: value),
             disabled: isUpdating,
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountShowReadPosts,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowReadPosts),
             highlighted: settingToHighlight == LocalSettings.accountShowReadPosts,
           ),
           ThunderToggleOption(
@@ -270,10 +219,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             onChanged: (value) => context.read<AccountSettingsCubit>().updateSettings(showBotAccounts: value),
             disabled: isUpdating,
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountShowBotAccounts,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowBotAccounts),
             highlighted: settingToHighlight == LocalSettings.accountShowBotAccounts,
           ),
           ThunderListOption(
@@ -283,20 +229,14 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             leading: const Icon(Icons.filter_alt_rounded),
             disabled: true,
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountDefaultFeedType,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountDefaultFeedType),
             highlighted: settingToHighlight == LocalSettings.accountDefaultFeedType,
           ),
           ThunderSectionHeader(title: l10n.contentManagement),
           ThunderSettingsTile(
             leading: const Icon(Icons.language_rounded),
             title: l10n.discussionLanguages,
-            subtitle: _discussionLanguagesSubtitle(
-              languages,
-              selectedLanguageIds,
-            ),
+            subtitle: _discussionLanguagesSubtitle(languages, selectedLanguageIds),
             subtitleMaxLines: 2,
             enabled: false,
             highlightKey: settingToHighlightKey,
@@ -306,10 +246,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             leading: const Icon(Icons.block_rounded),
             title: l10n.blockSettingLabel,
             trailing: const ThunderSettingsChevronTrailing(),
-            onTap: () => navigateToSettingPage(
-              context,
-              LocalSettings.settingsPageAccountBlocks,
-            ),
+            onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountBlocks),
             highlightKey: settingToHighlightKey,
             onLongPress: () => shareLocalSetting(context, LocalSettings.accountBlocks),
             highlighted: settingToHighlight == LocalSettings.accountBlocks,
@@ -319,47 +256,27 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
             leading: const Icon(Icons.password),
             title: l10n.changePassword,
             trailing: const ThunderSettingsChevronTrailing(),
-            onTap: () => _openInstanceSettings(
-              context,
-              title: l10n.changePassword,
-              contentText: l10n.changePasswordWarning,
-            ),
+            onTap: () => _openInstanceSettings(context, title: l10n.changePassword, contentText: l10n.changePasswordWarning),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountChangePassword,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountChangePassword),
             highlighted: settingToHighlight == LocalSettings.accountChangePassword,
           ),
           ThunderSettingsTile(
             leading: const Icon(Icons.delete_forever_rounded),
             title: l10n.deleteAccount,
             trailing: const ThunderSettingsChevronTrailing(),
-            onTap: () => _openInstanceSettings(
-              context,
-              title: l10n.deleteAccount,
-              contentText: l10n.deleteAccountDescription,
-            ),
+            onTap: () => _openInstanceSettings(context, title: l10n.deleteAccount, contentText: l10n.deleteAccountDescription),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountDeleteAccount,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountDeleteAccount),
             highlighted: settingToHighlight == LocalSettings.accountDeleteAccount,
           ),
           ThunderSettingsTile(
             leading: const Icon(Icons.hide_image_rounded),
             title: l10n.manageMedia,
             trailing: const ThunderSettingsChevronTrailing(),
-            onTap: () => navigateToSettingPage(
-              context,
-              LocalSettings.settingsPageAccountMedia,
-            ),
+            onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountMedia),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountManageMedia,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountManageMedia),
             highlighted: settingToHighlight == LocalSettings.accountManageMedia,
           ),
         ];
@@ -379,16 +296,11 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
         minLines: 8,
         maxLines: 8,
         keyboardType: TextInputType.multiline,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          hintText: l10n.profileBio,
-        ),
+        decoration: InputDecoration(border: const OutlineInputBorder(), hintText: l10n.profileBio),
       ),
       primaryButtonText: l10n.save,
       onPrimaryButtonPressed: (dialogContext, _) {
-        context.read<AccountSettingsCubit>().updateSettings(
-              bio: bioTextController.text,
-            );
+        context.read<AccountSettingsCubit>().updateSettings(bio: bioTextController.text);
         Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: l10n.cancel,
@@ -396,11 +308,7 @@ class _PiefedUserSettingsPageState extends State<PiefedUserSettingsPage> {
     );
   }
 
-  Future<void> _openInstanceSettings(
-    BuildContext context, {
-    required String title,
-    required String contentText,
-  }) async {
+  Future<void> _openInstanceSettings(BuildContext context, {required String title, required String contentText}) async {
     final l10n = GlobalContext.l10n;
 
     showThunderDialog<void>(

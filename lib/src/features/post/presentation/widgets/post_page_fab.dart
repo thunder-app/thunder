@@ -197,41 +197,43 @@ class PostPageFAB extends StatelessWidget {
                               selectedCommentPath: selectedCommentPath,
                               override: singlePressAction == PostFabAction.backToTop
                                   ? () => {
-                                        listController.animateToItem(
-                                          index: 0,
-                                          scrollController: scrollController,
-                                          alignment: 0,
-                                          duration: (estimatedDistance) => const Duration(milliseconds: 250),
-                                          curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
-                                        ),
-                                      }
+                                      listController.animateToItem(
+                                        index: 0,
+                                        scrollController: scrollController,
+                                        alignment: 0,
+                                        duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                        curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                      ),
+                                    }
                                   : singlePressAction == PostFabAction.changeSort
-                                      ? () => showSortBottomSheet(context)
-                                      : singlePressAction == PostFabAction.replyToPost
-                                          ? () => replyToPost(context, post, postLocked: post.status.locked)
-                                          : singlePressAction == PostFabAction.search
-                                              ? () => startCommentSearch(context)
-                                              : null),
-                      onLongPress: () => longPressAction.execute(
-                          context: context,
-                          post: post,
-                          postId: post.id,
-                          selectedCommentPath: selectedCommentPath,
-                          override: longPressAction == PostFabAction.backToTop
-                              ? () => {
-                                    listController.animateToItem(
-                                      index: 0,
-                                      scrollController: scrollController,
-                                      alignment: 0,
-                                      duration: (estimatedDistance) => const Duration(milliseconds: 250),
-                                      curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
-                                    ),
-                                  }
-                              : longPressAction == PostFabAction.changeSort
                                   ? () => showSortBottomSheet(context)
-                                  : longPressAction == PostFabAction.replyToPost
-                                      ? () => replyToPost(context, post, postLocked: post.status.locked)
-                                      : null),
+                                  : singlePressAction == PostFabAction.replyToPost
+                                  ? () => replyToPost(context, post, postLocked: post.status.locked)
+                                  : singlePressAction == PostFabAction.search
+                                  ? () => startCommentSearch(context)
+                                  : null,
+                            ),
+                      onLongPress: () => longPressAction.execute(
+                        context: context,
+                        post: post,
+                        postId: post.id,
+                        selectedCommentPath: selectedCommentPath,
+                        override: longPressAction == PostFabAction.backToTop
+                            ? () => {
+                                listController.animateToItem(
+                                  index: 0,
+                                  scrollController: scrollController,
+                                  alignment: 0,
+                                  duration: (estimatedDistance) => const Duration(milliseconds: 250),
+                                  curve: (estimatedDistance) => Curves.easeInOutCubicEmphasized,
+                                ),
+                              }
+                            : longPressAction == PostFabAction.changeSort
+                            ? () => showSortBottomSheet(context)
+                            : longPressAction == PostFabAction.replyToPost
+                            ? () => replyToPost(context, post, postLocked: post.status.locked)
+                            : null,
+                      ),
                       fabType: FabType.post,
                       children: [
                         if (postFabEnableRefresh)
@@ -244,16 +246,9 @@ class PostPageFAB extends StatelessWidget {
                               final navigationState = context.read<PostNavigationCubit>().state;
                               if (navigationState.highlightedCommentId != null) {
                                 // If we're viewing a specific comment thread, refresh with that context unless "View All Comments" is pressed
-                                PostFabAction.refresh.execute(
-                                  context: context,
-                                  postId: post.id,
-                                  selectedCommentPath: selectedCommentPath,
-                                );
+                                PostFabAction.refresh.execute(context: context, postId: post.id, selectedCommentPath: selectedCommentPath);
                               } else {
-                                PostFabAction.refresh.execute(
-                                  context: context,
-                                  postId: post.id,
-                                );
+                                PostFabAction.refresh.execute(context: context, postId: post.id);
                               }
                             },
                             title: PostFabAction.refresh.getTitle(context),
@@ -265,9 +260,7 @@ class PostPageFAB extends StatelessWidget {
                             centered: combineNavAndFab,
                             onPressed: () {
                               HapticFeedback.mediumImpact();
-                              PostFabAction.replyToPost.execute(
-                                override: () => replyToPost(context, post, postLocked: post.status.locked),
-                              );
+                              PostFabAction.replyToPost.execute(override: () => replyToPost(context, post, postLocked: post.status.locked));
                             },
                             title: PostFabAction.replyToPost.getTitle(context),
                             icon: Icon(post.status.locked ? Icons.lock : PostFabAction.replyToPost.getIcon()),
@@ -288,7 +281,9 @@ class PostPageFAB extends StatelessWidget {
                             fabType: FabType.post,
                             centered: combineNavAndFab,
                             onPressed: () {
-                              PostFabAction.backToTop.execute(override: () => {scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized)});
+                              PostFabAction.backToTop.execute(
+                                override: () => {scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.easeInOutCubicEmphasized)},
+                              );
                             },
                             title: PostFabAction.backToTop.getTitle(context),
                             icon: Icon(PostFabAction.backToTop.getIcon()),

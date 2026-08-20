@@ -28,12 +28,9 @@ class InstanceRepositoryImpl implements InstanceRepository {
   /// Creates a new InstanceRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  InstanceRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  InstanceRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
   Future<ThunderSiteResponse> info() async {

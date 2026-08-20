@@ -24,10 +24,7 @@ class PostCommentsSliver extends StatelessWidget {
         final account = context.read<PostBloc>().account;
         final highlightedCommentId = context.select<PostNavigationCubit, int?>((cubit) => cubit.state.highlightedCommentId);
         final collapsedCommentIds = state.collapsedComments;
-        final hiddenIds = hiddenCommentIds(
-          comments: state.comments,
-          collapsedCommentIds: collapsedCommentIds,
-        );
+        final hiddenIds = hiddenCommentIds(comments: state.comments, collapsedCommentIds: collapsedCommentIds);
 
         return SuperSliverList.builder(
           itemCount: state.comments.length + 1,

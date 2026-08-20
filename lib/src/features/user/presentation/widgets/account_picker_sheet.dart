@@ -4,27 +4,16 @@ import 'package:thunder/src/features/account/account.dart';
 import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/core/app/repository_factories.dart';
 
-Future<Account?> showAccountPickerSheet(
-  BuildContext context, {
-  required Account currentAccount,
-  String? title,
-}) {
+Future<Account?> showAccountPickerSheet(BuildContext context, {required Account currentAccount, String? title}) {
   return showModalBottomSheet<Account>(
     context: context,
     showDragHandle: true,
-    builder: (context) => AccountPickerSheet(
-      currentAccount: currentAccount,
-      title: title,
-    ),
+    builder: (context) => AccountPickerSheet(currentAccount: currentAccount, title: title),
   );
 }
 
 class AccountPickerSheet extends StatefulWidget {
-  const AccountPickerSheet({
-    super.key,
-    required this.currentAccount,
-    this.title,
-  });
+  const AccountPickerSheet({super.key, required this.currentAccount, this.title});
 
   final Account currentAccount;
   final String? title;
@@ -44,9 +33,7 @@ class _AccountPickerSheetState extends State<AccountPickerSheet> {
 
   Future<void> _loadAccounts() async {
     try {
-      final accounts = await createSessionRepository().getAuthenticatedSessions().then(
-            (accounts) => accounts.where((account) => account.id != widget.currentAccount.id).toList(),
-          );
+      final accounts = await createSessionRepository().getAuthenticatedSessions().then((accounts) => accounts.where((account) => account.id != widget.currentAccount.id).toList());
 
       if (!mounted) return;
       setState(() => _accounts = accounts);

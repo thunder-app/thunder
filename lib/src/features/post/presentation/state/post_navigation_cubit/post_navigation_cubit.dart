@@ -76,11 +76,7 @@ class PostNavigationCubit extends Cubit<PostNavigationState> {
     int firstMatchIndex = commentSearchResults.keys.first;
     int firstMatchCommentId = commentSearchResults[firstMatchIndex]!;
 
-    emit(state.copyWith(
-      commentSearchResults: commentSearchResults,
-      highlightedCommentId: firstMatchCommentId,
-      navigateCommentIndex: firstMatchIndex,
-    ));
+    emit(state.copyWith(commentSearchResults: commentSearchResults, highlightedCommentId: firstMatchCommentId, navigateCommentIndex: firstMatchIndex));
   }
 
   void continueCommentSearch() {
@@ -105,24 +101,15 @@ class PostNavigationCubit extends Cubit<PostNavigationState> {
     int nextFlattenedIndex = commentSearchResultIndexes[nextMatchPosition];
     int nextCommentId = commentSearchResults[nextFlattenedIndex]!;
 
-    emit(state.copyWith(
-      highlightedCommentId: nextCommentId,
-      navigateCommentIndex: nextFlattenedIndex,
-    ));
+    emit(state.copyWith(highlightedCommentId: nextCommentId, navigateCommentIndex: nextFlattenedIndex));
   }
 
   void endCommentSearch() {
-    emit(state.copyWith(
-      highlightedCommentId: null,
-      commentSearchResults: null,
-    ));
+    emit(state.copyWith(highlightedCommentId: null, commentSearchResults: null));
   }
 
   void updateScrollPosition(double scrollPosition) {
-    emit(state.copyWith(
-      scrollPosition: scrollPosition,
-      didScrollPositionChange: true,
-    ));
+    emit(state.copyWith(scrollPosition: scrollPosition, didScrollPositionChange: true));
   }
 
   void setHighlightedCommentId(int? highlightedCommentId) {

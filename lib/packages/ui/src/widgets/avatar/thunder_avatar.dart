@@ -8,10 +8,7 @@ import 'package:thunder/packages/ui/src/widgets/avatar/models/thunder_avatar_dat
 /// Circular avatar that loads a network image with a letter fallback.
 @immutable
 class ThunderAvatar extends StatelessWidget {
-  const ThunderAvatar({
-    super.key,
-    required this.data,
-  });
+  const ThunderAvatar({super.key, required this.data});
 
   /// Avatar image URL, radius, and fallback configuration.
   final ThunderAvatarData data;
@@ -38,11 +35,7 @@ class ThunderAvatar extends StatelessWidget {
     return CachedNetworkImage(
       imageUrl: imageUrl!,
       imageBuilder: (context, imageProvider) {
-        return CircleAvatar(
-          backgroundColor: thunderTheme.avatarImageBackgroundColor,
-          foregroundImage: imageProvider,
-          maxRadius: data.radius,
-        );
+        return CircleAvatar(backgroundColor: thunderTheme.avatarImageBackgroundColor, foregroundImage: imageProvider, maxRadius: data.radius);
       },
       placeholder: (context, url) => placeholder,
       errorWidget: (context, url, error) => placeholder,

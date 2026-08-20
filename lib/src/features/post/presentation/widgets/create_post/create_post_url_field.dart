@@ -4,12 +4,7 @@ import 'package:thunder/src/features/post/presentation/state/create_post_cubit.d
 import 'package:thunder/src/core/config/global_context.dart';
 
 class CreatePostUrlField extends StatelessWidget {
-  const CreatePostUrlField({
-    super.key,
-    required this.controller,
-    required this.state,
-    required this.onUploadPostImageRequested,
-  });
+  const CreatePostUrlField({super.key, required this.controller, required this.state, required this.onUploadPostImageRequested});
 
   /// The controller for the URL input field.
   final TextEditingController controller;
@@ -36,13 +31,7 @@ class CreatePostUrlField extends StatelessWidget {
               ? const SizedBox(
                   width: 20.0,
                   height: 20.0,
-                  child: Center(
-                    child: SizedBox(
-                      width: 18.0,
-                      height: 18.0,
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
+                  child: Center(child: SizedBox(width: 18.0, height: 18.0, child: CircularProgressIndicator())),
                 )
               : Icon(Icons.image, semanticLabel: l10n.uploadImage),
         ),

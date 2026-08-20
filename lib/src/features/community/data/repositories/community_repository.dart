@@ -8,12 +8,7 @@ abstract class CommunityRepository {
   Future<CommunityDetail> getCommunity({int? id, String? name});
 
   /// Lists trending communities
-  Future<List<ThunderCommunity>> trending({
-    int page = 1,
-    int limit = 5,
-    FeedListType feedListType = FeedListType.local,
-    PostSortType postSortType = PostSortType.active,
-  });
+  Future<List<ThunderCommunity>> trending({int page = 1, int limit = 5, FeedListType feedListType = FeedListType.local, PostSortType postSortType = PostSortType.active});
 
   /// Follows or unfollows a community
   Future<ThunderCommunity> subscribe(int communityId, bool follow);
@@ -45,24 +40,15 @@ class CommunityRepositoryImpl implements CommunityRepository {
   /// Creates a new CommunityRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  CommunityRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  CommunityRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
   Future<CommunityDetail> getCommunity({int? id, String? name}) async {
     final api = await _api.get();
     final response = await api.getCommunity(id: id, name: name);
-    return CommunityDetail(
-      community: response.community,
-      site: response.site,
-      moderators: response.moderators,
-      discussionLanguages: response.discussionLanguages,
-      flairs: response.flairs,
-    );
+    return CommunityDetail(community: response.community, site: response.site, moderators: response.moderators, discussionLanguages: response.discussionLanguages, flairs: response.flairs);
   }
 
   @override
@@ -84,58 +70,26 @@ class CommunityRepositoryImpl implements CommunityRepository {
   }
 
   @override
-  Future<ThunderUser> banUserFromCommunity({
-    required int userId,
-    required bool ban,
-    required int communityId,
-    String? reason,
-    int? expires,
-    bool removeData = false,
-  }) async {
+  Future<ThunderUser> banUserFromCommunity({required int userId, required bool ban, required int communityId, String? reason, int? expires, bool removeData = false}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final api = await _api.get();
-    return api.banUserFromCommunity(
-      userId: userId,
-      communityId: communityId,
-      ban: ban,
-      removeData: removeData,
-      reason: reason,
-      expires: expires,
-    );
+    return api.banUserFromCommunity(userId: userId, communityId: communityId, ban: ban, removeData: removeData, reason: reason, expires: expires);
   }
 
   @override
-  Future<List<ThunderUser>> addModerator({
-    required int userId,
-    required bool added,
-    required int communityId,
-  }) async {
+  Future<List<ThunderUser>> addModerator({required int userId, required bool added, required int communityId}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final api = await _api.get();
-    return api.addModerator(
-      userId: userId,
-      communityId: communityId,
-      added: added,
-    );
+    return api.addModerator(userId: userId, communityId: communityId, added: added);
   }
 
   @override
-  Future<List<ThunderCommunity>> trending({
-    int page = 1,
-    int limit = 5,
-    FeedListType feedListType = FeedListType.local,
-    PostSortType postSortType = PostSortType.active,
-  }) async {
+  Future<List<ThunderCommunity>> trending({int page = 1, int limit = 5, FeedListType feedListType = FeedListType.local, PostSortType postSortType = PostSortType.active}) async {
     final api = await _api.get();
-    return api.getCommunities(
-      page: page,
-      limit: limit,
-      feedListType: feedListType,
-      postSortType: postSortType,
-    );
+    return api.getCommunities(page: page, limit: limit, feedListType: feedListType, postSortType: postSortType);
   }
 }

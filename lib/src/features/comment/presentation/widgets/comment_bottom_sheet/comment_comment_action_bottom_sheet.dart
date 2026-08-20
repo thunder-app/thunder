@@ -14,46 +14,14 @@ import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on a comment
 enum CommentBottomSheetAction {
-  selectCommentText(
-    icon: Icons.select_all_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  viewCommentSource(
-    icon: Icons.code_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  viewCommentMarkdown(
-    icon: Icons.code_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  viewModlog(
-    icon: Icons.history_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: true,
-  ),
-  reportComment(
-    icon: Icons.flag_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  editComment(
-    icon: Icons.edit_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  deleteComment(
-    icon: Icons.delete_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  restoreComment(
-    icon: Icons.restore_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  );
+  selectCommentText(icon: Icons.select_all_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  viewCommentSource(icon: Icons.code_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  viewCommentMarkdown(icon: Icons.code_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  viewModlog(icon: Icons.history_rounded, permissionType: PermissionType.all, requiresAuthentication: true),
+  reportComment(icon: Icons.flag_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  editComment(icon: Icons.edit_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  deleteComment(icon: Icons.delete_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  restoreComment(icon: Icons.restore_rounded, permissionType: PermissionType.user, requiresAuthentication: true);
 
   String get name {
     final l10n = GlobalContext.l10n;
@@ -179,10 +147,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       secondaryButtonText: l10n.cancel,
       onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
       contentWidgetBuilder: (_) => TextFormField(
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: l10n.message(0),
-        ),
+        decoration: InputDecoration(border: const OutlineInputBorder(), labelText: l10n.message(0)),
         autofocus: true,
         controller: controller,
         maxLines: 4,
@@ -194,8 +159,9 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    List<CommentBottomSheetAction> userActions =
-        CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user || element.permissionType == PermissionType.all).toList();
+    List<CommentBottomSheetAction> userActions = CommentBottomSheetAction.values
+        .where((element) => element.permissionType == PermissionType.user || element.permissionType == PermissionType.all)
+        .toList();
     List<CommentBottomSheetAction> moderatorActions = CommentBottomSheetAction.values.where((element) => element.permissionType == PermissionType.moderator).toList();
 
     final isModerator = widget.moderatedCommunities.where((c) => c.actorId == widget.comment.community?.actorId).isNotEmpty;
@@ -235,11 +201,8 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
       mainAxisSize: MainAxisSize.min,
       children: [
         ...userActions.map<Widget>(
-          (commentBottomSheetAction) => ThunderBottomSheetAction(
-            leading: Icon(commentBottomSheetAction.icon),
-            title: commentBottomSheetAction.name,
-            onTap: () => performAction(commentBottomSheetAction),
-          ),
+          (commentBottomSheetAction) =>
+              ThunderBottomSheetAction(leading: Icon(commentBottomSheetAction.icon), title: commentBottomSheetAction.name, onTap: () => performAction(commentBottomSheetAction)),
         ),
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
@@ -248,11 +211,7 @@ class _CommentCommentActionBottomSheetState extends State<CommentCommentActionBo
               leading: Icon(commentBottomSheetAction.icon),
               trailing: Padding(
                 padding: const EdgeInsets.only(left: 1),
-                child: Icon(
-                  ThunderIcon.shield,
-                  size: 20,
-                  color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-                ),
+                child: Icon(ThunderIcon.shield, size: 20, color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green)),
               ),
               title: commentBottomSheetAction.name,
               onTap: () => performAction(commentBottomSheetAction),

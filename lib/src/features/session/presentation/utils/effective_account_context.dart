@@ -7,12 +7,7 @@ import 'package:thunder/src/features/session/presentation/state/feature_account_
 import 'package:thunder/src/features/session/presentation/state/session_bloc.dart';
 
 class CapturedAccountContext {
-  const CapturedAccountContext({
-    required this.effectiveAccount,
-    this.sessionBloc,
-    this.profileBloc,
-    this.featureAccountCubit,
-  });
+  const CapturedAccountContext({required this.effectiveAccount, this.sessionBloc, this.profileBloc, this.featureAccountCubit});
 
   final Account effectiveAccount;
   final SessionBloc? sessionBloc;

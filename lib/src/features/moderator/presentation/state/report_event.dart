@@ -40,12 +40,7 @@ final class ReportFeedFetchedEvent extends ReportEvent {
   /// Boolean which indicates whether or not to reset the feed
   final bool reset;
 
-  const ReportFeedFetchedEvent({
-    this.reportFeedType = ReportFeedType.post,
-    this.showResolved = false,
-    this.communityId,
-    this.reset = false,
-  });
+  const ReportFeedFetchedEvent({this.reportFeedType = ReportFeedType.post, this.showResolved = false, this.communityId, this.reset = false});
 
   @override
   List<Object?> get props => [reportFeedType, showResolved, communityId, reset];
@@ -75,11 +70,7 @@ final class ReportFeedItemActionedEvent extends ReportEvent {
   /// Typed payload to apply for the selected [reportAction].
   final ReportActionInput? actionInput;
 
-  const ReportFeedItemActionedEvent({
-    required this.report,
-    required this.reportAction,
-    this.actionInput,
-  });
+  const ReportFeedItemActionedEvent({required this.report, required this.reportAction, this.actionInput});
 
   @override
   List<Object?> get props => [report, reportAction, actionInput];

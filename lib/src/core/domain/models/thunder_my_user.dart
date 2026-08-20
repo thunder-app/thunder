@@ -9,19 +9,10 @@ class ThunderLocalUserView {
   /// The person associated with this local user.
   final ThunderUser person;
 
-  ThunderLocalUserView({
-    required this.localUser,
-    required this.person,
-  });
+  ThunderLocalUserView({required this.localUser, required this.person});
 
-  ThunderLocalUserView copyWith({
-    ThunderLocalUser? localUser,
-    ThunderUser? person,
-  }) {
-    return ThunderLocalUserView(
-      localUser: localUser ?? this.localUser,
-      person: person ?? this.person,
-    );
+  ThunderLocalUserView copyWith({ThunderLocalUser? localUser, ThunderUser? person}) {
+    return ThunderLocalUserView(localUser: localUser ?? this.localUser, person: person ?? this.person);
   }
 }
 

@@ -17,13 +17,7 @@ import 'package:thunder/packages/ui/ui.dart';
 
 /// Displays profile sections and coordinates profile-modal user actions.
 class ProfileSelect extends StatefulWidget {
-  const ProfileSelect({
-    super.key,
-    required this.pushRegister,
-    this.showLogoutDialog = false,
-    this.quickSelectMode = false,
-    this.customHeading,
-  });
+  const ProfileSelect({super.key, required this.pushRegister, this.showLogoutDialog = false, this.quickSelectMode = false, this.customHeading});
 
   /// Opens the login flow.
   ///
@@ -104,11 +98,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
 
             return CustomScrollView(
               slivers: [
-                if (scaffoldState.status != ProfileModalStatus.success)
-                  ThunderSectionHeader(
-                    title: widget.customHeading ?? l10n.account(2),
-                    variant: ThunderSectionHeaderVariant.sliver,
-                  ),
+                if (scaffoldState.status != ProfileModalStatus.success) ThunderSectionHeader(title: widget.customHeading ?? l10n.account(2), variant: ThunderSectionHeaderVariant.sliver),
                 if (scaffoldState.status == ProfileModalStatus.loading || scaffoldState.status == ProfileModalStatus.initial) ...[
                   const ProfileModalLoadState.loading(),
                 ] else if (scaffoldState.status == ProfileModalStatus.failure) ...[
@@ -116,10 +106,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                 ] else ...[
                   if (scaffoldState.isRefreshing || scaffoldState.isPersistingOrder)
                     SliverToBoxAdapter(
-                      child: Semantics(
-                        label: scaffoldState.isPersistingOrder ? l10n.profileOperationInProgress : l10n.loading,
-                        child: const LinearProgressIndicator(),
-                      ),
+                      child: Semantics(label: scaffoldState.isPersistingOrder ? l10n.profileOperationInProgress : l10n.loading, child: const LinearProgressIndicator()),
                     ),
                   _AuthenticatedProfileSection(
                     activeSession: activeSession,
@@ -224,11 +211,7 @@ class _AuthenticatedProfileSection extends StatelessWidget {
                           tooltip: l10n.reorder,
                           onPressed: interactionsEnabled ? () => context.read<ProfileModalCubit>().toggleAuthenticatedReordering() : null,
                         ),
-                      IconButton(
-                        icon: const Icon(Icons.person_add),
-                        tooltip: l10n.addAccount,
-                        onPressed: interactionsEnabled ? () => pushRegister() : null,
-                      ),
+                      IconButton(icon: const Icon(Icons.person_add), tooltip: l10n.addAccount, onPressed: interactionsEnabled ? () => pushRegister() : null),
                       const SizedBox(width: 12.0),
                     ],
             ),
@@ -247,10 +230,7 @@ class _AuthenticatedProfileSection extends StatelessWidget {
                 onRemove: onRemove,
               )
             else
-              ThunderSliverAdapter(
-                sliver: true,
-                child: ThunderEmptyText(message: l10n.noAccountsAdded),
-              )
+              ThunderSliverAdapter(sliver: true, child: ThunderEmptyText(message: l10n.noAccountsAdded)),
           ],
         );
       },
@@ -294,11 +274,7 @@ class _AnonymousProfileSection extends StatelessWidget {
                     tooltip: l10n.reorder,
                     onPressed: interactionsEnabled ? () => context.read<ProfileModalCubit>().toggleAnonymousReordering() : null,
                   ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  tooltip: l10n.addAnonymousInstance,
-                  onPressed: interactionsEnabled ? () => pushRegister(anonymous: true) : null,
-                ),
+                IconButton(icon: const Icon(Icons.add), tooltip: l10n.addAnonymousInstance, onPressed: interactionsEnabled ? () => pushRegister(anonymous: true) : null),
                 const SizedBox(width: 12.0),
               ],
             ),
@@ -316,10 +292,7 @@ class _AnonymousProfileSection extends StatelessWidget {
                 onRemove: onRemove,
               )
             else
-              ThunderSliverAdapter(
-                sliver: true,
-                child: ThunderEmptyText(message: l10n.noAnonymousInstances),
-              )
+              ThunderSliverAdapter(sliver: true, child: ThunderEmptyText(message: l10n.noAnonymousInstances)),
           ],
         );
       },
@@ -328,19 +301,10 @@ class _AnonymousProfileSection extends StatelessWidget {
 }
 
 class _ProfileScaffoldState {
-  const _ProfileScaffoldState({
-    required this.status,
-    required this.isRefreshing,
-    required this.isPersistingOrder,
-    required this.pendingSessionKey,
-  });
+  const _ProfileScaffoldState({required this.status, required this.isRefreshing, required this.isPersistingOrder, required this.pendingSessionKey});
 
-  factory _ProfileScaffoldState.fromState(ProfileModalState state) => _ProfileScaffoldState(
-        status: state.status,
-        isRefreshing: state.isRefreshing,
-        isPersistingOrder: state.isPersistingOrder,
-        pendingSessionKey: state.pendingSessionKey,
-      );
+  factory _ProfileScaffoldState.fromState(ProfileModalState state) =>
+      _ProfileScaffoldState(status: state.status, isRefreshing: state.isRefreshing, isPersistingOrder: state.isPersistingOrder, pendingSessionKey: state.pendingSessionKey);
 
   final ProfileModalStatus status;
   final bool isRefreshing;
@@ -361,19 +325,14 @@ class _ProfileScaffoldState {
 }
 
 class _AuthenticatedSectionState {
-  const _AuthenticatedSectionState({
-    required this.rows,
-    required this.areReordering,
-    required this.reorderIndex,
-    required this.pendingSessionKey,
-  });
+  const _AuthenticatedSectionState({required this.rows, required this.areReordering, required this.reorderIndex, required this.pendingSessionKey});
 
   factory _AuthenticatedSectionState.fromState(ProfileModalState state) => _AuthenticatedSectionState(
-        rows: state.authenticatedAccounts,
-        areReordering: state.areAuthenticatedAccountsBeingReordered,
-        reorderIndex: state.authenticatedAccountBeingReorderedIndex,
-        pendingSessionKey: state.pendingSessionKey,
-      );
+    rows: state.authenticatedAccounts,
+    areReordering: state.areAuthenticatedAccountsBeingReordered,
+    reorderIndex: state.authenticatedAccountBeingReorderedIndex,
+    pendingSessionKey: state.pendingSessionKey,
+  );
 
   final List<ProfileModalAuthenticatedAccountRow> rows;
   final bool areReordering;
@@ -394,21 +353,15 @@ class _AuthenticatedSectionState {
 }
 
 class _AnonymousSectionState {
-  const _AnonymousSectionState({
-    required this.rows,
-    required this.authenticatedAccountCount,
-    required this.areReordering,
-    required this.reorderIndex,
-    required this.pendingSessionKey,
-  });
+  const _AnonymousSectionState({required this.rows, required this.authenticatedAccountCount, required this.areReordering, required this.reorderIndex, required this.pendingSessionKey});
 
   factory _AnonymousSectionState.fromState(ProfileModalState state) => _AnonymousSectionState(
-        rows: state.anonymousInstances,
-        authenticatedAccountCount: state.authenticatedAccounts.length,
-        areReordering: state.areAnonymousInstancesBeingReordered,
-        reorderIndex: state.anonymousInstanceBeingReorderedIndex,
-        pendingSessionKey: state.pendingSessionKey,
-      );
+    rows: state.anonymousInstances,
+    authenticatedAccountCount: state.authenticatedAccounts.length,
+    areReordering: state.areAnonymousInstancesBeingReordered,
+    reorderIndex: state.anonymousInstanceBeingReorderedIndex,
+    pendingSessionKey: state.pendingSessionKey,
+  );
 
   final List<ProfileModalAnonymousInstanceRow> rows;
   final int authenticatedAccountCount;

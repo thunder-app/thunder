@@ -68,7 +68,8 @@ class ThunderPickerItem extends StatelessWidget {
           borderRadius: tileBorderRadius,
           onTap: onSelected,
           child: ListTile(
-            title: labelWidget ??
+            title:
+                labelWidget ??
                 Text(
                   label,
                   style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
@@ -76,7 +77,8 @@ class ThunderPickerItem extends StatelessWidget {
                   ),
                   textScaler: TextScaler.noScaling,
                 ),
-            subtitle: subtitleWidget ??
+            subtitle:
+                subtitleWidget ??
                 (subtitle != null
                     ? Text(
                         subtitle!,

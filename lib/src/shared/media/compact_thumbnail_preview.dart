@@ -14,22 +14,12 @@ class CompactThumbnailPreview extends StatelessWidget {
   final int? postId;
   final void Function()? navigateToPost;
 
-  const CompactThumbnailPreview({
-    super.key,
-    required this.media,
-    this.dim = false,
-    this.postId,
-    this.navigateToPost,
-  });
+  const CompactThumbnailPreview({super.key, required this.media, this.dim = false, this.postId, this.navigateToPost});
 
   @override
   Widget build(BuildContext context) {
-    final hideNsfwPreviews = context.select<FeedPreferencesCubit, bool>(
-      (cubit) => cubit.state.hideNsfwPreviews,
-    );
-    final markPostReadOnMediaView = context.select<FeedPreferencesCubit, bool>(
-      (cubit) => cubit.state.markPostReadOnMediaView,
-    );
+    final hideNsfwPreviews = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.hideNsfwPreviews);
+    final markPostReadOnMediaView = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.markPostReadOnMediaView);
 
     final isUserLoggedIn = context.select((ProfileBloc bloc) => bloc.state.isLoggedIn);
 

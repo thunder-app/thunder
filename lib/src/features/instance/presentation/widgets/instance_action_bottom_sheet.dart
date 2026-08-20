@@ -10,45 +10,21 @@ import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on an instance
 enum InstanceBottomSheetAction {
-  visitCommunityInstance(
-    icon: Icons.language_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  blockCommunityInstance(
-    icon: Icons.block_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  unblockCommunityInstance(
-    icon: Icons.block_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  visitUserInstance(
-    icon: Icons.language_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  blockUserInstance(
-    icon: Icons.block_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  unblockUserInstance(
-    icon: Icons.block_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  );
+  visitCommunityInstance(icon: Icons.language_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  blockCommunityInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  unblockCommunityInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  visitUserInstance(icon: Icons.language_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  blockUserInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  unblockUserInstance(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true);
 
   String get name => switch (this) {
-        InstanceBottomSheetAction.visitCommunityInstance => GlobalContext.l10n.visitCommunityInstance,
-        InstanceBottomSheetAction.blockCommunityInstance => GlobalContext.l10n.blockCommunityInstance,
-        InstanceBottomSheetAction.unblockCommunityInstance => GlobalContext.l10n.unblockCommunityInstance,
-        InstanceBottomSheetAction.visitUserInstance => GlobalContext.l10n.visitUserInstance,
-        InstanceBottomSheetAction.blockUserInstance => GlobalContext.l10n.blockUserInstance,
-        InstanceBottomSheetAction.unblockUserInstance => GlobalContext.l10n.unblockUserInstance,
-      };
+    InstanceBottomSheetAction.visitCommunityInstance => GlobalContext.l10n.visitCommunityInstance,
+    InstanceBottomSheetAction.blockCommunityInstance => GlobalContext.l10n.blockCommunityInstance,
+    InstanceBottomSheetAction.unblockCommunityInstance => GlobalContext.l10n.unblockCommunityInstance,
+    InstanceBottomSheetAction.visitUserInstance => GlobalContext.l10n.visitUserInstance,
+    InstanceBottomSheetAction.blockUserInstance => GlobalContext.l10n.blockUserInstance,
+    InstanceBottomSheetAction.unblockUserInstance => GlobalContext.l10n.unblockUserInstance,
+  };
 
   /// The icon to use for the action
   final IconData icon;
@@ -154,8 +130,9 @@ class _InstanceActionBottomSheetState extends State<InstanceActionBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    List<InstanceBottomSheetAction> userActions =
-        InstanceBottomSheetAction.values.where((element) => element.permissionType == PermissionType.user || element.permissionType == PermissionType.all).toList();
+    List<InstanceBottomSheetAction> userActions = InstanceBottomSheetAction.values
+        .where((element) => element.permissionType == PermissionType.user || element.permissionType == PermissionType.all)
+        .toList();
 
     final userInstance = fetchInstanceNameFromUrl(widget.userInstanceUrl);
     final communityInstance = fetchInstanceNameFromUrl(widget.communityInstanceUrl);

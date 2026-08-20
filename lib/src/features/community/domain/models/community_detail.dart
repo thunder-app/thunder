@@ -18,13 +18,7 @@ class CommunityDetail extends Equatable {
   /// The list of flairs available for the community. PieFed only.
   final List<ThunderFlair> flairs;
 
-  const CommunityDetail({
-    required this.community,
-    required this.site,
-    required this.moderators,
-    required this.discussionLanguages,
-    this.flairs = const [],
-  });
+  const CommunityDetail({required this.community, required this.site, required this.moderators, required this.discussionLanguages, this.flairs = const []});
 
   @override
   List<Object?> get props => [community, site, moderators, discussionLanguages, flairs];

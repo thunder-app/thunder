@@ -39,21 +39,9 @@ class FeedHeaderSliver extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (feedType == FeedType.general) TagLine(),
-          if (community != null && feedType == FeedType.community)
-            CommunityHeader(
-              community: community!,
-              instance: communityInstance,
-              moderators: communityModerators,
-              condensed: false,
-            ),
+          if (community != null && feedType == FeedType.community) CommunityHeader(community: community!, instance: communityInstance, moderators: communityModerators, condensed: false),
           if (user != null && (feedType == FeedType.user || feedType == FeedType.account))
-            UserHeader(
-              user: user!,
-              moderates: userModerates,
-              feedType: selectedSubview,
-              onChangeFeedType: onChangeFeedType,
-              condensed: false,
-            ),
+            UserHeader(user: user!, moderates: userModerates, feedType: selectedSubview, onChangeFeedType: onChangeFeedType, condensed: false),
         ],
       ),
     );

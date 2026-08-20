@@ -15,14 +15,8 @@ class ResolvedApiClient {
   Future<ThunderApiClient>? _future;
   ThunderApiClient? _cached;
 
-  factory ResolvedApiClient({
-    required Account account,
-    ThunderApiClient? api,
-    bool debug = kDebugMode,
-  }) {
-    return ResolvedApiClient._(
-      () => api != null ? Future.value(api) : ApiClientFactory.create(account, debug: debug),
-    );
+  factory ResolvedApiClient({required Account account, ThunderApiClient? api, bool debug = kDebugMode}) {
+    return ResolvedApiClient._(() => api != null ? Future.value(api) : ApiClientFactory.create(account, debug: debug));
   }
 
   Future<ThunderApiClient> get() async {

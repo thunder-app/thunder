@@ -24,11 +24,7 @@ class _AccountPageState extends State<AccountPage> with AutomaticKeepAliveClient
         if (isLoggedIn != true) return const AccountPlaceholder();
 
         final userId = context.select<ProfileBloc, int?>((bloc) => bloc.state.account.userId);
-        return FeedPage(
-          feedType: FeedType.account,
-          userId: userId,
-          postSortType: PostSortType.new_,
-        );
+        return FeedPage(feedType: FeedType.account, userId: userId, postSortType: PostSortType.new_);
       },
     );
   }

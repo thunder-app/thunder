@@ -16,15 +16,10 @@ class FeedFabOverlay extends StatelessWidget {
     final isFabOpen = context.select<ShellChromeCubit, bool>((cubit) => cubit.state.isFeedFabOpen);
     final enableFeedsFab = context.select<FabPreferencesCubit, bool>((cubit) => cubit.state.enableFeedsFab);
     final feedChrome = context.select<FeedBloc, ({FeedType? feedType, int? communityId, String? communityName, int? userId, String? username})>(
-      (bloc) => (
-        feedType: bloc.state.feedType,
-        communityId: bloc.state.communityId,
-        communityName: bloc.state.communityName,
-        userId: bloc.state.userId,
-        username: bloc.state.username,
-      ),
+      (bloc) => (feedType: bloc.state.feedType, communityId: bloc.state.communityId, communityName: bloc.state.communityName, userId: bloc.state.userId, username: bloc.state.username),
     );
-    final showNavigatedFab = Navigator.of(context).canPop() &&
+    final showNavigatedFab =
+        Navigator.of(context).canPop() &&
         (feedChrome.communityId != null || feedChrome.communityName != null || feedChrome.userId != null || feedChrome.username != null) &&
         enableFeedsFab &&
         feedChrome.feedType != FeedType.account;
@@ -37,17 +32,8 @@ class FeedFabOverlay extends StatelessWidget {
           duration: const Duration(milliseconds: 250),
           child: Stack(
             children: [
-              IgnorePointer(
-                child: Container(
-                  color: theme.colorScheme.surface.withValues(alpha: 0.95),
-                ),
-              ),
-              if (isFabOpen)
-                ModalBarrier(
-                  color: null,
-                  dismissible: true,
-                  onDismiss: () => context.read<ShellChromeCubit>().setFeedFabOpen(false),
-                ),
+              IgnorePointer(child: Container(color: theme.colorScheme.surface.withValues(alpha: 0.95))),
+              if (isFabOpen) ModalBarrier(color: null, dismissible: true, onDismiss: () => context.read<ShellChromeCubit>().setFeedFabOpen(false)),
             ],
           ),
         ),

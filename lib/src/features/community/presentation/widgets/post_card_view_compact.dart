@@ -72,19 +72,14 @@ class PostCardViewCompact extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final preferences = context.select<
-        FeedPreferencesCubit,
-        ({
-          bool showThumbnailPreviewOnRight,
-          bool showTextPostIndicator,
-          bool dimReadPosts,
-          bool showCommunityFirst,
-        })>((cubit) => (
-          showThumbnailPreviewOnRight: cubit.state.showThumbnailPreviewOnRight,
-          showTextPostIndicator: cubit.state.showTextPostIndicator,
-          dimReadPosts: cubit.state.dimReadPosts,
-          showCommunityFirst: cubit.state.showPostCommunityFirst,
-        ));
+    final preferences = context.select<FeedPreferencesCubit, ({bool showThumbnailPreviewOnRight, bool showTextPostIndicator, bool dimReadPosts, bool showCommunityFirst})>(
+      (cubit) => (
+        showThumbnailPreviewOnRight: cubit.state.showThumbnailPreviewOnRight,
+        showTextPostIndicator: cubit.state.showTextPostIndicator,
+        dimReadPosts: cubit.state.dimReadPosts,
+        showCommunityFirst: cubit.state.showPostCommunityFirst,
+      ),
+    );
 
     final useDarkTheme = context.select((ThemePreferencesCubit cubit) => cubit.state.useDarkTheme);
 

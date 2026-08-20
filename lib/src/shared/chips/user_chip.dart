@@ -66,19 +66,8 @@ class UserChip extends StatelessWidget {
         preferBelow: false,
         excludeFromSemantics: true,
         triggerMode: TooltipTriggerMode.longPress,
-        message: '${generateUserFullName(
-          context,
-          user.name,
-          user.displayName,
-          instanceName,
-          useDisplayName: false,
-        )}${fetchUserGroupDescriptor(userGroups, user.published)}',
-        onTriggered: () => copyActivityPubFullName(
-          type: ActivityPubFullNameType.user,
-          name: user.name,
-          displayName: user.displayName,
-          instance: instanceName,
-        ),
+        message: '${generateUserFullName(context, user.name, user.displayName, instanceName, useDisplayName: false)}${fetchUserGroupDescriptor(userGroups, user.published)}',
+        onTriggered: () => copyActivityPubFullName(type: ActivityPubFullNameType.user, name: user.name, displayName: user.displayName, instance: instanceName),
         child: Material(
           color: userGroups.isNotEmpty ? fetchUserGroupColor(context, userGroups) ?? theme.colorScheme.onSurface : Colors.transparent,
           borderRadius: userGroups.isNotEmpty ? const BorderRadius.all(Radius.elliptical(5.0, 5.0)) : null,
@@ -90,20 +79,17 @@ class UserChip extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (showUserAvatar && avatar != null && user.avatar != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3.0, bottom: 3.0, right: 3.0),
-                      child: avatar!,
-                    ),
+                  if (showUserAvatar && avatar != null && user.avatar != null) Padding(padding: const EdgeInsets.only(top: 3.0, bottom: 3.0, right: 3.0), child: avatar!),
                   ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: (constraints?.maxWidth ?? MediaQuery.sizeOf(context).width) * 0.55),
                     child: UserFullNameWidget(
-                        name: user.name,
-                        displayName: user.displayName,
-                        instance: instanceName,
-                        includeInstance: includeInstance,
-                        fontScale: metadataFontSizeScale,
-                        transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity)),
+                      name: user.name,
+                      displayName: user.displayName,
+                      instance: instanceName,
+                      includeInstance: includeInstance,
+                      fontScale: metadataFontSizeScale,
+                      transformColor: (c) => userGroups.isNotEmpty ? theme.textTheme.bodyMedium?.color : c?.withValues(alpha: opacity),
+                    ),
                   ),
                   if (userGroups.isNotEmpty) const SizedBox(width: 2.0),
                   _UserChipGroups(groups: userGroups),
@@ -137,45 +123,16 @@ class _UserChipGroups extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       spacing: 1.0,
       children: [
-        if (groups.contains(UserType.op))
-          Icon(
-            ThunderIcon.microphone_variant,
-            size: 15.0 * metadataFontSizeScale.textScaleFactor,
-            color: iconColor,
-          ),
-        if (groups.contains(UserType.self))
-          Icon(
-            Icons.person,
-            size: 15.0 * metadataFontSizeScale.textScaleFactor,
-            color: iconColor,
-          ),
-        if (groups.contains(UserType.admin))
-          Icon(
-            ThunderIcon.shield_crown,
-            size: 14.0 * metadataFontSizeScale.textScaleFactor,
-            color: iconColor,
-          ),
-        if (groups.contains(UserType.moderator))
-          Icon(
-            ThunderIcon.shield,
-            size: 14.0 * metadataFontSizeScale.textScaleFactor,
-            color: iconColor,
-          ),
+        if (groups.contains(UserType.op)) Icon(ThunderIcon.microphone_variant, size: 15.0 * metadataFontSizeScale.textScaleFactor, color: iconColor),
+        if (groups.contains(UserType.self)) Icon(Icons.person, size: 15.0 * metadataFontSizeScale.textScaleFactor, color: iconColor),
+        if (groups.contains(UserType.admin)) Icon(ThunderIcon.shield_crown, size: 14.0 * metadataFontSizeScale.textScaleFactor, color: iconColor),
+        if (groups.contains(UserType.moderator)) Icon(ThunderIcon.shield, size: 14.0 * metadataFontSizeScale.textScaleFactor, color: iconColor),
         if (groups.contains(UserType.bot))
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Icon(
-              ThunderIcon.robot,
-              size: 12.0 * metadataFontSizeScale.textScaleFactor,
-              color: iconColor,
-            ),
+            child: Icon(ThunderIcon.robot, size: 12.0 * metadataFontSizeScale.textScaleFactor, color: iconColor),
           ),
-        if (groups.contains(UserType.birthday))
-          Icon(
-            Icons.cake_rounded,
-            size: 13.0 * metadataFontSizeScale.textScaleFactor,
-            color: iconColor,
-          ),
+        if (groups.contains(UserType.birthday)) Icon(Icons.cake_rounded, size: 13.0 * metadataFontSizeScale.textScaleFactor, color: iconColor),
       ],
     );
   }

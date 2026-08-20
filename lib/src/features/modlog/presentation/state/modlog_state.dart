@@ -2,7 +2,7 @@ part of 'modlog_cubit.dart';
 
 enum ModlogStatus { initial, fetching, success, failure }
 
-@freezed
+@Freezed(makeCollectionsUnmodifiable: false)
 abstract class ModlogState with _$ModlogState {
   const factory ModlogState({
     /// The status of the modlog feed.

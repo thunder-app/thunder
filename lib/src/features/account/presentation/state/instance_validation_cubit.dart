@@ -21,11 +21,11 @@ class InstanceValidationCubit extends Cubit<InstanceValidationState> {
     InstanceMetadataLookup? metadataLookup,
     InstanceHostNormalizer? hostNormalizer,
     Duration debounceDuration = const Duration(milliseconds: 150),
-  })  : _discoveryLookup = discoveryLookup ?? instance_discovery.discoverInstance,
-        _metadataLookup = metadataLookup ?? instance_discovery.loadInstanceInfo,
-        _hostNormalizer = hostNormalizer ?? instance_discovery.normalizeInstanceHost,
-        _debounceDuration = debounceDuration,
-        super(const InstanceValidationState());
+  }) : _discoveryLookup = discoveryLookup ?? instance_discovery.discoverInstance,
+       _metadataLookup = metadataLookup ?? instance_discovery.loadInstanceInfo,
+       _hostNormalizer = hostNormalizer ?? instance_discovery.normalizeInstanceHost,
+       _debounceDuration = debounceDuration,
+       super(const InstanceValidationState());
 
   final InstanceDiscoveryLookup _discoveryLookup;
   final InstanceMetadataLookup _metadataLookup;
@@ -54,11 +54,7 @@ class InstanceValidationCubit extends Cubit<InstanceValidationState> {
       return;
     }
 
-    emit(InstanceValidationState(
-      input: trimmedInput,
-      status: InstanceValidationStatus.detecting,
-      normalizedHost: host,
-    ));
+    emit(InstanceValidationState(input: trimmedInput, status: InstanceValidationStatus.detecting, normalizedHost: host));
 
     _debounceTimer = Timer(_debounceDuration, () => unawaited(_detect(host, generation)));
   }
@@ -73,25 +69,20 @@ class InstanceValidationCubit extends Cubit<InstanceValidationState> {
     if (_isStale(generation)) return;
 
     if (discovery == null) {
-      emit(state.copyWith(
-        status: InstanceValidationStatus.invalid,
-        normalizedHost: () => host,
-        platform: () => null,
-        detectedVersion: () => null,
-        instanceInfo: () => null,
-        isMetadataLoading: false,
-      ));
+      emit(state.copyWith(status: InstanceValidationStatus.invalid, normalizedHost: () => host, platform: () => null, detectedVersion: () => null, instanceInfo: () => null, isMetadataLoading: false));
       return;
     }
 
-    emit(state.copyWith(
-      status: InstanceValidationStatus.valid,
-      normalizedHost: () => discovery.host,
-      platform: () => discovery.platform,
-      detectedVersion: () => discovery.version,
-      instanceInfo: () => null,
-      isMetadataLoading: true,
-    ));
+    emit(
+      state.copyWith(
+        status: InstanceValidationStatus.valid,
+        normalizedHost: () => discovery.host,
+        platform: () => discovery.platform,
+        detectedVersion: () => discovery.version,
+        instanceInfo: () => null,
+        isMetadataLoading: true,
+      ),
+    );
 
     late final Future<void> metadataFuture;
     metadataFuture = _loadMetadata(discovery, generation).whenComplete(() {
@@ -107,29 +98,23 @@ class InstanceValidationCubit extends Cubit<InstanceValidationState> {
       if (_isStale(generation)) return;
 
       if (!instanceInfo.success) {
-        emit(state.copyWith(
-          status: InstanceValidationStatus.invalid,
-          instanceInfo: () => null,
-          isMetadataLoading: false,
-        ));
+        emit(state.copyWith(status: InstanceValidationStatus.invalid, instanceInfo: () => null, isMetadataLoading: false));
         return;
       }
 
-      emit(state.copyWith(
-        status: InstanceValidationStatus.valid,
-        normalizedHost: () => instanceInfo.domain,
-        platform: () => instanceInfo.platform ?? discovery.platform,
-        detectedVersion: () => instanceInfo.version ?? discovery.version,
-        instanceInfo: () => instanceInfo,
-        isMetadataLoading: false,
-      ));
+      emit(
+        state.copyWith(
+          status: InstanceValidationStatus.valid,
+          normalizedHost: () => instanceInfo.domain,
+          platform: () => instanceInfo.platform ?? discovery.platform,
+          detectedVersion: () => instanceInfo.version ?? discovery.version,
+          instanceInfo: () => instanceInfo,
+          isMetadataLoading: false,
+        ),
+      );
     } catch (_) {
       if (_isStale(generation)) return;
-      emit(state.copyWith(
-        status: InstanceValidationStatus.invalid,
-        instanceInfo: () => null,
-        isMetadataLoading: false,
-      ));
+      emit(state.copyWith(status: InstanceValidationStatus.invalid, instanceInfo: () => null, isMetadataLoading: false));
     }
   }
 

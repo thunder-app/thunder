@@ -60,10 +60,7 @@ class _TagLineState extends State<TagLine> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: getBackgroundColor(context),
-        borderRadius: const BorderRadius.all(Radius.elliptical(5.0, 5.0)),
-      ),
+      decoration: BoxDecoration(color: getBackgroundColor(context), borderRadius: const BorderRadius.all(Radius.elliptical(5.0, 5.0))),
       child: AnimatedCrossFade(
         crossFadeState: taglineIsLong ? CrossFadeState.showSecond : CrossFadeState.showFirst,
         duration: const Duration(milliseconds: 250),
@@ -93,11 +90,7 @@ class _TagLineState extends State<TagLine> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             stops: const [0.0, 0.5, 1.0],
-                            colors: [
-                              getBackgroundColor(context).withValues(alpha: 0.0),
-                              getBackgroundColor(context),
-                              getBackgroundColor(context),
-                            ],
+                            colors: [getBackgroundColor(context).withValues(alpha: 0.0), getBackgroundColor(context), getBackgroundColor(context)],
                           ),
                         ),
                       ),
@@ -106,12 +99,7 @@ class _TagLineState extends State<TagLine> {
                       bottom: 0,
                       child: ExpandableButton(
                         theme: const ExpandableThemeData(useInkWell: false),
-                        child: Text(
-                          l10n.showMore,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
-                          ),
-                        ),
+                        child: Text(l10n.showMore, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5))),
                       ),
                     ),
                   ],
@@ -124,12 +112,7 @@ class _TagLineState extends State<TagLine> {
                 CommonMarkdownBody(body: tagline!),
                 ExpandableButton(
                   theme: const ExpandableThemeData(useInkWell: false),
-                  child: Text(
-                    l10n.showLess,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
-                    ),
-                  ),
+                  child: Text(l10n.showLess, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5))),
                 ),
               ],
             ),

@@ -28,13 +28,7 @@ class SwipeablePageTransitionsBuilder extends PageTransitionsBuilder {
   final SwipeableTransitionBuilder? transitionBuilder;
 
   @override
-  Widget buildTransitions<T>(
-    PageRoute<T> route,
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
+  Widget buildTransitions<T>(PageRoute<T> route, BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
     return SwipeablePageRoute.buildPageTransitions<T>(
       route,
       context,
@@ -71,9 +65,9 @@ class SwipeablePageRoute<T> extends CupertinoPageRoute<T> {
     super.fullscreenDialog,
     super.allowSnapshotting,
     super.barrierDismissible,
-  })  : _transitionDuration = transitionDuration,
-        _reverseTransitionDuration = reverseTransitionDuration,
-        transitionBuilder = transitionBuilder ?? _defaultTransitionBuilder(fullscreenDialog);
+  }) : _transitionDuration = transitionDuration,
+       _reverseTransitionDuration = reverseTransitionDuration,
+       transitionBuilder = transitionBuilder ?? _defaultTransitionBuilder(fullscreenDialog);
 
   /// {@template swipeable_page_route.SwipeablePageRoute.canSwipe}
   /// Whether the user can swipe to navigate back.
@@ -132,22 +126,10 @@ class SwipeablePageRoute<T> extends CupertinoPageRoute<T> {
   /// {@endtemplate}
   final SwipeableTransitionBuilder transitionBuilder;
 
-  static SwipeableTransitionBuilder _defaultTransitionBuilder(
-    bool fullscreenDialog,
-  ) {
+  static SwipeableTransitionBuilder _defaultTransitionBuilder(bool fullscreenDialog) {
     return (context, animation, secondaryAnimation, isSwipeGesture, child) => fullscreenDialog
-        ? CupertinoFullscreenDialogTransition(
-            primaryRouteAnimation: animation,
-            secondaryRouteAnimation: secondaryAnimation,
-            linearTransition: isSwipeGesture,
-            child: child,
-          )
-        : CupertinoPageTransition(
-            primaryRouteAnimation: animation,
-            secondaryRouteAnimation: secondaryAnimation,
-            linearTransition: isSwipeGesture,
-            child: child,
-          );
+        ? CupertinoFullscreenDialogTransition(primaryRouteAnimation: animation, secondaryRouteAnimation: secondaryAnimation, linearTransition: isSwipeGesture, child: child)
+        : CupertinoPageTransition(primaryRouteAnimation: animation, secondaryRouteAnimation: secondaryAnimation, linearTransition: isSwipeGesture, child: child);
   }
 
   @override
@@ -190,21 +172,13 @@ class SwipeablePageRoute<T> extends CupertinoPageRoute<T> {
   // Called by `_FancyBackGestureDetector` when a pop ("back") drag start
   // gesture is detected. The returned controller handles all of the subsequent
   // drag events.
-  static _CupertinoBackGestureController<T> _startPopGesture<T>(
-    PageRoute<T> route,
-  ) =>
-      _CupertinoBackGestureController<T>(
-        navigator: route.navigator!,
-        controller: route.controller!, // protected access
-      );
+  static _CupertinoBackGestureController<T> _startPopGesture<T>(PageRoute<T> route) => _CupertinoBackGestureController<T>(
+    navigator: route.navigator!,
+    controller: route.controller!, // protected access
+  );
 
   @override
-  Widget buildTransitions(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
+  Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
     return buildPageTransitions(
       this,
       context,
@@ -236,10 +210,7 @@ class SwipeablePageRoute<T> extends CupertinoPageRoute<T> {
         : _FancyBackGestureDetector<T>(
             enabledCallback: () => _isPopGestureEnabled(route, canSwipe()),
             onStartPopGesture: () {
-              assert(
-                _isPopGestureEnabled(route, canSwipe()),
-                'Pop gesture is not enabled',
-              );
+              assert(_isPopGestureEnabled(route, canSwipe()), 'Pop gesture is not enabled');
               return _startPopGesture(route);
             },
             canOnlySwipeFromEdge: canOnlySwipeFromEdge,
@@ -249,13 +220,7 @@ class SwipeablePageRoute<T> extends CupertinoPageRoute<T> {
           );
 
     transitionBuilder ??= _defaultTransitionBuilder(route.fullscreenDialog);
-    return transitionBuilder(
-      context,
-      animation,
-      secondaryAnimation,
-      /* isSwipeGesture: */ route.popGestureInProgress,
-      wrappedChild,
-    );
+    return transitionBuilder(context, animation, secondaryAnimation, /* isSwipeGesture: */ route.popGestureInProgress, wrappedChild);
   }
 
   static bool _defaultCanSwipe() => true;
@@ -432,40 +397,26 @@ class _FancyBackGestureDetectorState<T> extends State<_FancyBackGestureDetector<
       directionality: Directionality.of(context),
       checkStartedCallback: () => _backGestureController != null,
       enabledCallback: widget.enabledCallback,
-      detectionArea: () => widget.canOnlySwipeFromEdge()
-          ? (
-              startOffset: widget.backGestureDetectionStartOffset(),
-              width: _dragAreaWidth(context),
-            )
-          : null,
+      detectionArea: () => widget.canOnlySwipeFromEdge() ? (startOffset: widget.backGestureDetectionStartOffset(), width: _dragAreaWidth(context)) : null,
     );
   }
 
   void _handleDragStart(DragStartDetails _) {
     assert(mounted, 'Widget is not mounted');
-    assert(
-      _backGestureController == null,
-      'Back gesture controller is not null',
-    );
+    assert(_backGestureController == null, 'Back gesture controller is not null');
     _backGestureController = widget.onStartPopGesture();
   }
 
   void _handleDragUpdate(DragUpdateDetails details) {
     assert(mounted, 'Widget is not mounted');
     assert(_backGestureController != null, 'Back gesture controller is null');
-    _backGestureController!.dragUpdate(
-      _convertToLogical(details.primaryDelta! / context.size!.width),
-    );
+    _backGestureController!.dragUpdate(_convertToLogical(details.primaryDelta! / context.size!.width));
   }
 
   void _handleDragEnd(DragEndDetails details) {
     assert(mounted, 'Widget is not mounted');
     assert(_backGestureController != null, 'Back gesture controller is null');
-    _backGestureController!.dragEnd(
-      _convertToLogical(
-        details.velocity.pixelsPerSecond.dx / context.size!.width,
-      ),
-    );
+    _backGestureController!.dragEnd(_convertToLogical(details.velocity.pixelsPerSecond.dx / context.size!.width));
     _backGestureController = null;
   }
 
@@ -497,10 +448,7 @@ class _FancyBackGestureDetectorState<T> extends State<_FancyBackGestureDetector<
 
 // Copied from `flutter/cupertino`.
 class _CupertinoBackGestureController<T> {
-  _CupertinoBackGestureController({
-    required this.navigator,
-    required this.controller,
-  }) {
+  _CupertinoBackGestureController({required this.navigator, required this.controller}) {
     navigator.didStartUserGesture();
   }
 
@@ -538,15 +486,7 @@ class _CupertinoBackGestureController<T> {
       // The closer the panel is to dismissing, the shorter the animation is.
       // We want to cap the animation time, but we want to use a linear curve
       // to determine it.
-      final droppedPageForwardAnimationTime = math.min(
-        lerpDouble(
-          _kMaxDroppedSwipePageForwardAnimationTime,
-          0,
-          controller.value,
-        )!
-            .floor(),
-        _kMaxPageBackAnimationTime,
-      );
+      final droppedPageForwardAnimationTime = math.min(lerpDouble(_kMaxDroppedSwipePageForwardAnimationTime, 0, controller.value)!.floor(), _kMaxPageBackAnimationTime);
       controller.animateTo(
         1,
         duration: Duration(milliseconds: droppedPageForwardAnimationTime),
@@ -560,12 +500,7 @@ class _CupertinoBackGestureController<T> {
       // destination.
       if (controller.isAnimating) {
         // Otherwise, use a custom popping animation duration and curve.
-        final droppedPageBackAnimationTime = lerpDouble(
-          0,
-          _kMaxDroppedSwipePageForwardAnimationTime,
-          controller.value,
-        )!
-            .floor();
+        final droppedPageBackAnimationTime = lerpDouble(0, _kMaxDroppedSwipePageForwardAnimationTime, controller.value)!.floor();
         controller.animateBack(
           0,
           duration: Duration(milliseconds: droppedPageBackAnimationTime),
@@ -591,13 +526,7 @@ class _CupertinoBackGestureController<T> {
 }
 
 class _DirectionDependentDragGestureRecognizer extends HorizontalDragGestureRecognizer {
-  _DirectionDependentDragGestureRecognizer({
-    required this.directionality,
-    required this.enabledCallback,
-    required this.detectionArea,
-    required this.checkStartedCallback,
-    super.debugOwner,
-  });
+  _DirectionDependentDragGestureRecognizer({required this.directionality, required this.enabledCallback, required this.detectionArea, required this.checkStartedCallback, super.debugOwner});
 
   final TextDirection directionality;
   final ValueGetter<bool> enabledCallback;

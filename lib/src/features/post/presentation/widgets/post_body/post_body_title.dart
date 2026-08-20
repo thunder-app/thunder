@@ -30,13 +30,7 @@ class PostBodyTitle extends StatelessWidget {
   /// Callback function which triggers when the post title is tapped
   final Function onToggleExpand;
 
-  const PostBodyTitle({
-    super.key,
-    required this.post,
-    required this.postBodyViewType,
-    required this.expanded,
-    required this.onToggleExpand,
-  });
+  const PostBodyTitle({super.key, required this.post, required this.postBodyViewType, required this.expanded, required this.onToggleExpand});
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +53,7 @@ class PostBodyTitle extends StatelessWidget {
         children: [
           if (media != null && media.mediaType != MediaType.text && !showThumbnailPreviewOnRight) CompactThumbnailPreview(media: media, postId: post.id),
           Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildTitleText(context),
-                _buildAuthorCommunityAndFlairs(),
-              ],
-            ),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [_buildTitleText(context), _buildAuthorCommunityAndFlairs()]),
           ),
           if (media != null && media.mediaType != MediaType.text && showThumbnailPreviewOnRight) CompactThumbnailPreview(media: media, postId: post.id),
           _buildExpandButton(context, postBodyViewType),
@@ -83,14 +70,7 @@ class PostBodyTitle extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildTitleText(context),
-                _buildAuthorCommunityAndFlairs(),
-              ],
-            ),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [_buildTitleText(context), _buildAuthorCommunityAndFlairs()]),
           ),
           _buildExpandButton(context, postBodyViewType),
         ],
@@ -146,10 +126,7 @@ class PostBodyTitle extends StatelessWidget {
 
     return IconButton(
       visualDensity: VisualDensity.compact,
-      icon: Icon(
-        expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-        semanticLabel: expanded ? l10n.collapsePost : l10n.expandPost,
-      ),
+      icon: Icon(expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, semanticLabel: expanded ? l10n.collapsePost : l10n.expandPost),
       onPressed: () => onToggleExpand(),
     );
   }
@@ -219,12 +196,8 @@ class _PostBodyAuthorCommunityMetadataState extends State<PostBodyAuthorCommunit
           userGroups: userGroups,
           includeInstance: postBodyShowUserInstance,
         ),
-        Icon(
-          Icons.trending_flat_rounded,
-          size: 22,
-          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
-        ),
-        CommunityChip(community: community)
+        Icon(Icons.trending_flat_rounded, size: 22, color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6)),
+        CommunityChip(community: community),
       ],
     );
   }

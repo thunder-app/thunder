@@ -14,63 +14,27 @@ import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Defines the actions that can be taken on a user
 enum UserBottomSheetAction {
-  viewProfile(
-    icon: Icons.person_search_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  blockUser(
-    icon: Icons.block_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  messageUser(
-    icon: Icons.mail_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  unblockUser(
-    icon: Icons.block_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  addUserLabel(
-    icon: Icons.label_rounded,
-    permissionType: PermissionType.all,
-    requiresAuthentication: false,
-  ),
-  banUserFromCommunity(
-    icon: Icons.block,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  ),
-  unbanUserFromCommunity(
-    icon: Icons.block,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  ),
-  addUserAsCommunityModerator(
-    icon: Icons.person_add_rounded,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  ),
-  removeUserAsCommunityModerator(
-    icon: Icons.person_remove_rounded,
-    permissionType: PermissionType.moderator,
-    requiresAuthentication: true,
-  );
+  viewProfile(icon: Icons.person_search_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  blockUser(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  messageUser(icon: Icons.mail_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  unblockUser(icon: Icons.block_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  addUserLabel(icon: Icons.label_rounded, permissionType: PermissionType.all, requiresAuthentication: false),
+  banUserFromCommunity(icon: Icons.block, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  unbanUserFromCommunity(icon: Icons.block, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  addUserAsCommunityModerator(icon: Icons.person_add_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true),
+  removeUserAsCommunityModerator(icon: Icons.person_remove_rounded, permissionType: PermissionType.moderator, requiresAuthentication: true);
 
   String get name => switch (this) {
-        UserBottomSheetAction.viewProfile => GlobalContext.l10n.visitUserProfile,
-        UserBottomSheetAction.blockUser => GlobalContext.l10n.blockUser,
-        UserBottomSheetAction.messageUser => GlobalContext.l10n.message(0),
-        UserBottomSheetAction.unblockUser => GlobalContext.l10n.unblockUser,
-        UserBottomSheetAction.addUserLabel => GlobalContext.l10n.addUserLabel,
-        UserBottomSheetAction.banUserFromCommunity => GlobalContext.l10n.banFromCommunity,
-        UserBottomSheetAction.unbanUserFromCommunity => GlobalContext.l10n.unbanFromCommunity,
-        UserBottomSheetAction.addUserAsCommunityModerator => GlobalContext.l10n.addAsCommunityModerator,
-        UserBottomSheetAction.removeUserAsCommunityModerator => GlobalContext.l10n.removeAsCommunityModerator,
-      };
+    UserBottomSheetAction.viewProfile => GlobalContext.l10n.visitUserProfile,
+    UserBottomSheetAction.blockUser => GlobalContext.l10n.blockUser,
+    UserBottomSheetAction.messageUser => GlobalContext.l10n.message(0),
+    UserBottomSheetAction.unblockUser => GlobalContext.l10n.unblockUser,
+    UserBottomSheetAction.addUserLabel => GlobalContext.l10n.addUserLabel,
+    UserBottomSheetAction.banUserFromCommunity => GlobalContext.l10n.banFromCommunity,
+    UserBottomSheetAction.unbanUserFromCommunity => GlobalContext.l10n.unbanFromCommunity,
+    UserBottomSheetAction.addUserAsCommunityModerator => GlobalContext.l10n.addAsCommunityModerator,
+    UserBottomSheetAction.removeUserAsCommunityModerator => GlobalContext.l10n.removeAsCommunityModerator,
+  };
 
   /// The icon to use for the action
   final IconData icon;
@@ -239,10 +203,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
                 includeInstance: true,
               ),
               TextFormField(
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: l10n.message(0),
-                ),
+                decoration: InputDecoration(border: const OutlineInputBorder(), labelText: l10n.message(0)),
                 autofocus: true,
                 controller: controller,
                 maxLines: 2,
@@ -254,7 +215,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
                   Text(l10n.removeUserData),
                   Switch(value: removeData, onChanged: (value) => setState(() => removeData = value)),
                 ],
-              )
+              ),
             ],
           );
         },
@@ -306,13 +267,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ...userActions.map<Widget>(
-          (userPostAction) => ThunderBottomSheetAction(
-            leading: Icon(userPostAction.icon),
-            title: userPostAction.name,
-            onTap: () => performAction(userPostAction),
-          ),
-        ),
+        ...userActions.map<Widget>((userPostAction) => ThunderBottomSheetAction(leading: Icon(userPostAction.icon), title: userPostAction.name, onTap: () => performAction(userPostAction))),
         if (isModerator && moderatorActions.isNotEmpty) ...[
           const ThunderDivider(sliver: false, padding: false),
           ...moderatorActions.map<Widget>(
@@ -320,11 +275,7 @@ class _UserActionBottomSheetState extends State<UserActionBottomSheet> {
               leading: Icon(userPostAction.icon),
               trailing: Padding(
                 padding: const EdgeInsets.only(left: 1),
-                child: Icon(
-                  ThunderIcon.shield,
-                  size: 20,
-                  color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green),
-                ),
+                child: Icon(ThunderIcon.shield, size: 20, color: Color.alphaBlend(theme.colorScheme.primary.withValues(alpha: 0.4), Colors.green)),
               ),
               title: userPostAction.name,
               onTap: () => performAction(userPostAction),

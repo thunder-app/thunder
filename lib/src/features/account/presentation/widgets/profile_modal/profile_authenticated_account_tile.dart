@@ -67,21 +67,11 @@ class ProfileAuthenticatedAccountTile extends StatelessWidget {
       selectedColor: selectedColor,
       onTap: onTap,
       child: ListTile(
-        leading: ProfileInstanceStatusAvatar(
-          placeholderIcon: Icons.person,
-          iconUrl: row.instanceIcon,
-          alive: row.alive,
-          selectedColor: selectedColor,
-          active: active,
-        ),
+        leading: ProfileInstanceStatusAvatar(placeholderIcon: Icons.person, iconUrl: row.instanceIcon, alive: row.alive, selectedColor: selectedColor, active: active),
         title: Row(
           children: [
             Flexible(
-              child: Text(
-                row.account.username ?? l10n.notAvailable,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleMedium,
-              ),
+              child: Text(row.account.username ?? l10n.notAvailable, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleMedium),
             ),
             AnimatedOpacity(
               duration: const Duration(milliseconds: 250),
@@ -93,10 +83,7 @@ class ProfileAuthenticatedAccountTile extends StatelessWidget {
             ),
           ],
         ),
-        subtitle: ThunderMetadataRow(
-          primary: row.account.instance.replaceAll('https://', ''),
-          secondary: row.version == null ? null : 'v${row.version}',
-        ),
+        subtitle: ThunderMetadataRow(primary: row.account.instance.replaceAll('https://', ''), secondary: row.version == null ? null : 'v${row.version}'),
         trailing: ProfileTrailingAction(
           active: active,
           reordering: areReordering,

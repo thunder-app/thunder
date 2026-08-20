@@ -14,7 +14,7 @@ include:
 analyzer:
   errors:
     use_build_context_synchronously: ignore
-  exclude: [packages/**, flutter/**]
+  exclude: [packages/**, flutter/**, build/**, android/**, ios/**, web/**, windows/**, macos/**, linux/**]
 
 linter:
   # The lint rules applied to this project can be customized in the
@@ -29,6 +29,8 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
+    # Private injected fields keep a public constructor name (`localization:`, not `_localization:`).
+    prefer_initializing_formals: false
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 

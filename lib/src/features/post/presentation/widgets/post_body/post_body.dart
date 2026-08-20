@@ -142,15 +142,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
     ];
 
     if (media != null) {
-      children.add(
-        PostBodyMediaSection(
-          controller: expandableController,
-          post: post,
-          media: media,
-          hideNsfwPreviews: hideNsfwPreviews,
-          postBodyViewType: postBodyViewType,
-        ),
-      );
+      children.add(PostBodyMediaSection(controller: expandableController, post: post, media: media, hideNsfwPreviews: hideNsfwPreviews, postBodyViewType: postBodyViewType));
     }
 
     if (post.body?.isNotEmpty == true) {
@@ -174,12 +166,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
     }
 
     if (post.tags.isNotEmpty) {
-      children.add(
-        PostBodyFlairSection(
-          controller: expandableController,
-          post: post,
-        ),
-      );
+      children.add(PostBodyFlairSection(controller: expandableController, post: post));
     }
 
     children.add(
@@ -297,11 +284,7 @@ class _PostBodyState extends State<PostBody> with SingleTickerProviderStateMixin
       controller: expandableController,
       child: Padding(
         padding: EdgeInsets.only(bottom: widget.showReplyEditorButtons && post.body?.isNotEmpty == true ? 0.0 : 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: children,
-        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: children),
       ),
     );
   }

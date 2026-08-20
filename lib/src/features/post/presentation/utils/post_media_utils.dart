@@ -40,20 +40,10 @@ Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutio
   }
 
   final visiblePosts = resolvedPosts.where((post) => !hideNsfwPosts || (!post.status.nsfw && hideNsfwPosts)).toList();
-  final textPreviews = await buildTextPreviewsForPosts(
-    visiblePosts.map((post) => post.body).toList(),
-    enabled: mediaOptions.buildTextPreview,
-  );
+  final textPreviews = await buildTextPreviewsForPosts(visiblePosts.map((post) => post.body).toList(), enabled: mediaOptions.buildTextPreview);
 
   final postFutures = [
-    for (final (index, post) in visiblePosts.indexed)
-      parsePost(
-        post,
-        mediaOptions.fetchImageDimensions,
-        mediaOptions.edgeToEdgeImages,
-        mediaOptions.tabletMode,
-        textPreview: textPreviews[index],
-      ),
+    for (final (index, post) in visiblePosts.indexed) parsePost(post, mediaOptions.fetchImageDimensions, mediaOptions.edgeToEdgeImages, mediaOptions.tabletMode, textPreview: textPreviews[index]),
   ];
   final parsedPosts = await Future.wait(postFutures);
   return parsedPosts;
@@ -63,13 +53,7 @@ Future<List<ThunderPost>> parsePosts(List<ThunderPost> posts, {String? resolutio
 Future<ThunderPost> parsePostWithCurrentPreferences(ThunderPost post) async {
   final mediaOptions = _getMediaParsingOptions();
   final textPreviews = await buildTextPreviewsForPosts([post.body], enabled: mediaOptions.buildTextPreview);
-  return parsePost(
-    post,
-    mediaOptions.fetchImageDimensions,
-    mediaOptions.edgeToEdgeImages,
-    mediaOptions.tabletMode,
-    textPreview: textPreviews.single,
-  );
+  return parsePost(post, mediaOptions.fetchImageDimensions, mediaOptions.edgeToEdgeImages, mediaOptions.tabletMode, textPreview: textPreviews.single);
 }
 
 ({bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode, bool buildTextPreview}) _getMediaParsingOptions() {
@@ -87,11 +71,7 @@ Future<ThunderPost> parsePostWithCurrentPreferences(ThunderPost post) async {
 
 typedef TextPreviewBatchRunner = Future<List<String?>> Function(List<String?> bodies);
 
-Future<List<String?>> buildTextPreviewsForPosts(
-  List<String?> bodies, {
-  required bool enabled,
-  TextPreviewBatchRunner? runner,
-}) {
+Future<List<String?>> buildTextPreviewsForPosts(List<String?> bodies, {required bool enabled, TextPreviewBatchRunner? runner}) {
   if (!enabled) return Future.value(List<String?>.filled(bodies.length, null));
   return (runner ?? _computeTextPreviews)(bodies);
 }
@@ -108,13 +88,7 @@ List<String?> buildTextPreviews(List<String?> bodies) {
 /// Perform some pre-processing on the post before displaying it.
 ///
 /// This includes unescaping the title and parsing any associated media.
-Future<ThunderPost> parsePost(
-  ThunderPost post,
-  bool fetchImageDimensions,
-  bool edgeToEdgeImages,
-  bool tabletMode, {
-  String? textPreview,
-}) async {
+Future<ThunderPost> parsePost(ThunderPost post, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode, {String? textPreview}) async {
   final title = _htmlUnescape.convert(post.name);
 
   List<Media> mediaList = [];

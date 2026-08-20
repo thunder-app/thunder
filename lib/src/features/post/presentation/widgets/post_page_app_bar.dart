@@ -77,7 +77,7 @@ class PostPageAppBar extends StatelessWidget {
           onPostChanged: onPostChanged,
           highlightedCommentId: highlightedCommentId,
           commentPath: commentPath,
-        )
+        ),
       ],
     );
   }
@@ -104,12 +104,7 @@ class PostAppBarTitle extends StatelessWidget {
             curve: Curves.easeInOut,
             top: hasSubtitle ? 2 : 16,
             left: 0,
-            child: Text(
-              l10n.comments,
-              style: theme.textTheme.titleLarge,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: Text(l10n.comments, style: theme.textTheme.titleLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
           ),
           if (hasSubtitle)
             Positioned(
@@ -174,9 +169,7 @@ class PostAppBarActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final state = context.select<PostBloc, ({ThunderPost? post, CommentSortType? commentSortType})>(
-      (bloc) => (post: bloc.state.post, commentSortType: bloc.state.commentSortType),
-    );
+    final state = context.select<PostBloc, ({ThunderPost? post, CommentSortType? commentSortType})>((bloc) => (post: bloc.state.post, commentSortType: bloc.state.commentSortType));
 
     return Row(
       children: [
@@ -224,21 +217,9 @@ class PostAppBarActions extends StatelessWidget {
           label: l10n.menu,
           child: PopupMenuButton(
             itemBuilder: (context) => [
-              ThunderPopupMenuItem(
-                onTap: () => onCreateCrossPost?.call(),
-                icon: Icons.repeat_rounded,
-                title: l10n.createNewCrossPost,
-              ),
-              ThunderPopupMenuItem(
-                onTap: () => onViewSource?.call(!viewSource),
-                icon: Icons.edit_document,
-                title: viewSource ? l10n.viewOriginal : l10n.viewPostSource,
-              ),
-              ThunderPopupMenuItem(
-                onTap: () => onSelectText?.call(),
-                icon: Icons.select_all_rounded,
-                title: l10n.selectText,
-              ),
+              ThunderPopupMenuItem(onTap: () => onCreateCrossPost?.call(), icon: Icons.repeat_rounded, title: l10n.createNewCrossPost),
+              ThunderPopupMenuItem(onTap: () => onViewSource?.call(!viewSource), icon: Icons.edit_document, title: viewSource ? l10n.viewOriginal : l10n.viewPostSource),
+              ThunderPopupMenuItem(onTap: () => onSelectText?.call(), icon: Icons.select_all_rounded, title: l10n.selectText),
               // ThunderPopupMenuItem(
               //   onTap: () async {
               //     await temporarilySwitchAccount(
@@ -275,9 +256,7 @@ class PostAppBarActions extends StatelessWidget {
 }
 
 (String, IconData?) getCommentSort(BuildContext context) {
-  final state = context.select<PostBloc, ({PostPageStatus status, CommentSortType? commentSortType})>(
-    (bloc) => (status: bloc.state.status, commentSortType: bloc.state.commentSortType),
-  );
+  final state = context.select<PostBloc, ({PostPageStatus status, CommentSortType? commentSortType})>((bloc) => (status: bloc.state.status, commentSortType: bloc.state.commentSortType));
 
   if (state.status == PostPageStatus.initial) {
     return ('', null);

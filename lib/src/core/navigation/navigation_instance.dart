@@ -24,12 +24,7 @@ import 'package:thunder/src/core/app/repository_factories.dart';
 ///
 /// When [instanceId] is provided, the instance page will allow the option to block that given instance. This value represents
 /// the id of the navigated instance from the original instance (e.g., lemmy.ml's instance id from lemmy.world).
-Future<void> navigateToInstancePage(
-  BuildContext context, {
-  Account? account,
-  required String instanceHost,
-  required int? instanceId,
-}) async {
+Future<void> navigateToInstancePage(BuildContext context, {Account? account, required String instanceHost, required int? instanceId}) async {
   showLoadingPage(context);
 
   final reduceAnimations = context.read<ThemePreferencesCubit>().state.reduceAnimations;
@@ -58,8 +53,8 @@ Future<void> navigateToInstancePage(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
         : reduceAnimations
-            ? const Duration(milliseconds: 100)
-            : null,
+        ? const Duration(milliseconds: 100)
+        : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,

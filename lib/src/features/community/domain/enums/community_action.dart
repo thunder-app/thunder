@@ -4,6 +4,7 @@ enum CommunityAction {
   /// User level post actions
   block(permissionType: PermissionType.user),
   follow(permissionType: PermissionType.user);
+
   // create(permissionType: PermissionType.user),
 
   /// Moderator level post actions
@@ -15,9 +16,7 @@ enum CommunityAction {
   /// Admin level post actions
   // purge(permissionType: PermissionType.admin);
 
-  const CommunityAction({
-    required this.permissionType,
-  });
+  const CommunityAction({required this.permissionType});
 
   final PermissionType permissionType;
 }

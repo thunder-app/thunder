@@ -5,8 +5,6 @@ class ThunderTagline {
   ThunderTagline({required this.content});
 
   factory ThunderTagline.fromLemmyTagline(Map<String, dynamic> tagline) {
-    return ThunderTagline(
-      content: tagline['content'],
-    );
+    return ThunderTagline(content: tagline['content']);
   }
 }

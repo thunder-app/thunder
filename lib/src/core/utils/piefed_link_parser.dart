@@ -43,19 +43,13 @@ ParsedLink? parsePiefedPostId(String text) {
   // Try PieFed community post format: /c/community/p/123/slug
   final communityPostMatch = _piefedCommunityPostUrl.firstMatch(text);
   if (communityPostMatch != null && communityPostMatch.groupCount >= 4) {
-    return ParsedLink(
-      value: communityPostMatch.group(4)!,
-      instance: communityPostMatch.group(2)!,
-    );
+    return ParsedLink(value: communityPostMatch.group(4)!, instance: communityPostMatch.group(2)!);
   }
 
   // Try standard post format: /post/123
   final match = _piefedPostUrl.firstMatch(text);
   if (match != null && match.groupCount >= 3) {
-    return ParsedLink(
-      value: match.group(3)!,
-      instance: match.group(2)!,
-    );
+    return ParsedLink(value: match.group(3)!, instance: match.group(2)!);
   }
 
   return null;
@@ -68,10 +62,7 @@ ParsedLink? parsePiefedPostId(String text) {
 ParsedLink? parsePiefedCommentId(String text) {
   final match = _piefedCommentUrl.firstMatch(text);
   if (match != null && match.groupCount >= 4) {
-    return ParsedLink(
-      value: match.group(4)!,
-      instance: match.group(2)!,
-    );
+    return ParsedLink(value: match.group(4)!, instance: match.group(2)!);
   }
 
   return null;

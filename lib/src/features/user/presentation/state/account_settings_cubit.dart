@@ -9,22 +9,10 @@ import 'package:thunder/src/core/services/localization_service.dart';
 
 const _accountSettingsUnset = Object();
 
-enum AccountSettingsStatus {
-  initial,
-  ready,
-  updating,
-  success,
-  failure,
-  notLoggedIn,
-}
+enum AccountSettingsStatus { initial, ready, updating, success, failure, notLoggedIn }
 
 class AccountSettingsState extends Equatable {
-  const AccountSettingsState({
-    this.status = AccountSettingsStatus.initial,
-    this.siteResponse,
-    this.errorMessage = '',
-    this.errorReason,
-  });
+  const AccountSettingsState({this.status = AccountSettingsStatus.initial, this.siteResponse, this.errorMessage = '', this.errorReason});
 
   final AccountSettingsStatus status;
   final ThunderSiteResponse? siteResponse;
@@ -51,19 +39,16 @@ class AccountSettingsState extends Equatable {
 
 class AccountSettingsCubit extends Cubit<AccountSettingsState> {
   AccountSettingsCubit({required this.account, required this.accountRepository, required LocalizationService localizationService, ThunderSiteResponse? initialSiteResponse})
-      : _localizationService = localizationService,
-        super(
-          account.anonymous
-              ? AccountSettingsState(
-                  status: AccountSettingsStatus.notLoggedIn,
-                  errorMessage: localizationService.l10n.userNotLoggedIn,
-                  errorReason: AppErrorReason.notLoggedIn(message: localizationService.l10n.userNotLoggedIn),
-                )
-              : AccountSettingsState(
-                  status: initialSiteResponse == null ? AccountSettingsStatus.initial : AccountSettingsStatus.ready,
-                  siteResponse: initialSiteResponse,
-                ),
-        );
+    : _localizationService = localizationService,
+      super(
+        account.anonymous
+            ? AccountSettingsState(
+                status: AccountSettingsStatus.notLoggedIn,
+                errorMessage: localizationService.l10n.userNotLoggedIn,
+                errorReason: AppErrorReason.notLoggedIn(message: localizationService.l10n.userNotLoggedIn),
+              )
+            : AccountSettingsState(status: initialSiteResponse == null ? AccountSettingsStatus.initial : AccountSettingsStatus.ready, siteResponse: initialSiteResponse),
+      );
 
   final Account account;
   final AccountRepository accountRepository;
@@ -72,14 +57,7 @@ class AccountSettingsCubit extends Cubit<AccountSettingsState> {
   void hydrateFromProfile(ThunderSiteResponse? siteResponse) {
     if (account.anonymous || siteResponse == null) return;
 
-    emit(
-      state.copyWith(
-        status: AccountSettingsStatus.ready,
-        siteResponse: siteResponse,
-        errorMessage: '',
-        errorReason: null,
-      ),
-    );
+    emit(state.copyWith(status: AccountSettingsStatus.ready, siteResponse: siteResponse, errorMessage: '', errorReason: null));
   }
 
   Future<void> updateSettings({
@@ -101,19 +79,23 @@ class AccountSettingsCubit extends Cubit<AccountSettingsState> {
       final l10n = _localizationService.l10n;
 
       if (account.anonymous) {
-        return emit(state.copyWith(
-          status: AccountSettingsStatus.notLoggedIn,
-          errorMessage: l10n.userNotLoggedIn,
-          errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
-        ));
+        return emit(
+          state.copyWith(
+            status: AccountSettingsStatus.notLoggedIn,
+            errorMessage: l10n.userNotLoggedIn,
+            errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
+          ),
+        );
       }
 
       if (originalSiteResponse?.myUser == null) {
-        return emit(state.copyWith(
-          status: AccountSettingsStatus.failure,
-          errorMessage: l10n.unexpectedError,
-          errorReason: AppErrorReason.validation(message: l10n.unexpectedError),
-        ));
+        return emit(
+          state.copyWith(
+            status: AccountSettingsStatus.failure,
+            errorMessage: l10n.unexpectedError,
+            errorReason: AppErrorReason.validation(message: l10n.unexpectedError),
+          ),
+        );
       }
 
       final myUser = originalSiteResponse!.myUser!;
@@ -130,22 +112,14 @@ class AccountSettingsCubit extends Cubit<AccountSettingsState> {
       final updatedSiteResponse = originalSiteResponse.copyWith(
         myUser: myUser.copyWith(
           localUserView: myUser.localUserView.copyWith(
-            person: myUser.localUserView.person.copyWith(
-              bio: bio ?? myUser.localUserView.person.bio,
-              displayName: displayName ?? myUser.localUserView.person.displayName,
-            ),
+            person: myUser.localUserView.person.copyWith(bio: bio ?? myUser.localUserView.person.bio, displayName: displayName ?? myUser.localUserView.person.displayName),
             localUser: localUser,
           ),
           discussionLanguages: discussionLanguages ?? myUser.discussionLanguages,
         ),
       );
 
-      emit(state.copyWith(
-        status: AccountSettingsStatus.updating,
-        siteResponse: updatedSiteResponse,
-        errorMessage: '',
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: AccountSettingsStatus.updating, siteResponse: updatedSiteResponse, errorMessage: '', errorReason: null));
 
       await accountRepository.saveSettings(
         AccountSettingsUpdate(
@@ -164,12 +138,14 @@ class AccountSettingsCubit extends Cubit<AccountSettingsState> {
       emit(state.copyWith(status: AccountSettingsStatus.success, errorMessage: '', errorReason: null));
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: AccountSettingsStatus.failure,
-        siteResponse: originalSiteResponse,
-        errorMessage: message,
-        errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
-      ));
+      emit(
+        state.copyWith(
+          status: AccountSettingsStatus.failure,
+          siteResponse: originalSiteResponse,
+          errorMessage: message,
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
+        ),
+      );
     }
   }
 }

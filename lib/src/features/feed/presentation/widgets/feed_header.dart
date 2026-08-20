@@ -14,13 +14,7 @@ class FeedHeader extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocSelector<FeedBloc, FeedState, ({FeedListType? feedListType, PostSortType? postSortType, FeedType? feedType, ThunderCommunity? community, ThunderUser? user})>(
-      selector: (state) => (
-        feedListType: state.feedListType,
-        postSortType: state.postSortType,
-        feedType: state.feedType,
-        community: state.community,
-        user: state.user,
-      ),
+      selector: (state) => (feedListType: state.feedListType, postSortType: state.postSortType, feedType: state.feedType, community: state.community, user: state.user),
       builder: (context, _) {
         final state = context.read<FeedBloc>().state;
 

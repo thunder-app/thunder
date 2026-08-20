@@ -5,10 +5,7 @@ ThunderReport optimisticallyResolveReport(ThunderReport report, bool resolved) {
   return report.copyWith(resolved: resolved);
 }
 
-bool shouldSkipPagination({
-  required bool isFetching,
-  required bool hasReachedReportsEnd,
-}) {
+bool shouldSkipPagination({required bool isFetching, required bool hasReachedReportsEnd}) {
   if (isFetching) {
     return true;
   }
@@ -20,18 +17,11 @@ bool shouldSkipPagination({
   return false;
 }
 
-List<ThunderReport> appendReports({
-  required List<ThunderReport> current,
-  required List<ThunderReport> incoming,
-}) {
+List<ThunderReport> appendReports({required List<ThunderReport> current, required List<ThunderReport> incoming}) {
   return [...current, ...incoming];
 }
 
-List<T> replaceAt<T>({
-  required List<T> source,
-  required int index,
-  required T value,
-}) {
+List<T> replaceAt<T>({required List<T> source, required int index, required T value}) {
   final updated = List<T>.from(source);
   updated[index] = value;
   return updated;

@@ -62,11 +62,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
         Timer(const Duration(milliseconds: 500), () {
           if (settingToHighlightKey.currentContext != null) {
             // Ensure that the selected setting is visible on the screen
-            Scrollable.ensureVisible(
-              settingToHighlightKey.currentContext!,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-            );
+            Scrollable.ensureVisible(settingToHighlightKey.currentContext!, duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
           }
 
           // Give time for the highlighting to appear, then turn it off
@@ -111,12 +107,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                child: Text(
-                  l10n.userLabelsSettingsPageDescription,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                  ),
-                ),
+                child: Text(l10n.userLabelsSettingsPageDescription, style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8))),
               ),
               SmoothHighlight(
                 key: settingToHighlight == LocalSettings.userLabels ? settingToHighlightKey : null,
@@ -127,9 +118,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(l10n.userLabels, style: theme.textTheme.titleMedium),
-                    ],
+                    children: [Text(l10n.userLabels, style: theme.textTheme.titleMedium)],
                   ),
                 ),
               ),
@@ -138,12 +127,7 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                 child: userLabels.isEmpty
                     ? Padding(
                         padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                        child: Text(
-                          l10n.noUserLabels,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                          ),
-                        ),
+                        child: Text(l10n.noUserLabels, style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8))),
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.only(bottom: 20),
@@ -154,10 +138,11 @@ class _UserLabelSettingsPageState extends State<UserLabelSettingsPage> with Sing
                           return ListTile(
                             contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                             title: UserFullNameWidget(
-                                name: UserLabel.partsFromUsername(userLabels[index].username).username,
-                                displayName: null,
-                                instance: UserLabel.partsFromUsername(userLabels[index].username).instance,
-                                textStyle: theme.textTheme.bodyLarge),
+                              name: UserLabel.partsFromUsername(userLabels[index].username).username,
+                              displayName: null,
+                              instance: UserLabel.partsFromUsername(userLabels[index].username).instance,
+                              textStyle: theme.textTheme.bodyLarge,
+                            ),
                             subtitle: Text(userLabels[index].label),
                             trailing: IconButton(
                               icon: Icon(Icons.clear, semanticLabel: l10n.remove),

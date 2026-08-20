@@ -6,16 +6,7 @@ import 'package:flutter/material.dart';
 /// then [TextScaler.noScaling] is used so the result is not scaled again.
 @immutable
 class ThunderScalableText extends StatelessWidget {
-  const ThunderScalableText(
-    this.text, {
-    super.key,
-    this.style,
-    this.textAlign,
-    this.textScaleFactor = 1.0,
-    this.semanticsLabel,
-    this.overflow,
-    this.maxLines,
-  });
+  const ThunderScalableText(this.text, {super.key, this.style, this.textAlign, this.textScaleFactor = 1.0, this.semanticsLabel, this.overflow, this.maxLines});
 
   /// The text to display.
   final String text;
@@ -47,18 +38,8 @@ class ThunderScalableText extends StatelessWidget {
     final baseFontSize = baseStyle.fontSize ?? defaultStyle.fontSize!;
 
     final textScaler = MediaQuery.textScalerOf(context);
-    final finalStyle = baseStyle.copyWith(
-      fontSize: textScaler.scale(baseFontSize * textScaleFactor),
-    );
+    final finalStyle = baseStyle.copyWith(fontSize: textScaler.scale(baseFontSize * textScaleFactor));
 
-    return Text(
-      text,
-      textAlign: textAlign,
-      semanticsLabel: semanticsLabel,
-      overflow: overflow,
-      maxLines: maxLines,
-      style: finalStyle,
-      textScaler: TextScaler.noScaling,
-    );
+    return Text(text, textAlign: textAlign, semanticsLabel: semanticsLabel, overflow: overflow, maxLines: maxLines, style: finalStyle, textScaler: TextScaler.noScaling);
   }
 }

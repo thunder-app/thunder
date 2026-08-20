@@ -22,13 +22,7 @@ class PostCardActions extends StatelessWidget {
   /// The callback function to execute when a save action is performed.
   final Function(bool saved) onSaveAction;
 
-  const PostCardActions({
-    super.key,
-    required this.voteType,
-    required this.saved,
-    required this.onVoteAction,
-    required this.onSaveAction,
-  });
+  const PostCardActions({super.key, required this.voteType, required this.saved, required this.onVoteAction, required this.onSaveAction});
 
   @override
   Widget build(BuildContext context) {
@@ -48,27 +42,12 @@ class PostCardActions extends StatelessWidget {
     return Wrap(
       children: [
         if (showVoteActions) ...[
-          PostCardAction(
-            icon: Icons.arrow_upward,
-            color: upvoted ? upvoteColor : null,
-            label: upvoted ? l10n.upvoted : l10n.upvote,
-            onPressed: () => onVoteAction(upvoted ? 0 : 1),
-          ),
+          PostCardAction(icon: Icons.arrow_upward, color: upvoted ? upvoteColor : null, label: upvoted ? l10n.upvoted : l10n.upvote, onPressed: () => onVoteAction(upvoted ? 0 : 1)),
           if (downvotesEnabled)
-            PostCardAction(
-              icon: Icons.arrow_downward,
-              color: downvoted ? downvoteColor : null,
-              label: downvoted ? l10n.downvoted : l10n.downvote,
-              onPressed: () => onVoteAction(downvoted ? 0 : -1),
-            ),
+            PostCardAction(icon: Icons.arrow_downward, color: downvoted ? downvoteColor : null, label: downvoted ? l10n.downvoted : l10n.downvote, onPressed: () => onVoteAction(downvoted ? 0 : -1)),
         ],
         if (showSaveAction)
-          PostCardAction(
-            icon: saved ? Icons.star_rounded : Icons.star_border_rounded,
-            label: saved ? l10n.saved : l10n.save,
-            color: saved ? saveColor : null,
-            onPressed: () => onSaveAction(!saved),
-          ),
+          PostCardAction(icon: saved ? Icons.star_rounded : Icons.star_border_rounded, label: saved ? l10n.saved : l10n.save, color: saved ? saveColor : null, onPressed: () => onSaveAction(!saved)),
       ],
     );
   }
@@ -88,13 +67,7 @@ class PostCardAction extends StatelessWidget {
   /// The callback function to execute when the action is pressed.
   final VoidCallback onPressed;
 
-  const PostCardAction({
-    super.key,
-    required this.icon,
-    required this.color,
-    required this.label,
-    required this.onPressed,
-  });
+  const PostCardAction({super.key, required this.icon, required this.color, required this.label, required this.onPressed});
 
   void _handlePressed() {
     HapticFeedback.mediumImpact();

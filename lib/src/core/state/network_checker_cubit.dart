@@ -9,9 +9,7 @@ import 'package:thunder/src/core/domain/domain.dart';
 part 'network_checker_state.dart';
 
 class NetworkCheckerCubit extends Cubit<NetworkCheckerState> {
-  NetworkCheckerCubit({required ConnectivityService connectivityService})
-      : _connectivityService = connectivityService,
-        super(const NetworkCheckerState());
+  NetworkCheckerCubit({required ConnectivityService connectivityService}) : _connectivityService = connectivityService, super(const NetworkCheckerState());
 
   final ConnectivityService _connectivityService;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
@@ -23,27 +21,16 @@ class NetworkCheckerCubit extends Cubit<NetworkCheckerState> {
       // Received changes in available connectivity types!
       switch (result) {
         case [ConnectivityResult.wifi]:
-          emit(const NetworkCheckerState(
-            status: NetworkCheckerStatus.success,
-            internetConnectionType: InternetConnectionType.wifi,
-          ));
+          emit(const NetworkCheckerState(status: NetworkCheckerStatus.success, internetConnectionType: InternetConnectionType.wifi));
           break;
         case [ConnectivityResult.mobile]:
-          emit(const NetworkCheckerState(
-            status: NetworkCheckerStatus.success,
-            internetConnectionType: InternetConnectionType.mobile,
-          ));
+          emit(const NetworkCheckerState(status: NetworkCheckerStatus.success, internetConnectionType: InternetConnectionType.mobile));
           break;
         case [ConnectivityResult.other]:
-          emit(const NetworkCheckerState(
-            status: NetworkCheckerStatus.success,
-            internetConnectionType: InternetConnectionType.unknown,
-          ));
+          emit(const NetworkCheckerState(status: NetworkCheckerStatus.success, internetConnectionType: InternetConnectionType.unknown));
           break;
         default:
-          emit(const NetworkCheckerState(
-            status: NetworkCheckerStatus.error,
-          ));
+          emit(const NetworkCheckerState(status: NetworkCheckerStatus.error));
       }
     });
   }

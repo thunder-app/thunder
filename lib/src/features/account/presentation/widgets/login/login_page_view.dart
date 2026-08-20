@@ -73,31 +73,16 @@ class LoginPageView extends StatelessWidget {
       backgroundColor: theme.cardColor,
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: EdgeInsets.only(
-          left: 12.0,
-          right: 12.0,
-          bottom: MediaQuery.viewInsetsOf(context).bottom,
-        ),
+        padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: MediaQuery.viewInsetsOf(context).bottom),
         child: Center(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                LoginInstanceHeader(
-                  anonymous: anonymous,
-                  onOpenGettingStarted: onOpenGettingStarted,
-                  onOpenInstance: onOpenInstance,
-                  onCreateAccount: onCreateAccount,
-                ),
+                LoginInstanceHeader(anonymous: anonymous, onOpenGettingStarted: onOpenGettingStarted, onOpenInstance: onOpenInstance, onCreateAccount: onCreateAccount),
                 const SizedBox(height: 12.0),
-                LoginInstanceField(
-                  anonymous: anonymous,
-                  controller: instanceController,
-                  usernameFocusNode: usernameFocusNode,
-                  submissionError: submissionInstanceError,
-                  onSubmit: onSubmit,
-                ),
+                LoginInstanceField(anonymous: anonymous, controller: instanceController, usernameFocusNode: usernameFocusNode, submissionError: submissionInstanceError, onSubmit: onSubmit),
                 if (!anonymous) ...[
                   const SizedBox(height: 32.0),
                   LoginCredentialsFields(

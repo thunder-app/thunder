@@ -28,25 +28,14 @@ Future<void> performSharedPreferencesMigration({
   final prefs = UserPreferences.instance.preferences;
 
   if ((prefs.getInt(sharedPreferencesMigrationVersionKey) ?? 0) < _currentSharedPreferencesMigrationVersion) {
-    await _performVersion1Migration(
-      prefs,
-      anonymousInstancesLoader: anonymousInstancesLoader,
-      anonymousInstanceInserter: anonymousInstanceInserter,
-    );
-    await _requireWrite(
-      prefs.setInt(sharedPreferencesMigrationVersionKey, _currentSharedPreferencesMigrationVersion),
-      sharedPreferencesMigrationVersionKey,
-    );
+    await _performVersion1Migration(prefs, anonymousInstancesLoader: anonymousInstancesLoader, anonymousInstanceInserter: anonymousInstanceInserter);
+    await _requireWrite(prefs.setInt(sharedPreferencesMigrationVersionKey, _currentSharedPreferencesMigrationVersion), sharedPreferencesMigrationVersionKey);
   }
 
   await _migrateDrafts(prefs, draftRepository ?? createDraftRepository());
 }
 
-Future<void> _performVersion1Migration(
-  SharedPreferences prefs, {
-  required AnonymousInstancesLoader anonymousInstancesLoader,
-  required AnonymousInstanceInserter anonymousInstanceInserter,
-}) async {
+Future<void> _performVersion1Migration(SharedPreferences prefs, {required AnonymousInstancesLoader anonymousInstancesLoader, required AnonymousInstanceInserter anonymousInstanceInserter}) async {
   final legacyOpenInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name);
   if (legacyOpenInExternalBrowser != null) {
     final browserMode = legacyOpenInExternalBrowser ? BrowserMode.external : BrowserMode.customTabs;
@@ -81,11 +70,7 @@ Future<void> _performVersion1Migration(
     await _requireWrite(prefs.setString(LocalSettings.defaultFeedListType.name, DEFAULT_LISTING_TYPE.name), LocalSettings.defaultFeedListType.name);
   }
 
-  await _migrateAnonymousInstances(
-    prefs,
-    anonymousInstancesLoader: anonymousInstancesLoader,
-    anonymousInstanceInserter: anonymousInstanceInserter,
-  );
+  await _migrateAnonymousInstances(prefs, anonymousInstancesLoader: anonymousInstancesLoader, anonymousInstanceInserter: anonymousInstanceInserter);
 
   final themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
   if (themeType == ThemeType.pureBlack) {
@@ -104,26 +89,14 @@ Future<void> _performVersion1Migration(
   }
 }
 
-Future<void> _migrateAnonymousInstances(
-  SharedPreferences prefs, {
-  required AnonymousInstancesLoader anonymousInstancesLoader,
-  required AnonymousInstanceInserter anonymousInstanceInserter,
-}) async {
+Future<void> _migrateAnonymousInstances(SharedPreferences prefs, {required AnonymousInstancesLoader anonymousInstancesLoader, required AnonymousInstanceInserter anonymousInstanceInserter}) async {
   const legacyKey = 'setting_anonymous_instances';
   final anonymousInstances = prefs.getStringList(legacyKey);
   if (anonymousInstances == null) return;
 
   final existingInstances = (await anonymousInstancesLoader()).map((account) => account.instance).toSet();
   for (final instance in anonymousInstances.toSet().difference(existingInstances)) {
-    final inserted = await anonymousInstanceInserter(
-      Account(
-        id: '',
-        instance: instance,
-        index: -1,
-        anonymous: true,
-        platform: ThreadiversePlatform.lemmy,
-      ),
-    );
+    final inserted = await anonymousInstanceInserter(Account(id: '', instance: instance, index: -1, anonymous: true, platform: ThreadiversePlatform.lemmy));
     if (inserted == null) throw StateError('Could not migrate anonymous instance: $instance');
   }
 

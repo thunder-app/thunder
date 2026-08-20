@@ -14,61 +14,17 @@ List<ThunderListPickerItem<PostSortType>> getTopPostSortTypeItems({Account? acco
   final platform = account?.platform;
 
   List<ThunderListPickerItem<PostSortType>> topPostSortTypeItems = [
-    ThunderListPickerItem(
-      payload: PostSortType.topHour,
-      icon: Icons.check_box_outline_blank,
-      label: l10n.topHour,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topSixHour,
-      icon: Icons.calendar_view_month,
-      label: l10n.topSixHour,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topTwelveHour,
-      icon: Icons.calendar_view_week,
-      label: l10n.topTwelveHour,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topDay,
-      icon: Icons.today,
-      label: l10n.topDay,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topWeek,
-      icon: Icons.view_week_sharp,
-      label: l10n.topWeek,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topMonth,
-      icon: Icons.calendar_month,
-      label: l10n.topMonth,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topThreeMonths,
-      icon: Icons.calendar_month_outlined,
-      label: l10n.topThreeMonths,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topSixMonths,
-      icon: Icons.calendar_today_outlined,
-      label: l10n.topSixMonths,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topNineMonths,
-      icon: Icons.calendar_view_day_outlined,
-      label: l10n.topNineMonths,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topYear,
-      icon: Icons.calendar_today,
-      label: l10n.topYear,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.topAll,
-      icon: Icons.military_tech,
-      label: l10n.topAll,
-    ),
+    ThunderListPickerItem(payload: PostSortType.topHour, icon: Icons.check_box_outline_blank, label: l10n.topHour),
+    ThunderListPickerItem(payload: PostSortType.topSixHour, icon: Icons.calendar_view_month, label: l10n.topSixHour),
+    ThunderListPickerItem(payload: PostSortType.topTwelveHour, icon: Icons.calendar_view_week, label: l10n.topTwelveHour),
+    ThunderListPickerItem(payload: PostSortType.topDay, icon: Icons.today, label: l10n.topDay),
+    ThunderListPickerItem(payload: PostSortType.topWeek, icon: Icons.view_week_sharp, label: l10n.topWeek),
+    ThunderListPickerItem(payload: PostSortType.topMonth, icon: Icons.calendar_month, label: l10n.topMonth),
+    ThunderListPickerItem(payload: PostSortType.topThreeMonths, icon: Icons.calendar_month_outlined, label: l10n.topThreeMonths),
+    ThunderListPickerItem(payload: PostSortType.topSixMonths, icon: Icons.calendar_today_outlined, label: l10n.topSixMonths),
+    ThunderListPickerItem(payload: PostSortType.topNineMonths, icon: Icons.calendar_view_day_outlined, label: l10n.topNineMonths),
+    ThunderListPickerItem(payload: PostSortType.topYear, icon: Icons.calendar_today, label: l10n.topYear),
+    ThunderListPickerItem(payload: PostSortType.topAll, icon: Icons.military_tech, label: l10n.topAll),
   ];
 
   if (platform == null) return topPostSortTypeItems;
@@ -83,46 +39,14 @@ List<ThunderListPickerItem<PostSortType>> getDefaultPostSortTypeItems({Account? 
   final platform = account?.platform;
 
   List<ThunderListPickerItem<PostSortType>> defaultPostSortTypeItems = [
-    ThunderListPickerItem(
-      payload: PostSortType.hot,
-      icon: Icons.local_fire_department_rounded,
-      label: l10n.hot,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.active,
-      icon: Icons.rocket_launch_rounded,
-      label: l10n.active,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.scaled,
-      icon: Icons.line_weight_rounded,
-      label: l10n.scaled,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.controversial,
-      icon: Icons.warning_rounded,
-      label: l10n.controversial,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.new_,
-      icon: Icons.auto_awesome_rounded,
-      label: l10n.new_,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.old,
-      icon: Icons.access_time_outlined,
-      label: l10n.old,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.mostComments,
-      icon: Icons.comment_bank_rounded,
-      label: l10n.mostComments,
-    ),
-    ThunderListPickerItem(
-      payload: PostSortType.newComments,
-      icon: Icons.add_comment_rounded,
-      label: l10n.newComments,
-    ),
+    ThunderListPickerItem(payload: PostSortType.hot, icon: Icons.local_fire_department_rounded, label: l10n.hot),
+    ThunderListPickerItem(payload: PostSortType.active, icon: Icons.rocket_launch_rounded, label: l10n.active),
+    ThunderListPickerItem(payload: PostSortType.scaled, icon: Icons.line_weight_rounded, label: l10n.scaled),
+    ThunderListPickerItem(payload: PostSortType.controversial, icon: Icons.warning_rounded, label: l10n.controversial),
+    ThunderListPickerItem(payload: PostSortType.new_, icon: Icons.auto_awesome_rounded, label: l10n.new_),
+    ThunderListPickerItem(payload: PostSortType.old, icon: Icons.access_time_outlined, label: l10n.old),
+    ThunderListPickerItem(payload: PostSortType.mostComments, icon: Icons.comment_bank_rounded, label: l10n.mostComments),
+    ThunderListPickerItem(payload: PostSortType.newComments, icon: Icons.add_comment_rounded, label: l10n.newComments),
   ];
 
   if (platform == null) return defaultPostSortTypeItems;
@@ -144,31 +68,11 @@ List<ThunderListPickerItem<CommentSortType>> getCommentSortTypeItems({Account? a
   final platform = account?.platform;
 
   List<ThunderListPickerItem<CommentSortType>> commentSortTypeItems = [
-    ThunderListPickerItem(
-      payload: CommentSortType.hot,
-      icon: Icons.local_fire_department,
-      label: l10n.hot,
-    ),
-    ThunderListPickerItem(
-      payload: CommentSortType.top,
-      icon: Icons.military_tech,
-      label: l10n.top,
-    ),
-    ThunderListPickerItem(
-      payload: CommentSortType.controversial,
-      icon: Icons.warning_rounded,
-      label: l10n.controversial,
-    ),
-    ThunderListPickerItem(
-      payload: CommentSortType.new_,
-      icon: Icons.auto_awesome_rounded,
-      label: l10n.new_,
-    ),
-    ThunderListPickerItem(
-      payload: CommentSortType.old,
-      icon: Icons.access_time_outlined,
-      label: l10n.old,
-    ),
+    ThunderListPickerItem(payload: CommentSortType.hot, icon: Icons.local_fire_department, label: l10n.hot),
+    ThunderListPickerItem(payload: CommentSortType.top, icon: Icons.military_tech, label: l10n.top),
+    ThunderListPickerItem(payload: CommentSortType.controversial, icon: Icons.warning_rounded, label: l10n.controversial),
+    ThunderListPickerItem(payload: CommentSortType.new_, icon: Icons.auto_awesome_rounded, label: l10n.new_),
+    ThunderListPickerItem(payload: CommentSortType.old, icon: Icons.access_time_outlined, label: l10n.old),
   ];
 
   if (platform == null) return commentSortTypeItems;
@@ -187,61 +91,17 @@ List<ThunderListPickerItem<SearchSortType>> getTopSearchSortTypeItems({Account? 
   final platform = account?.platform;
 
   List<ThunderListPickerItem<SearchSortType>> topSearchSortTypeItems = [
-    ThunderListPickerItem(
-      payload: SearchSortType.topHour,
-      icon: Icons.check_box_outline_blank,
-      label: l10n.topHour,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topSixHour,
-      icon: Icons.calendar_view_month,
-      label: l10n.topSixHour,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topTwelveHour,
-      icon: Icons.calendar_view_week,
-      label: l10n.topTwelveHour,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topDay,
-      icon: Icons.today,
-      label: l10n.topDay,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topWeek,
-      icon: Icons.view_week_sharp,
-      label: l10n.topWeek,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topMonth,
-      icon: Icons.calendar_month,
-      label: l10n.topMonth,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topThreeMonths,
-      icon: Icons.calendar_month_outlined,
-      label: l10n.topThreeMonths,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topSixMonths,
-      icon: Icons.calendar_today_outlined,
-      label: l10n.topSixMonths,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topNineMonths,
-      icon: Icons.calendar_view_day_outlined,
-      label: l10n.topNineMonths,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topYear,
-      icon: Icons.calendar_today,
-      label: l10n.topYear,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.topAll,
-      icon: Icons.military_tech,
-      label: l10n.topAll,
-    ),
+    ThunderListPickerItem(payload: SearchSortType.topHour, icon: Icons.check_box_outline_blank, label: l10n.topHour),
+    ThunderListPickerItem(payload: SearchSortType.topSixHour, icon: Icons.calendar_view_month, label: l10n.topSixHour),
+    ThunderListPickerItem(payload: SearchSortType.topTwelveHour, icon: Icons.calendar_view_week, label: l10n.topTwelveHour),
+    ThunderListPickerItem(payload: SearchSortType.topDay, icon: Icons.today, label: l10n.topDay),
+    ThunderListPickerItem(payload: SearchSortType.topWeek, icon: Icons.view_week_sharp, label: l10n.topWeek),
+    ThunderListPickerItem(payload: SearchSortType.topMonth, icon: Icons.calendar_month, label: l10n.topMonth),
+    ThunderListPickerItem(payload: SearchSortType.topThreeMonths, icon: Icons.calendar_month_outlined, label: l10n.topThreeMonths),
+    ThunderListPickerItem(payload: SearchSortType.topSixMonths, icon: Icons.calendar_today_outlined, label: l10n.topSixMonths),
+    ThunderListPickerItem(payload: SearchSortType.topNineMonths, icon: Icons.calendar_view_day_outlined, label: l10n.topNineMonths),
+    ThunderListPickerItem(payload: SearchSortType.topYear, icon: Icons.calendar_today, label: l10n.topYear),
+    ThunderListPickerItem(payload: SearchSortType.topAll, icon: Icons.military_tech, label: l10n.topAll),
   ];
 
   if (platform == null) return topSearchSortTypeItems;
@@ -256,21 +116,9 @@ List<ThunderListPickerItem<SearchSortType>> getDefaultSearchSortTypeItems({Accou
   final platform = account?.platform;
 
   List<ThunderListPickerItem<SearchSortType>> defaultSearchSortTypeItems = [
-    ThunderListPickerItem(
-      payload: SearchSortType.new_,
-      icon: Icons.auto_awesome_rounded,
-      label: l10n.new_,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.old,
-      icon: Icons.access_time_outlined,
-      label: l10n.old,
-    ),
-    ThunderListPickerItem(
-      payload: SearchSortType.controversial,
-      icon: Icons.warning_rounded,
-      label: l10n.controversial,
-    ),
+    ThunderListPickerItem(payload: SearchSortType.new_, icon: Icons.auto_awesome_rounded, label: l10n.new_),
+    ThunderListPickerItem(payload: SearchSortType.old, icon: Icons.access_time_outlined, label: l10n.old),
+    ThunderListPickerItem(payload: SearchSortType.controversial, icon: Icons.warning_rounded, label: l10n.controversial),
   ];
 
   if (platform == null) return defaultSearchSortTypeItems;
@@ -316,13 +164,7 @@ class SortPicker<T> extends ThunderBottomSheetListPicker<T> {
   final Account? account;
 
   /// Create a picker which allows selecting a valid sort type.
-  SortPicker({
-    super.key,
-    this.account,
-    required super.onSelect,
-    required super.title,
-    super.previouslySelected,
-  }) : super(items: _getItems<T>(account));
+  SortPicker({super.key, this.account, required super.onSelect, required super.title, super.previouslySelected}) : super(items: _getItems<T>(account));
 
   /// Get the appropriate items based on the generic type T.
   static List<ThunderListPickerItem<T>> _getItems<T>(Account? account) {
@@ -349,11 +191,7 @@ class _SortPickerState<T> extends State<SortPicker<T>> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOutCubicEmphasized,
-        child: hasTopSubmenu && topSelected ? topSortPicker() : defaultSortPicker(),
-      ),
+      child: AnimatedSize(duration: const Duration(milliseconds: 400), curve: Curves.easeInOutCubicEmphasized, child: hasTopSubmenu && topSelected ? topSortPicker() : defaultSortPicker()),
     );
   }
 
@@ -379,13 +217,7 @@ class _SortPickerState<T> extends State<SortPicker<T>> {
           children: [
             ..._generateList(_getDefaultItems(), theme),
             if (hasTopSubmenu)
-              ThunderPickerItem(
-                label: l10n.top,
-                icon: Icons.military_tech,
-                onSelected: () => setState(() => topSelected = true),
-                isSelected: _isTopItemSelected(),
-                trailingIcon: Icons.chevron_right,
-              )
+              ThunderPickerItem(label: l10n.top, icon: Icons.military_tech, onSelected: () => setState(() => topSelected = true), isSelected: _isTopItemSelected(), trailingIcon: Icons.chevron_right),
           ],
         ),
         const SizedBox(height: 16.0),
@@ -433,11 +265,7 @@ class _SortPickerState<T> extends State<SortPicker<T>> {
             ),
           ),
         ),
-        ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [..._generateList(_getTopItems(), theme)],
-        ),
+        ListView(shrinkWrap: true, physics: const NeverScrollableScrollPhysics(), children: [..._generateList(_getTopItems(), theme)]),
         const SizedBox(height: 16.0),
       ],
     );
@@ -473,14 +301,17 @@ class _SortPickerState<T> extends State<SortPicker<T>> {
 
   List<Widget> _generateList(List<ThunderListPickerItem<T>> items, ThemeData theme) {
     return items
-        .map((item) => ThunderPickerItem(
+        .map(
+          (item) => ThunderPickerItem(
             label: item.label,
             icon: item.icon,
             onSelected: () {
               Navigator.of(context).pop();
               widget.onSelect?.call(item);
             },
-            isSelected: widget.previouslySelected == item.payload))
+            isSelected: widget.previouslySelected == item.payload,
+          ),
+        )
         .toList();
   }
 }

@@ -23,11 +23,11 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
     required bool quickSelectMode,
     required ProfileModalInstanceInfoLookup instanceInfoLookup,
     required ProfileModalUnreadCountLookup unreadCountLookup,
-  })  : _sessionRepository = sessionRepository,
-        _quickSelectMode = quickSelectMode,
-        _instanceInfoLookup = instanceInfoLookup,
-        _unreadCountLookup = unreadCountLookup,
-        super(const ProfileModalState());
+  }) : _sessionRepository = sessionRepository,
+       _quickSelectMode = quickSelectMode,
+       _instanceInfoLookup = instanceInfoLookup,
+       _unreadCountLookup = unreadCountLookup,
+       super(const ProfileModalState());
 
   final SessionRepository _sessionRepository;
   final bool _quickSelectMode;
@@ -40,11 +40,7 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
   Future<void> load() async {
     final generation = ++_loadGeneration;
     final hasLoadedContent = state.status == ProfileModalStatus.success;
-    emit(state.copyWith(
-      status: hasLoadedContent ? ProfileModalStatus.success : ProfileModalStatus.loading,
-      isRefreshing: hasLoadedContent,
-      loadError: () => null,
-    ));
+    emit(state.copyWith(status: hasLoadedContent ? ProfileModalStatus.success : ProfileModalStatus.loading, isRefreshing: hasLoadedContent, loadError: () => null));
 
     try {
       final authenticatedSessions = await _sessionRepository.getAuthenticatedSessions();
@@ -55,25 +51,22 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
       final authenticatedRows = authenticatedSessions.map((account) => ProfileModalAuthenticatedAccountRow(account: account)).toList()..sort((a, b) => a.account.index.compareTo(b.account.index));
       final anonymousRows = anonymousSessions.map((account) => ProfileModalAnonymousInstanceRow(account: account)).toList()..sort((a, b) => a.account.index.compareTo(b.account.index));
 
-      emit(state.copyWith(
-        status: ProfileModalStatus.success,
-        isRefreshing: false,
-        authenticatedAccounts: authenticatedRows,
-        anonymousInstances: anonymousRows,
-        pendingSessionKey: () => null,
-        loadError: () => null,
-      ));
+      emit(
+        state.copyWith(
+          status: ProfileModalStatus.success,
+          isRefreshing: false,
+          authenticatedAccounts: authenticatedRows,
+          anonymousInstances: anonymousRows,
+          pendingSessionKey: () => null,
+          loadError: () => null,
+        ),
+      );
 
       unawaited(_enrichAuthenticatedRows(authenticatedRows, generation));
       if (!_quickSelectMode) unawaited(_enrichAnonymousRows(anonymousRows, generation));
     } catch (error) {
       if (!_isStale(generation)) {
-        emit(state.copyWith(
-          status: hasLoadedContent ? ProfileModalStatus.success : ProfileModalStatus.failure,
-          isRefreshing: false,
-          loadError: () => error.toString(),
-          pendingSessionKey: () => null,
-        ));
+        emit(state.copyWith(status: hasLoadedContent ? ProfileModalStatus.success : ProfileModalStatus.failure, isRefreshing: false, loadError: () => error.toString(), pendingSessionKey: () => null));
       }
     }
   }
@@ -124,23 +117,11 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
 
     final previousAuthenticatedOrder = state.authenticatedAccounts.map((row) => row.sessionKey).toList();
     final previousAnonymousOrder = state.anonymousInstances.map((row) => row.sessionKey).toList();
-    final reordered = _withPersistedIndices(
-      _reorder(state.authenticatedAccounts, oldIndex, newIndex),
-      state.anonymousInstances,
-    );
+    final reordered = _withPersistedIndices(_reorder(state.authenticatedAccounts, oldIndex, newIndex), state.anonymousInstances);
 
-    emit(state.copyWith(
-      authenticatedAccounts: reordered.authenticated,
-      anonymousInstances: reordered.anonymous,
-      isPersistingOrder: true,
-      operationError: () => null,
-    ));
+    emit(state.copyWith(authenticatedAccounts: reordered.authenticated, anonymousInstances: reordered.anonymous, isPersistingOrder: true, operationError: () => null));
 
-    await _persistReorder(
-      reordered,
-      previousAuthenticatedOrder: previousAuthenticatedOrder,
-      previousAnonymousOrder: previousAnonymousOrder,
-    );
+    await _persistReorder(reordered, previousAuthenticatedOrder: previousAuthenticatedOrder, previousAnonymousOrder: previousAnonymousOrder);
   }
 
   /// Moves an anonymous instance and persists the resulting session order.
@@ -149,23 +130,11 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
 
     final previousAuthenticatedOrder = state.authenticatedAccounts.map((row) => row.sessionKey).toList();
     final previousAnonymousOrder = state.anonymousInstances.map((row) => row.sessionKey).toList();
-    final reordered = _withPersistedIndices(
-      state.authenticatedAccounts,
-      _reorder(state.anonymousInstances, oldIndex, newIndex),
-    );
+    final reordered = _withPersistedIndices(state.authenticatedAccounts, _reorder(state.anonymousInstances, oldIndex, newIndex));
 
-    emit(state.copyWith(
-      authenticatedAccounts: reordered.authenticated,
-      anonymousInstances: reordered.anonymous,
-      isPersistingOrder: true,
-      operationError: () => null,
-    ));
+    emit(state.copyWith(authenticatedAccounts: reordered.authenticated, anonymousInstances: reordered.anonymous, isPersistingOrder: true, operationError: () => null));
 
-    await _persistReorder(
-      reordered,
-      previousAuthenticatedOrder: previousAuthenticatedOrder,
-      previousAnonymousOrder: previousAnonymousOrder,
-    );
+    await _persistReorder(reordered, previousAuthenticatedOrder: previousAuthenticatedOrder, previousAnonymousOrder: previousAnonymousOrder);
   }
 
   Future<void> _persistReorder(
@@ -183,23 +152,12 @@ class ProfileModalCubit extends Cubit<ProfileModalState> {
         _restoreOrder(state.authenticatedAccounts, previousAuthenticatedOrder, (row) => row.sessionKey),
         _restoreOrder(state.anonymousInstances, previousAnonymousOrder, (row) => row.sessionKey),
       );
-      emit(state.copyWith(
-        authenticatedAccounts: restored.authenticated,
-        anonymousInstances: restored.anonymous,
-        isPersistingOrder: false,
-        operationError: () => error.toString(),
-      ));
+      emit(state.copyWith(authenticatedAccounts: restored.authenticated, anonymousInstances: restored.anonymous, isPersistingOrder: false, operationError: () => error.toString()));
     }
   }
 
-  Future<void> _persistOrder(
-    List<ProfileModalAuthenticatedAccountRow> authenticatedRows,
-    List<ProfileModalAnonymousInstanceRow> anonymousRows,
-  ) {
-    return _sessionRepository.updateSessionOrder(
-      authenticatedSessions: authenticatedRows.map((row) => row.account).toList(),
-      anonymousSessions: anonymousRows.map((row) => row.account).toList(),
-    );
+  Future<void> _persistOrder(List<ProfileModalAuthenticatedAccountRow> authenticatedRows, List<ProfileModalAnonymousInstanceRow> anonymousRows) {
+    return _sessionRepository.updateSessionOrder(authenticatedSessions: authenticatedRows.map((row) => row.account).toList(), anonymousSessions: anonymousRows.map((row) => row.account).toList());
   }
 
   Future<void> _enrichAuthenticatedRows(List<ProfileModalAuthenticatedAccountRow> rows, int generation) async {
@@ -347,30 +305,24 @@ class ProfileModalState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        isRefreshing,
-        isPersistingOrder,
-        authenticatedAccounts,
-        anonymousInstances,
-        areAuthenticatedAccountsBeingReordered,
-        areAnonymousInstancesBeingReordered,
-        authenticatedAccountBeingReorderedIndex,
-        anonymousInstanceBeingReorderedIndex,
-        pendingSessionKey,
-        loadError,
-        operationError,
-      ];
+    status,
+    isRefreshing,
+    isPersistingOrder,
+    authenticatedAccounts,
+    anonymousInstances,
+    areAuthenticatedAccountsBeingReordered,
+    areAnonymousInstancesBeingReordered,
+    authenticatedAccountBeingReorderedIndex,
+    anonymousInstanceBeingReorderedIndex,
+    pendingSessionKey,
+    loadError,
+    operationError,
+  ];
 }
 
 /// Immutable authenticated-account data displayed by a profile row.
 class ProfileModalAuthenticatedAccountRow extends Equatable {
-  const ProfileModalAuthenticatedAccountRow({
-    required this.account,
-    this.instanceIcon,
-    this.version,
-    this.alive,
-    this.totalUnreadCount,
-  });
+  const ProfileModalAuthenticatedAccountRow({required this.account, this.instanceIcon, this.version, this.alive, this.totalUnreadCount});
 
   /// Persisted authenticated account represented by this row.
   final Account account;
@@ -390,13 +342,7 @@ class ProfileModalAuthenticatedAccountRow extends Equatable {
   /// Stable key used for session mutations and row identity.
   String get sessionKey => account.id;
 
-  ProfileModalAuthenticatedAccountRow copyWith({
-    Account? account,
-    String? Function()? instanceIcon,
-    String? Function()? version,
-    bool? Function()? alive,
-    int? Function()? totalUnreadCount,
-  }) {
+  ProfileModalAuthenticatedAccountRow copyWith({Account? account, String? Function()? instanceIcon, String? Function()? version, bool? Function()? alive, int? Function()? totalUnreadCount}) {
     return ProfileModalAuthenticatedAccountRow(
       account: account ?? this.account,
       instanceIcon: instanceIcon != null ? instanceIcon() : this.instanceIcon,
@@ -412,12 +358,7 @@ class ProfileModalAuthenticatedAccountRow extends Equatable {
 
 /// Immutable anonymous-instance data displayed by a profile row.
 class ProfileModalAnonymousInstanceRow extends Equatable {
-  const ProfileModalAnonymousInstanceRow({
-    required this.account,
-    this.instanceIcon,
-    this.version,
-    this.alive,
-  });
+  const ProfileModalAnonymousInstanceRow({required this.account, this.instanceIcon, this.version, this.alive});
 
   /// Persisted anonymous account represented by this row.
   final Account account;
@@ -434,12 +375,7 @@ class ProfileModalAnonymousInstanceRow extends Equatable {
   /// Stable key used for session mutations and row identity.
   String get sessionKey => account.instance;
 
-  ProfileModalAnonymousInstanceRow copyWith({
-    Account? account,
-    String? Function()? instanceIcon,
-    String? Function()? version,
-    bool? Function()? alive,
-  }) {
+  ProfileModalAnonymousInstanceRow copyWith({Account? account, String? Function()? instanceIcon, String? Function()? version, bool? Function()? alive}) {
     return ProfileModalAnonymousInstanceRow(
       account: account ?? this.account,
       instanceIcon: instanceIcon != null ? instanceIcon() : this.instanceIcon,
@@ -464,10 +400,7 @@ List<T> _reorder<T>(List<T> items, int oldIndex, int newIndex) {
 
 List<T> _restoreOrder<T>(List<T> items, List<String> sessionKeys, String Function(T item) keyOf) {
   final itemsByKey = {for (final item in items) keyOf(item): item};
-  final restored = <T>[
-    for (final sessionKey in sessionKeys)
-      if (itemsByKey.remove(sessionKey) case final item?) item,
-  ];
+  final restored = <T>[for (final sessionKey in sessionKeys) ?itemsByKey.remove(sessionKey)];
   restored.addAll(itemsByKey.values);
   return restored;
 }

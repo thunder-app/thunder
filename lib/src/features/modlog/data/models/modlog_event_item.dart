@@ -12,18 +12,7 @@ import 'package:thunder/src/core/domain/models/thunder_user.dart';
 /// Represents a modlog event based on [ModlogActionType].
 /// This class is used to display modlog events in the UI.
 class ModlogEventItem {
-  ModlogEventItem({
-    required this.type,
-    required this.dateTime,
-    this.moderator,
-    this.admin,
-    this.reason,
-    this.user,
-    this.post,
-    this.comment,
-    this.community,
-    required this.actioned,
-  });
+  ModlogEventItem({required this.type, required this.dateTime, this.moderator, this.admin, this.reason, this.user, this.post, this.comment, this.community, required this.actioned});
 
   factory ModlogEventItem.fromModlogEvent(ModlogEvent event) {
     return ModlogEventItem(

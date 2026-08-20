@@ -25,11 +25,7 @@ class ApiClientFactory {
   /// The factory will automatically select the appropriate client based on:
   /// - The account's platform (Lemmy, PieFed, etc.)
   /// - The instance's API version (from PlatformVersionCache)
-  static Future<ThunderApiClient> create(
-    Account account, {
-    bool debug = false,
-    http.Client? httpClient,
-  }) async {
+  static Future<ThunderApiClient> create(Account account, {bool debug = false, http.Client? httpClient}) async {
     return switch (account.platform) {
       ThreadiversePlatform.lemmy => _createLemmyClient(account, debug, httpClient),
       ThreadiversePlatform.piefed => Future.value(_createPiefedClient(account, debug, httpClient)),
@@ -38,10 +34,7 @@ class ApiClientFactory {
   }
 
   /// Probes Lemmy `/site` endpoints to discover and cache the instance version.
-  static Future<Version?> probeLemmySiteVersion(
-    String instance, {
-    http.Client? httpClient,
-  }) async {
+  static Future<Version?> probeLemmySiteVersion(String instance, {http.Client? httpClient}) async {
     final normalizedInstance = normalizeInstanceAuthority(instance) ?? instance;
     final client = httpClient ?? http.Client();
     final ownsClient = httpClient == null;
@@ -74,47 +67,24 @@ class ApiClientFactory {
   }
 
   /// Create the appropriate Lemmy client based on version.
-  static Future<ThunderApiClient> _createLemmyClient(
-    Account account,
-    bool debug,
-    http.Client? httpClient,
-  ) async {
+  static Future<ThunderApiClient> _createLemmyClient(Account account, bool debug, http.Client? httpClient) async {
     final normalizedInstance = normalizeInstanceAuthority(account.instance) ?? account.instance;
     var version = PlatformVersionCache().get(normalizedInstance);
     version ??= await probeLemmySiteVersion(normalizedInstance, httpClient: httpClient);
 
     if (version != null && _isLemmyApiV4(version)) {
-      return LemmyV4ApiClient(
-        account: account,
-        debug: debug,
-        version: version,
-        httpClient: httpClient,
-      );
+      return LemmyV4ApiClient(account: account, debug: debug, version: version, httpClient: httpClient);
     }
 
-    return LemmyV3ApiClient(
-      account: account,
-      debug: debug,
-      version: version,
-      httpClient: httpClient,
-    );
+    return LemmyV3ApiClient(account: account, debug: debug, version: version, httpClient: httpClient);
   }
 
   /// Create a PieFed client.
-  static ThunderApiClient _createPiefedClient(
-    Account account,
-    bool debug,
-    http.Client? httpClient,
-  ) {
+  static ThunderApiClient _createPiefedClient(Account account, bool debug, http.Client? httpClient) {
     final normalizedInstance = normalizeInstanceAuthority(account.instance) ?? account.instance;
     final version = PlatformVersionCache().get(normalizedInstance);
 
-    return PiefedApiClient(
-      account: account,
-      debug: debug,
-      version: version,
-      httpClient: httpClient,
-    );
+    return PiefedApiClient(account: account, debug: debug, version: version, httpClient: httpClient);
   }
 
   /// Check if the Lemmy version requires the v4 API.
@@ -125,11 +95,7 @@ class ApiClientFactory {
   }
 
   /// Create a mock client for testing.
-  static Future<ThunderApiClient> createForTesting({
-    required Account account,
-    required http.Client mockHttpClient,
-    bool debug = false,
-  }) {
+  static Future<ThunderApiClient> createForTesting({required Account account, required http.Client mockHttpClient, bool debug = false}) {
     return create(account, debug: debug, httpClient: mockHttpClient);
   }
 }

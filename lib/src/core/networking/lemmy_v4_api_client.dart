@@ -36,12 +36,7 @@ import 'package:thunder/src/core/networking/instance_uri.dart';
 class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   static const _mapper = LemmyV4PrimitiveMapper();
 
-  LemmyV4ApiClient({
-    required super.account,
-    super.debug,
-    required super.version,
-    super.httpClient,
-  });
+  LemmyV4ApiClient({required super.account, super.debug, required super.version, super.httpClient});
 
   @override
   String get platformName => 'Lemmy';
@@ -55,12 +50,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 
   @override
   Future<String?> login({required String username, required String password, String? totp}) async {
-    final json = await request(HttpMethod.post, '$basePath/account/auth/login', {
-      'username_or_email': username,
-      'password': password,
-      'totp_2fa_token': totp,
-      'stay_logged_in': true,
-    });
+    final json = await request(HttpMethod.post, '$basePath/account/auth/login', {'username_or_email': username, 'password': password, 'totp_2fa_token': totp, 'stay_logged_in': true});
     return json['jwt'] as String?;
   }
 
@@ -85,10 +75,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 
   @override
   Future<GetPostResponse> getPost(int postId, {int? commentId}) async {
-    final json = await request(HttpMethod.get, '$basePath/post', {
-      'id': postId,
-      'comment_id': commentId,
-    });
+    final json = await request(HttpMethod.get, '$basePath/post', {'id': postId, 'comment_id': commentId});
 
     return (
       post: _mapper.postView(json['post_view']),
@@ -143,16 +130,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   @override
-  Future<ThunderPost> createPost({
-    required String title,
-    required int communityId,
-    String? url,
-    String? contents,
-    bool? nsfw,
-    int? languageId,
-    String? customThumbnail,
-    String? altText,
-  }) async {
+  Future<ThunderPost> createPost({required String title, required int communityId, String? url, String? contents, bool? nsfw, int? languageId, String? customThumbnail, String? altText}) async {
     final json = await request(HttpMethod.post, '$basePath/post', {
       'name': title,
       'community_id': communityId,
@@ -167,17 +145,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   @override
-  Future<ThunderPost> editPost({
-    required int postId,
-    required String title,
-    String? url,
-    String? contents,
-    String? altText,
-    String? tags,
-    bool? nsfw,
-    int? languageId,
-    String? customThumbnail,
-  }) async {
+  Future<ThunderPost> editPost({required int postId, required String title, String? url, String? contents, String? altText, String? tags, bool? nsfw, int? languageId, String? customThumbnail}) async {
     final json = await request(HttpMethod.put, '$basePath/post', {
       'post_id': postId,
       'name': title,
@@ -195,103 +163,68 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   Future<ThunderPost> votePost({required int postId, required int score}) async {
     final json = await request(HttpMethod.post, '$basePath/post/like', {
       'post_id': postId,
-      'is_upvote': switch (score) { 1 => true, -1 => false, _ => null },
+      'is_upvote': switch (score) {
+        1 => true,
+        -1 => false,
+        _ => null,
+      },
     });
     return _mapper.postView(json['post_view']);
   }
 
   @override
   Future<ThunderPost> savePost({required int postId, required bool save}) async {
-    final json = await request(HttpMethod.put, '$basePath/post/save', {
-      'post_id': postId,
-      'save': save,
-    });
+    final json = await request(HttpMethod.put, '$basePath/post/save', {'post_id': postId, 'save': save});
     return _mapper.postView(json['post_view']);
   }
 
   @override
   Future<bool> readPost({required List<int> postIds, required bool read}) async {
     if (postIds.length == 1) {
-      await request(HttpMethod.post, '$basePath/post/mark_as_read', {
-        'post_id': postIds.single,
-        'read': read,
-      });
+      await request(HttpMethod.post, '$basePath/post/mark_as_read', {'post_id': postIds.single, 'read': read});
       return true;
     }
-    final json = await request(HttpMethod.post, '$basePath/post/mark_as_read/many', {
-      'post_ids': postIds,
-      'read': read,
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/mark_as_read/many', {'post_ids': postIds, 'read': read});
     return json['success'] as bool? ?? true;
   }
 
   @override
   Future<bool> hidePost({required int postId, required bool hide}) async {
-    await request(HttpMethod.post, '$basePath/post/hide', {
-      'post_id': postId,
-      'hide': hide,
-    });
+    await request(HttpMethod.post, '$basePath/post/hide', {'post_id': postId, 'hide': hide});
     return true;
   }
 
   @override
   Future<bool> deletePost({required int postId, required bool deleted}) async {
-    final json = await request(HttpMethod.delete, '$basePath/post', {
-      'post_id': postId,
-      'deleted': deleted,
-    });
+    final json = await request(HttpMethod.delete, '$basePath/post', {'post_id': postId, 'deleted': deleted});
     return _mapper.postView(json['post_view']).status.deleted == deleted;
   }
 
   @override
   Future<bool> lockPost({required int postId, required bool locked}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/lock', {
-      'post_id': postId,
-      'locked': locked,
-      'reason': '',
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/lock', {'post_id': postId, 'locked': locked, 'reason': ''});
     return _mapper.postView(json['post_view']).status.locked == locked;
   }
 
   @override
   Future<bool> pinPost({required int postId, required bool pinned}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/feature', {
-      'post_id': postId,
-      'featured': pinned,
-      'feature_type': 'community',
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/feature', {'post_id': postId, 'featured': pinned, 'feature_type': 'community'});
     return _mapper.postView(json['post_view']).status.featuredCommunity == pinned;
   }
 
   @override
   Future<bool> removePost({required int postId, required bool removed, required String reason}) async {
-    final json = await request(HttpMethod.post, '$basePath/post/remove', {
-      'post_id': postId,
-      'removed': removed,
-      'reason': reason,
-    });
+    final json = await request(HttpMethod.post, '$basePath/post/remove', {'post_id': postId, 'removed': removed, 'reason': reason});
     return _mapper.postView(json['post_view']).status.removed == removed;
   }
 
   @override
   Future<void> reportPost({required int postId, required String reason}) async {
-    await request(HttpMethod.post, '$basePath/post/report', {
-      'post_id': postId,
-      'reason': reason,
-    });
+    await request(HttpMethod.post, '$basePath/post/report', {'post_id': postId, 'reason': reason});
   }
 
   @override
-  Future<ThunderPage<ThunderReport>> getReports({
-    ReportKind? kind,
-    int? postId,
-    int? commentId,
-    int page = 1,
-    String? cursor,
-    int limit = 20,
-    bool unresolved = false,
-    int? communityId,
-  }) async {
+  Future<ThunderPage<ThunderReport>> getReports({ReportKind? kind, int? postId, int? commentId, int page = 1, String? cursor, int limit = 20, bool unresolved = false, int? communityId}) async {
     final json = await request(HttpMethod.get, '$basePath/report/list', {
       'post_id': postId,
       'page_cursor': cursor,
@@ -315,10 +248,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
       ReportKind.privateMessage => '$basePath/private_message/report/resolve',
       ReportKind.community => '$basePath/community/report/resolve',
     };
-    final json = await request(HttpMethod.put, endpoint, {
-      'report_id': reportId,
-      'resolved': resolved,
-    });
+    final json = await request(HttpMethod.put, endpoint, {'report_id': reportId, 'resolved': resolved});
     return switch (kind) {
       ReportKind.post => _mapper.postReportView(json['post_report_view']),
       ReportKind.comment => _mapper.commentReportView(json['comment_report_view']),
@@ -338,16 +268,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   @override
-  Future<GetCommentsResponse> getComments({
-    required int postId,
-    int? page,
-    String? cursor,
-    int? limit,
-    int? maxDepth,
-    int? communityId,
-    int? parentId,
-    CommentSortType? commentSortType,
-  }) async {
+  Future<GetCommentsResponse> getComments({required int postId, int? page, String? cursor, int? limit, int? maxDepth, int? communityId, int? parentId, CommentSortType? commentSortType}) async {
     final json = await request(HttpMethod.get, '$basePath/comment/list', {
       'sort': commentSortType?.value.toLowerCase(),
       'max_depth': maxDepth,
@@ -364,32 +285,14 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   @override
-  Future<ThunderComment> createComment({
-    required int postId,
-    required String content,
-    int? parentId,
-    int? languageId,
-  }) async {
-    final json = await request(HttpMethod.post, '$basePath/comment', {
-      'post_id': postId,
-      'content': content,
-      'parent_id': parentId,
-      'language_id': languageId,
-    });
+  Future<ThunderComment> createComment({required int postId, required String content, int? parentId, int? languageId}) async {
+    final json = await request(HttpMethod.post, '$basePath/comment', {'post_id': postId, 'content': content, 'parent_id': parentId, 'language_id': languageId});
     return _mapper.commentView(json['comment_view']);
   }
 
   @override
-  Future<ThunderComment> editComment({
-    required int commentId,
-    required String content,
-    int? languageId,
-  }) async {
-    final json = await request(HttpMethod.put, '$basePath/comment', {
-      'comment_id': commentId,
-      'content': content,
-      'language_id': languageId,
-    });
+  Future<ThunderComment> editComment({required int commentId, required String content, int? languageId}) async {
+    final json = await request(HttpMethod.put, '$basePath/comment', {'comment_id': commentId, 'content': content, 'language_id': languageId});
     return _mapper.commentView(json['comment_view']);
   }
 
@@ -397,35 +300,30 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   Future<ThunderComment> voteComment({required int commentId, required int score}) async {
     final json = await request(HttpMethod.post, '$basePath/comment/like', {
       'comment_id': commentId,
-      'is_upvote': switch (score) { 1 => true, -1 => false, _ => null },
+      'is_upvote': switch (score) {
+        1 => true,
+        -1 => false,
+        _ => null,
+      },
     });
     return _mapper.commentView(json['comment_view']);
   }
 
   @override
   Future<ThunderComment> saveComment({required int commentId, required bool save}) async {
-    final json = await request(HttpMethod.put, '$basePath/comment/save', {
-      'comment_id': commentId,
-      'save': save,
-    });
+    final json = await request(HttpMethod.put, '$basePath/comment/save', {'comment_id': commentId, 'save': save});
     return _mapper.commentView(json['comment_view']);
   }
 
   @override
   Future<ThunderComment> deleteComment({required int commentId, required bool deleted}) async {
-    final json = await request(HttpMethod.delete, '$basePath/comment', {
-      'comment_id': commentId,
-      'deleted': deleted,
-    });
+    final json = await request(HttpMethod.delete, '$basePath/comment', {'comment_id': commentId, 'deleted': deleted});
     return _mapper.commentView(json['comment_view']);
   }
 
   @override
   Future<void> reportComment({required int commentId, required String reason}) async {
-    await request(HttpMethod.post, '$basePath/comment/report', {
-      'comment_id': commentId,
-      'reason': reason,
-    });
+    await request(HttpMethod.post, '$basePath/comment/report', {'comment_id': commentId, 'reason': reason});
   }
 
   // =============================================================
@@ -434,10 +332,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 
   @override
   Future<GetCommunityResponse> getCommunity({int? id, String? name}) async {
-    final json = await request(HttpMethod.get, '$basePath/community', {
-      'id': id,
-      'name': name,
-    });
+    final json = await request(HttpMethod.get, '$basePath/community', {'id': id, 'name': name});
     return (
       community: _mapper.communityView(json['community_view']),
       site: json['site'] != null ? ThunderSite.fromLemmyV4Site(json['site']) : null,
@@ -448,35 +343,20 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   @override
-  Future<List<ThunderCommunity>> getCommunities({
-    int? page,
-    int? limit,
-    FeedListType? feedListType,
-    PostSortType? postSortType,
-  }) async {
-    final json = await request(HttpMethod.get, '$basePath/community/list', {
-      'limit': limit,
-      'type_': feedListType?.value.toLowerCase(),
-      'sort': postSortType?.value.toLowerCase(),
-    });
+  Future<List<ThunderCommunity>> getCommunities({int? page, int? limit, FeedListType? feedListType, PostSortType? postSortType}) async {
+    final json = await request(HttpMethod.get, '$basePath/community/list', {'limit': limit, 'type_': feedListType?.value.toLowerCase(), 'sort': postSortType?.value.toLowerCase()});
     return (json['items'] as List? ?? const []).map<ThunderCommunity>((cv) => _mapper.communityView(cv)).toList();
   }
 
   @override
   Future<ThunderCommunity> subscribeToCommunity({required int communityId, required bool follow}) async {
-    final json = await request(HttpMethod.post, '$basePath/community/follow', {
-      'community_id': communityId,
-      'follow': follow,
-    });
+    final json = await request(HttpMethod.post, '$basePath/community/follow', {'community_id': communityId, 'follow': follow});
     return _mapper.communityView(json['community_view']);
   }
 
   @override
   Future<ThunderCommunity> blockCommunity({required int communityId, required bool block}) async {
-    final json = await request(HttpMethod.post, '$basePath/account/block/community', {
-      'community_id': communityId,
-      'block': block,
-    });
+    final json = await request(HttpMethod.post, '$basePath/account/block/community', {'community_id': communityId, 'block': block});
     return _mapper.communityView(json['community_view']);
   }
 
@@ -485,32 +365,14 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   // =============================================================
 
   @override
-  Future<GetUserResponse> getUser({
-    int? userId,
-    String? username,
-    PostSortType? sort,
-    int? page,
-    String? cursor,
-    int? limit,
-    bool? saved,
-    bool? includeContent,
-  }) async {
-    final details = await request(HttpMethod.get, '$basePath/person', {
-      'person_id': userId,
-      'username': username,
-    });
+  Future<GetUserResponse> getUser({int? userId, String? username, PostSortType? sort, int? page, String? cursor, int? limit, bool? saved, bool? includeContent}) async {
+    final details = await request(HttpMethod.get, '$basePath/person', {'person_id': userId, 'username': username});
 
     final content = includeContent == false
         ? <String, dynamic>{'items': const []}
         : saved == true
-            ? await request(HttpMethod.get, '$basePath/account/saved', {'page_cursor': cursor, 'limit': limit, 'type_': 'all'})
-            : await request(HttpMethod.get, '$basePath/person/content', {
-                'person_id': userId,
-                'username': username,
-                'page_cursor': cursor,
-                'limit': limit,
-                'type_': 'all',
-              });
+        ? await request(HttpMethod.get, '$basePath/account/saved', {'page_cursor': cursor, 'limit': limit, 'type_': 'all'})
+        : await request(HttpMethod.get, '$basePath/person/content', {'person_id': userId, 'username': username, 'page_cursor': cursor, 'limit': limit, 'type_': 'all'});
 
     final items = (content['items'] as List? ?? const []).map((item) => _mapper.contentItem(item)).toList();
 
@@ -526,22 +388,12 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 
   @override
   Future<ThunderUser> blockUser({required int userId, required bool block}) async {
-    final json = await request(HttpMethod.post, '$basePath/account/block/person', {
-      'person_id': userId,
-      'block': block,
-    });
+    final json = await request(HttpMethod.post, '$basePath/account/block/person', {'person_id': userId, 'block': block});
     return _mapper.userView(json['person_view']);
   }
 
   @override
-  Future<ThunderUser> banUserFromCommunity({
-    required int userId,
-    required int communityId,
-    required bool ban,
-    bool? removeData,
-    String? reason,
-    int? expires,
-  }) async {
+  Future<ThunderUser> banUserFromCommunity({required int userId, required int communityId, required bool ban, bool? removeData, String? reason, int? expires}) async {
     final json = await request(HttpMethod.post, '$basePath/community/ban_user', {
       'person_id': userId,
       'community_id': communityId,
@@ -554,16 +406,8 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   @override
-  Future<List<ThunderUser>> addModerator({
-    required int userId,
-    required int communityId,
-    required bool added,
-  }) async {
-    final json = await request(HttpMethod.post, '$basePath/community/mod', {
-      'person_id': userId,
-      'community_id': communityId,
-      'added': added,
-    });
+  Future<List<ThunderUser>> addModerator({required int userId, required int communityId, required bool added}) async {
+    final json = await request(HttpMethod.post, '$basePath/community/mod', {'person_id': userId, 'community_id': communityId, 'added': added});
     return (json['moderators'] as List? ?? const []).map<ThunderUser>((cmv) => _mapper.user(cmv['moderator'])).toList();
   }
 
@@ -628,12 +472,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   @override
-  Future<List<ThunderComment>> getCommentReplies({
-    int? page,
-    int? limit,
-    CommentSortType? sort,
-    bool unread = false,
-  }) async {
+  Future<List<ThunderComment>> getCommentReplies({int? page, int? limit, CommentSortType? sort, bool unread = false}) async {
     final notifications = await _notifications(type: 'reply', page: page, limit: limit, unread: unread);
     return notifications.map((notification) {
       final data = notification['data'] as Map<String, dynamic>;
@@ -647,12 +486,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   @override
-  Future<List<ThunderComment>> getCommentMentions({
-    int? page,
-    int? limit,
-    CommentSortType? sort,
-    bool unread = false,
-  }) async {
+  Future<List<ThunderComment>> getCommentMentions({int? page, int? limit, CommentSortType? sort, bool unread = false}) async {
     final notifications = await _notifications(type: 'mention', page: page, limit: limit, unread: unread);
     return notifications.map((notification) {
       final data = notification['data'] as Map<String, dynamic>;
@@ -675,12 +509,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   // =============================================================
 
   @override
-  Future<List<ThunderPrivateMessage>> getPrivateMessages({
-    int? page,
-    int? limit,
-    bool unread = false,
-    int? creatorId,
-  }) async {
+  Future<List<ThunderPrivateMessage>> getPrivateMessages({int? page, int? limit, bool unread = false, int? creatorId}) async {
     final notifications = await _notifications(type: 'private_message', page: page, limit: limit, unread: unread, creatorId: creatorId);
     return notifications.map((notification) {
       final data = notification['data'] as Map<String, dynamic>;
@@ -695,43 +524,25 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 
   @override
   Future<ThunderPrivateMessage> createPrivateMessage({required int recipientId, required String content}) async {
-    final json = await request(HttpMethod.post, '$basePath/private_message', {
-      'recipient_id': recipientId,
-      'content': content,
-    });
+    final json = await request(HttpMethod.post, '$basePath/private_message', {'recipient_id': recipientId, 'content': content});
     return _mapper.privateMessageView(json['private_message_view']);
   }
 
   Future<ThunderPrivateMessage> editPrivateMessage({required int privateMessageId, required String content}) async {
-    final json = await request(HttpMethod.put, '$basePath/private_message', {
-      'private_message_id': privateMessageId,
-      'content': content,
-    });
+    final json = await request(HttpMethod.put, '$basePath/private_message', {'private_message_id': privateMessageId, 'content': content});
     return _mapper.privateMessageView(json['private_message_view']);
   }
 
   Future<ThunderPrivateMessage> deletePrivateMessage({required int privateMessageId, required bool deleted}) async {
-    final json = await request(HttpMethod.delete, '$basePath/private_message', {
-      'private_message_id': privateMessageId,
-      'deleted': deleted,
-    });
+    final json = await request(HttpMethod.delete, '$basePath/private_message', {'private_message_id': privateMessageId, 'deleted': deleted});
     return _mapper.privateMessageView(json['private_message_view']);
   }
 
   /// Lemmy 1.0 has no dedicated PM conversation endpoint; filter the inbox list.
   @override
-  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({
-    required int personId,
-    int? conversationId,
-    int? page,
-    int? limit,
-  }) async {
+  Future<List<ThunderPrivateMessage>> getPrivateMessageConversation({required int personId, int? conversationId, int? page, int? limit}) async {
     final messages = await getPrivateMessages(page: page, limit: limit);
-    return filterPrivateMessageConversation(
-      messages: messages,
-      personId: personId,
-      currentUserId: account.userId,
-    );
+    return filterPrivateMessageConversation(messages: messages, personId: personId, currentUserId: account.userId);
   }
   // =============================================================
   // Account Settings
@@ -764,9 +575,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 
   @override
   Future<ThunderPage<AccountMediaItem>> media({int? page, int? limit}) async {
-    final json = await request(HttpMethod.get, '$basePath/account/media/list', {
-      'limit': limit,
-    });
+    final json = await request(HttpMethod.get, '$basePath/account/media/list', {'limit': limit});
     return ThunderPage(
       items: (json['items'] as List? ?? const []).whereType<Map<String, dynamic>>().map((image) => _accountMediaItemFromLemmyV4(image, account.instance)).toList(),
       nextPage: json['next_page']?.toString(),
@@ -779,15 +588,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   // =============================================================
 
   @override
-  Future<List<ModlogEvent>> getModlog({
-    int? page,
-    int? limit,
-    ModlogActionType? modlogActionType,
-    int? communityId,
-    int? userId,
-    int? moderatorId,
-    int? commentId,
-  }) async {
+  Future<List<ModlogEvent>> getModlog({int? page, int? limit, ModlogActionType? modlogActionType, int? communityId, int? userId, int? moderatorId, int? commentId}) async {
     final json = await request(HttpMethod.get, '$basePath/modlog', {
       'limit': limit,
       'type_': modlogActionType?.value.toLowerCase(),
@@ -811,14 +612,8 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
 
   @override
   Future<bool> blockInstance({required int instanceId, required bool block}) async {
-    final communities = await request(HttpMethod.post, '$basePath/account/block/instance/communities', {
-      'instance_id': instanceId,
-      'block': block,
-    });
-    final persons = await request(HttpMethod.post, '$basePath/account/block/instance/persons', {
-      'instance_id': instanceId,
-      'block': block,
-    });
+    final communities = await request(HttpMethod.post, '$basePath/account/block/instance/communities', {'instance_id': instanceId, 'block': block});
+    final persons = await request(HttpMethod.post, '$basePath/account/block/instance/persons', {'instance_id': instanceId, 'block': block});
     return (communities['success'] as bool? ?? true) && (persons['success'] as bool? ?? true) ? block : !block;
   }
 
@@ -836,18 +631,12 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
       filePath: filePath,
       platformName: platformName,
     );
-    return parseUploadImageUrl(
-      decoded,
-      instance: account.instance,
-      platformName: platformName,
-    );
+    return parseUploadImageUrl(decoded, instance: account.instance, platformName: platformName);
   }
 
   @override
   Future<void> deleteImage({required String file, String? token}) async {
-    await request(HttpMethod.delete, '$basePath/account/media', {
-      'filename': file,
-    });
+    await request(HttpMethod.delete, '$basePath/account/media', {'filename': file});
   }
 
   @override
@@ -859,12 +648,7 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   Future<ThunderPage<dynamic>> _contentPage(String endpoint, {String? cursor, int? limit, String? type, String? searchTerm}) async {
-    final json = await request(HttpMethod.get, endpoint, {
-      'page_cursor': cursor,
-      'limit': limit,
-      'search_term': searchTerm,
-      'type_': type,
-    });
+    final json = await request(HttpMethod.get, endpoint, {'page_cursor': cursor, 'limit': limit, 'search_term': searchTerm, 'type_': type});
     final items = (json['items'] as List? ?? const []).map((item) => _mapper.contentItem(item)).map((item) {
       return switch (item) {
         ThunderPostItem(:final post) => post,
@@ -875,20 +659,12 @@ class LemmyV4ApiClient extends BaseApiClient with LemmyApiClientDefaults {
   }
 
   Future<List<Map<String, dynamic>>> _notifications({String? type, int? page, int? limit, bool unread = false, int? creatorId}) async {
-    final json = await request(HttpMethod.get, '$basePath/account/notification/list', {
-      'limit': limit,
-      'creator_id': creatorId,
-      'unread_only': unread,
-      'type_': type,
-    });
+    final json = await request(HttpMethod.get, '$basePath/account/notification/list', {'limit': limit, 'creator_id': creatorId, 'unread_only': unread, 'type_': type});
     return (json['items'] as List? ?? const []).whereType<Map<String, dynamic>>().toList();
   }
 
   Future<void> _markNotificationAsRead({required int notificationId, required bool read}) async {
-    await request(HttpMethod.post, '$basePath/account/notification/mark_as_read', {
-      'notification_id': notificationId,
-      'read': read,
-    });
+    await request(HttpMethod.post, '$basePath/account/notification/mark_as_read', {'notification_id': notificationId, 'read': read});
   }
 }
 

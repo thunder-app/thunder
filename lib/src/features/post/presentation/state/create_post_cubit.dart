@@ -45,15 +45,15 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     required LinkMetadataRepository Function(Account) linkMetadataRepository,
     required DraftRepository draftRepository,
     required LocalizationService localizationService,
-  })  : _postRepository = postRepository,
-        _accountRepository = accountRepository,
-        _communityRepository = communityRepository,
-        _searchRepository = searchRepository,
-        _linkMetadataRepository = linkMetadataRepository,
-        _draftRepository = draftRepository,
-        _localizationService = localizationService,
-        _initialAccountId = account.id,
-        super(const CreatePostState()) {
+  }) : _postRepository = postRepository,
+       _accountRepository = accountRepository,
+       _communityRepository = communityRepository,
+       _searchRepository = searchRepository,
+       _linkMetadataRepository = linkMetadataRepository,
+       _draftRepository = draftRepository,
+       _localizationService = localizationService,
+       _initialAccountId = account.id,
+       super(const CreatePostState()) {
     repository = _postRepository(account);
   }
 
@@ -130,11 +130,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   }
 
   Future<void> clearMessage() async {
-    emit(state.copyWith(
-      status: CreatePostStatus.initial,
-      message: null,
-      errorReason: null,
-    ));
+    emit(state.copyWith(status: CreatePostStatus.initial, message: null, errorReason: null));
   }
 
   Future<void> switchAccount(Account newAccount) async {
@@ -142,17 +138,21 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     repository = _postRepository(account);
 
     debugPrint('Account switched to ${account.username}@${account.instance}');
-    emit(_validateState(state.copyWith(
-      status: CreatePostStatus.initial,
-      message: null,
-      errorReason: null,
-      isPiefedComposer: account.platform == ThreadiversePlatform.piefed,
-      userChanged: account.id != _initialAccountId,
-      piefedMetadataStatus: _piefedResetStatus,
-      availablePiefedFlairs: const <ThunderFlair>[],
-      selectedPiefedFlairIds: const <int>[],
-      suggestedLinkTitle: null,
-    )));
+    emit(
+      _validateState(
+        state.copyWith(
+          status: CreatePostStatus.initial,
+          message: null,
+          errorReason: null,
+          isPiefedComposer: account.platform == ThreadiversePlatform.piefed,
+          userChanged: account.id != _initialAccountId,
+          piefedMetadataStatus: _piefedResetStatus,
+          availablePiefedFlairs: const <ThunderFlair>[],
+          selectedPiefedFlairIds: const <int>[],
+          suggestedLinkTitle: null,
+        ),
+      ),
+    );
 
     _scheduleDraftPersistence();
     await _refreshPiefedMetadata();
@@ -170,22 +170,23 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     final shouldClearImageUploadStatus = state.status == CreatePostStatus.imageUploadSuccess;
     if (value == state.body && !shouldClearImageUploadStatus) return;
 
-    emit(state.copyWith(
-      body: value,
-      status: shouldClearImageUploadStatus ? CreatePostStatus.initial : state.status,
-    ));
+    emit(state.copyWith(body: value, status: shouldClearImageUploadStatus ? CreatePostStatus.initial : state.status));
     _scheduleDraftPersistence();
   }
 
   void updateUrl(String value) {
     if (value == state.url) return;
 
-    emit(_validateState(state.copyWith(
-      url: value,
-      suggestedLinkTitle: null,
-      crossPosts: value.isEmpty ? const <ThunderPost>[] : state.crossPosts,
-      crossPostsStatus: value.isEmpty ? CreatePostCrossPostsStatus.initial : CreatePostCrossPostsStatus.loading,
-    )));
+    emit(
+      _validateState(
+        state.copyWith(
+          url: value,
+          suggestedLinkTitle: null,
+          crossPosts: value.isEmpty ? const <ThunderPost>[] : state.crossPosts,
+          crossPostsStatus: value.isEmpty ? CreatePostCrossPostsStatus.initial : CreatePostCrossPostsStatus.loading,
+        ),
+      ),
+    );
 
     _scheduleCrossPostsLookup(value);
     _scheduleLinkTitleLookup(value);
@@ -219,13 +220,17 @@ class CreatePostCubit extends Cubit<CreatePostState> {
 
     if (!hasContextChanged) return;
 
-    emit(_validateState(state.copyWith(
-      communityId: nextCommunityId,
-      community: community,
-      piefedMetadataStatus: _piefedResetStatus,
-      availablePiefedFlairs: const <ThunderFlair>[],
-      selectedPiefedFlairIds: const <int>[],
-    )));
+    emit(
+      _validateState(
+        state.copyWith(
+          communityId: nextCommunityId,
+          community: community,
+          piefedMetadataStatus: _piefedResetStatus,
+          availablePiefedFlairs: const <ThunderFlair>[],
+          selectedPiefedFlairIds: const <int>[],
+        ),
+      ),
+    );
 
     _scheduleDraftPersistence();
     await _refreshPiefedMetadata();
@@ -280,12 +285,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   Future<void> discardRestoredDraft() async {
     await _draftRepository.deleteDraft(_draftContext.draftType, _draftContext.existingId, _draftContext.replyId);
 
-    final resetState = _validateState(
-      _initialState.copyWith(
-        status: CreatePostStatus.initial,
-        restoredDraftAvailable: false,
-      ),
-    );
+    final resetState = _validateState(_initialState.copyWith(status: CreatePostStatus.initial, restoredDraftAvailable: false));
 
     emit(resetState);
     await _refreshPiefedMetadata();
@@ -296,21 +296,19 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   Future<void> uploadImages(List<String> imageFiles, {bool isPostImage = false}) async {
     final l10n = _localizationService.l10n;
     if (account.anonymous) {
-      emit(state.copyWith(
-        status: isPostImage ? CreatePostStatus.postImageUploadFailure : CreatePostStatus.imageUploadFailure,
-        message: l10n.userNotLoggedIn,
-        errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
-      ));
+      emit(
+        state.copyWith(
+          status: isPostImage ? CreatePostStatus.postImageUploadFailure : CreatePostStatus.imageUploadFailure,
+          message: l10n.userNotLoggedIn,
+          errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
+        ),
+      );
       return;
     }
 
     List<String> urls = [];
 
-    emit(state.copyWith(
-      status: isPostImage ? CreatePostStatus.postImageUploadInProgress : CreatePostStatus.imageUploadInProgress,
-      message: null,
-      errorReason: null,
-    ));
+    emit(state.copyWith(status: isPostImage ? CreatePostStatus.postImageUploadInProgress : CreatePostStatus.imageUploadInProgress, message: null, errorReason: null));
 
     try {
       final accountRepository = _accountRepository(account);
@@ -324,14 +322,16 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       }
 
       final successStatus = isPostImage ? CreatePostStatus.postImageUploadSuccess : CreatePostStatus.imageUploadSuccess;
-      final nextState = _validateState(state.copyWith(
-        status: successStatus,
-        imageUrls: urls,
-        message: null,
-        errorReason: null,
-        url: isPostImage && urls.isNotEmpty ? urls.first : state.url,
-        suggestedLinkTitle: isPostImage && urls.isNotEmpty ? null : state.suggestedLinkTitle,
-      ));
+      final nextState = _validateState(
+        state.copyWith(
+          status: successStatus,
+          imageUrls: urls,
+          message: null,
+          errorReason: null,
+          url: isPostImage && urls.isNotEmpty ? urls.first : state.url,
+          suggestedLinkTitle: isPostImage && urls.isNotEmpty ? null : state.suggestedLinkTitle,
+        ),
+      );
 
       emit(nextState);
 
@@ -342,11 +342,13 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       }
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: isPostImage ? CreatePostStatus.postImageUploadFailure : CreatePostStatus.imageUploadFailure,
-        message: message,
-        errorReason: AppErrorReason.actionFailed(message: message),
-      ));
+      emit(
+        state.copyWith(
+          status: isPostImage ? CreatePostStatus.postImageUploadFailure : CreatePostStatus.imageUploadFailure,
+          message: message,
+          errorReason: AppErrorReason.actionFailed(message: message),
+        ),
+      );
     }
   }
 
@@ -355,11 +357,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     _saveDraft = false;
 
     try {
-      emit(state.copyWith(
-        status: CreatePostStatus.submitting,
-        message: null,
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: CreatePostStatus.submitting, message: null, errorReason: null));
 
       final post = _editingPost?.id == null
           ? await repository.create(
@@ -387,21 +385,18 @@ class CreatePostCubit extends Cubit<CreatePostState> {
               languageId: state.languageId,
             );
 
-      emit(state.copyWith(
-        status: CreatePostStatus.success,
-        post: post,
-        message: null,
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: CreatePostStatus.success, post: post, message: null, errorReason: null));
 
       return post.id;
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: CreatePostStatus.error,
-        message: message,
-        errorReason: AppErrorReason.actionFailed(message: message),
-      ));
+      emit(
+        state.copyWith(
+          status: CreatePostStatus.error,
+          message: message,
+          errorReason: AppErrorReason.actionFailed(message: message),
+        ),
+      );
     }
 
     return null;
@@ -419,10 +414,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   CreatePostState _validateState(CreatePostState source) {
     final l10n = _localizationService.l10n;
 
-    return source.copyWith(
-      urlError: _validateOptionalUrl(source.url, l10n.notValidUrl),
-      customThumbnailError: _validateOptionalUrl(source.customThumbnail, l10n.notValidUrl),
-    );
+    return source.copyWith(urlError: _validateOptionalUrl(source.url, l10n.notValidUrl), customThumbnailError: _validateOptionalUrl(source.customThumbnail, l10n.notValidUrl));
   }
 
   String? _validateOptionalUrl(String value, String invalidMessage) {
@@ -440,10 +432,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   }
 
   Future<void> _restoreExistingDraft() async {
-    final draft = await restoreDraft(
-      repository: _draftRepository,
-      context: _draftContext,
-    );
+    final draft = await restoreDraft(repository: _draftRepository, context: _draftContext);
 
     if (draft == null) {
       return;
@@ -466,21 +455,18 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     emit(restoredState);
   }
 
-  DraftContext get _draftContext => resolvePostDraftContext(
-        editingPostId: _editingPost?.id,
-        communityId: state.communityId,
-      );
+  DraftContext get _draftContext => resolvePostDraftContext(editingPostId: _editingPost?.id, communityId: state.communityId);
 
   Draft _buildDraft() => buildPostDraft(
-        context: _draftContext,
-        title: state.title,
-        url: state.url,
-        customThumbnail: state.customThumbnail,
-        altText: state.altText,
-        nsfw: state.isNsfw,
-        languageId: state.languageId,
-        body: state.body,
-      );
+    context: _draftContext,
+    title: state.title,
+    url: state.url,
+    customThumbnail: state.customThumbnail,
+    altText: state.altText,
+    nsfw: state.isNsfw,
+    languageId: state.languageId,
+    body: state.body,
+  );
 
   void _scheduleDraftPersistence() {
     _draftDebounceTimer?.cancel();
@@ -493,10 +479,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     _crossPostsDebounceTimer?.cancel();
 
     if (url.isEmpty) {
-      emit(state.copyWith(
-        crossPosts: const <ThunderPost>[],
-        crossPostsStatus: CreatePostCrossPostsStatus.initial,
-      ));
+      emit(state.copyWith(crossPosts: const <ThunderPost>[], crossPostsStatus: CreatePostCrossPostsStatus.initial));
       return;
     }
 
@@ -550,47 +533,28 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   Future<void> _refreshCrossPosts(String url) async {
     final requestId = ++_crossPostsRequestId;
 
-    emit(state.copyWith(
-      crossPostsStatus: CreatePostCrossPostsStatus.loading,
-      crossPosts: const <ThunderPost>[],
-    ));
+    emit(state.copyWith(crossPostsStatus: CreatePostCrossPostsStatus.loading, crossPosts: const <ThunderPost>[]));
 
     try {
-      final SearchResults response = await _searchRepository(account).search(
-        query: url,
-        type: MetaSearchType.url,
-        sort: SearchSortType.topAll,
-        listingType: FeedListType.all,
-        limit: 20,
-      );
+      final SearchResults response = await _searchRepository(account).search(query: url, type: MetaSearchType.url, sort: SearchSortType.topAll, listingType: FeedListType.all, limit: 20);
 
       if (requestId != _crossPostsRequestId || state.url != url) {
         return;
       }
 
-      emit(state.copyWith(
-        crossPostsStatus: CreatePostCrossPostsStatus.loaded,
-        crossPosts: response.posts,
-      ));
+      emit(state.copyWith(crossPostsStatus: CreatePostCrossPostsStatus.loaded, crossPosts: response.posts));
     } catch (_) {
       if (requestId != _crossPostsRequestId || state.url != url) {
         return;
       }
 
-      emit(state.copyWith(
-        crossPostsStatus: CreatePostCrossPostsStatus.error,
-        crossPosts: const <ThunderPost>[],
-      ));
+      emit(state.copyWith(crossPostsStatus: CreatePostCrossPostsStatus.error, crossPosts: const <ThunderPost>[]));
     }
   }
 
   Future<void> _refreshPiefedMetadata() async {
     if (account.platform != ThreadiversePlatform.piefed || state.communityId == null) {
-      emit(state.copyWith(
-        piefedMetadataStatus: _piefedResetStatus,
-        availablePiefedFlairs: const <ThunderFlair>[],
-        selectedPiefedFlairIds: const <int>[],
-      ));
+      emit(state.copyWith(piefedMetadataStatus: _piefedResetStatus, availablePiefedFlairs: const <ThunderFlair>[], selectedPiefedFlairIds: const <int>[]));
       return;
     }
 
@@ -605,25 +569,26 @@ class CreatePostCubit extends Cubit<CreatePostState> {
         return;
       }
 
-      emit(_validateState(state.copyWith(
-        community: details.community,
-        availablePiefedFlairs: details.flairs,
-        selectedPiefedFlairIds: retainValidPiefedFlairSelection(
-          selectedFlairIds: state.selectedPiefedFlairIds,
-          availableFlairIds: details.flairs.map((flair) => flair.id),
-          clearWhenUnavailable: true,
+      emit(
+        _validateState(
+          state.copyWith(
+            community: details.community,
+            availablePiefedFlairs: details.flairs,
+            selectedPiefedFlairIds: retainValidPiefedFlairSelection(
+              selectedFlairIds: state.selectedPiefedFlairIds,
+              availableFlairIds: details.flairs.map((flair) => flair.id),
+              clearWhenUnavailable: true,
+            ),
+            piefedMetadataStatus: details.flairs.isEmpty ? CreatePostPiefedMetadataStatus.empty : CreatePostPiefedMetadataStatus.loaded,
+          ),
         ),
-        piefedMetadataStatus: details.flairs.isEmpty ? CreatePostPiefedMetadataStatus.empty : CreatePostPiefedMetadataStatus.loaded,
-      )));
+      );
     } catch (_) {
       if (requestId != _piefedMetadataRequestId) {
         return;
       }
 
-      emit(state.copyWith(
-        piefedMetadataStatus: CreatePostPiefedMetadataStatus.error,
-        availablePiefedFlairs: const <ThunderFlair>[],
-      ));
+      emit(state.copyWith(piefedMetadataStatus: CreatePostPiefedMetadataStatus.error, availablePiefedFlairs: const <ThunderFlair>[]));
     }
   }
 
@@ -646,10 +611,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       return null;
     }
 
-    return resolveSubmittedPiefedTags(
-      state.tags,
-      originalTags: _editingPost?.tags,
-    );
+    return resolveSubmittedPiefedTags(state.tags, originalTags: _editingPost?.tags);
   }
 
   List<int>? _submissionFlairIds() {
@@ -657,9 +619,6 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       return null;
     }
 
-    return resolveSubmittedPiefedFlairIds(
-      state.selectedPiefedFlairIds,
-      originalFlairIds: _editingPost?.flairs.map((flair) => flair.id),
-    );
+    return resolveSubmittedPiefedFlairIds(state.selectedPiefedFlairIds, originalFlairIds: _editingPost?.flairs.map((flair) => flair.id));
   }
 }

@@ -5,9 +5,7 @@ import 'package:thunder/src/core/config/global_context.dart';
 
 /// Displays the profile modal's initial loading or recoverable failure state.
 class ProfileModalLoadState extends StatelessWidget {
-  const ProfileModalLoadState.loading({super.key})
-      : failed = false,
-        onRetry = null;
+  const ProfileModalLoadState.loading({super.key}) : failed = false, onRetry = null;
 
   const ProfileModalLoadState.failure({super.key, required this.onRetry}) : failed = true;
 
@@ -29,20 +27,10 @@ class ProfileModalLoadState extends StatelessWidget {
         compact: true,
         icon: Icons.error_outline_rounded,
         title: l10n.somethingWentWrong,
-        actions: [
-          ThunderStateAction(
-            label: l10n.retry,
-            onPressed: onRetry!,
-            primary: true,
-          ),
-        ],
+        actions: [ThunderStateAction(label: l10n.retry, onPressed: onRetry!, primary: true)],
       );
     }
 
-    return ThunderStateView.loading(
-      key: const Key('profile-load-progress'),
-      sliver: true,
-      semanticsLabel: l10n.loading,
-    );
+    return ThunderStateView.loading(key: const Key('profile-load-progress'), sliver: true, semanticsLabel: l10n.loading);
   }
 }

@@ -13,10 +13,10 @@ import 'package:thunder/src/core/config/global_context.dart';
 enum PostContentPhase { loading, failure, content }
 
 PostContentPhase postContentPhaseForStatus(PostPageStatus status) => switch (status) {
-      PostPageStatus.initial || PostPageStatus.loading => PostContentPhase.loading,
-      PostPageStatus.failure => PostContentPhase.failure,
-      _ => PostContentPhase.content,
-    };
+  PostPageStatus.initial || PostPageStatus.loading => PostContentPhase.loading,
+  PostPageStatus.failure => PostContentPhase.failure,
+  _ => PostContentPhase.content,
+};
 
 bool postPageContentChanged(PostState previous, PostState current) {
   final previousPhase = postContentPhaseForStatus(previous.status);
@@ -66,10 +66,7 @@ class PostPageContentSlivers extends StatelessWidget {
       buildWhen: postPageContentChanged,
       builder: (context, state) {
         if (state.status == PostPageStatus.initial || state.status == PostPageStatus.loading) {
-          return const SliverFillRemaining(
-            hasScrollBody: false,
-            child: Center(child: CircularProgressIndicator()),
-          );
+          return const SliverFillRemaining(hasScrollBody: false, child: Center(child: CircularProgressIndicator()));
         }
 
         if (state.status == PostPageStatus.failure) {
@@ -80,13 +77,7 @@ class PostPageContentSlivers extends StatelessWidget {
               child: ThunderStateView(
                 title: l10n.unableToLoadPost,
                 message: l10n.internetOrInstanceIssues,
-                actions: [
-                  ThunderStateAction(
-                    label: l10n.retry,
-                    onPressed: onRetry,
-                    primary: true,
-                  ),
-                ],
+                actions: [ThunderStateAction(label: l10n.retry, onPressed: onRetry, primary: true)],
               ),
             ),
           );
@@ -95,17 +86,9 @@ class PostPageContentSlivers extends StatelessWidget {
         final post = state.post ?? initialPost;
         return SliverMainAxisGroup(
           slivers: [
-            PostBodySliver(
-              post: post,
-              crossPosts: state.crossPosts,
-              viewSource: viewSource,
-              showCompactPostBody: showCompactPostBody,
-            ),
+            PostBodySliver(post: post, crossPosts: state.crossPosts, viewSource: viewSource, showCompactPostBody: showCompactPostBody),
             PostCommentsSliver(listController: listController),
-            PostBottomSliver(
-              appBarKey: appBarKey,
-              postKey: initialPost.apId,
-            ),
+            PostBottomSliver(appBarKey: appBarKey, postKey: initialPost.apId),
           ],
         );
       },

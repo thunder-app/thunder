@@ -50,26 +50,26 @@ Future<void> navigateToFeedPage(
 
   if (feedType == FeedType.general) {
     return context.read<FeedBloc>().add(
-          FeedFetchedEvent(
-            feedType: feedType,
-            feedListType: feedListType,
-            postSortType: defaultPostSortType,
-            communityId: communityId,
-            communityName: communityName,
-            userId: userId,
-            username: username,
-            reset: true,
-            showHidden: feedCubit.state.showHiddenPosts,
-          ),
-        );
+      FeedFetchedEvent(
+        feedType: feedType,
+        feedListType: feedListType,
+        postSortType: defaultPostSortType,
+        communityId: communityId,
+        communityName: communityName,
+        userId: userId,
+        username: username,
+        reset: true,
+        showHidden: feedCubit.state.showHiddenPosts,
+      ),
+    );
   }
 
   SwipeablePageRoute route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
         : reduceAnimations
-            ? const Duration(milliseconds: 100)
-            : null,
+        ? const Duration(milliseconds: 100)
+        : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
     canSwipe: !kIsWeb && Platform.isIOS || gestureCubit.state.enableFullScreenSwipeNavigationGesture,
@@ -126,12 +126,7 @@ void navigateToSearchPage(BuildContext context) {
       canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: true,
       builder: (context) => MultiBlocProvider(
-        providers: routeScope.providers(
-          provideThunderCubit: true,
-          extraProviders: [
-            BlocProvider<SearchBloc>(create: (context) => createSearchBloc(account)),
-          ],
-        ),
+        providers: routeScope.providers(provideThunderCubit: true, extraProviders: [BlocProvider<SearchBloc>(create: (context) => createSearchBloc(account))]),
         child: SearchPage(account: account, community: feedBloc.state.community),
       ),
     ),

@@ -20,7 +20,8 @@ import 'package:thunder/src/features/user/user.dart';
 ///
 /// Additionally, the [settingToHighlight] parameter can be used to highlight a specific setting when the page is opened.
 void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSettings? settingToHighlight}) {
-  String pageToNav = {
+  String pageToNav =
+      {
         LocalSettingsCategories.posts: SETTINGS_APPEARANCE_POSTS_PAGE,
         LocalSettingsCategories.comments: SETTINGS_APPEARANCE_COMMENTS_PAGE,
         LocalSettingsCategories.general: SETTINGS_GENERAL_PAGE,
@@ -42,19 +43,9 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
       }[setting.category] ??
       SETTINGS_GENERAL_PAGE;
 
-  final usesEffectiveAccount = {
-    SETTINGS_ACCOUNT_PAGE,
-    SETTINGS_ACCOUNT_LANGUAGES_PAGE,
-    SETTINGS_ACCOUNT_BLOCKLIST_PAGE,
-    SETTINGS_ACCOUNT_MEDIA_PAGE,
-    SETTINGS_USER_LABELS_PAGE,
-  }.contains(pageToNav);
+  final usesEffectiveAccount = {SETTINGS_ACCOUNT_PAGE, SETTINGS_ACCOUNT_LANGUAGES_PAGE, SETTINGS_ACCOUNT_BLOCKLIST_PAGE, SETTINGS_ACCOUNT_MEDIA_PAGE, SETTINGS_USER_LABELS_PAGE}.contains(pageToNav);
 
-  final routeScope = resolveAccountAwareRouteScope(
-    context,
-    useActiveAccount: !usesEffectiveAccount,
-    includeThunderCubit: true,
-  );
+  final routeScope = resolveAccountAwareRouteScope(context, useActiveAccount: !usesEffectiveAccount, includeThunderCubit: true);
 
   final account = routeScope.account;
 
@@ -110,12 +101,7 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
         canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
         canOnlySwipeFromEdge: true,
         builder: (context) => MultiBlocProvider(
-          providers: routeScope.providers(
-            provideFeatureAccountCubit: false,
-            extraProviders: [
-              BlocProvider<UserBlocksCubit>(create: (_) => userBlocksCubit),
-            ],
-          ),
+          providers: routeScope.providers(provideFeatureAccountCubit: false, extraProviders: [BlocProvider<UserBlocksCubit>(create: (_) => userBlocksCubit)]),
           child: UserSettingsBlockPage(),
         ),
       ),
@@ -132,8 +118,9 @@ void navigateToSettingPage(BuildContext context, LocalSettings setting, {LocalSe
       }
     }
 
-    final accountSettingsCubit =
-        !needsAccountSettingsCubit ? null : inheritedAccountSettingsCubit ?? createAccountSettingsCubit(account, initialSiteResponse: routeScope.profileBloc?.state.siteResponse);
+    final accountSettingsCubit = !needsAccountSettingsCubit
+        ? null
+        : inheritedAccountSettingsCubit ?? createAccountSettingsCubit(account, initialSiteResponse: routeScope.profileBloc?.state.siteResponse);
 
     Navigator.of(context).push(
       SwipeablePageRoute(

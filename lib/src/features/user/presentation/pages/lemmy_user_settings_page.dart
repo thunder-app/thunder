@@ -55,11 +55,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
 
       Timer(const Duration(milliseconds: 500), () {
         if (settingToHighlightKey.currentContext != null) {
-          Scrollable.ensureVisible(
-            settingToHighlightKey.currentContext!,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-          );
+          Scrollable.ensureVisible(settingToHighlightKey.currentContext!, duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
         }
 
         Timer(const Duration(seconds: 1), () {
@@ -78,57 +74,26 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
 
   List<ThunderListPickerItem<FeedListType>> _feedTypeOptions() {
     return const [
-      ThunderListPickerItem(
-        icon: Icons.view_list_rounded,
-        label: 'Subscribed',
-        payload: FeedListType.subscribed,
-      ),
-      ThunderListPickerItem(
-        icon: Icons.home_rounded,
-        label: 'All',
-        payload: FeedListType.all,
-      ),
-      ThunderListPickerItem(
-        icon: Icons.grid_view_rounded,
-        label: 'Local',
-        payload: FeedListType.local,
-      ),
+      ThunderListPickerItem(icon: Icons.view_list_rounded, label: 'Subscribed', payload: FeedListType.subscribed),
+      ThunderListPickerItem(icon: Icons.home_rounded, label: 'All', payload: FeedListType.all),
+      ThunderListPickerItem(icon: Icons.grid_view_rounded, label: 'Local', payload: FeedListType.local),
     ];
   }
 
-  ThunderListPickerItem<FeedListType> _currentFeedTypeOption(
-    FeedListType? currentType,
-  ) {
-    return _feedTypeOptions().firstWhereOrNull(
-          (item) => item.payload == currentType,
-        ) ??
-        const ThunderListPickerItem(
-          icon: Icons.view_list_rounded,
-          label: 'Subscribed',
-          payload: FeedListType.subscribed,
-        );
+  ThunderListPickerItem<FeedListType> _currentFeedTypeOption(FeedListType? currentType) {
+    return _feedTypeOptions().firstWhereOrNull((item) => item.payload == currentType) ??
+        const ThunderListPickerItem(icon: Icons.view_list_rounded, label: 'Subscribed', payload: FeedListType.subscribed);
   }
 
-  ThunderListPickerItem<PostSortType> _currentSortOption(
-    Account account,
-    PostSortType? currentSortType,
-  ) {
-    final options = [
-      ...getDefaultPostSortTypeItems(account: account),
-      ...getTopPostSortTypeItems(account: account),
-    ];
+  ThunderListPickerItem<PostSortType> _currentSortOption(Account account, PostSortType? currentSortType) {
+    final options = [...getDefaultPostSortTypeItems(account: account), ...getTopPostSortTypeItems(account: account)];
 
     if (currentSortType == null) return options.first;
 
     return options.firstWhereOrNull((item) => item.payload == currentSortType) ??
         allPostSortTypeItems.firstWhere(
           (item) => item.payload == currentSortType,
-          orElse: () => ThunderListPickerItem(
-            payload: currentSortType,
-            icon: Icons.sort_rounded,
-            label: currentSortType.value,
-            capitalizeLabel: false,
-          ),
+          orElse: () => ThunderListPickerItem(payload: currentSortType, icon: Icons.sort_rounded, label: currentSortType.value, capitalizeLabel: false),
         );
   }
 
@@ -170,10 +135,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             onLongPress: () => shareLocalSetting(context, LocalSettings.accountProfileBio),
             highlighted: settingToHighlight == LocalSettings.accountProfileBio,
           ),
-          ThunderSectionHeader(
-            title: l10n.feedSettings,
-            description: l10n.settingOverrideLabel,
-          ),
+          ThunderSectionHeader(title: l10n.feedSettings, description: l10n.settingOverrideLabel),
           ThunderListOption(
             title: l10n.defaultFeedSortType,
             value: currentSortOption,
@@ -186,9 +148,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
               account: account,
               title: l10n.defaultFeedSortType,
               onSelect: (value) async {
-                context.read<AccountSettingsCubit>().updateSettings(
-                      defaultPostSortType: value.payload,
-                    );
+                context.read<AccountSettingsCubit>().updateSettings(defaultPostSortType: value.payload);
               },
               previouslySelected: localUser?.defaultSortType,
             ),
@@ -196,17 +156,11 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
               children: [
                 Icon(currentSortOption.icon, size: 13),
                 const SizedBox(width: 4),
-                Text(
-                  currentSortOption.label,
-                  style: theme.textTheme.titleSmall,
-                ),
+                Text(currentSortOption.label, style: theme.textTheme.titleSmall),
               ],
             ),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountDefaultFeedSortType,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountDefaultFeedSortType),
             highlighted: settingToHighlight == LocalSettings.accountDefaultFeedSortType,
           ),
           ThunderToggleOption(
@@ -217,10 +171,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             onChanged: (value) => context.read<AccountSettingsCubit>().updateSettings(showNsfw: value),
             disabled: isUpdating,
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountShowNsfwContent,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowNsfwContent),
             highlighted: settingToHighlight == LocalSettings.accountShowNsfwContent,
           ),
           ThunderToggleOption(
@@ -231,10 +182,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             onChanged: (value) => context.read<AccountSettingsCubit>().updateSettings(showReadPosts: value),
             disabled: isUpdating,
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountShowReadPosts,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowReadPosts),
             highlighted: settingToHighlight == LocalSettings.accountShowReadPosts,
           ),
           ThunderToggleOption(
@@ -245,10 +193,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             onChanged: (value) => context.read<AccountSettingsCubit>().updateSettings(showBotAccounts: value),
             disabled: isUpdating,
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountShowBotAccounts,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountShowBotAccounts),
             highlighted: settingToHighlight == LocalSettings.accountShowBotAccounts,
           ),
           ThunderListOption(
@@ -259,10 +204,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             disabled: isUpdating,
             onChanged: (value) async => context.read<AccountSettingsCubit>().updateSettings(defaultFeedListType: value.payload),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountDefaultFeedType,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountDefaultFeedType),
             highlighted: settingToHighlight == LocalSettings.accountDefaultFeedType,
           ),
           ThunderSectionHeader(title: l10n.contentManagement),
@@ -270,12 +212,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             leading: const Icon(Icons.language_rounded),
             title: l10n.discussionLanguages,
             trailing: const ThunderSettingsChevronTrailing(),
-            onTap: isUpdating
-                ? null
-                : () => navigateToSettingPage(
-                      context,
-                      LocalSettings.settingsPageAccountLanguages,
-                    ),
+            onTap: isUpdating ? null : () => navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages),
             highlightKey: settingToHighlightKey,
             onLongPress: () => shareLocalSetting(context, LocalSettings.discussionLanguages),
             highlighted: settingToHighlight == LocalSettings.discussionLanguages,
@@ -284,28 +221,19 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             leading: const Icon(Icons.block_rounded),
             title: l10n.blockSettingLabel,
             trailing: const ThunderSettingsChevronTrailing(),
-            onTap: () => navigateToSettingPage(
-              context,
-              LocalSettings.settingsPageAccountBlocks,
-            ),
+            onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountBlocks),
             highlightKey: settingToHighlightKey,
             onLongPress: () => shareLocalSetting(context, LocalSettings.accountBlocks),
             highlighted: settingToHighlight == LocalSettings.accountBlocks,
           ),
-          ThunderSectionHeader(
-            title: l10n.importExportSettings,
-            description: l10n.importExportLemmyAccountSettingsSubtitle,
-          ),
+          ThunderSectionHeader(title: l10n.importExportSettings, description: l10n.importExportLemmyAccountSettingsSubtitle),
           ThunderSettingsTile(
             leading: const Icon(Icons.file_download_rounded),
             title: l10n.exportLemmyAccountSettingsDescription,
             trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => _exportSettings(context),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountExportSettings,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountExportSettings),
             highlighted: settingToHighlight == LocalSettings.accountExportSettings,
           ),
           ThunderSettingsTile(
@@ -314,10 +242,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             trailing: const ThunderSettingsChevronTrailing(),
             onTap: () => _importSettings(context),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountImportSettings,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountImportSettings),
             highlighted: settingToHighlight == LocalSettings.accountImportSettings,
           ),
           ThunderSectionHeader(title: l10n.dangerZone),
@@ -325,47 +250,27 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
             leading: const Icon(Icons.password),
             title: l10n.changePassword,
             trailing: const ThunderSettingsChevronTrailing(),
-            onTap: () => _openInstanceSettings(
-              context,
-              title: l10n.changePassword,
-              contentText: l10n.changePasswordWarning,
-            ),
+            onTap: () => _openInstanceSettings(context, title: l10n.changePassword, contentText: l10n.changePasswordWarning),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountChangePassword,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountChangePassword),
             highlighted: settingToHighlight == LocalSettings.accountChangePassword,
           ),
           ThunderSettingsTile(
             leading: const Icon(Icons.delete_forever_rounded),
             title: l10n.deleteAccount,
             trailing: const ThunderSettingsChevronTrailing(),
-            onTap: () => _openInstanceSettings(
-              context,
-              title: l10n.deleteAccount,
-              contentText: l10n.deleteAccountDescription,
-            ),
+            onTap: () => _openInstanceSettings(context, title: l10n.deleteAccount, contentText: l10n.deleteAccountDescription),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountDeleteAccount,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountDeleteAccount),
             highlighted: settingToHighlight == LocalSettings.accountDeleteAccount,
           ),
           ThunderSettingsTile(
             leading: const Icon(Icons.hide_image_rounded),
             title: l10n.manageMedia,
             trailing: const ThunderSettingsChevronTrailing(),
-            onTap: () => navigateToSettingPage(
-              context,
-              LocalSettings.settingsPageAccountMedia,
-            ),
+            onTap: () => navigateToSettingPage(context, LocalSettings.settingsPageAccountMedia),
             highlightKey: settingToHighlightKey,
-            onLongPress: () => shareLocalSetting(
-              context,
-              LocalSettings.accountManageMedia,
-            ),
+            onLongPress: () => shareLocalSetting(context, LocalSettings.accountManageMedia),
             highlighted: settingToHighlight == LocalSettings.accountManageMedia,
           ),
         ];
@@ -386,9 +291,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
       ),
       primaryButtonText: l10n.save,
       onPrimaryButtonPressed: (dialogContext, _) {
-        context.read<AccountSettingsCubit>().updateSettings(
-              displayName: displayNameTextController.text,
-            );
+        context.read<AccountSettingsCubit>().updateSettings(displayName: displayNameTextController.text);
         Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: l10n.cancel,
@@ -408,16 +311,11 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
         minLines: 8,
         maxLines: 8,
         keyboardType: TextInputType.multiline,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          hintText: l10n.profileBio,
-        ),
+        decoration: InputDecoration(border: const OutlineInputBorder(), hintText: l10n.profileBio),
       ),
       primaryButtonText: l10n.save,
       onPrimaryButtonPressed: (dialogContext, _) {
-        context.read<AccountSettingsCubit>().updateSettings(
-              bio: bioTextController.text,
-            );
+        context.read<AccountSettingsCubit>().updateSettings(bio: bioTextController.text);
         Navigator.of(dialogContext).pop();
       },
       secondaryButtonText: l10n.cancel,
@@ -446,11 +344,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
       await file.writeAsString(jsonEncode(exportSettings));
 
       final savedFilePath = await FlutterFileDialog.saveFile(
-        params: SaveFileDialogParams(
-          mimeTypesFilter: const ['application/json'],
-          sourceFilePath: filePath,
-          fileName: initialFileName,
-        ),
+        params: SaveFileDialogParams(mimeTypesFilter: const ['application/json'], sourceFilePath: filePath, fileName: initialFileName),
       );
 
       if (savedFilePath?.isNotEmpty == true) {
@@ -468,11 +362,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
     late final String importSettings;
 
     try {
-      final filePath = await FlutterFileDialog.pickFile(
-        params: const OpenFileDialogParams(
-          fileExtensionsFilter: ['json'],
-        ),
-      );
+      final filePath = await FlutterFileDialog.pickFile(params: const OpenFileDialogParams(fileExtensionsFilter: ['json']));
 
       if (filePath != null) {
         importSettings = await File(filePath).readAsString();
@@ -494,9 +384,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
     try {
       final appL10n = AppLocalizations.of(GlobalContext.context)!;
       final account = resolveEffectiveAccount(context);
-      final success = await createAccountRepository(account).importSettings(
-        importSettings,
-      );
+      final success = await createAccountRepository(account).importSettings(importSettings);
 
       if (success) {
         showThunderSnackbar(appL10n.accountSettingsImportedSuccessfully);
@@ -509,11 +397,7 @@ class _LemmyUserSettingsPageState extends State<LemmyUserSettingsPage> {
     }
   }
 
-  Future<void> _openInstanceSettings(
-    BuildContext context, {
-    required String title,
-    required String contentText,
-  }) async {
+  Future<void> _openInstanceSettings(BuildContext context, {required String title, required String contentText}) async {
     final l10n = GlobalContext.l10n;
 
     showThunderDialog<void>(

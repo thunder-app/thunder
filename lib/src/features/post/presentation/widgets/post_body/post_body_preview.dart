@@ -13,14 +13,7 @@ import 'package:thunder/packages/ui/ui.dart';
 /// This widget shows a truncated view of the post content with a gradient fade at the bottom to indicate additional content.
 /// When tapped, it expands to show the full content.
 class PostBodyPreview extends StatelessWidget {
-  const PostBodyPreview({
-    super.key,
-    required this.post,
-    required this.viewSource,
-    this.gradientBackgroundColor,
-    this.maxHeight = 80.0,
-    required this.onTap,
-  });
+  const PostBodyPreview({super.key, required this.post, required this.viewSource, this.gradientBackgroundColor, this.maxHeight = 80.0, required this.onTap});
 
   /// The post to display the preview of
   final ThunderPost post;
@@ -45,12 +38,7 @@ class PostBodyPreview extends StatelessWidget {
 
     final color = gradientBackgroundColor ?? theme.scaffoldBackgroundColor;
 
-    final gradient = LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      stops: const [0.0, 1.0],
-      colors: [color.withValues(alpha: 0.0), color],
-    );
+    final gradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: const [0.0, 1.0], colors: [color.withValues(alpha: 0.0), color]);
 
     final content = viewSource
         ? ThunderScalableText(
@@ -69,10 +57,7 @@ class PostBodyPreview extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           child: Stack(
             children: [
-              Wrap(
-                direction: Axis.horizontal,
-                children: [content],
-              ),
+              Wrap(direction: Axis.horizontal, children: [content]),
               Positioned(
                 left: 0,
                 right: 0,

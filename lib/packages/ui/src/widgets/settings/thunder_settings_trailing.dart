@@ -5,12 +5,7 @@ import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
 /// Fixed-size trailing slot used by settings tile controls.
 @immutable
 class ThunderSettingsTrailingSlot extends StatelessWidget {
-  const ThunderSettingsTrailingSlot({
-    super.key,
-    required this.child,
-    this.width,
-    this.height,
-  });
+  const ThunderSettingsTrailingSlot({super.key, required this.child, this.width, this.height});
 
   /// Content aligned inside the slot.
   final Widget child;
@@ -25,21 +20,14 @@ class ThunderSettingsTrailingSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     final thunderTheme = ThunderTheme.of(context);
 
-    return SizedBox(
-      width: width ?? thunderTheme.settingsTileTrailingSlotWidth,
-      height: height ?? thunderTheme.settingsTileTrailingSlotHeight,
-      child: child,
-    );
+    return SizedBox(width: width ?? thunderTheme.settingsTileTrailingSlotWidth, height: height ?? thunderTheme.settingsTileTrailingSlotHeight, child: child);
   }
 }
 
 /// Trailing chevron for navigation and list-option settings tiles.
 @immutable
 class ThunderSettingsChevronTrailing extends StatelessWidget {
-  const ThunderSettingsChevronTrailing({
-    super.key,
-    this.disabled = false,
-  });
+  const ThunderSettingsChevronTrailing({super.key, this.disabled = false});
 
   /// When true, the chevron uses the disabled settings tile foreground alpha.
   final bool disabled;
@@ -51,10 +39,7 @@ class ThunderSettingsChevronTrailing extends StatelessWidget {
 
     return ThunderSettingsTrailingSlot(
       width: 20.0,
-      child: Icon(
-        Icons.chevron_right_rounded,
-        color: disabled ? theme.colorScheme.onSurface.withValues(alpha: thunderTheme.settingsTileDisabledAlpha) : null,
-      ),
+      child: Icon(Icons.chevron_right_rounded, color: disabled ? theme.colorScheme.onSurface.withValues(alpha: thunderTheme.settingsTileDisabledAlpha) : null),
     );
   }
 }
@@ -62,12 +47,7 @@ class ThunderSettingsChevronTrailing extends StatelessWidget {
 /// Trailing switch slot for toggle settings tiles.
 @immutable
 class ThunderSettingsSwitchTrailing extends StatelessWidget {
-  const ThunderSettingsSwitchTrailing({
-    super.key,
-    required this.value,
-    this.onChanged,
-    this.placeholder = false,
-  });
+  const ThunderSettingsSwitchTrailing({super.key, required this.value, this.onChanged, this.placeholder = false});
 
   /// Current switch value. Ignored when [placeholder] is true.
   final bool value;
@@ -85,10 +65,7 @@ class ThunderSettingsSwitchTrailing extends StatelessWidget {
     }
 
     return ThunderSettingsTrailingSlot(
-      child: Switch(
-        value: value,
-        onChanged: onChanged,
-      ),
+      child: Switch(value: value, onChanged: onChanged),
     );
   }
 }
@@ -96,18 +73,13 @@ class ThunderSettingsSwitchTrailing extends StatelessWidget {
 /// Trailing expand/collapse arrow for expandable settings sections.
 @immutable
 class ThunderSettingsExpandTrailing extends StatelessWidget {
-  const ThunderSettingsExpandTrailing({
-    super.key,
-    required this.expanded,
-  });
+  const ThunderSettingsExpandTrailing({super.key, required this.expanded});
 
   /// Whether the section is expanded.
   final bool expanded;
 
   @override
   Widget build(BuildContext context) {
-    return ThunderSettingsTrailingSlot(
-      child: Icon(expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded),
-    );
+    return ThunderSettingsTrailingSlot(child: Icon(expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded));
   }
 }

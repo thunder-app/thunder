@@ -43,10 +43,7 @@ Future<void> initPushNotificationLogic({required StreamController<NotificationRe
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('icon');
     const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
 
-    await flutterLocalNotificationsPlugin.initialize(
-      settings: initializationSettings,
-      onDidReceiveNotificationResponse: (notificationResponse) => controller.add(notificationResponse),
-    );
+    await flutterLocalNotificationsPlugin.initialize(settings: initializationSettings, onDidReceiveNotificationResponse: (notificationResponse) => controller.add(notificationResponse));
 
     // See if Thunder is launching because a notification was tapped. If so, we want to jump right to the appropriate page.
     final NotificationAppLaunchDetails? notificationAppLaunchDetails = await FlutterLocalNotificationsPlugin().getNotificationAppLaunchDetails();

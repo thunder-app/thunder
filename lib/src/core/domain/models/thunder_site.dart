@@ -23,26 +23,10 @@ class ThunderSite {
   /// The site's number of users.
   final int? users;
 
-  ThunderSite({
-    required this.name,
-    this.sidebar,
-    this.icon,
-    this.description,
-    required this.actorId,
-    this.contentWarning,
-    this.enableDownvotes,
-    this.users,
-  });
+  ThunderSite({required this.name, this.sidebar, this.icon, this.description, required this.actorId, this.contentWarning, this.enableDownvotes, this.users});
 
   factory ThunderSite.fromLemmySite(Map<String, dynamic> site) {
-    return ThunderSite(
-      name: site['name'],
-      sidebar: site['sidebar'],
-      icon: site['icon'],
-      description: site['description'],
-      actorId: site['actor_id'],
-      contentWarning: site['content_warning'],
-    );
+    return ThunderSite(name: site['name'], sidebar: site['sidebar'], icon: site['icon'], description: site['description'], actorId: site['actor_id'], contentWarning: site['content_warning']);
   }
 
   factory ThunderSite.fromLemmyV4Site(Map<String, dynamic> site) {

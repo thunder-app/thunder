@@ -28,43 +28,19 @@ Future<void> showCommunityShareSheet(BuildContext context, ThunderCommunity comm
       builder: (builderContext) => ThunderBottomSheetListPicker(
         title: l10n.shareCommunity,
         items: [
-          ThunderListPickerItem(
-            label: l10n.shareCommunityLink,
-            icon: Icons.link_rounded,
-            subtitle: community.actorId,
-            payload: CommunityShareOptions.link,
-          ),
+          ThunderListPickerItem(label: l10n.shareCommunityLink, icon: Icons.link_rounded, subtitle: community.actorId, payload: CommunityShareOptions.link),
           if (!community.actorId.contains(account.instance))
-            ThunderListPickerItem(
-              label: l10n.shareCommunityLinkLocal,
-              icon: Icons.link_rounded,
-              subtitle: localLink,
-              payload: CommunityShareOptions.localLink,
-            ),
-          ThunderListPickerItem(
-            label: l10n.shareLemmyLink,
-            icon: Icons.share_rounded,
-            subtitle: lemmyLink,
-            payload: CommunityShareOptions.lemmy,
-          ),
+            ThunderListPickerItem(label: l10n.shareCommunityLinkLocal, icon: Icons.link_rounded, subtitle: localLink, payload: CommunityShareOptions.localLink),
+          ThunderListPickerItem(label: l10n.shareLemmyLink, icon: Icons.share_rounded, subtitle: lemmyLink, payload: CommunityShareOptions.lemmy),
         ],
         onSelect: (selection) async {
           switch (selection.payload) {
             case CommunityShareOptions.link:
-              SharePlus.instance.share(ShareParams(
-                uri: Uri.parse(community.actorId),
-                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-              ));
+              SharePlus.instance.share(ShareParams(uri: Uri.parse(community.actorId), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
             case CommunityShareOptions.localLink:
-              SharePlus.instance.share(ShareParams(
-                uri: Uri.parse(localLink),
-                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-              ));
+              SharePlus.instance.share(ShareParams(uri: Uri.parse(localLink), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
             case CommunityShareOptions.lemmy:
-              SharePlus.instance.share(ShareParams(
-                text: lemmyLink,
-                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-              ));
+              SharePlus.instance.share(ShareParams(text: lemmyLink, sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
           }
         },
       ),
@@ -89,43 +65,18 @@ Future<void> showUserShareSheet(BuildContext context, ThunderUser person) async 
       builder: (builderContext) => ThunderBottomSheetListPicker(
         title: l10n.shareUser,
         items: [
-          ThunderListPickerItem(
-            label: l10n.shareUserLink,
-            payload: UserShareOptions.link,
-            subtitle: person.actorId,
-            icon: Icons.link_rounded,
-          ),
-          if (!person.actorId.contains(account.instance))
-            ThunderListPickerItem(
-              label: l10n.shareUserLinkLocal,
-              payload: UserShareOptions.localLink,
-              subtitle: localLink,
-              icon: Icons.link_rounded,
-            ),
-          ThunderListPickerItem(
-            label: l10n.shareLemmyLink,
-            payload: UserShareOptions.lemmy,
-            subtitle: lemmyLink,
-            icon: Icons.share_rounded,
-          ),
+          ThunderListPickerItem(label: l10n.shareUserLink, payload: UserShareOptions.link, subtitle: person.actorId, icon: Icons.link_rounded),
+          if (!person.actorId.contains(account.instance)) ThunderListPickerItem(label: l10n.shareUserLinkLocal, payload: UserShareOptions.localLink, subtitle: localLink, icon: Icons.link_rounded),
+          ThunderListPickerItem(label: l10n.shareLemmyLink, payload: UserShareOptions.lemmy, subtitle: lemmyLink, icon: Icons.share_rounded),
         ],
         onSelect: (selection) async {
           switch (selection.payload) {
             case UserShareOptions.link:
-              SharePlus.instance.share(ShareParams(
-                uri: Uri.parse(person.actorId),
-                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-              ));
+              SharePlus.instance.share(ShareParams(uri: Uri.parse(person.actorId), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
             case UserShareOptions.localLink:
-              SharePlus.instance.share(ShareParams(
-                uri: Uri.parse(localLink),
-                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-              ));
+              SharePlus.instance.share(ShareParams(uri: Uri.parse(localLink), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
             case UserShareOptions.lemmy:
-              SharePlus.instance.share(ShareParams(
-                text: lemmyLink,
-                sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-              ));
+              SharePlus.instance.share(ShareParams(text: lemmyLink, sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1)));
           }
         },
       ),

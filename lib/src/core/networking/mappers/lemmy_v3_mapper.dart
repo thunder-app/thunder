@@ -118,12 +118,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
       community: json['community'] is Map<String, dynamic> ? community(json['community']) : null,
       recipient: json['recipient'] is Map<String, dynamic> ? user(json['recipient']) : null,
       notification: notification,
-      counts: CommentCounts(
-        score: counts?['score'],
-        upvotes: counts?['upvotes'],
-        downvotes: counts?['downvotes'],
-        childCount: counts?['child_count'],
-      ),
+      counts: CommentCounts(score: counts?['score'], upvotes: counts?['upvotes'], downvotes: counts?['downvotes'], childCount: counts?['child_count']),
       context: CommentContext(
         creatorBannedFromCommunity: json['creator_banned_from_community'],
         bannedFromCommunity: json['banned_from_community'],
@@ -212,12 +207,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
         usersActiveMonth: counts?['users_active_month'],
         usersActiveHalfYear: counts?['users_active_half_year'],
       ),
-      context: CommunityContext(
-        subscribed: mapperSubscriptionStatus(json['subscribed']),
-        blocked: json['blocked'],
-        bannedFromCommunity: json['banned_from_community'],
-        canModerate: json['can_mod'],
-      ),
+      context: CommunityContext(subscribed: mapperSubscriptionStatus(json['subscribed']), blocked: json['blocked'], bannedFromCommunity: json['banned_from_community'], canModerate: json['can_mod']),
     );
   }
 
@@ -283,12 +273,7 @@ class LemmyV3PrimitiveMapper implements PrimitiveMapper {
 
   ThunderReport commentReportView(Map<String, dynamic> json) {
     final report = json['comment_report'];
-    final mappedComment = json['comment'] is Map<String, dynamic>
-        ? commentView({
-            ...json,
-            'creator': json['comment_creator'],
-          })
-        : null;
+    final mappedComment = json['comment'] is Map<String, dynamic> ? commentView({...json, 'creator': json['comment_creator']}) : null;
 
     return ThunderReport(
       id: report['id'],
@@ -318,8 +303,5 @@ ThunderLocalUser localUserFromLemmyV3(Map<String, dynamic> localUser) {
 
 ThunderLocalUserView localUserViewFromLemmyV3(Map<String, dynamic> localUserView) {
   const mapper = LemmyV3PrimitiveMapper();
-  return ThunderLocalUserView(
-    localUser: localUserFromLemmyV3(localUserView['local_user']),
-    person: mapper.user(localUserView['person']),
-  );
+  return ThunderLocalUserView(localUser: localUserFromLemmyV3(localUserView['local_user']), person: mapper.user(localUserView['person']));
 }

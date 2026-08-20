@@ -39,10 +39,7 @@ ThunderSiteResponse piefedSiteResponse(Map<String, dynamic> response) {
   );
 }
 
-ThunderSiteResponse lemmyV4SiteAndAccountResponse({
-  required Map<String, dynamic> siteResponse,
-  Map<String, dynamic>? accountResponse,
-}) {
+ThunderSiteResponse lemmyV4SiteAndAccountResponse({required Map<String, dynamic> siteResponse, Map<String, dynamic>? accountResponse}) {
   final allLanguages = siteResponse['all_languages'] ?? const [];
   final discussionLanguages = siteResponse['discussion_languages'] ?? const [];
   final taglines = siteResponse['taglines'] ?? const [];
@@ -59,10 +56,7 @@ ThunderSiteResponse lemmyV4SiteAndAccountResponse({
 
 ThunderLocalUserView piefedLocalUserView(Map<String, dynamic> localUserView) {
   const mapper = PiefedPrimitiveMapper();
-  return ThunderLocalUserView(
-    localUser: ThunderLocalUser.fromPiefedLocalUser(localUserView['local_user']),
-    person: mapper.user(localUserView['person']),
-  );
+  return ThunderLocalUserView(localUser: ThunderLocalUser.fromPiefedLocalUser(localUserView['local_user']), person: mapper.user(localUserView['person']));
 }
 
 ThunderMyUser lemmyV3MyUser(Map<String, dynamic> myUser) {

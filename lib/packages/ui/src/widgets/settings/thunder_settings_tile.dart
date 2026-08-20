@@ -76,14 +76,10 @@ class ThunderSettingsTile extends StatelessWidget {
     final theme = Theme.of(context);
     final thunderTheme = ThunderTheme.of(context);
     final bool interactive = enabled && (onTap != null || onLongPress != null);
-    final subtitleStyle = theme.textTheme.bodySmall?.copyWith(
-      color: theme.textTheme.bodySmall?.color?.withValues(alpha: thunderTheme.settingsTileSubtitleAlpha),
-    );
+    final subtitleStyle = theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withValues(alpha: thunderTheme.settingsTileSubtitleAlpha));
     final titleStyle = interactive
         ? theme.textTheme.bodyMedium
-        : theme.textTheme.bodyMedium?.copyWith(
-            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: thunderTheme.settingsTileDisabledAlpha),
-          );
+        : theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: thunderTheme.settingsTileDisabledAlpha));
     final tileBorderRadius = thunderTheme.tileBorderRadius;
 
     return SmoothHighlight(
@@ -107,29 +103,21 @@ class ThunderSettingsTile extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        if (leading != null) ...[
-                          leading!,
-                          SizedBox(width: thunderTheme.settingsTileLeadingGap),
-                        ],
+                        if (leading != null) ...[leading!, SizedBox(width: thunderTheme.settingsTileLeadingGap)],
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               titleWidget ?? Text(title, style: titleStyle),
-                              if (subtitleWidget != null) subtitleWidget!,
-                              if (subtitle != null)
-                                Text(
-                                  subtitle!,
-                                  maxLines: subtitleMaxLines,
-                                  style: subtitleStyle,
-                                ),
+                              ?subtitleWidget,
+                              if (subtitle != null) Text(subtitle!, maxLines: subtitleMaxLines, style: subtitleStyle),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  if (trailing != null) trailing!,
+                  ?trailing,
                 ],
               ),
             ),

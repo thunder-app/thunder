@@ -14,11 +14,7 @@ class FeedCommentCardList extends StatelessWidget {
   /// The list of comments to display
   final List<ThunderComment> comments;
 
-  const FeedCommentCardList({
-    super.key,
-    required this.comments,
-    required this.tabletMode,
-  });
+  const FeedCommentCardList({super.key, required this.comments, required this.tabletMode});
 
   @override
   Widget build(BuildContext context) {

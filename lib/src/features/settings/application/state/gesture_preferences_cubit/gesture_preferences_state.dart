@@ -98,19 +98,19 @@ class GesturePreferencesState extends Equatable {
 
   @override
   List<Object?> get props => [
-        bottomNavBarSwipeGestures,
-        bottomNavBarDoubleTapGestures,
-        enablePostGestures,
-        leftPrimaryPostGesture,
-        leftSecondaryPostGesture,
-        rightPrimaryPostGesture,
-        rightSecondaryPostGesture,
-        enableCommentGestures,
-        leftPrimaryCommentGesture,
-        leftSecondaryCommentGesture,
-        rightPrimaryCommentGesture,
-        rightSecondaryCommentGesture,
-        enableFullScreenSwipeNavigationGesture,
-        imagePeekDuration,
-      ];
+    bottomNavBarSwipeGestures,
+    bottomNavBarDoubleTapGestures,
+    enablePostGestures,
+    leftPrimaryPostGesture,
+    leftSecondaryPostGesture,
+    rightPrimaryPostGesture,
+    rightSecondaryPostGesture,
+    enableCommentGestures,
+    leftPrimaryCommentGesture,
+    leftSecondaryCommentGesture,
+    rightPrimaryCommentGesture,
+    rightSecondaryCommentGesture,
+    enableFullScreenSwipeNavigationGesture,
+    imagePeekDuration,
+  ];
 }

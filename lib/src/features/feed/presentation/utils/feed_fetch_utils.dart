@@ -92,15 +92,7 @@ Future<FeedResult> fetchFeedItems({
     int currentPage = currentCursor != null ? int.tryParse(currentCursor) ?? 1 : 1;
 
     do {
-      final response = await userRepository.getUser(
-        userId: userId,
-        username: username,
-        sort: postSortType,
-        page: currentPage,
-        cursor: currentCursor,
-        saved: showSaved,
-        includeContent: true,
-      );
+      final response = await userRepository.getUser(userId: userId, username: username, sort: postSortType, page: currentPage, cursor: currentCursor, saved: showSaved, includeContent: true);
 
       List<ThunderPost> responsePosts = response!.posts;
       List<ThunderComment> responseComments = response.comments;
@@ -126,11 +118,5 @@ Future<FeedResult> fetchFeedItems({
     } while (feedTypeSubview == FeedTypeSubview.post ? (!hasReachedPostsEnd && posts.length < desiredPosts) : (!hasReachedCommentsEnd && comments.length < desiredPosts));
   }
 
-  return FeedResult(
-    posts: posts,
-    comments: comments,
-    hasReachedPostsEnd: hasReachedPostsEnd,
-    hasReachedCommentsEnd: hasReachedCommentsEnd,
-    cursor: currentCursor,
-  );
+  return FeedResult(posts: posts, comments: comments, hasReachedPostsEnd: hasReachedPostsEnd, hasReachedCommentsEnd: hasReachedCommentsEnd, cursor: currentCursor);
 }

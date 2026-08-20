@@ -108,11 +108,7 @@ class CommentActionEvent extends PostEvent {
   final CommentAction action;
   final CommentActionInput actionInput;
 
-  const CommentActionEvent({
-    required this.commentId,
-    required this.action,
-    required this.actionInput,
-  });
+  const CommentActionEvent({required this.commentId, required this.action, required this.actionInput});
 
   @override
   List<Object?> get props => [commentId, action, actionInput];
@@ -142,10 +138,7 @@ class ReportCommentEvent extends PostEvent {
   final int commentId;
   final String message;
 
-  const ReportCommentEvent({
-    required this.commentId,
-    required this.message,
-  });
+  const ReportCommentEvent({required this.commentId, required this.message});
 
   @override
   List<Object?> get props => [commentId, message];

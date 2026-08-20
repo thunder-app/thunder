@@ -82,10 +82,7 @@ class _SearchPostsResultsState extends State<SearchPostsResults> {
               if (status == SearchStatus.refreshing)
                 const SliverToBoxAdapter(
                   child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 10.0),
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: Padding(padding: EdgeInsets.only(bottom: 10.0), child: CircularProgressIndicator()),
                   ),
                 ),
             ],

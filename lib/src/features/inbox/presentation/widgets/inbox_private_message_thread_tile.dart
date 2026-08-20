@@ -14,11 +14,7 @@ import 'package:thunder/src/shared/name/full_name_widgets.dart';
 /// List row for a grouped direct-message thread in the inbox.
 class InboxPrivateMessageThreadTile extends StatelessWidget {
   /// Creates a direct-message thread row.
-  const InboxPrivateMessageThreadTile({
-    super.key,
-    required this.account,
-    required this.thread,
-  });
+  const InboxPrivateMessageThreadTile({super.key, required this.account, required this.thread});
 
   /// Account that owns the inbox.
   final Account account;
@@ -38,17 +34,9 @@ class InboxPrivateMessageThreadTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: UserFullNameWidget(
-              name: participant.name,
-              displayName: participant.displayName,
-              instance: fetchInstanceNameFromUrl(participant.actorId),
-              includeInstance: true,
-            ),
+            child: UserFullNameWidget(name: participant.name, displayName: participant.displayName, instance: fetchInstanceNameFromUrl(participant.actorId), includeInstance: true),
           ),
-          Text(
-            formatTimeToString(dateTime: thread.latestMessage.published.toIso8601String()),
-            style: theme.textTheme.labelSmall,
-          ),
+          Text(formatTimeToString(dateTime: thread.latestMessage.published.toIso8601String()), style: theme.textTheme.labelSmall),
         ],
       ),
       subtitle: Column(

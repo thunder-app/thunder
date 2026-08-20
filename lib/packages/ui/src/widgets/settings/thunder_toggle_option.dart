@@ -92,12 +92,7 @@ class ThunderToggleOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final leading = (iconEnabled != null && iconDisabled != null)
-        ? Icon(
-            value == true ? iconEnabled : iconDisabled,
-            size: value == true ? iconEnabledSize : iconDisabledSize,
-          )
-        : null;
+    final leading = (iconEnabled != null && iconDisabled != null) ? Icon(value == true ? iconEnabled : iconDisabled, size: value == true ? iconEnabledSize : iconDisabledSize) : null;
 
     final trailing = Row(
       mainAxisSize: MainAxisSize.min,

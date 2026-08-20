@@ -94,14 +94,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-          '${commentReplyView.postName} · ${generateCommunityFullName(
-            null,
-            commentReplyView.communityName,
-            commentReplyView.communityName,
-            fetchInstanceNameFromUrl(commentReplyView.communityActorId),
-            communitySeparator: communitySeparator,
-            useDisplayName: useDisplayNamesForCommunities,
-          )}\n$htmlComment',
+          '${commentReplyView.postName} · ${generateCommunityFullName(null, commentReplyView.communityName, commentReplyView.communityName, fetchInstanceNameFromUrl(commentReplyView.communityActorId), communitySeparator: communitySeparator, useDisplayName: useDisplayNamesForCommunities)}\n$htmlComment',
           contentTitle: generateUserFullName(
             null,
             commentReplyView.creatorName,
@@ -140,13 +133,9 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
             useDisplayName: useDisplayNamesForUsers,
           ),
           content: plaintextComment,
-          payload: jsonEncode(NotificationPayload(
-            type: NotificationType.unifiedPush,
-            accountId: account.id,
-            inboxType: NotificationInboxType.reply,
-            group: false,
-            id: commentReplyView.commentReplyId,
-          ).toJson()),
+          payload: jsonEncode(
+            NotificationPayload(type: NotificationType.unifiedPush, accountId: account.id, inboxType: NotificationInboxType.reply, group: false, id: commentReplyView.commentReplyId).toJson(),
+          ),
           inboxType: NotificationInboxType.reply,
         );
       }
@@ -160,14 +149,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
         final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
         final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-          '${comment.post?.name} · ${generateCommunityFullName(
-            null,
-            comment.community?.name,
-            comment.community?.title,
-            fetchInstanceNameFromUrl(comment.community?.actorId),
-            communitySeparator: communitySeparator,
-            useDisplayName: useDisplayNamesForCommunities,
-          )}\n$htmlComment',
+          '${comment.post?.name} · ${generateCommunityFullName(null, comment.community?.name, comment.community?.title, fetchInstanceNameFromUrl(comment.community?.actorId), communitySeparator: communitySeparator, useDisplayName: useDisplayNamesForCommunities)}\n$htmlComment',
           contentTitle: generateUserFullName(
             null,
             comment.creator?.name,
@@ -203,13 +185,7 @@ void initUnifiedPushNotifications({required StreamController<NotificationRespons
             useDisplayName: useDisplayNamesForUsers,
           ),
           content: plaintextComment,
-          payload: jsonEncode(NotificationPayload(
-            type: NotificationType.unifiedPush,
-            accountId: account.id,
-            inboxType: NotificationInboxType.mention,
-            group: false,
-            id: comment.id,
-          ).toJson()),
+          payload: jsonEncode(NotificationPayload(type: NotificationType.unifiedPush, accountId: account.id, inboxType: NotificationInboxType.mention, group: false, id: comment.id).toJson()),
           inboxType: NotificationInboxType.mention,
         );
       }

@@ -18,15 +18,11 @@ class InstanceAvatar extends StatelessWidget {
     final fallbackLabel = instance.name.isNotEmpty
         ? instance.name
         : instance.domain.isNotEmpty
-            ? instance.domain
-            : '';
+        ? instance.domain
+        : '';
 
     return ThunderAvatar(
-      data: ThunderAvatarData(
-        fallbackLabel: fallbackLabel,
-        imageUrl: instance.icon,
-        radius: radius,
-      ),
+      data: ThunderAvatarData(fallbackLabel: fallbackLabel, imageUrl: instance.icon, radius: radius),
     );
   }
 }

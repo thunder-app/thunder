@@ -27,10 +27,7 @@ class SearchUsersResults extends StatelessWidget {
             if (index == users.length) {
               return status == SearchStatus.refreshing
                   ? const Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 10.0),
-                        child: CircularProgressIndicator(),
-                      ),
+                      child: Padding(padding: EdgeInsets.only(bottom: 10.0), child: CircularProgressIndicator()),
                     )
                   : const SizedBox.shrink();
             }

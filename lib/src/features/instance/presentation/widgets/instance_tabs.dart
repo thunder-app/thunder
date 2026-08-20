@@ -35,14 +35,7 @@ class _InstanceTabScaffold<T> extends StatefulWidget {
   /// The loading widget to show when loading.
   final Widget? loadingWidget;
 
-  const _InstanceTabScaffold({
-    required this.state,
-    required this.onLoadMore,
-    required this.onRetry,
-    required this.itemBuilder,
-    required this.storageKey,
-    this.loadingWidget,
-  });
+  const _InstanceTabScaffold({required this.state, required this.onLoadMore, required this.onRetry, required this.itemBuilder, required this.storageKey, this.loadingWidget});
 
   @override
   State<_InstanceTabScaffold<T>> createState() => _InstanceTabScaffoldState<T>();
@@ -67,26 +60,13 @@ class _InstanceTabScaffoldState<T> extends State<_InstanceTabScaffold<T>> with A
       return ThunderStateView(
         title: l10n.somethingWentWrong,
         message: state.message,
-        actions: [
-          ThunderStateAction(
-            label: l10n.refreshContent,
-            onPressed: widget.onRetry,
-            primary: true,
-          ),
-        ],
+        actions: [ThunderStateAction(label: l10n.refreshContent, onPressed: widget.onRetry, primary: true)],
       );
     }
 
     if (state.status == InstancePageStatus.done && state.items.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.search_off_rounded, size: 48.0),
-            const SizedBox(height: 16.0),
-            Text(l10n.noResultsFound),
-          ],
-        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [const Icon(Icons.search_off_rounded, size: 48.0), const SizedBox(height: 16.0), Text(l10n.noResultsFound)]),
       );
     }
 
@@ -109,7 +89,9 @@ class _InstanceTabScaffoldState<T> extends State<_InstanceTabScaffold<T>> with A
               itemCount: state.items.length + (state.status == InstancePageStatus.loading ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == state.items.length) {
-                  return const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()));
+                  return const Center(
+                    child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()),
+                  );
                 }
                 return widget.itemBuilder(context, state.items[index]);
               },
@@ -264,7 +246,12 @@ class _InstancePostTabState extends State<InstancePostTab> {
                 onDismissHiddenPost: (postId) => _setPosts(_postListActionController.dismissHiddenPost(_posts, postId)),
                 onDismissBlocked: ({userId, communityId}) => _setPosts(_postListActionController.dismissBlocked(_posts, userId: userId, communityId: communityId)),
               ),
-              if (state.posts.status == InstancePageStatus.loading) const SliverToBoxAdapter(child: Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()))),
+              if (state.posts.status == InstancePageStatus.loading)
+                const SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()),
+                  ),
+                ),
             ],
           ),
           itemBuilder: (context, item) => const SizedBox.shrink(), // Not used when loadingWidget is provided

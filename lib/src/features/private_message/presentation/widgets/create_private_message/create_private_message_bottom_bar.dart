@@ -78,10 +78,7 @@ class CreatePrivateMessageBottomBar extends StatelessWidget {
                   MarkdownType.username,
                   MarkdownType.community,
                 ],
-                customTapActions: {
-                  MarkdownType.username: () => _insertUserMention(context),
-                  MarkdownType.community: () => _insertCommunityMention(context),
-                },
+                customTapActions: {MarkdownType.username: () => _insertUserMention(context), MarkdownType.community: () => _insertCommunityMention(context)},
               ),
             ),
           ),
@@ -89,11 +86,7 @@ class CreatePrivateMessageBottomBar extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
             child: IconButton(
               onPressed: onTogglePreview,
-              icon: Icon(
-                showPreview ? Icons.visibility_off_rounded : Icons.visibility,
-                color: theme.colorScheme.onSecondary,
-                semanticLabel: l10n.postTogglePreview,
-              ),
+              icon: Icon(showPreview ? Icons.visibility_off_rounded : Icons.visibility, color: theme.colorScheme.onSecondary, semanticLabel: l10n.postTogglePreview),
               style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
             ),
           ),
@@ -104,20 +97,9 @@ class CreatePrivateMessageBottomBar extends StatelessWidget {
               child: IconButton(
                 onPressed: canSubmit ? onSubmit : null,
                 icon: status == CreatePrivateMessageStatus.submitting
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(),
-                      )
-                    : Icon(
-                        Icons.send_rounded,
-                        color: theme.colorScheme.onSecondary,
-                        semanticLabel: l10n.send,
-                      ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.colorScheme.secondary,
-                  disabledBackgroundColor: getBackgroundColor(context),
-                ),
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator())
+                    : Icon(Icons.send_rounded, color: theme.colorScheme.onSecondary, semanticLabel: l10n.send),
+                style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary, disabledBackgroundColor: getBackgroundColor(context)),
               ),
             ),
           ),
@@ -134,11 +116,7 @@ class CreatePrivateMessageBottomBar extends StatelessWidget {
       title: l10n.username,
       account: account,
       onUserSelected: (user) {
-        controller.text = controller.text.replaceRange(
-          controller.selection.end,
-          controller.selection.end,
-          '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})',
-        );
+        controller.text = controller.text.replaceRange(controller.selection.end, controller.selection.end, '[@${user.name}@${fetchInstanceNameFromUrl(user.actorId)}](${user.actorId})');
       },
     );
   }
@@ -151,11 +129,7 @@ class CreatePrivateMessageBottomBar extends StatelessWidget {
       title: l10n.community,
       account: account,
       onCommunitySelected: (community) {
-        controller.text = controller.text.replaceRange(
-          controller.selection.end,
-          controller.selection.end,
-          '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}',
-        );
+        controller.text = controller.text.replaceRange(controller.selection.end, controller.selection.end, '!${community.name}@${fetchInstanceNameFromUrl(community.actorId)}');
       },
     );
   }

@@ -143,12 +143,7 @@ Future<void> pollNotificationsAndShow() async {
 
   // Show message notifications
   for (final entry in messageNotifications.entries) {
-    await _showMessageNotifications(
-      account: entry.key,
-      messages: entry.value,
-      userSeparator: userSeparator,
-      useDisplayNamesForUsers: useDisplayNamesForUsers,
-    );
+    await _showMessageNotifications(account: entry.key, messages: entry.value, userSeparator: userSeparator, useDisplayNamesForUsers: useDisplayNamesForUsers);
   }
 
   // Save our poll time
@@ -171,14 +166,7 @@ Future<void> _showCommentNotifications({
     final plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentContent;
 
     final bigTextStyleInformation = BigTextStyleInformation(
-      '${comment.post?.name} · ${generateCommunityFullName(
-        null,
-        comment.community?.name,
-        comment.community?.title,
-        fetchInstanceNameFromUrl(comment.community?.actorId),
-        communitySeparator: communitySeparator,
-        useDisplayName: useDisplayNamesForCommunities,
-      )}\n$htmlComment',
+      '${comment.post?.name} · ${generateCommunityFullName(null, comment.community?.name, comment.community?.title, fetchInstanceNameFromUrl(comment.community?.actorId), communitySeparator: communitySeparator, useDisplayName: useDisplayNamesForCommunities)}\n$htmlComment',
       contentTitle: generateUserFullName(
         null,
         comment.creator?.name,
@@ -211,13 +199,7 @@ Future<void> _showCommentNotifications({
         useDisplayName: useDisplayNamesForUsers,
       ),
       content: plaintextComment,
-      payload: jsonEncode(NotificationPayload(
-        type: NotificationType.local,
-        accountId: account.id,
-        inboxType: inboxType,
-        group: false,
-        id: comment.id,
-      ).toJson()),
+      payload: jsonEncode(NotificationPayload(type: NotificationType.local, accountId: account.id, inboxType: inboxType, group: false, id: comment.id).toJson()),
       inboxType: inboxType,
     );
   }
@@ -268,13 +250,7 @@ Future<void> _showMessageNotifications({
         useDisplayName: useDisplayNamesForUsers,
       ),
       content: plaintextContent,
-      payload: jsonEncode(NotificationPayload(
-        type: NotificationType.local,
-        accountId: account.id,
-        inboxType: NotificationInboxType.message,
-        group: false,
-        id: message.id,
-      ).toJson()),
+      payload: jsonEncode(NotificationPayload(type: NotificationType.local, accountId: account.id, inboxType: NotificationInboxType.message, group: false, id: message.id).toJson()),
       inboxType: NotificationInboxType.message,
     );
   }
@@ -367,16 +343,7 @@ Future<void> initTestBackgroundFetch() async {
 }
 
 Future<void> disableBackgroundFetch() async {
-  await BackgroundFetch.configure(
-    BackgroundFetchConfig(
-      minimumFetchInterval: 15,
-      stopOnTerminate: true,
-      startOnBoot: false,
-      enableHeadless: false,
-    ),
-    () {},
-    () {},
-  );
+  await BackgroundFetch.configure(BackgroundFetchConfig(minimumFetchInterval: 15, stopOnTerminate: true, startOnBoot: false, enableHeadless: false), () {}, () {});
 }
 
 // This method initializes background fetching while the app is not running

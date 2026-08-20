@@ -1,9 +1,7 @@
 import 'package:thunder/src/core/domain/domain.dart';
 import 'package:thunder/src/features/inbox/inbox.dart';
 
-List<ThunderPrivateMessage> cleanDeletedMessages(
-  List<ThunderPrivateMessage> messages,
-) {
+List<ThunderPrivateMessage> cleanDeletedMessages(List<ThunderPrivateMessage> messages) {
   return messages.map(cleanDeletedPrivateMessage).toList();
 }
 
@@ -11,9 +9,7 @@ List<ThunderComment> cleanDeletedMentions(List<ThunderComment> mentions) {
   return mentions.map(cleanDeletedMention).toList();
 }
 
-ThunderPrivateMessage cleanDeletedPrivateMessage(
-  ThunderPrivateMessage message,
-) {
+ThunderPrivateMessage cleanDeletedPrivateMessage(ThunderPrivateMessage message) {
   if (message.deleted) {
     return message.copyWith(content: '_deleted by creator_');
   }
@@ -35,19 +31,10 @@ ThunderComment cleanDeletedMention(ThunderComment mention) {
   final repliesFetched = type == InboxType.replies || type == InboxType.all;
   final messagesFetched = type == InboxType.messages || type == InboxType.all;
 
-  return (
-    mentionPage: mentionsFetched ? 2 : 1,
-    replyPage: repliesFetched ? 2 : 1,
-    messagePage: messagesFetched ? 2 : 1,
-  );
+  return (mentionPage: mentionsFetched ? 2 : 1, replyPage: repliesFetched ? 2 : 1, messagePage: messagesFetched ? 2 : 1);
 }
 
-({int mentionPage, int replyPage, int messagePage}) incrementFetchedPage({
-  required InboxType? type,
-  required int currentMentionPage,
-  required int currentReplyPage,
-  required int currentMessagePage,
-}) {
+({int mentionPage, int replyPage, int messagePage}) incrementFetchedPage({required InboxType? type, required int currentMentionPage, required int currentReplyPage, required int currentMessagePage}) {
   return (
     mentionPage: type == InboxType.mentions ? currentMentionPage + 1 : currentMentionPage,
     replyPage: type == InboxType.replies ? currentReplyPage + 1 : currentReplyPage,

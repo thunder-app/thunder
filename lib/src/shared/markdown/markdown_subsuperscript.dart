@@ -32,11 +32,7 @@ class SubscriptElementBuilder extends MarkdownElementBuilder {
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     final textContent = element.textContent;
 
-    return SuperscriptSubscriptWidget(
-      text: textContent,
-      type: CustomMarkdownType.subscript,
-      preferredStyle: preferredStyle,
-    );
+    return SuperscriptSubscriptWidget(text: textContent, type: CustomMarkdownType.subscript, preferredStyle: preferredStyle);
   }
 }
 
@@ -45,11 +41,7 @@ class SuperscriptElementBuilder extends MarkdownElementBuilder {
   Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     final textContent = element.textContent;
 
-    return SuperscriptSubscriptWidget(
-      text: textContent,
-      type: CustomMarkdownType.superscript,
-      preferredStyle: preferredStyle,
-    );
+    return SuperscriptSubscriptWidget(text: textContent, type: CustomMarkdownType.superscript, preferredStyle: preferredStyle);
   }
 }
 
@@ -59,12 +51,7 @@ class SuperscriptSubscriptWidget extends StatelessWidget {
   final CustomMarkdownType type;
   final TextStyle? preferredStyle;
 
-  const SuperscriptSubscriptWidget({
-    super.key,
-    required this.text,
-    required this.type,
-    this.preferredStyle,
-  });
+  const SuperscriptSubscriptWidget({super.key, required this.text, required this.type, this.preferredStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -77,16 +64,8 @@ class SuperscriptSubscriptWidget extends StatelessWidget {
         children: [
           WidgetSpan(
             child: Transform.translate(
-              offset: Offset(
-                0.0,
-                type == CustomMarkdownType.subscript ? 3.0 : -5.0,
-              ),
-              child: Text(
-                text,
-                style: baseStyle.copyWith(
-                  fontSize: (baseStyle.fontSize ?? 14) * 0.8,
-                ),
-              ),
+              offset: Offset(0.0, type == CustomMarkdownType.subscript ? 3.0 : -5.0),
+              child: Text(text, style: baseStyle.copyWith(fontSize: (baseStyle.fontSize ?? 14) * 0.8)),
             ),
           ),
         ],

@@ -81,9 +81,7 @@ String fetchUserGroupDescriptor(List<UserType> userGroups, DateTime? created) {
 
   if (userGroups.contains(UserType.birthday) && created != null) {
     int yearsOld = DateTime.now().year - created.year;
-    descriptor += '\n${l10n.accountBirthday(
-      yearsOld == 0 ? '(${l10n.createdToday})' : '(${l10n.xYearsOld(yearsOld, yearsOld)})',
-    )}';
+    descriptor += '\n${l10n.accountBirthday(yearsOld == 0 ? '(${l10n.createdToday})' : '(${l10n.xYearsOld(yearsOld, yearsOld)})')}';
   }
 
   return descriptor;

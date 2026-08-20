@@ -3,13 +3,7 @@ part of 'post_navigation_cubit.dart';
 const _postNavigationUnset = Object();
 
 class PostNavigationState extends Equatable {
-  const PostNavigationState({
-    this.navigateCommentIndex = 0,
-    this.highlightedCommentId,
-    this.commentSearchResults,
-    this.scrollPosition,
-    this.didScrollPositionChange = false,
-  });
+  const PostNavigationState({this.navigateCommentIndex = 0, this.highlightedCommentId, this.commentSearchResults, this.scrollPosition, this.didScrollPositionChange = false});
 
   /// The index of the comment to navigate to
   final int navigateCommentIndex;
@@ -44,11 +38,5 @@ class PostNavigationState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        navigateCommentIndex,
-        highlightedCommentId,
-        commentSearchResults,
-        scrollPosition,
-        didScrollPositionChange,
-      ];
+  List<Object?> get props => [navigateCommentIndex, highlightedCommentId, commentSearchResults, scrollPosition, didScrollPositionChange];
 }

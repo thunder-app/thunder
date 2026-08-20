@@ -28,22 +28,11 @@ class UserHeaderActions extends StatelessWidget {
   /// Callback to be called when the feed type is changed (posts/comments)
   final Function(FeedTypeSubview)? onChangeFeedType;
 
-  const UserHeaderActions({
-    super.key,
-    required this.user,
-    required this.moderates,
-    required this.feedType,
-    required this.onChangeFeedType,
-  });
+  const UserHeaderActions({super.key, required this.user, required this.moderates, required this.feedType, required this.onChangeFeedType});
 
   @override
   Widget build(BuildContext context) {
-    return _UserActionsContent(
-      user: user,
-      moderates: moderates,
-      feedType: feedType,
-      onChangeFeedType: onChangeFeedType,
-    );
+    return _UserActionsContent(user: user, moderates: moderates, feedType: feedType, onChangeFeedType: onChangeFeedType);
   }
 }
 
@@ -61,12 +50,7 @@ class _UserActionsContent extends StatelessWidget {
   /// Callback to be called when the feed type is changed (posts/comments)
   final Function(FeedTypeSubview)? onChangeFeedType;
 
-  const _UserActionsContent({
-    required this.user,
-    required this.moderates,
-    required this.feedType,
-    required this.onChangeFeedType,
-  });
+  const _UserActionsContent({required this.user, required this.moderates, required this.feedType, required this.onChangeFeedType});
 
   @override
   Widget build(BuildContext context) {
@@ -74,12 +58,7 @@ class _UserActionsContent extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0).copyWith(bottom: 8.0),
-        child: _ActionChipsList(
-          user: user,
-          moderates: moderates,
-          feedType: feedType,
-          onChangeFeedType: onChangeFeedType,
-        ),
+        child: _ActionChipsList(user: user, moderates: moderates, feedType: feedType, onChangeFeedType: onChangeFeedType),
       ),
     );
   }
@@ -99,12 +78,7 @@ class _ActionChipsList extends StatelessWidget {
   /// Callback to be called when the feed type is changed (posts/comments)
   final Function(FeedTypeSubview)? onChangeFeedType;
 
-  const _ActionChipsList({
-    required this.user,
-    required this.moderates,
-    required this.feedType,
-    required this.onChangeFeedType,
-  });
+  const _ActionChipsList({required this.user, required this.moderates, required this.feedType, required this.onChangeFeedType});
 
   @override
   Widget build(BuildContext context) {
@@ -164,19 +138,19 @@ class _SavedActionChipState extends State<_SavedActionChip> {
 
         final state = context.read<FeedBloc>().state;
         context.read<FeedBloc>().add(
-              FeedFetchedEvent(
-                feedType: FeedType.account,
-                feedListType: state.feedListType,
-                postSortType: state.postSortType,
-                communityId: state.communityId,
-                communityName: state.communityName,
-                userId: state.userId,
-                username: state.username,
-                reset: true,
-                showHidden: state.showHidden,
-                showSaved: showSaved,
-              ),
-            );
+          FeedFetchedEvent(
+            feedType: FeedType.account,
+            feedListType: state.feedListType,
+            postSortType: state.postSortType,
+            communityId: state.communityId,
+            communityName: state.communityName,
+            userId: state.userId,
+            username: state.username,
+            reset: true,
+            showHidden: state.showHidden,
+            showSaved: showSaved,
+          ),
+        );
       },
     );
   }
@@ -212,10 +186,7 @@ class _FeedTypeActionChip extends StatelessWidget {
   /// Callback to be called when the feed type is changed (posts/comments)
   final Function(FeedTypeSubview feedType) onChangeFeedType;
 
-  const _FeedTypeActionChip({
-    required this.feedType,
-    required this.onChangeFeedType,
-  });
+  const _FeedTypeActionChip({required this.feedType, required this.onChangeFeedType});
 
   @override
   Widget build(BuildContext context) {
@@ -298,10 +269,7 @@ class _LabelActionChip extends StatelessWidget {
     return ThunderActionChip(
       icon: Icons.label_outline_rounded,
       label: l10n.label,
-      onPressed: () async => await showUserLabelEditorDialog(
-        context,
-        UserLabel.usernameFromParts(user.displayNameOrName, user.actorId),
-      ),
+      onPressed: () async => await showUserLabelEditorDialog(context, UserLabel.usernameFromParts(user.displayNameOrName, user.actorId)),
     );
   }
 }

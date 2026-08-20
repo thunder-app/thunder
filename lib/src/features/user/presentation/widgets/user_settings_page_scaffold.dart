@@ -11,17 +11,11 @@ import 'package:thunder/src/features/user/presentation/widgets/user_indicator.da
 import 'package:thunder/src/core/config/app_constants.dart';
 import 'package:thunder/src/core/config/global_context.dart';
 
-typedef UserSettingsChildrenBuilder = List<Widget> Function(
-  BuildContext context,
-  AccountSettingsState state,
-);
+typedef UserSettingsChildrenBuilder = List<Widget> Function(BuildContext context, AccountSettingsState state);
 
 /// Shared scaffold and loading shell for account settings pages.
 class UserSettingsPageScaffold extends StatelessWidget {
-  const UserSettingsPageScaffold({
-    super.key,
-    required this.childrenBuilder,
-  });
+  const UserSettingsPageScaffold({super.key, required this.childrenBuilder});
 
   final UserSettingsChildrenBuilder childrenBuilder;
 
@@ -36,9 +30,7 @@ class UserSettingsPageScaffold extends StatelessWidget {
           listenWhen: (_, state) => state.status == ProfileStatus.success && state.siteResponse != null,
           listener: (context, state) {
             if (!context.mounted) return;
-            context.read<AccountSettingsCubit>().hydrateFromProfile(
-                  state.siteResponse,
-                );
+            context.read<AccountSettingsCubit>().hydrateFromProfile(state.siteResponse);
           },
           child: AccountSettingsListener(
             child: BlocBuilder<AccountSettingsCubit, AccountSettingsState>(
@@ -58,22 +50,12 @@ class UserSettingsPageScaffold extends StatelessWidget {
                         if (isUpdating)
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Center(
-                              child: SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              ),
-                            ),
+                            child: Center(child: SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))),
                           ),
                         IconButton(
                           icon: const Icon(Icons.people_alt_rounded),
                           onPressed: () async {
-                            final selectedAccount = await showAccountPickerSheet(
-                              context,
-                              currentAccount: resolveEffectiveAccount(context),
-                              title: l10n.account(2),
-                            );
+                            final selectedAccount = await showAccountPickerSheet(context, currentAccount: resolveEffectiveAccount(context), title: l10n.account(2));
 
                             if (!context.mounted || selectedAccount == null) {
                               return;
@@ -84,23 +66,9 @@ class UserSettingsPageScaffold extends StatelessWidget {
                       ],
                     ),
                     switch (state.status) {
-                      AccountSettingsStatus.notLoggedIn => const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: AccountPlaceholder(),
-                        ),
-                      AccountSettingsStatus.initial => const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      _ => SliverList.list(
-                          children: [
-                            const _AccountSummaryHeader(),
-                            ...childrenBuilder(context, state),
-                            const SizedBox(height: 100.0),
-                          ],
-                        ),
+                      AccountSettingsStatus.notLoggedIn => const SliverFillRemaining(hasScrollBody: false, child: AccountPlaceholder()),
+                      AccountSettingsStatus.initial => const SliverFillRemaining(hasScrollBody: false, child: Center(child: CircularProgressIndicator())),
+                      _ => SliverList.list(children: [const _AccountSummaryHeader(), ...childrenBuilder(context, state), const SizedBox(height: 100.0)]),
                     },
                   ],
                 );
@@ -131,10 +99,7 @@ class _AccountSummaryHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const UserIndicator(),
-              IconButton(
-                icon: const Icon(Icons.logout_rounded),
-                onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
-              ),
+              IconButton(icon: const Icon(Icons.logout_rounded), onPressed: () => showProfileModalSheet(context, showLogoutDialog: true)),
             ],
           ),
         ),
@@ -142,10 +107,7 @@ class _AccountSummaryHeader extends StatelessWidget {
           padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
           child: Text(
             l10n.userSettingDescription,
-            style: theme.textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.w400,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-            ),
+            style: theme.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w400, color: theme.colorScheme.onSurface.withValues(alpha: 0.75)),
           ),
         ),
       ],

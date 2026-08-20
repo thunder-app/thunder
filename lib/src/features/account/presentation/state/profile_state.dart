@@ -1,13 +1,6 @@
 part of 'profile_bloc.dart';
 
-enum ProfileStatus {
-  initial,
-  loading,
-  success,
-  failure,
-  failureCheckingInstance,
-  contentWarning,
-}
+enum ProfileStatus { initial, loading, success, failure, failureCheckingInstance, contentWarning }
 
 class ProfileState extends Equatable {
   final ProfileStatus status;
@@ -92,19 +85,5 @@ class ProfileState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        isLoggedIn,
-        account,
-        downvotesEnabled,
-        siteResponse,
-        contentWarning,
-        user,
-        subscriptions,
-        favorites,
-        moderates,
-        reload,
-        error,
-        errorReason,
-      ];
+  List<Object?> get props => [status, isLoggedIn, account, downvotesEnabled, siteResponse, contentWarning, user, subscriptions, favorites, moderates, reload, error, errorReason];
 }

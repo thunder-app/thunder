@@ -139,73 +139,69 @@ class _PostActionBottomSheetState extends State<PostActionBottomSheet> {
 
     Widget actions = switch (currentPage) {
       GeneralPostAction.general => GeneralPostActionBottomSheetPage(
-          account: account,
-          context: widget.context,
-          downvotesEnabled: downvotesEnabled,
-          post: widget.post,
-          onSwitchActivePage: (page) => setState(() => currentPage = page),
-          onAction: (PostAction postAction, ThunderPost? post) {
-            widget.onAction?.call(postAction: postAction, post: post);
-          },
-        ),
+        account: account,
+        context: widget.context,
+        downvotesEnabled: downvotesEnabled,
+        post: widget.post,
+        onSwitchActivePage: (page) => setState(() => currentPage = page),
+        onAction: (PostAction postAction, ThunderPost? post) {
+          widget.onAction?.call(postAction: postAction, post: post);
+        },
+      ),
       GeneralPostAction.post => PostPostActionBottomSheet(
-          account: account,
-          context: widget.context,
-          moderatedCommunities: moderatedCommunities,
-          post: widget.post,
-          onAction: (PostAction postAction, ThunderPost? post) {
-            widget.onAction?.call(postAction: postAction, post: post);
-          },
-        ),
+        account: account,
+        context: widget.context,
+        moderatedCommunities: moderatedCommunities,
+        post: widget.post,
+        onAction: (PostAction postAction, ThunderPost? post) {
+          widget.onAction?.call(postAction: postAction, post: post);
+        },
+      ),
       GeneralPostAction.user => UserActionBottomSheet(
-          account: account,
-          context: widget.context,
-          blockedUsers: blockedUsers,
-          moderatedCommunities: moderatedCommunities,
-          user: widget.post.creator!,
-          communityId: widget.post.community?.id,
-          isUserCommunityModerator: widget.post.context.creatorIsModerator,
-          isUserBannedFromCommunity: widget.post.context.creatorBannedFromCommunity,
-          onAction: (UserAction userAction, ThunderUser? updatedUser) {
-            ProfileSiteInfoCache.instance.markDirty(account);
-            widget.onAction?.call(userAction: userAction, post: widget.post);
-          },
-        ),
+        account: account,
+        context: widget.context,
+        blockedUsers: blockedUsers,
+        moderatedCommunities: moderatedCommunities,
+        user: widget.post.creator!,
+        communityId: widget.post.community?.id,
+        isUserCommunityModerator: widget.post.context.creatorIsModerator,
+        isUserBannedFromCommunity: widget.post.context.creatorBannedFromCommunity,
+        onAction: (UserAction userAction, ThunderUser? updatedUser) {
+          ProfileSiteInfoCache.instance.markDirty(account);
+          widget.onAction?.call(userAction: userAction, post: widget.post);
+        },
+      ),
       GeneralPostAction.community => CommunityPostActionBottomSheet(
-          context: widget.context,
-          account: account,
-          post: widget.post,
-          moderatedCommunities: moderatedCommunities,
-          blockedCommunities: blockedCommunities,
-          subscribedCommunities: subscribedCommunities,
-          onAction: (CommunityAction communityAction, ThunderCommunity? updatedCommunity) {
-            ProfileSiteInfoCache.instance.markDirty(account);
-            widget.onAction?.call(
-              communityAction: communityAction,
-              post: widget.post.copyWith(
-                community: updatedCommunity,
-                context: widget.post.context.copyWith(subscribed: updatedCommunity?.context.subscribed),
-              ),
-            );
-          },
-        ),
+        context: widget.context,
+        account: account,
+        post: widget.post,
+        moderatedCommunities: moderatedCommunities,
+        blockedCommunities: blockedCommunities,
+        subscribedCommunities: subscribedCommunities,
+        onAction: (CommunityAction communityAction, ThunderCommunity? updatedCommunity) {
+          ProfileSiteInfoCache.instance.markDirty(account);
+          widget.onAction?.call(
+            communityAction: communityAction,
+            post: widget.post.copyWith(
+              community: updatedCommunity,
+              context: widget.post.context.copyWith(subscribed: updatedCommunity?.context.subscribed),
+            ),
+          );
+        },
+      ),
       GeneralPostAction.instance => InstanceActionBottomSheet(
-          context: widget.context,
-          account: account,
-          blockedInstances: blockedInstances,
-          userInstanceId: widget.post.creator?.instanceId,
-          userInstanceUrl: widget.post.creator?.actorId,
-          communityInstanceId: widget.post.community?.instanceId,
-          communityInstanceUrl: widget.post.community?.actorId,
-          onAction: () {
-            ProfileSiteInfoCache.instance.markDirty(account);
-          },
-        ),
-      GeneralPostAction.share => ShareActionBottomSheet(
-          account: account,
-          context: widget.context,
-          post: widget.post,
-        ),
+        context: widget.context,
+        account: account,
+        blockedInstances: blockedInstances,
+        userInstanceId: widget.post.creator?.instanceId,
+        userInstanceUrl: widget.post.creator?.actorId,
+        communityInstanceId: widget.post.community?.instanceId,
+        communityInstanceUrl: widget.post.community?.actorId,
+        onAction: () {
+          ProfileSiteInfoCache.instance.markDirty(account);
+        },
+      ),
+      GeneralPostAction.share => ShareActionBottomSheet(account: account, context: widget.context, post: widget.post),
     };
 
     return SafeArea(

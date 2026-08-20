@@ -2,15 +2,7 @@ part of 'post_bloc.dart';
 
 const _postStateUnset = Object();
 
-enum PostPageStatus {
-  initial,
-  loading,
-  refreshing,
-  success,
-  empty,
-  failure,
-  searchInProgress,
-}
+enum PostPageStatus { initial, loading, refreshing, success, empty, failure, searchInProgress }
 
 class PostState extends Equatable {
   const PostState({
@@ -110,21 +102,21 @@ class PostState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        post,
-        comments,
-        commentNodes,
-        commentPage,
-        commentCursor,
-        commentCount,
-        moderators,
-        crossPosts,
-        errorMessage,
-        errorReason,
-        hasReachedCommentEnd,
-        commentSortType,
-        selectedCommentPath,
-        moddingCommentId,
-        collapsedComments,
-      ];
+    status,
+    post,
+    comments,
+    commentNodes,
+    commentPage,
+    commentCursor,
+    commentCount,
+    moderators,
+    crossPosts,
+    errorMessage,
+    errorReason,
+    hasReachedCommentEnd,
+    commentSortType,
+    selectedCommentPath,
+    moddingCommentId,
+    collapsedComments,
+  ];
 }

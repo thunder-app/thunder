@@ -123,12 +123,7 @@ class _ImagePreviewState extends State<ImagePreview> {
     final isValidImageUrl = widget.contentType != null || isImageUrl(widget.url);
 
     if (!isValidImageUrl) {
-      return ImagePreviewError(
-        mediaType: widget.mediaType,
-        blur: widget.blur == true,
-        viewed: widget.viewed == true,
-        retryTooltip: widget.retryTooltip,
-      );
+      return ImagePreviewError(mediaType: widget.mediaType, blur: widget.blur == true, viewed: widget.viewed == true, retryTooltip: widget.retryTooltip);
     }
 
     return _ImageContent(
@@ -240,14 +235,7 @@ class _ImageContent extends StatelessWidget {
         gaplessPlayback: false,
         errorBuilder: (context, error, stackTrace) {
           Future.microtask(() => onError?.call());
-          return ImagePreviewError(
-            mediaType: mediaType,
-            blur: blur == true,
-            viewed: viewed == true,
-            canRetry: canRetry,
-            onRetry: onRetry,
-            retryTooltip: retryTooltip,
-          );
+          return ImagePreviewError(mediaType: mediaType, blur: blur == true, viewed: viewed == true, canRetry: canRetry, onRetry: onRetry, retryTooltip: retryTooltip);
         },
         frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
           if (frame != null) {
@@ -291,14 +279,7 @@ class _ImageContent extends StatelessWidget {
         errorWidget: (context, url, error) {
           Future.microtask(() => onError?.call());
 
-          return ImagePreviewError(
-            mediaType: mediaType,
-            blur: blur == true,
-            viewed: viewed == true,
-            canRetry: canRetry,
-            onRetry: onRetry,
-            retryTooltip: retryTooltip,
-          );
+          return ImagePreviewError(mediaType: mediaType, blur: blur == true, viewed: viewed == true, canRetry: canRetry, onRetry: onRetry, retryTooltip: retryTooltip);
         },
       );
     }
@@ -318,11 +299,7 @@ class _BlurredImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImageFiltered(
-      enabled: true,
-      imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-      child: child,
-    );
+    return ImageFiltered(enabled: true, imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30), child: child);
   }
 }
 
@@ -346,15 +323,7 @@ class ImagePreviewError extends StatelessWidget {
   /// Localized tooltip shown when retry is available.
   final String retryTooltip;
 
-  const ImagePreviewError({
-    super.key,
-    this.mediaType,
-    this.blur = false,
-    this.viewed = false,
-    this.canRetry = false,
-    this.onRetry,
-    this.retryTooltip = 'Retry',
-  });
+  const ImagePreviewError({super.key, this.mediaType, this.blur = false, this.viewed = false, this.canRetry = false, this.onRetry, this.retryTooltip = 'Retry'});
 
   /// Returns the icon to display when the image fails to load.
   static IconData _getErrorIcon(MediaType? mediaType) {
@@ -374,13 +343,6 @@ class ImagePreviewError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ThunderMediaPreviewError(
-      icon: _getErrorIcon(mediaType),
-      blur: blur,
-      viewed: viewed,
-      canRetry: canRetry,
-      onRetry: onRetry,
-      retryTooltip: retryTooltip,
-    );
+    return ThunderMediaPreviewError(icon: _getErrorIcon(mediaType), blur: blur, viewed: viewed, canRetry: canRetry, onRetry: onRetry, retryTooltip: retryTooltip);
   }
 }

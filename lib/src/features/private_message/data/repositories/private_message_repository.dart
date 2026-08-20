@@ -4,31 +4,16 @@ import 'package:thunder/src/core/networking/resolved_api_client.dart';
 /// Repository contract for direct-message reads, writes, and read state.
 abstract class PrivateMessageRepository {
   /// Fetches private messages for the inbox.
-  Future<List<ThunderPrivateMessage>> messages({
-    bool unread,
-    int limit,
-    int page,
-  });
+  Future<List<ThunderPrivateMessage>> messages({bool unread, int limit, int page});
 
   /// Fetches messages exchanged with a single person.
-  Future<List<ThunderPrivateMessage>> conversation({
-    required int personId,
-    int? conversationId,
-    int page,
-    int limit,
-  });
+  Future<List<ThunderPrivateMessage>> conversation({required int personId, int? conversationId, int page, int limit});
 
   /// Sends a direct message to a recipient.
-  Future<ThunderPrivateMessage> create({
-    required int recipientId,
-    required String content,
-  });
+  Future<ThunderPrivateMessage> create({required int recipientId, required String content});
 
   /// Updates the read state for a private message.
-  Future<void> markAsRead({
-    required int notificationId,
-    bool read,
-  });
+  Future<void> markAsRead({required int notificationId, bool read});
 }
 
 /// Implementation of [PrivateMessageRepository] using the unified API client
@@ -45,19 +30,12 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
   /// Creates a new PrivateMessageRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  PrivateMessageRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  PrivateMessageRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
-  Future<List<ThunderPrivateMessage>> messages({
-    bool unread = false,
-    int limit = 50,
-    int page = 1,
-  }) async {
+  Future<List<ThunderPrivateMessage>> messages({bool unread = false, int limit = 50, int page = 1}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
@@ -66,29 +44,16 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
   }
 
   @override
-  Future<List<ThunderPrivateMessage>> conversation({
-    required int personId,
-    int? conversationId,
-    int page = 1,
-    int limit = 50,
-  }) async {
+  Future<List<ThunderPrivateMessage>> conversation({required int personId, int? conversationId, int page = 1, int limit = 50}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final api = await _api.get();
-    return api.getPrivateMessageConversation(
-      personId: personId,
-      conversationId: conversationId,
-      page: page,
-      limit: limit,
-    );
+    return api.getPrivateMessageConversation(personId: personId, conversationId: conversationId, page: page, limit: limit);
   }
 
   @override
-  Future<ThunderPrivateMessage> create({
-    required int recipientId,
-    required String content,
-  }) async {
+  Future<ThunderPrivateMessage> create({required int recipientId, required String content}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
@@ -97,10 +62,7 @@ class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
   }
 
   @override
-  Future<void> markAsRead({
-    required int notificationId,
-    bool read = true,
-  }) async {
+  Future<void> markAsRead({required int notificationId, bool read = true}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 

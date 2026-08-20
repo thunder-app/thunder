@@ -5,7 +5,7 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 enum FullNameSeparator {
   dot, // name · instance.tld
   at, // name@instance.tld
-  lemmy; // '@name@instance.tld or !name@instance.tld'
+  lemmy, // '@name@instance.tld or !name@instance.tld'
 }
 
 enum NameThickness {
@@ -14,16 +14,16 @@ enum NameThickness {
   bold;
 
   FontWeight toWeight() => switch (this) {
-        NameThickness.light => FontWeight.w300,
-        NameThickness.normal => FontWeight.w400,
-        NameThickness.bold => FontWeight.w500,
-      };
+    NameThickness.light => FontWeight.w300,
+    NameThickness.normal => FontWeight.w400,
+    NameThickness.bold => FontWeight.w500,
+  };
 
   double toSliderValue() => switch (this) {
-        NameThickness.light => 0,
-        NameThickness.normal => 1,
-        NameThickness.bold => 2,
-      };
+    NameThickness.light => 0,
+    NameThickness.normal => 1,
+    NameThickness.bold => 2,
+  };
 
   static NameThickness fromSliderValue(double value) {
     return switch (value) {

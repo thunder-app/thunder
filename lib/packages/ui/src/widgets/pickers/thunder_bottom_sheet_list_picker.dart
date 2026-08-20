@@ -85,11 +85,7 @@ class _ThunderBottomSheetListPickerState<T> extends State<ThunderBottomSheetList
             mainAxisSize: MainAxisSize.min,
             children: [
               if (widget.title.isNotEmpty) ThunderBottomSheetHeader(title: widget.title),
-              if (displayHeading != null)
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 10.0),
-                  child: displayHeading,
-                ),
+              if (displayHeading != null) Padding(padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 10.0), child: displayHeading),
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -111,14 +107,8 @@ class _ThunderBottomSheetListPickerState<T> extends State<ThunderBottomSheetList
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 50.0),
               child: TextButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(60),
-                  backgroundColor: theme.colorScheme.primaryContainer,
-                ),
-                child: Text(
-                  widget.saveButtonLabel,
-                  style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
-                ),
+                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60), backgroundColor: theme.colorScheme.primaryContainer),
+                child: Text(widget.saveButtonLabel, style: TextStyle(color: theme.colorScheme.onPrimaryContainer)),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
@@ -130,11 +120,7 @@ class _ThunderBottomSheetListPickerState<T> extends State<ThunderBottomSheetList
 
 /// Renders one row in [ThunderBottomSheetListPicker].
 class _ThunderBottomSheetListPickerItem<T> extends StatelessWidget {
-  const _ThunderBottomSheetListPickerItem({
-    required this.item,
-    required this.isSelected,
-    required this.onSelected,
-  });
+  const _ThunderBottomSheetListPickerItem({required this.item, required this.isSelected, required this.onSelected});
 
   /// The picker option to display.
   final ThunderPickerOption<T> item;
@@ -185,10 +171,7 @@ class _ThunderColorPaletteLeading extends StatelessWidget {
         Container(
           height: 32.0,
           width: 32.0,
-          decoration: BoxDecoration(
-            color: colors.elementAtOrNull(0),
-            borderRadius: BorderRadius.circular(100.0),
-          ),
+          decoration: BoxDecoration(color: colors.elementAtOrNull(0), borderRadius: BorderRadius.circular(100.0)),
         ),
         Positioned(
           bottom: 0,
@@ -197,9 +180,7 @@ class _ThunderColorPaletteLeading extends StatelessWidget {
             width: 16.0,
             decoration: BoxDecoration(
               color: colors.elementAtOrNull(1),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(100.0),
-              ),
+              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(100.0)),
             ),
           ),
         ),
@@ -211,9 +192,7 @@ class _ThunderColorPaletteLeading extends StatelessWidget {
             width: 16.0,
             decoration: BoxDecoration(
               color: colors.elementAtOrNull(2),
-              borderRadius: const BorderRadius.only(
-                bottomRight: Radius.circular(100.0),
-              ),
+              borderRadius: const BorderRadius.only(bottomRight: Radius.circular(100.0)),
             ),
           ),
         ),

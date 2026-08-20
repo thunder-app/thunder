@@ -52,11 +52,7 @@ class ThunderPreviewActionRow extends StatelessWidget {
             Row(
               spacing: 12.0,
               children: [
-                _ThunderPreviewActionButton(
-                  onTap: onViewSourceToggled,
-                  icon: const Icon(Icons.edit_document, size: 15.0),
-                  label: viewSource ? viewOriginalLabel : viewSourceLabel,
-                ),
+                _ThunderPreviewActionButton(onTap: onViewSourceToggled, icon: const Icon(Icons.edit_document, size: 15.0), label: viewSource ? viewOriginalLabel : viewSourceLabel),
                 _ThunderPreviewActionButton(
                   onTap: () async {
                     await Clipboard.setData(ClipboardData(text: text));
@@ -76,11 +72,7 @@ class ThunderPreviewActionRow extends StatelessWidget {
 
 /// Icon-label button for a single preview toolbar action.
 class _ThunderPreviewActionButton extends StatelessWidget {
-  const _ThunderPreviewActionButton({
-    required this.onTap,
-    required this.icon,
-    required this.label,
-  });
+  const _ThunderPreviewActionButton({required this.onTap, required this.icon, required this.label});
 
   /// Called when the button is tapped.
   final void Function()? onTap;

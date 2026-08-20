@@ -8,14 +8,7 @@ import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
 /// Compact or default-styled action button used by [ThunderExpandableFab].
 @immutable
 class ThunderFabActionButton extends StatelessWidget {
-  const ThunderFabActionButton({
-    super.key,
-    this.onPressed,
-    required this.icon,
-    this.label,
-    this.backgroundColor,
-    this.compact = false,
-  });
+  const ThunderFabActionButton({super.key, this.onPressed, required this.icon, this.label, this.backgroundColor, this.compact = false});
 
   /// Called when the button is pressed.
   final void Function()? onPressed;
@@ -53,13 +46,7 @@ class ThunderFabActionButton extends StatelessWidget {
                   const SizedBox(width: 12.0),
                   Icon(icon.icon, size: 20.0),
                   const SizedBox(width: 10.0),
-                  Expanded(
-                    child: Text(
-                      label ?? '',
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
+                  Expanded(child: Text(label ?? '', overflow: TextOverflow.ellipsis, maxLines: 1)),
                   const SizedBox(width: 12.0),
                 ],
               ),
@@ -166,16 +153,8 @@ class _ThunderExpandableFabState extends State<ThunderExpandableFab> with Single
   void initState() {
     super.initState();
     _isOpen = widget.open ?? widget.initialOpen;
-    _controller = AnimationController(
-      value: _isOpen ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    );
-    _expandAnimation = CurvedAnimation(
-      curve: Curves.fastOutSlowIn,
-      reverseCurve: Curves.easeOutQuad,
-      parent: _controller,
-    );
+    _controller = AnimationController(value: _isOpen ? 1.0 : 0.0, duration: const Duration(milliseconds: 250), vsync: this);
+    _expandAnimation = CurvedAnimation(curve: Curves.fastOutSlowIn, reverseCurve: Curves.easeOutQuad, parent: _controller);
   }
 
   @override
@@ -211,18 +190,9 @@ class _ThunderExpandableFabState extends State<ThunderExpandableFab> with Single
         alignment: widget.centered ? Alignment.bottomCenter : Alignment.bottomRight,
         clipBehavior: Clip.none,
         children: [
-          _ThunderTapToCloseFab(
-            centered: widget.centered,
-            expandAnimation: _expandAnimation,
-            onClose: () => _setOpen(false),
-          ),
+          _ThunderTapToCloseFab(centered: widget.centered, expandAnimation: _expandAnimation, onClose: () => _setOpen(false)),
           for (var i = 0, distance = widget.distance; i < widget.children.length; i++, distance += widget.distance)
-            _ThunderExpandingActionButton(
-              maxDistance: distance,
-              progress: _expandAnimation,
-              centered: widget.centered,
-              child: widget.children[i],
-            ),
+            _ThunderExpandingActionButton(maxDistance: distance, progress: _expandAnimation, centered: widget.centered, child: widget.children[i]),
           _ThunderTapToOpenFab(
             centered: widget.centered,
             isOpen: _isOpen,
@@ -244,11 +214,7 @@ class _ThunderExpandableFabState extends State<ThunderExpandableFab> with Single
 
 /// Close overlay shown when [ThunderExpandableFab] is expanded.
 class _ThunderTapToCloseFab extends StatelessWidget {
-  const _ThunderTapToCloseFab({
-    required this.centered,
-    required this.expandAnimation,
-    required this.onClose,
-  });
+  const _ThunderTapToCloseFab({required this.centered, required this.expandAnimation, required this.onClose});
 
   /// Whether the FAB is centered horizontally.
   final bool centered;
@@ -282,11 +248,7 @@ class _ThunderTapToCloseFab extends StatelessWidget {
                 onTap: onClose,
                 child: Padding(
                   padding: EdgeInsets.all(centered ? 12.0 : 8.0),
-                  child: Icon(
-                    Icons.close,
-                    size: centered ? 20.0 : 25.0,
-                    color: Theme.of(context).textTheme.bodyMedium?.color,
-                  ),
+                  child: Icon(Icons.close, size: centered ? 20.0 : 25.0, color: Theme.of(context).textTheme.bodyMedium?.color),
                 ),
               ),
             ),
@@ -396,12 +358,7 @@ class _ThunderTapToOpenFab extends StatelessWidget {
                       ),
                     ),
                   )
-                : FloatingActionButton(
-                    heroTag: heroTag,
-                    backgroundColor: fabBackgroundColor,
-                    onPressed: onPressed,
-                    child: icon,
-                  ),
+                : FloatingActionButton(heroTag: heroTag, backgroundColor: fabBackgroundColor, onPressed: onPressed, child: icon),
           ),
         ),
       ),
@@ -412,12 +369,7 @@ class _ThunderTapToOpenFab extends StatelessWidget {
 /// Positions and animates one child action in [ThunderExpandableFab].
 @immutable
 class _ThunderExpandingActionButton extends StatelessWidget {
-  const _ThunderExpandingActionButton({
-    required this.maxDistance,
-    required this.progress,
-    required this.child,
-    this.centered = false,
-  });
+  const _ThunderExpandingActionButton({required this.maxDistance, required this.progress, required this.child, this.centered = false});
 
   /// Maximum vertical offset from the main FAB.
   final double maxDistance;
@@ -436,19 +388,12 @@ class _ThunderExpandingActionButton extends StatelessWidget {
     return AnimatedBuilder(
       animation: progress,
       builder: (context, child) {
-        final offset = Offset.fromDirection(
-          90 * (math.pi / 180.0),
-          progress.value * maxDistance,
-        );
+        final offset = Offset.fromDirection(90 * (math.pi / 180.0), progress.value * maxDistance);
         final visible = !progress.isDismissed;
 
         return Visibility(
           visible: visible,
-          child: Positioned(
-            right: centered ? null : 8 + offset.dx,
-            bottom: (centered ? 15.0 : 10.0) + offset.dy,
-            child: child!,
-          ),
+          child: Positioned(right: centered ? null : 8 + offset.dx, bottom: (centered ? 15.0 : 10.0) + offset.dy, child: child!),
         );
       },
       child: FadeTransition(opacity: progress, child: child),

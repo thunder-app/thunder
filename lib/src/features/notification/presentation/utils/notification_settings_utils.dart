@@ -18,12 +18,7 @@ import 'package:thunder/src/core/services/preferences_store.dart';
 /// This function is used to update the notification settings. It is called when the user changes the notification settings.
 ///
 /// When the notification settings are successfully updated, it will return true. If it fails, it will return false.
-Future<bool> updateNotificationSettings(
-  BuildContext context, {
-  required NotificationType currentNotificationType,
-  required NotificationType updatedNotificationType,
-  Function? onUpdate,
-}) async {
+Future<bool> updateNotificationSettings(BuildContext context, {required NotificationType currentNotificationType, required NotificationType updatedNotificationType, Function? onUpdate}) async {
   final l10n = AppLocalizations.of(context)!;
   final prefs = const UserPreferencesStore();
 
@@ -96,8 +91,8 @@ Future<bool> updateNotificationSettings(
     case NotificationType.local:
     case NotificationType.unifiedPush:
       // We're on Android. Request notifications permissions if needed. This is a no-op if on SDK version < 33
-      AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
-          FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin()
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
       bool? areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
 

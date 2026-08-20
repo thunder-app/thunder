@@ -3,11 +3,7 @@ class UnreadNotificationsCount {
   final int mentions;
   final int privateMessages;
 
-  const UnreadNotificationsCount({
-    required this.replies,
-    required this.mentions,
-    required this.privateMessages,
-  });
+  const UnreadNotificationsCount({required this.replies, required this.mentions, required this.privateMessages});
 
   int get total => replies + mentions + privateMessages;
 }

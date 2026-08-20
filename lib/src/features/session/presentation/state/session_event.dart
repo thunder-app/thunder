@@ -51,12 +51,7 @@ class AnonymousSessionAdded extends SessionEvent {
 
 class AuthenticatedLoginRequested extends SessionEvent {
   /// Requests authentication against an instance that has already completed discovery.
-  const AuthenticatedLoginRequested({
-    required this.username,
-    required this.password,
-    required this.discovery,
-    this.totp = '',
-  });
+  const AuthenticatedLoginRequested({required this.username, required this.password, required this.discovery, this.totp = ''});
 
   /// Username supplied by the user.
   final String username;

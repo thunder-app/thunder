@@ -8,10 +8,7 @@ enum VideoPlayBackSpeed {
   onePointSeven5x(label: '1.75x', value: 1.75),
   twoX(label: '2x', value: 2);
 
-  const VideoPlayBackSpeed({
-    required this.label,
-    required this.value,
-  });
+  const VideoPlayBackSpeed({required this.label, required this.value});
 
   final String label;
   final double value;

@@ -22,28 +22,19 @@ import 'package:thunder/src/features/user/api.dart';
 import 'package:thunder/src/features/instance/presentation/state/instance_page_bloc.dart';
 
 AppVersionCubit createAppVersionCubit() {
-  return AppVersionCubit(
-    versionChecker: const GithubVersionChecker(),
-  );
+  return AppVersionCubit(versionChecker: const GithubVersionChecker());
 }
 
 ThunderCubit createThunderCubit() {
-  return ThunderCubit(
-    preferencesStore: const UserPreferencesStore(),
-  );
+  return ThunderCubit(preferencesStore: const UserPreferencesStore());
 }
 
 DeepLinksCubit createDeepLinksCubit() {
-  return DeepLinksCubit(
-    deepLinkService: AppLinksDeepLinkService(),
-    localizationService: const ThunderLocalizationService(),
-  );
+  return DeepLinksCubit(deepLinkService: AppLinksDeepLinkService(), localizationService: const ThunderLocalizationService());
 }
 
 NetworkCheckerCubit createNetworkCheckerCubit() {
-  return NetworkCheckerCubit(
-    connectivityService: DefaultConnectivityService(),
-  );
+  return NetworkCheckerCubit(connectivityService: DefaultConnectivityService());
 }
 
 ProfileBloc createProfileBloc(Account account) {
@@ -67,11 +58,7 @@ ProfileModalCubit createProfileModalCubit({required bool quickSelectMode}) {
     quickSelectMode: quickSelectMode,
     instanceInfoLookup: (instance) => getInstanceInfo(instance).timeout(
       const Duration(seconds: 5),
-      onTimeout: () => ThunderInstanceInfo(
-        domain: instance,
-        name: fetchInstanceNameFromUrl(instance) ?? instance,
-        success: false,
-      ),
+      onTimeout: () => ThunderInstanceInfo(domain: instance, name: fetchInstanceNameFromUrl(instance) ?? instance, success: false),
     ),
     unreadCountLookup: (account) async {
       final unread = await createNotificationRepository(account).unreadNotificationsCount();
@@ -90,32 +77,14 @@ SessionBloc createSessionBloc() {
 }
 
 FeedBloc createFeedBloc(Account account) {
-  return FeedBloc(
-    account: account,
-    postRepository: createPostRepository(account),
-    communityRepository: createCommunityRepository(account),
-    userRepository: createUserRepository(account),
-  );
+  return FeedBloc(account: account, postRepository: createPostRepository(account), communityRepository: createCommunityRepository(account), userRepository: createUserRepository(account));
 }
 
-InstancePageBloc createInstancePageBloc({
-  required Account account,
-  required ThunderInstanceInfo instanceInfo,
-}) {
+InstancePageBloc createInstancePageBloc({required Account account, required ThunderInstanceInfo instanceInfo}) {
   final instanceAuthority = normalizeInstanceHost(instanceInfo.domain) ?? instanceInfo.domain;
-  final remoteAccount = Account(
-    instance: instanceAuthority,
-    id: '',
-    index: -1,
-    platform: instanceInfo.platform,
-  );
+  final remoteAccount = Account(instance: instanceAuthority, id: '', index: -1, platform: instanceInfo.platform);
 
-  return InstancePageBloc(
-    account: account,
-    instanceInfo: instanceInfo,
-    repository: createSearchRepository(remoteAccount),
-    localRepository: createSearchRepository(account),
-  );
+  return InstancePageBloc(account: account, instanceInfo: instanceInfo, repository: createSearchRepository(remoteAccount), localRepository: createSearchRepository(account));
 }
 
 SearchBloc createSearchBloc(Account account) {
@@ -139,11 +108,7 @@ InboxBloc createInboxBloc(Account account) {
   );
 }
 
-InboxBloc createInboxBlocWithInitial({
-  required Account account,
-  required List<ThunderComment> replies,
-  required bool showUnreadOnly,
-}) {
+InboxBloc createInboxBlocWithInitial({required Account account, required List<ThunderComment> replies, required bool showUnreadOnly}) {
   return InboxBloc.initWith(
     account: account,
     replies: replies,
@@ -203,22 +168,11 @@ PrivateMessageThreadCubit createPrivateMessageThreadCubit(
   List<ThunderPrivateMessage> initialMessages = const <ThunderPrivateMessage>[],
   int? conversationId,
 }) {
-  return PrivateMessageThreadCubit(
-    account: account,
-    participant: participant,
-    repository: createPrivateMessageRepository(account),
-    initialMessages: initialMessages,
-    conversationId: conversationId,
-  );
+  return PrivateMessageThreadCubit(account: account, participant: participant, repository: createPrivateMessageRepository(account), initialMessages: initialMessages, conversationId: conversationId);
 }
 
 AccountSettingsCubit createAccountSettingsCubit(Account account, {ThunderSiteResponse? initialSiteResponse}) {
-  return AccountSettingsCubit(
-    account: account,
-    accountRepository: createAccountRepository(account),
-    localizationService: const ThunderLocalizationService(),
-    initialSiteResponse: initialSiteResponse,
-  );
+  return AccountSettingsCubit(account: account, accountRepository: createAccountRepository(account), localizationService: const ThunderLocalizationService(), initialSiteResponse: initialSiteResponse);
 }
 
 UserBlocksCubit createUserBlocksCubit(Account account) {
@@ -241,9 +195,5 @@ UserMediaCubit createUserMediaCubit(Account account) {
 }
 
 ReportBloc createReportBloc(Account account) {
-  return ReportBloc(
-    account: account,
-    reportRepository: createReportRepository(account),
-    localizationService: const ThunderLocalizationService(),
-  );
+  return ReportBloc(account: account, reportRepository: createReportRepository(account), localizationService: const ThunderLocalizationService());
 }

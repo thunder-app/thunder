@@ -19,14 +19,7 @@ import 'package:thunder/packages/ui/ui.dart';
 
 /// Provides some additional context for a [ModlogEventItem]
 class ModlogItemContextCard extends StatelessWidget {
-  const ModlogItemContextCard({
-    super.key,
-    required this.type,
-    this.post,
-    this.comment,
-    this.community,
-    this.user,
-  });
+  const ModlogItemContextCard({super.key, required this.type, this.post, this.comment, this.community, this.user});
 
   /// The type of event
   final ModlogActionType type;
@@ -75,11 +68,7 @@ class ModlogItemContextCard extends StatelessWidget {
 ///
 /// Displays the title and community of the post. If the post is not removed, tapping on the card will navigate to the post
 class ModlogPostItemContextCard extends StatelessWidget {
-  const ModlogPostItemContextCard({
-    super.key,
-    required this.post,
-    this.community,
-  });
+  const ModlogPostItemContextCard({super.key, required this.post, this.community});
 
   /// The post related to the event
   final ThunderPost post;
@@ -122,11 +111,12 @@ class ModlogPostItemContextCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                       onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: community?.id),
                       child: CommunityFullNameWidget(
-                          name: community?.name,
-                          displayName: community?.title,
-                          instance: fetchInstanceNameFromUrl(community?.actorId),
-                          fontScale: metadataFontSizeScale,
-                          transformColor: (color) => color?.withValues(alpha: 0.75)),
+                        name: community?.name,
+                        displayName: community?.title,
+                        instance: fetchInstanceNameFromUrl(community?.actorId),
+                        fontScale: metadataFontSizeScale,
+                        transformColor: (color) => color?.withValues(alpha: 0.75),
+                      ),
                     ),
                   ),
                 ],
@@ -144,13 +134,7 @@ class ModlogPostItemContextCard extends StatelessWidget {
 /// Displays the comment information, including post, user, and community.
 /// Hidden by default due to possibility of sensitive content.
 class ModlogCommentItemContextCard extends StatefulWidget {
-  const ModlogCommentItemContextCard({
-    super.key,
-    required this.comment,
-    this.post,
-    this.user,
-    this.community,
-  });
+  const ModlogCommentItemContextCard({super.key, required this.comment, this.post, this.user, this.community});
 
   /// The comment related to the event
   final ThunderComment comment;
@@ -207,15 +191,10 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                         WidgetSpan(
                           child: Padding(
                             padding: const EdgeInsets.only(right: 4.0),
-                            child: Icon(
-                              Icons.article_rounded,
-                              size: MediaQuery.textScalerOf(context).scale(18 * titleFontSizeScale.textScaleFactor),
-                            ),
+                            child: Icon(Icons.article_rounded, size: MediaQuery.textScalerOf(context).scale(18 * titleFontSizeScale.textScaleFactor)),
                           ),
                         ),
-                        TextSpan(
-                          text: HtmlUnescape().convert(widget.post!.name),
-                        )
+                        TextSpan(text: HtmlUnescape().convert(widget.post!.name)),
                       ],
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
@@ -266,10 +245,7 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                             ThunderScalableText(
                               ' in ',
                               textScaleFactor: metadataFontSizeScale.textScaleFactor,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
-                              ),
+                              style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4)),
                             ),
                           ],
                         ),
@@ -277,11 +253,12 @@ class _ModlogCommentItemContextCardState extends State<ModlogCommentItemContextC
                           borderRadius: BorderRadius.circular(6),
                           onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: widget.community?.id),
                           child: CommunityFullNameWidget(
-                              name: widget.community?.name,
-                              displayName: widget.community?.title,
-                              instance: fetchInstanceNameFromUrl(widget.community?.actorId),
-                              fontScale: metadataFontSizeScale,
-                              transformColor: textStyleCommunityAndAuthor),
+                            name: widget.community?.name,
+                            displayName: widget.community?.title,
+                            instance: fetchInstanceNameFromUrl(widget.community?.actorId),
+                            fontScale: metadataFontSizeScale,
+                            transformColor: textStyleCommunityAndAuthor,
+                          ),
                         ),
                       ],
                     ),
@@ -336,7 +313,11 @@ class ModlogUserItemContextCard extends StatelessWidget {
                       textScaleFactor: titleFontSizeScale.textScaleFactor,
                     ),
                     UserFullNameWidget(
-                        name: user?.displayNameOrName, displayName: user?.displayName, instance: fetchInstanceNameFromUrl(user?.actorId), transformColor: (color) => color?.withValues(alpha: 0.75)),
+                      name: user?.displayNameOrName,
+                      displayName: user?.displayName,
+                      instance: fetchInstanceNameFromUrl(user?.actorId),
+                      transformColor: (color) => color?.withValues(alpha: 0.75),
+                    ),
                   ],
                 ),
               ],
@@ -389,11 +370,12 @@ class ModlogCommunityItemContextCard extends StatelessWidget {
                       textScaleFactor: titleFontSizeScale.textScaleFactor,
                     ),
                     CommunityFullNameWidget(
-                        name: community?.name,
-                        displayName: community?.title,
-                        instance: fetchInstanceNameFromUrl(community?.actorId),
-                        fontScale: metadataFontSizeScale,
-                        transformColor: (color) => color?.withValues(alpha: 0.75)),
+                      name: community?.name,
+                      displayName: community?.title,
+                      instance: fetchInstanceNameFromUrl(community?.actorId),
+                      fontScale: metadataFontSizeScale,
+                      transformColor: (color) => color?.withValues(alpha: 0.75),
+                    ),
                   ],
                 ),
               ],

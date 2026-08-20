@@ -6,11 +6,7 @@ import 'package:thunder/src/core/config/global_context.dart';
 /// A compact selector row for choosing the recipient of a direct message.
 class CreatePrivateMessageRecipientTile extends StatelessWidget {
   /// Creates a recipient selector matching the app's account selector style.
-  const CreatePrivateMessageRecipientTile({
-    super.key,
-    required this.recipient,
-    required this.onTap,
-  });
+  const CreatePrivateMessageRecipientTile({super.key, required this.recipient, required this.onTap});
 
   /// The selected recipient, or null when the user still needs to choose one.
   final ThunderUser? recipient;
@@ -50,15 +46,6 @@ class _RecipientPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 40,
-      child: Row(
-        spacing: 12.0,
-        children: [
-          const Icon(Icons.person_search_rounded),
-          Text(label),
-        ],
-      ),
-    );
+    return SizedBox(height: 40, child: Row(spacing: 12.0, children: [const Icon(Icons.person_search_rounded), Text(label)]));
   }
 }

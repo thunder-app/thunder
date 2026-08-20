@@ -37,16 +37,10 @@ class UserLabelChip extends StatelessWidget {
 
         return Container(
           margin: const EdgeInsets.only(top: 6.0),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-          ),
+          decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(5.0))),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
-            child: ThunderScalableText(
-              label,
-              textScaleFactor: metadataFontSizeScale.textScaleFactor,
-            ),
+            child: ThunderScalableText(label, textScaleFactor: metadataFontSizeScale.textScaleFactor),
           ),
         );
       },

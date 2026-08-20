@@ -17,19 +17,9 @@ class NotificationsState extends Equatable {
   /// Whether the notification is pending navigation (waiting for account switch to complete).
   final bool pending;
 
-  const NotificationsState({
-    this.status = NotificationsStatus.none,
-    this.notificationId,
-    this.accountId,
-    this.pending = false,
-  });
+  const NotificationsState({this.status = NotificationsStatus.none, this.notificationId, this.accountId, this.pending = false});
 
-  NotificationsState copyWith({
-    NotificationsStatus? status,
-    Object? notificationId = _notificationsUnset,
-    Object? accountId = _notificationsUnset,
-    bool? pending,
-  }) {
+  NotificationsState copyWith({NotificationsStatus? status, Object? notificationId = _notificationsUnset, Object? accountId = _notificationsUnset, bool? pending}) {
     return NotificationsState(
       status: status ?? this.status,
       notificationId: identical(notificationId, _notificationsUnset) ? this.notificationId : notificationId as int?,
@@ -40,12 +30,7 @@ class NotificationsState extends Equatable {
 
   /// Clears the notification state.
   NotificationsState clear() {
-    return const NotificationsState(
-      status: NotificationsStatus.none,
-      notificationId: null,
-      accountId: null,
-      pending: false,
-    );
+    return const NotificationsState(status: NotificationsStatus.none, notificationId: null, accountId: null, pending: false);
   }
 
   @override

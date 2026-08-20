@@ -30,19 +30,12 @@ class LoadingPage extends StatelessWidget {
                 toolbarHeight: APP_BAR_HEIGHT,
                 leading: IconButton(
                   icon: !kIsWeb && Platform.isIOS
-                      ? Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                        )
+                      ? Icon(Icons.arrow_back_ios_new_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip)
                       : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip),
                   onPressed: null,
                 ),
               ),
-              const SliverFillRemaining(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
+              const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),
             ],
           ),
         ),
@@ -66,13 +59,8 @@ void showLoadingPage(BuildContext context) {
       canOnlySwipeFromEdge: !enableFullScreenSwipeNavigationGesture,
       canSwipe: false,
       builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: context.read<ThunderCubit>()),
-        ],
-        child: PopScope(
-          onPopInvokedWithResult: (didPop, result) => isLoadingPageShown = !didPop,
-          child: const LoadingPage(),
-        ),
+        providers: [BlocProvider.value(value: context.read<ThunderCubit>())],
+        child: PopScope(onPopInvokedWithResult: (didPop, result) => isLoadingPageShown = !didPop, child: const LoadingPage()),
       ),
     ),
   );

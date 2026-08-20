@@ -24,11 +24,7 @@ class CommentReference extends StatelessWidget {
   /// The child to display in the header
   final Widget? child;
 
-  const CommentReference({
-    super.key,
-    required this.comment,
-    this.child,
-  });
+  const CommentReference({super.key, required this.comment, this.child});
 
   /// Handles the tap event for the comment reference
   void _onTap(BuildContext context, Account account) {
@@ -49,7 +45,8 @@ class CommentReference extends StatelessWidget {
     assert(comment.creator != null && comment.community != null && comment.post != null, 'Comment must have creator, community, and post fields');
 
     return Semantics(
-      label: """${l10n.inReplyTo(comment.community!.name, comment.post!.name)}\n
+      label:
+          """${l10n.inReplyTo(comment.community!.name, comment.post!.name)}\n
           ${fetchInstanceNameFromUrl(comment.community!.actorId)}\n
           ${comment.creator!.name}\n
           ${comment.counts.upvotes == 0 ? '' : l10n.xUpvotes(formatNumberToK(comment.counts.upvotes!))}\n
@@ -64,12 +61,7 @@ class CommentReference extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _CommentReferenceHeader(comment: comment, child: child),
-              CommentCard(
-                account: account,
-                comment: comment,
-                hideReplyCount: true,
-                onCollapse: (_, __) => _onTap(context, account),
-              ),
+              CommentCard(account: account, comment: comment, hideReplyCount: true, onCollapse: (_, _) => _onTap(context, account)),
             ],
           ),
         ),
@@ -116,9 +108,7 @@ class _CommentReferenceHeader extends StatelessWidget {
                           comment.post?.name ?? '',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -131,25 +121,24 @@ class _CommentReferenceHeader extends StatelessWidget {
                       child: ThunderScalableText(
                         l10n.in_,
                         textScaleFactor: contentFontSizeScale.textScaleFactor,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
-                        ),
+                        style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4)),
                       ),
                     ),
                     ExcludeSemantics(
                       child: CommunityFullNameWidget(
-                          name: comment.community?.name,
-                          displayName: comment.community?.title,
-                          instance: fetchInstanceNameFromUrl(comment.community?.actorId),
-                          fontScale: contentFontSizeScale,
-                          transformColor: (color) => color?.withValues(alpha: 0.75)),
+                        name: comment.community?.name,
+                        displayName: comment.community?.title,
+                        instance: fetchInstanceNameFromUrl(comment.community?.actorId),
+                        fontScale: contentFontSizeScale,
+                        transformColor: (color) => color?.withValues(alpha: 0.75),
+                      ),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          if (child != null) child!,
+          ?child,
         ],
       ),
     );

@@ -38,36 +38,26 @@ class _DiscussionLanguageSelector extends State<DiscussionLanguageSelector> {
               onPressed: updating
                   ? null
                   : () => showLanguageInputDialog(
-                        context,
-                        title: l10n.addDiscussionLanguage,
-                        account: resolveEffectiveAccount(context),
-                        excludedLanguageIds: [-1],
-                        suggestions: languages,
-                        onLanguageSelected: (language) {
-                          List<ThunderLanguage> updatedDiscussionLanguages = List.from(discussionLanguages)..add(language);
-                          context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
-                        },
-                      ),
+                      context,
+                      title: l10n.addDiscussionLanguage,
+                      account: resolveEffectiveAccount(context),
+                      excludedLanguageIds: [-1],
+                      suggestions: languages,
+                      onLanguageSelected: (language) {
+                        List<ThunderLanguage> updatedDiscussionLanguages = List.from(discussionLanguages)..add(language);
+                        context.read<AccountSettingsCubit>().updateSettings(discussionLanguages: updatedDiscussionLanguages.map((e) => e.id).toList());
+                      },
+                    ),
               child: const Icon(Icons.add_rounded),
             ),
             body: CustomScrollView(
               slivers: [
-                SliverAppBar(
-                  pinned: true,
-                  floating: true,
-                  centerTitle: false,
-                  toolbarHeight: APP_BAR_HEIGHT,
-                  scrolledUnderElevation: 0.0,
-                  title: Text(l10n.discussionLanguages),
-                ),
+                SliverAppBar(pinned: true, floating: true, centerTitle: false, toolbarHeight: APP_BAR_HEIGHT, scrolledUnderElevation: 0.0, title: Text(l10n.discussionLanguages)),
                 if (discussionLanguages.isEmpty)
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 28.0, right: 20.0, bottom: 20.0),
-                      child: Text(
-                        l10n.noDiscussionLanguages,
-                        style: TextStyle(color: theme.hintColor),
-                      ),
+                      child: Text(l10n.noDiscussionLanguages, style: TextStyle(color: theme.hintColor)),
                     ),
                   ),
                 SliverList.builder(

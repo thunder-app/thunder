@@ -20,12 +20,7 @@ import 'package:thunder/src/core/app/repository_factories.dart';
 ///
 /// The [notificationId] is used to find and display a specific notification.
 /// If [notificationId] is null, all unread notifications of the given type will be shown.
-void navigateToNotificationPage(
-  BuildContext context, {
-  required InboxType inboxType,
-  required int? notificationId,
-  required String? accountId,
-}) async {
+void navigateToNotificationPage(BuildContext context, {required InboxType inboxType, required int? notificationId, required String? accountId}) async {
   assert(inboxType == InboxType.replies || inboxType == InboxType.mentions || inboxType == InboxType.messages);
 
   // It can take a little while to set up notifications, so show a loading page
@@ -60,11 +55,7 @@ void navigateToNotificationPage(
     int currentPage = 1;
 
     while (!doneFetching) {
-      final response = await privateMessageRepository.messages(
-        unread: notificationId == null,
-        limit: 50,
-        page: currentPage,
-      );
+      final response = await privateMessageRepository.messages(unread: notificationId == null, limit: 50, page: currentPage);
 
       messages.addAll(response);
       message ??= response.firstWhereOrNull((m) => m.id == notificationId);
@@ -93,8 +84,9 @@ void navigateToNotificationPage(
       ++currentPage;
     }
 
-    notificationsPage =
-        inboxType == InboxType.replies ? NotificationsPage.replies(replies: comment == null ? comments : [comment]) : NotificationsPage.mentions(mentions: comment == null ? comments : [comment]);
+    notificationsPage = inboxType == InboxType.replies
+        ? NotificationsPage.replies(replies: comment == null ? comments : [comment])
+        : NotificationsPage.mentions(mentions: comment == null ? comments : [comment]);
   }
 
   if (context.mounted) {
@@ -102,8 +94,8 @@ void navigateToNotificationPage(
       transitionDuration: isLoadingPageShown
           ? Duration.zero
           : reduceAnimations
-              ? const Duration(milliseconds: 100)
-              : null,
+          ? const Duration(milliseconds: 100)
+          : null,
       reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
       backGestureDetectionWidth: 45,
       canSwipe: !kIsWeb && Platform.isIOS || gestureCubit.state.enableFullScreenSwipeNavigationGesture,

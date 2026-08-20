@@ -28,14 +28,7 @@ class CommunityInformation extends StatelessWidget {
   /// The moderators of the community
   final List<ThunderUser> moderators;
 
-  const CommunityInformation({
-    super.key,
-    required this.launchContext,
-    required this.account,
-    required this.community,
-    this.instance,
-    required this.moderators,
-  });
+  const CommunityInformation({super.key, required this.launchContext, required this.account, required this.community, this.instance, required this.moderators});
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +78,7 @@ class CommunityStatsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ...[
-          ThunderSidebarStat(
-            icon: community.status.local ? Icons.house_rounded : Icons.language_rounded,
-            label: l10n.visibility(community.status.local ? l10n.localOnly : l10n.public),
-          ),
+          ThunderSidebarStat(icon: community.status.local ? Icons.house_rounded : Icons.language_rounded, label: l10n.visibility(community.status.local ? l10n.localOnly : l10n.public)),
           const SizedBox(height: 8.0),
         ],
         ThunderSidebarStat(
@@ -96,40 +86,16 @@ class CommunityStatsList extends StatelessWidget {
           label: '${l10n.created(DateFormat.yMMMMd().format(community.published))} · ${l10n.ago(formatTimeToString(dateTime: community.published.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
-        ThunderSidebarStat(
-          icon: Icons.people_rounded,
-          label: l10n.countSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribers)),
-        ),
+        ThunderSidebarStat(icon: Icons.people_rounded, label: l10n.countSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribers))),
         if (community.counts.subscribersLocal != null)
-          ThunderSidebarStat(
-            icon: Icons.people_rounded,
-            label: l10n.countLocalSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribersLocal)),
-          ),
-        ThunderSidebarStat(
-          icon: Icons.wysiwyg_rounded,
-          label: l10n.countPosts(NumberFormat("#,###,###,###").format(community.counts.posts)),
-        ),
-        ThunderSidebarStat(
-          icon: Icons.chat_rounded,
-          label: l10n.countComments(NumberFormat("#,###,###,###").format(community.counts.comments)),
-        ),
+          ThunderSidebarStat(icon: Icons.people_rounded, label: l10n.countLocalSubscribers(NumberFormat("#,###,###,###").format(community.counts.subscribersLocal))),
+        ThunderSidebarStat(icon: Icons.wysiwyg_rounded, label: l10n.countPosts(NumberFormat("#,###,###,###").format(community.counts.posts))),
+        ThunderSidebarStat(icon: Icons.chat_rounded, label: l10n.countComments(NumberFormat("#,###,###,###").format(community.counts.comments))),
         const SizedBox(height: 8.0),
-        ThunderSidebarStat(
-          icon: Icons.calendar_month_rounded,
-          label: l10n.countUsersActiveHalfYear(NumberFormat("#,###,###,###").format(community.counts.usersActiveHalfYear)),
-        ),
-        ThunderSidebarStat(
-          icon: Icons.calendar_view_month_rounded,
-          label: l10n.countUsersActiveMonth(NumberFormat("#,###,###,###").format(community.counts.usersActiveMonth)),
-        ),
-        ThunderSidebarStat(
-          icon: Icons.calendar_view_week_rounded,
-          label: l10n.countUsersActiveWeek(NumberFormat("#,###,###,###").format(community.counts.usersActiveWeek)),
-        ),
-        ThunderSidebarStat(
-          icon: Icons.calendar_view_day_rounded,
-          label: l10n.countUsersActiveDay(NumberFormat("#,###,###,###").format(community.counts.usersActiveDay)),
-        ),
+        ThunderSidebarStat(icon: Icons.calendar_month_rounded, label: l10n.countUsersActiveHalfYear(NumberFormat("#,###,###,###").format(community.counts.usersActiveHalfYear))),
+        ThunderSidebarStat(icon: Icons.calendar_view_month_rounded, label: l10n.countUsersActiveMonth(NumberFormat("#,###,###,###").format(community.counts.usersActiveMonth))),
+        ThunderSidebarStat(icon: Icons.calendar_view_week_rounded, label: l10n.countUsersActiveWeek(NumberFormat("#,###,###,###").format(community.counts.usersActiveWeek))),
+        ThunderSidebarStat(icon: Icons.calendar_view_day_rounded, label: l10n.countUsersActiveDay(NumberFormat("#,###,###,###").format(community.counts.usersActiveDay))),
       ],
     );
   }

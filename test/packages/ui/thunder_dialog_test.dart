@@ -7,15 +7,7 @@ import '../../helpers/ui_test_harness.dart';
 
 void main() {
   testWidgets('ThunderDialog renders title and content', (tester) async {
-    await pumpUiWidget(
-      tester,
-      const ThunderDialog(
-        title: 'Confirm',
-        contentText: 'Are you sure?',
-        primaryButtonText: 'OK',
-        secondaryButtonText: 'Cancel',
-      ),
-    );
+    await pumpUiWidget(tester, const ThunderDialog(title: 'Confirm', contentText: 'Are you sure?', primaryButtonText: 'OK', secondaryButtonText: 'Cancel'));
 
     expect(find.text('Confirm'), findsOneWidget);
     expect(find.text('Are you sure?'), findsOneWidget);
@@ -28,12 +20,9 @@ void main() {
       tester,
       ThunderDialog(
         title: 'Edit',
-        contentWidgetBuilder: (setEnabled) => TextButton(
-          onPressed: () => setEnabled(false),
-          child: const Text('Disable'),
-        ),
+        contentWidgetBuilder: (setEnabled) => TextButton(onPressed: () => setEnabled(false), child: const Text('Disable')),
         primaryButtonText: 'Save',
-        onPrimaryButtonPressed: (_, __) {},
+        onPrimaryButtonPressed: (_, _) {},
       ),
     );
 
@@ -56,12 +45,7 @@ void main() {
         home: Builder(
           builder: (context) {
             return TextButton(
-              onPressed: () => showThunderDialog(
-                context: context,
-                title: 'Portal',
-                contentText: 'From portal',
-                primaryButtonText: 'Done',
-              ),
+              onPressed: () => showThunderDialog(context: context, title: 'Portal', contentText: 'From portal', primaryButtonText: 'Done'),
               child: const Text('Open'),
             );
           },

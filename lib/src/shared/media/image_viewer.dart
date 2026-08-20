@@ -19,14 +19,7 @@ class ImageViewer extends StatefulWidget {
   /// Creates a full-screen image viewer.
   ///
   /// Either [url] or [bytes] must be provided.
-  const ImageViewer({
-    super.key,
-    this.altText,
-    this.bytes,
-    this.isPeek = false,
-    this.navigateToPost,
-    this.url,
-  }) : assert(url != null || bytes != null);
+  const ImageViewer({super.key, this.altText, this.bytes, this.isPeek = false, this.navigateToPost, this.url}) : assert(url != null || bytes != null);
 
   /// The alternative text displayed by the viewer, if available.
   final String? altText;
@@ -212,10 +205,7 @@ class _ImageViewerState extends State<ImageViewer> {
       setState(() => _isDownloadingMedia = true);
       final file = await _resolveMediaFile();
 
-      await SharePlus.instance.share(ShareParams(
-        files: [XFile(file.path)],
-        sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
-      ));
+      await SharePlus.instance.share(ShareParams(files: [XFile(file.path)], sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1)));
     } catch (e) {
       showThunderSnackbar(l10n.errorDownloadingMedia(e));
     } finally {
@@ -274,10 +264,7 @@ class _ImageViewerState extends State<ImageViewer> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final overlayStyle = const SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.light,
-    );
+    final overlayStyle = const SystemUiOverlayStyle(statusBarBrightness: Brightness.dark, statusBarIconBrightness: Brightness.light);
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
@@ -323,10 +310,7 @@ class _ImageViewerState extends State<ImageViewer> {
                             children: [
                               IconButton(
                                 onPressed: _closeViewer,
-                                icon: Icon(
-                                  Icons.arrow_back_rounded,
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                ),
+                                icon: Icon(Icons.arrow_back_rounded, color: Colors.white.withValues(alpha: 0.9)),
                                 tooltip: MaterialLocalizations.of(context).backButtonTooltip,
                               ),
                             ],
@@ -357,13 +341,7 @@ class _ImageViewerState extends State<ImageViewer> {
                                   onPressed: _isDownloadingMedia ? null : _shareImage,
                                   tooltip: l10n.share,
                                   icon: _isDownloadingMedia
-                                      ? SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white.withValues(alpha: 0.9),
-                                          ),
-                                        )
+                                      ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white.withValues(alpha: 0.9)))
                                       : Icon(Icons.share_rounded, color: Colors.white.withValues(alpha: 0.9)),
                                 ),
                               if (!kIsWeb && (widget.url != null || widget.bytes != null))
@@ -371,16 +349,10 @@ class _ImageViewerState extends State<ImageViewer> {
                                   onPressed: (_downloaded || _isSavingMedia) ? null : _saveImage,
                                   tooltip: l10n.save,
                                   icon: _isSavingMedia
-                                      ? SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white.withValues(alpha: 0.9),
-                                          ),
-                                        )
+                                      ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white.withValues(alpha: 0.9)))
                                       : _downloaded
-                                          ? Icon(Icons.check_circle_rounded, color: Colors.white.withValues(alpha: 0.9))
-                                          : Icon(Icons.download_rounded, color: Colors.white.withValues(alpha: 0.9)),
+                                      ? Icon(Icons.check_circle_rounded, color: Colors.white.withValues(alpha: 0.9))
+                                      : Icon(Icons.download_rounded, color: Colors.white.withValues(alpha: 0.9)),
                                 ),
                               if (widget.navigateToPost != null)
                                 IconButton(
@@ -395,10 +367,7 @@ class _ImageViewerState extends State<ImageViewer> {
                                 IconButton(
                                   onPressed: () => setState(() => _showAltText = !_showAltText),
                                   tooltip: l10n.altText,
-                                  icon: Icon(
-                                    Icons.text_fields_rounded,
-                                    color: Colors.white.withValues(alpha: _showAltText ? 0.9 : 0.55),
-                                  ),
+                                  icon: Icon(Icons.text_fields_rounded, color: Colors.white.withValues(alpha: _showAltText ? 0.9 : 0.55)),
                                 ),
                               IconButton(
                                 onPressed: _toggleFullscreen,
@@ -425,18 +394,10 @@ class _ImageViewerState extends State<ImageViewer> {
                         child: IgnorePointer(
                           ignoring: !_isChromeVisible,
                           child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.45),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                            decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.45), borderRadius: BorderRadius.circular(12)),
                             child: Padding(
                               padding: const EdgeInsets.all(16),
-                              child: Text(
-                                widget.altText!,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Colors.white.withValues(alpha: 0.95),
-                                    ),
-                              ),
+                              child: Text(widget.altText!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white.withValues(alpha: 0.95))),
                             ),
                           ),
                         ),
@@ -452,10 +413,7 @@ class _ImageViewerState extends State<ImageViewer> {
                       child: IconButton(
                         onPressed: _exitFullscreen,
                         tooltip: l10n.fullscreen,
-                        icon: Icon(
-                          Icons.fullscreen_exit_rounded,
-                          color: Colors.white.withValues(alpha: 0.8),
-                        ),
+                        icon: Icon(Icons.fullscreen_exit_rounded, color: Colors.white.withValues(alpha: 0.8)),
                       ),
                     ),
                   ),

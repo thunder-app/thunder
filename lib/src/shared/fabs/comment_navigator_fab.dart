@@ -27,15 +27,7 @@ class CommentNavigatorFab extends StatefulWidget {
   /// The height of the OS status bar, needed to calculate an offset for scrolling comments to the top
   final double statusBarHeight;
 
-  const CommentNavigatorFab({
-    super.key,
-    this.initialIndex = 0,
-    this.maxIndex = 0,
-    required this.scrollController,
-    required this.listController,
-    this.comments,
-    required this.statusBarHeight,
-  });
+  const CommentNavigatorFab({super.key, this.initialIndex = 0, this.maxIndex = 0, required this.scrollController, required this.listController, this.comments, required this.statusBarHeight});
 
   @override
   State<CommentNavigatorFab> createState() => _CommentNavigatorFabState();
@@ -78,11 +70,7 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
               child: Align(
                 child: SizedBox(
                   height: 45,
-                  child: Material(
-                    color: darkTheme ? theme.colorScheme.primaryContainer : null,
-                    borderRadius: BorderRadius.circular(50),
-                    child: const InkWell(),
-                  ),
+                  child: Material(color: darkTheme ? theme.colorScheme.primaryContainer : null, borderRadius: BorderRadius.circular(50), child: const InkWell()),
                 ),
               ),
             ),
@@ -99,10 +87,7 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                       borderRadius: BorderRadius.circular(50),
                       onTap: navigateToParent,
                       onLongPress: navigateUp,
-                      child: Icon(
-                        Icons.keyboard_arrow_up_rounded,
-                        semanticLabel: AppLocalizations.of(context)!.navigateUp,
-                      ),
+                      child: Icon(Icons.keyboard_arrow_up_rounded, semanticLabel: AppLocalizations.of(context)!.navigateUp),
                     ),
                   ),
                 ),
@@ -117,10 +102,7 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                       borderRadius: BorderRadius.circular(50),
                       onTap: navigateToNextParent,
                       onLongPress: navigateDown,
-                      child: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        semanticLabel: AppLocalizations.of(context)!.navigateDown,
-                      ),
+                      child: Icon(Icons.keyboard_arrow_down_rounded, semanticLabel: AppLocalizations.of(context)!.navigateDown),
                     ),
                   ),
                 ),

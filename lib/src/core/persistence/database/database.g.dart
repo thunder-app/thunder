@@ -10,8 +10,15 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   $AccountsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
-      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+  );
   static const VerificationMeta _usernameMeta = const VerificationMeta('username');
   @override
   late final GeneratedColumn<String> username = GeneratedColumn<String>('username', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
@@ -23,8 +30,15 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   late final GeneratedColumn<String> instance = GeneratedColumn<String>('instance', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _anonymousMeta = const VerificationMeta('anonymous');
   @override
-  late final GeneratedColumn<bool> anonymous = GeneratedColumn<bool>('anonymous', aliasedName, false,
-      type: DriftSqlType.bool, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("anonymous" IN (0, 1))'), defaultValue: const Constant(false));
+  late final GeneratedColumn<bool> anonymous = GeneratedColumn<bool>(
+    'anonymous',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("anonymous" IN (0, 1))'),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumn<int> userId = GeneratedColumn<int>('user_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
@@ -32,8 +46,13 @@ class $AccountsTable extends Accounts with TableInfo<$AccountsTable, Account> {
   @override
   late final GeneratedColumn<int> listIndex = GeneratedColumn<int>('list_index', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(-1));
   @override
-  late final GeneratedColumnWithTypeConverter<ThreadiversePlatform?, String> platform =
-      GeneratedColumn<String>('platform', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false).withConverter<ThreadiversePlatform?>($AccountsTable.$converterplatform);
+  late final GeneratedColumnWithTypeConverter<ThreadiversePlatform?, String> platform = GeneratedColumn<String>(
+    'platform',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<ThreadiversePlatform?>($AccountsTable.$converterplatform);
   @override
   List<GeneratedColumn> get $columns => [id, username, jwt, instance, anonymous, userId, listIndex, platform];
   @override
@@ -169,25 +188,25 @@ class Account extends DataClass implements Insertable<Account> {
     };
   }
 
-  Account copyWith(
-          {int? id,
-          Value<String?> username = const Value.absent(),
-          Value<String?> jwt = const Value.absent(),
-          Value<String?> instance = const Value.absent(),
-          bool? anonymous,
-          Value<int?> userId = const Value.absent(),
-          int? listIndex,
-          Value<ThreadiversePlatform?> platform = const Value.absent()}) =>
-      Account(
-        id: id ?? this.id,
-        username: username.present ? username.value : this.username,
-        jwt: jwt.present ? jwt.value : this.jwt,
-        instance: instance.present ? instance.value : this.instance,
-        anonymous: anonymous ?? this.anonymous,
-        userId: userId.present ? userId.value : this.userId,
-        listIndex: listIndex ?? this.listIndex,
-        platform: platform.present ? platform.value : this.platform,
-      );
+  Account copyWith({
+    int? id,
+    Value<String?> username = const Value.absent(),
+    Value<String?> jwt = const Value.absent(),
+    Value<String?> instance = const Value.absent(),
+    bool? anonymous,
+    Value<int?> userId = const Value.absent(),
+    int? listIndex,
+    Value<ThreadiversePlatform?> platform = const Value.absent(),
+  }) => Account(
+    id: id ?? this.id,
+    username: username.present ? username.value : this.username,
+    jwt: jwt.present ? jwt.value : this.jwt,
+    instance: instance.present ? instance.value : this.instance,
+    anonymous: anonymous ?? this.anonymous,
+    userId: userId.present ? userId.value : this.userId,
+    listIndex: listIndex ?? this.listIndex,
+    platform: platform.present ? platform.value : this.platform,
+  );
   Account copyWithCompanion(AccountsCompanion data) {
     return Account(
       id: data.id.present ? data.id.value : this.id,
@@ -283,15 +302,16 @@ class AccountsCompanion extends UpdateCompanion<Account> {
     });
   }
 
-  AccountsCompanion copyWith(
-      {Value<int>? id,
-      Value<String?>? username,
-      Value<String?>? jwt,
-      Value<String?>? instance,
-      Value<bool>? anonymous,
-      Value<int?>? userId,
-      Value<int>? listIndex,
-      Value<ThreadiversePlatform?>? platform}) {
+  AccountsCompanion copyWith({
+    Value<int>? id,
+    Value<String?>? username,
+    Value<String?>? jwt,
+    Value<String?>? instance,
+    Value<bool>? anonymous,
+    Value<int?>? userId,
+    Value<int>? listIndex,
+    Value<ThreadiversePlatform?>? platform,
+  }) {
     return AccountsCompanion(
       id: id ?? this.id,
       username: username ?? this.username,
@@ -357,8 +377,15 @@ class $FavoritesTable extends Favorites with TableInfo<$FavoritesTable, Favorite
   $FavoritesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
-      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+  );
   static const VerificationMeta _accountIdMeta = const VerificationMeta('accountId');
   @override
   late final GeneratedColumn<int> accountId = GeneratedColumn<int>('account_id', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
@@ -425,36 +452,20 @@ class Favorite extends DataClass implements Insertable<Favorite> {
   }
 
   FavoritesCompanion toCompanion(bool nullToAbsent) {
-    return FavoritesCompanion(
-      id: Value(id),
-      accountId: Value(accountId),
-      communityId: Value(communityId),
-    );
+    return FavoritesCompanion(id: Value(id), accountId: Value(accountId), communityId: Value(communityId));
   }
 
   factory Favorite.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Favorite(
-      id: serializer.fromJson<int>(json['id']),
-      accountId: serializer.fromJson<int>(json['accountId']),
-      communityId: serializer.fromJson<int>(json['communityId']),
-    );
+    return Favorite(id: serializer.fromJson<int>(json['id']), accountId: serializer.fromJson<int>(json['accountId']), communityId: serializer.fromJson<int>(json['communityId']));
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'accountId': serializer.toJson<int>(accountId),
-      'communityId': serializer.toJson<int>(communityId),
-    };
+    return <String, dynamic>{'id': serializer.toJson<int>(id), 'accountId': serializer.toJson<int>(accountId), 'communityId': serializer.toJson<int>(communityId)};
   }
 
-  Favorite copyWith({int? id, int? accountId, int? communityId}) => Favorite(
-        id: id ?? this.id,
-        accountId: accountId ?? this.accountId,
-        communityId: communityId ?? this.communityId,
-      );
+  Favorite copyWith({int? id, int? accountId, int? communityId}) => Favorite(id: id ?? this.id, accountId: accountId ?? this.accountId, communityId: communityId ?? this.communityId);
   Favorite copyWithCompanion(FavoritesCompanion data) {
     return Favorite(
       id: data.id.present ? data.id.value : this.id,
@@ -483,35 +494,14 @@ class FavoritesCompanion extends UpdateCompanion<Favorite> {
   final Value<int> id;
   final Value<int> accountId;
   final Value<int> communityId;
-  const FavoritesCompanion({
-    this.id = const Value.absent(),
-    this.accountId = const Value.absent(),
-    this.communityId = const Value.absent(),
-  });
-  FavoritesCompanion.insert({
-    this.id = const Value.absent(),
-    required int accountId,
-    required int communityId,
-  })  : accountId = Value(accountId),
-        communityId = Value(communityId);
-  static Insertable<Favorite> custom({
-    Expression<int>? id,
-    Expression<int>? accountId,
-    Expression<int>? communityId,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (accountId != null) 'account_id': accountId,
-      if (communityId != null) 'community_id': communityId,
-    });
+  const FavoritesCompanion({this.id = const Value.absent(), this.accountId = const Value.absent(), this.communityId = const Value.absent()});
+  FavoritesCompanion.insert({this.id = const Value.absent(), required int accountId, required int communityId}) : accountId = Value(accountId), communityId = Value(communityId);
+  static Insertable<Favorite> custom({Expression<int>? id, Expression<int>? accountId, Expression<int>? communityId}) {
+    return RawValuesInsertable({if (id != null) 'id': id, if (accountId != null) 'account_id': accountId, if (communityId != null) 'community_id': communityId});
   }
 
   FavoritesCompanion copyWith({Value<int>? id, Value<int>? accountId, Value<int>? communityId}) {
-    return FavoritesCompanion(
-      id: id ?? this.id,
-      accountId: accountId ?? this.accountId,
-      communityId: communityId ?? this.communityId,
-    );
+    return FavoritesCompanion(id: id ?? this.id, accountId: accountId ?? this.accountId, communityId: communityId ?? this.communityId);
   }
 
   @override
@@ -547,8 +537,15 @@ class $LocalSubscriptionsTable extends LocalSubscriptions with TableInfo<$LocalS
   $LocalSubscriptionsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
-      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>('name', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
@@ -637,13 +634,7 @@ class LocalSubscription extends DataClass implements Insertable<LocalSubscriptio
   }
 
   LocalSubscriptionsCompanion toCompanion(bool nullToAbsent) {
-    return LocalSubscriptionsCompanion(
-      id: Value(id),
-      name: Value(name),
-      title: Value(title),
-      actorId: Value(actorId),
-      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
-    );
+    return LocalSubscriptionsCompanion(id: Value(id), name: Value(name), title: Value(title), actorId: Value(actorId), icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon));
   }
 
   factory LocalSubscription.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
@@ -668,13 +659,8 @@ class LocalSubscription extends DataClass implements Insertable<LocalSubscriptio
     };
   }
 
-  LocalSubscription copyWith({int? id, String? name, String? title, String? actorId, Value<String?> icon = const Value.absent()}) => LocalSubscription(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        title: title ?? this.title,
-        actorId: actorId ?? this.actorId,
-        icon: icon.present ? icon.value : this.icon,
-      );
+  LocalSubscription copyWith({int? id, String? name, String? title, String? actorId, Value<String?> icon = const Value.absent()}) =>
+      LocalSubscription(id: id ?? this.id, name: name ?? this.name, title: title ?? this.title, actorId: actorId ?? this.actorId, icon: icon.present ? icon.value : this.icon);
   LocalSubscription copyWithCompanion(LocalSubscriptionsCompanion data) {
     return LocalSubscription(
       id: data.id.present ? data.id.value : this.id,
@@ -717,39 +703,16 @@ class LocalSubscriptionsCompanion extends UpdateCompanion<LocalSubscription> {
     this.actorId = const Value.absent(),
     this.icon = const Value.absent(),
   });
-  LocalSubscriptionsCompanion.insert({
-    this.id = const Value.absent(),
-    required String name,
-    required String title,
-    required String actorId,
-    this.icon = const Value.absent(),
-  })  : name = Value(name),
-        title = Value(title),
-        actorId = Value(actorId);
-  static Insertable<LocalSubscription> custom({
-    Expression<int>? id,
-    Expression<String>? name,
-    Expression<String>? title,
-    Expression<String>? actorId,
-    Expression<String>? icon,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (title != null) 'title': title,
-      if (actorId != null) 'actor_id': actorId,
-      if (icon != null) 'icon': icon,
-    });
+  LocalSubscriptionsCompanion.insert({this.id = const Value.absent(), required String name, required String title, required String actorId, this.icon = const Value.absent()})
+    : name = Value(name),
+      title = Value(title),
+      actorId = Value(actorId);
+  static Insertable<LocalSubscription> custom({Expression<int>? id, Expression<String>? name, Expression<String>? title, Expression<String>? actorId, Expression<String>? icon}) {
+    return RawValuesInsertable({if (id != null) 'id': id, if (name != null) 'name': name, if (title != null) 'title': title, if (actorId != null) 'actor_id': actorId, if (icon != null) 'icon': icon});
   }
 
   LocalSubscriptionsCompanion copyWith({Value<int>? id, Value<String>? name, Value<String>? title, Value<String>? actorId, Value<String?>? icon}) {
-    return LocalSubscriptionsCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      title: title ?? this.title,
-      actorId: actorId ?? this.actorId,
-      icon: icon ?? this.icon,
-    );
+    return LocalSubscriptionsCompanion(id: id ?? this.id, name: name ?? this.name, title: title ?? this.title, actorId: actorId ?? this.actorId, icon: icon ?? this.icon);
   }
 
   @override
@@ -793,8 +756,15 @@ class $UserLabelsTable extends UserLabels with TableInfo<$UserLabelsTable, UserL
   $UserLabelsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
-      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+  );
   static const VerificationMeta _usernameMeta = const VerificationMeta('username');
   @override
   late final GeneratedColumn<String> username = GeneratedColumn<String>('username', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
@@ -861,42 +831,22 @@ class UserLabel extends DataClass implements Insertable<UserLabel> {
   }
 
   UserLabelsCompanion toCompanion(bool nullToAbsent) {
-    return UserLabelsCompanion(
-      id: Value(id),
-      username: Value(username),
-      label: Value(label),
-    );
+    return UserLabelsCompanion(id: Value(id), username: Value(username), label: Value(label));
   }
 
   factory UserLabel.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UserLabel(
-      id: serializer.fromJson<int>(json['id']),
-      username: serializer.fromJson<String>(json['username']),
-      label: serializer.fromJson<String>(json['label']),
-    );
+    return UserLabel(id: serializer.fromJson<int>(json['id']), username: serializer.fromJson<String>(json['username']), label: serializer.fromJson<String>(json['label']));
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'username': serializer.toJson<String>(username),
-      'label': serializer.toJson<String>(label),
-    };
+    return <String, dynamic>{'id': serializer.toJson<int>(id), 'username': serializer.toJson<String>(username), 'label': serializer.toJson<String>(label)};
   }
 
-  UserLabel copyWith({int? id, String? username, String? label}) => UserLabel(
-        id: id ?? this.id,
-        username: username ?? this.username,
-        label: label ?? this.label,
-      );
+  UserLabel copyWith({int? id, String? username, String? label}) => UserLabel(id: id ?? this.id, username: username ?? this.username, label: label ?? this.label);
   UserLabel copyWithCompanion(UserLabelsCompanion data) {
-    return UserLabel(
-      id: data.id.present ? data.id.value : this.id,
-      username: data.username.present ? data.username.value : this.username,
-      label: data.label.present ? data.label.value : this.label,
-    );
+    return UserLabel(id: data.id.present ? data.id.value : this.id, username: data.username.present ? data.username.value : this.username, label: data.label.present ? data.label.value : this.label);
   }
 
   @override
@@ -919,35 +869,14 @@ class UserLabelsCompanion extends UpdateCompanion<UserLabel> {
   final Value<int> id;
   final Value<String> username;
   final Value<String> label;
-  const UserLabelsCompanion({
-    this.id = const Value.absent(),
-    this.username = const Value.absent(),
-    this.label = const Value.absent(),
-  });
-  UserLabelsCompanion.insert({
-    this.id = const Value.absent(),
-    required String username,
-    required String label,
-  })  : username = Value(username),
-        label = Value(label);
-  static Insertable<UserLabel> custom({
-    Expression<int>? id,
-    Expression<String>? username,
-    Expression<String>? label,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (username != null) 'username': username,
-      if (label != null) 'label': label,
-    });
+  const UserLabelsCompanion({this.id = const Value.absent(), this.username = const Value.absent(), this.label = const Value.absent()});
+  UserLabelsCompanion.insert({this.id = const Value.absent(), required String username, required String label}) : username = Value(username), label = Value(label);
+  static Insertable<UserLabel> custom({Expression<int>? id, Expression<String>? username, Expression<String>? label}) {
+    return RawValuesInsertable({if (id != null) 'id': id, if (username != null) 'username': username, if (label != null) 'label': label});
   }
 
   UserLabelsCompanion copyWith({Value<int>? id, Value<String>? username, Value<String>? label}) {
-    return UserLabelsCompanion(
-      id: id ?? this.id,
-      username: username ?? this.username,
-      label: label ?? this.label,
-    );
+    return UserLabelsCompanion(id: id ?? this.id, username: username ?? this.username, label: label ?? this.label);
   }
 
   @override
@@ -983,11 +912,23 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
   $DraftsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>('id', aliasedName, false,
-      hasAutoIncrement: true, type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
+  );
   @override
-  late final GeneratedColumnWithTypeConverter<DraftType, String> draftType =
-      GeneratedColumn<String>('draft_type', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true).withConverter<DraftType>($DraftsTable.$converterdraftType);
+  late final GeneratedColumnWithTypeConverter<DraftType, String> draftType = GeneratedColumn<String>(
+    'draft_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<DraftType>($DraftsTable.$converterdraftType);
   static const VerificationMeta _existingIdMeta = const VerificationMeta('existingId');
   @override
   late final GeneratedColumn<int> existingId = GeneratedColumn<int>('existing_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
@@ -996,8 +937,15 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
   late final GeneratedColumn<int> replyId = GeneratedColumn<int>('reply_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _activeMeta = const VerificationMeta('active');
   @override
-  late final GeneratedColumn<bool> active = GeneratedColumn<bool>('active', aliasedName, false,
-      type: DriftSqlType.bool, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("active" IN (0, 1))'), defaultValue: const Constant(false));
+  late final GeneratedColumn<bool> active = GeneratedColumn<bool>(
+    'active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("active" IN (0, 1))'),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _accountIdMeta = const VerificationMeta('accountId');
   @override
   late final GeneratedColumn<String> accountId = GeneratedColumn<String>('account_id', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
@@ -1015,8 +963,15 @@ class $DraftsTable extends Drafts with TableInfo<$DraftsTable, Draft> {
   late final GeneratedColumn<String> altText = GeneratedColumn<String>('alt_text', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _nsfwMeta = const VerificationMeta('nsfw');
   @override
-  late final GeneratedColumn<bool> nsfw = GeneratedColumn<bool>('nsfw', aliasedName, false,
-      type: DriftSqlType.bool, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("nsfw" IN (0, 1))'), defaultValue: const Constant(false));
+  late final GeneratedColumn<bool> nsfw = GeneratedColumn<bool>(
+    'nsfw',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("nsfw" IN (0, 1))'),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _languageIdMeta = const VerificationMeta('languageId');
   @override
   late final GeneratedColumn<int> languageId = GeneratedColumn<int>('language_id', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
@@ -1117,20 +1072,21 @@ class Draft extends DataClass implements Insertable<Draft> {
   final bool nsfw;
   final int? languageId;
   final String? body;
-  const Draft(
-      {required this.id,
-      required this.draftType,
-      this.existingId,
-      this.replyId,
-      required this.active,
-      this.accountId,
-      this.title,
-      this.url,
-      this.customThumbnail,
-      this.altText,
-      required this.nsfw,
-      this.languageId,
-      this.body});
+  const Draft({
+    required this.id,
+    required this.draftType,
+    this.existingId,
+    this.replyId,
+    required this.active,
+    this.accountId,
+    this.title,
+    this.url,
+    this.customThumbnail,
+    this.altText,
+    required this.nsfw,
+    this.languageId,
+    this.body,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1226,35 +1182,35 @@ class Draft extends DataClass implements Insertable<Draft> {
     };
   }
 
-  Draft copyWith(
-          {int? id,
-          DraftType? draftType,
-          Value<int?> existingId = const Value.absent(),
-          Value<int?> replyId = const Value.absent(),
-          bool? active,
-          Value<String?> accountId = const Value.absent(),
-          Value<String?> title = const Value.absent(),
-          Value<String?> url = const Value.absent(),
-          Value<String?> customThumbnail = const Value.absent(),
-          Value<String?> altText = const Value.absent(),
-          bool? nsfw,
-          Value<int?> languageId = const Value.absent(),
-          Value<String?> body = const Value.absent()}) =>
-      Draft(
-        id: id ?? this.id,
-        draftType: draftType ?? this.draftType,
-        existingId: existingId.present ? existingId.value : this.existingId,
-        replyId: replyId.present ? replyId.value : this.replyId,
-        active: active ?? this.active,
-        accountId: accountId.present ? accountId.value : this.accountId,
-        title: title.present ? title.value : this.title,
-        url: url.present ? url.value : this.url,
-        customThumbnail: customThumbnail.present ? customThumbnail.value : this.customThumbnail,
-        altText: altText.present ? altText.value : this.altText,
-        nsfw: nsfw ?? this.nsfw,
-        languageId: languageId.present ? languageId.value : this.languageId,
-        body: body.present ? body.value : this.body,
-      );
+  Draft copyWith({
+    int? id,
+    DraftType? draftType,
+    Value<int?> existingId = const Value.absent(),
+    Value<int?> replyId = const Value.absent(),
+    bool? active,
+    Value<String?> accountId = const Value.absent(),
+    Value<String?> title = const Value.absent(),
+    Value<String?> url = const Value.absent(),
+    Value<String?> customThumbnail = const Value.absent(),
+    Value<String?> altText = const Value.absent(),
+    bool? nsfw,
+    Value<int?> languageId = const Value.absent(),
+    Value<String?> body = const Value.absent(),
+  }) => Draft(
+    id: id ?? this.id,
+    draftType: draftType ?? this.draftType,
+    existingId: existingId.present ? existingId.value : this.existingId,
+    replyId: replyId.present ? replyId.value : this.replyId,
+    active: active ?? this.active,
+    accountId: accountId.present ? accountId.value : this.accountId,
+    title: title.present ? title.value : this.title,
+    url: url.present ? url.value : this.url,
+    customThumbnail: customThumbnail.present ? customThumbnail.value : this.customThumbnail,
+    altText: altText.present ? altText.value : this.altText,
+    nsfw: nsfw ?? this.nsfw,
+    languageId: languageId.present ? languageId.value : this.languageId,
+    body: body.present ? body.value : this.body,
+  );
   Draft copyWithCompanion(DraftsCompanion data) {
     return Draft(
       id: data.id.present ? data.id.value : this.id,
@@ -1390,20 +1346,21 @@ class DraftsCompanion extends UpdateCompanion<Draft> {
     });
   }
 
-  DraftsCompanion copyWith(
-      {Value<int>? id,
-      Value<DraftType>? draftType,
-      Value<int?>? existingId,
-      Value<int?>? replyId,
-      Value<bool>? active,
-      Value<String?>? accountId,
-      Value<String?>? title,
-      Value<String?>? url,
-      Value<String?>? customThumbnail,
-      Value<String?>? altText,
-      Value<bool>? nsfw,
-      Value<int?>? languageId,
-      Value<String?>? body}) {
+  DraftsCompanion copyWith({
+    Value<int>? id,
+    Value<DraftType>? draftType,
+    Value<int?>? existingId,
+    Value<int?>? replyId,
+    Value<bool>? active,
+    Value<String?>? accountId,
+    Value<String?>? title,
+    Value<String?>? url,
+    Value<String?>? customThumbnail,
+    Value<String?>? altText,
+    Value<bool>? nsfw,
+    Value<int?>? languageId,
+    Value<String?>? body,
+  }) {
     return DraftsCompanion(
       id: id ?? this.id,
       draftType: draftType ?? this.draftType,
@@ -1497,8 +1454,14 @@ class $SessionStateTableTable extends SessionStateTable with TableInfo<$SessionS
   late final GeneratedColumn<int> singleton = GeneratedColumn<int>('singleton', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(0));
   static const VerificationMeta _accountIdMeta = const VerificationMeta('accountId');
   @override
-  late final GeneratedColumn<int> accountId = GeneratedColumn<int>('account_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false, defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES accounts (id) ON DELETE SET NULL'));
+  late final GeneratedColumn<int> accountId = GeneratedColumn<int>(
+    'account_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES accounts (id) ON DELETE SET NULL'),
+  );
   @override
   List<GeneratedColumn> get $columns => [singleton, accountId];
   @override
@@ -1551,37 +1514,23 @@ class SessionStateTableData extends DataClass implements Insertable<SessionState
   }
 
   SessionStateTableCompanion toCompanion(bool nullToAbsent) {
-    return SessionStateTableCompanion(
-      singleton: Value(singleton),
-      accountId: accountId == null && nullToAbsent ? const Value.absent() : Value(accountId),
-    );
+    return SessionStateTableCompanion(singleton: Value(singleton), accountId: accountId == null && nullToAbsent ? const Value.absent() : Value(accountId));
   }
 
   factory SessionStateTableData.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return SessionStateTableData(
-      singleton: serializer.fromJson<int>(json['singleton']),
-      accountId: serializer.fromJson<int?>(json['accountId']),
-    );
+    return SessionStateTableData(singleton: serializer.fromJson<int>(json['singleton']), accountId: serializer.fromJson<int?>(json['accountId']));
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'singleton': serializer.toJson<int>(singleton),
-      'accountId': serializer.toJson<int?>(accountId),
-    };
+    return <String, dynamic>{'singleton': serializer.toJson<int>(singleton), 'accountId': serializer.toJson<int?>(accountId)};
   }
 
-  SessionStateTableData copyWith({int? singleton, Value<int?> accountId = const Value.absent()}) => SessionStateTableData(
-        singleton: singleton ?? this.singleton,
-        accountId: accountId.present ? accountId.value : this.accountId,
-      );
+  SessionStateTableData copyWith({int? singleton, Value<int?> accountId = const Value.absent()}) =>
+      SessionStateTableData(singleton: singleton ?? this.singleton, accountId: accountId.present ? accountId.value : this.accountId);
   SessionStateTableData copyWithCompanion(SessionStateTableCompanion data) {
-    return SessionStateTableData(
-      singleton: data.singleton.present ? data.singleton.value : this.singleton,
-      accountId: data.accountId.present ? data.accountId.value : this.accountId,
-    );
+    return SessionStateTableData(singleton: data.singleton.present ? data.singleton.value : this.singleton, accountId: data.accountId.present ? data.accountId.value : this.accountId);
   }
 
   @override
@@ -1602,29 +1551,14 @@ class SessionStateTableData extends DataClass implements Insertable<SessionState
 class SessionStateTableCompanion extends UpdateCompanion<SessionStateTableData> {
   final Value<int> singleton;
   final Value<int?> accountId;
-  const SessionStateTableCompanion({
-    this.singleton = const Value.absent(),
-    this.accountId = const Value.absent(),
-  });
-  SessionStateTableCompanion.insert({
-    this.singleton = const Value.absent(),
-    this.accountId = const Value.absent(),
-  });
-  static Insertable<SessionStateTableData> custom({
-    Expression<int>? singleton,
-    Expression<int>? accountId,
-  }) {
-    return RawValuesInsertable({
-      if (singleton != null) 'singleton': singleton,
-      if (accountId != null) 'account_id': accountId,
-    });
+  const SessionStateTableCompanion({this.singleton = const Value.absent(), this.accountId = const Value.absent()});
+  SessionStateTableCompanion.insert({this.singleton = const Value.absent(), this.accountId = const Value.absent()});
+  static Insertable<SessionStateTableData> custom({Expression<int>? singleton, Expression<int>? accountId}) {
+    return RawValuesInsertable({if (singleton != null) 'singleton': singleton, if (accountId != null) 'account_id': accountId});
   }
 
   SessionStateTableCompanion copyWith({Value<int>? singleton, Value<int?>? accountId}) {
-    return SessionStateTableCompanion(
-      singleton: singleton ?? this.singleton,
-      accountId: accountId ?? this.accountId,
-    );
+    return SessionStateTableCompanion(singleton: singleton ?? this.singleton, accountId: accountId ?? this.accountId);
   }
 
   @override
@@ -1663,16 +1597,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [accounts, favorites, localSubscriptions, userLabels, drafts, sessionStateTable];
   @override
-  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
-        [
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('accounts', limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('session_state', kind: UpdateKind.update),
-            ],
-          ),
-        ],
-      );
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName('accounts', limitUpdateKind: UpdateKind.delete),
+      result: [TableUpdate('session_state', kind: UpdateKind.update)],
+    ),
+  ]);
 }
 
 typedef $$AccountsTableCreateCompanionBuilder = AccountsCompanion Function({
@@ -1711,13 +1641,7 @@ final class $$AccountsTableReferences extends BaseReferences<_$AppDatabase, $Acc
 }
 
 class $$AccountsTableFilterComposer extends Composer<_$AppDatabase, $AccountsTable> {
-  $$AccountsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$AccountsTableFilterComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get username => $composableBuilder(column: $table.username, builder: (column) => ColumnFilters(column));
@@ -1737,29 +1661,24 @@ class $$AccountsTableFilterComposer extends Composer<_$AppDatabase, $AccountsTab
 
   Expression<bool> sessionStateTableRefs(Expression<bool> Function($$SessionStateTableTableFilterComposer f) f) {
     final $$SessionStateTableTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.sessionStateTable,
-        getReferencedColumn: (t) => t.accountId,
-        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$SessionStateTableTableFilterComposer(
-              $db: $db,
-              $table: $db.sessionStateTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.sessionStateTable,
+      getReferencedColumn: (t) => t.accountId,
+      builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$SessionStateTableTableFilterComposer(
+        $db: $db,
+        $table: $db.sessionStateTable,
+        $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+        joinBuilder: joinBuilder,
+        $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+      ),
+    );
     return f(composer);
   }
 }
 
 class $$AccountsTableOrderingComposer extends Composer<_$AppDatabase, $AccountsTable> {
-  $$AccountsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$AccountsTableOrderingComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get username => $composableBuilder(column: $table.username, builder: (column) => ColumnOrderings(column));
@@ -1778,13 +1697,7 @@ class $$AccountsTableOrderingComposer extends Composer<_$AppDatabase, $AccountsT
 }
 
 class $$AccountsTableAnnotationComposer extends Composer<_$AppDatabase, $AccountsTable> {
-  $$AccountsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$AccountsTableAnnotationComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get username => $composableBuilder(column: $table.username, builder: (column) => column);
@@ -1803,25 +1716,40 @@ class $$AccountsTableAnnotationComposer extends Composer<_$AppDatabase, $Account
 
   Expression<T> sessionStateTableRefs<T extends Object>(Expression<T> Function($$SessionStateTableTableAnnotationComposer a) f) {
     final $$SessionStateTableTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.sessionStateTable,
-        getReferencedColumn: (t) => t.accountId,
-        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$SessionStateTableTableAnnotationComposer(
-              $db: $db,
-              $table: $db.sessionStateTable,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.sessionStateTable,
+      getReferencedColumn: (t) => t.accountId,
+      builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$SessionStateTableTableAnnotationComposer(
+        $db: $db,
+        $table: $db.sessionStateTable,
+        $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+        joinBuilder: joinBuilder,
+        $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+      ),
+    );
     return f(composer);
   }
 }
 
-class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $AccountsTable, Account, $$AccountsTableFilterComposer, $$AccountsTableOrderingComposer, $$AccountsTableAnnotationComposer,
-    $$AccountsTableCreateCompanionBuilder, $$AccountsTableUpdateCompanionBuilder, (Account, $$AccountsTableReferences), Account, PrefetchHooks Function({bool sessionStateTableRefs})> {
+class $$AccountsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AccountsTable,
+          Account,
+          $$AccountsTableFilterComposer,
+          $$AccountsTableOrderingComposer,
+          $$AccountsTableAnnotationComposer,
+          $$AccountsTableCreateCompanionBuilder,
+          $$AccountsTableUpdateCompanionBuilder,
+          (Account, $$AccountsTableReferences),
+          Account,
+          PrefetchHooks Function({bool sessionStateTableRefs})
+        > {
   $$AccountsTableTableManager(_$AppDatabase db, $AccountsTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () => $$AccountsTableFilterComposer($db: db, $table: table),
@@ -1836,17 +1764,7 @@ class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $Accou
             Value<int?> userId = const Value.absent(),
             Value<int> listIndex = const Value.absent(),
             Value<ThreadiversePlatform?> platform = const Value.absent(),
-          }) =>
-              AccountsCompanion(
-            id: id,
-            username: username,
-            jwt: jwt,
-            instance: instance,
-            anonymous: anonymous,
-            userId: userId,
-            listIndex: listIndex,
-            platform: platform,
-          ),
+          }) => AccountsCompanion(id: id, username: username, jwt: jwt, instance: instance, anonymous: anonymous, userId: userId, listIndex: listIndex, platform: platform),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String?> username = const Value.absent(),
@@ -1856,17 +1774,7 @@ class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $Accou
             Value<int?> userId = const Value.absent(),
             Value<int> listIndex = const Value.absent(),
             Value<ThreadiversePlatform?> platform = const Value.absent(),
-          }) =>
-              AccountsCompanion.insert(
-            id: id,
-            username: username,
-            jwt: jwt,
-            instance: instance,
-            anonymous: anonymous,
-            userId: userId,
-            listIndex: listIndex,
-            platform: platform,
-          ),
+          }) => AccountsCompanion.insert(id: id, username: username, jwt: jwt, instance: instance, anonymous: anonymous, userId: userId, listIndex: listIndex, platform: platform),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), $$AccountsTableReferences(db, table, e))).toList(),
           prefetchHooksCallback: ({sessionStateTableRefs = false}) {
             return PrefetchHooks(
@@ -1877,49 +1785,39 @@ class $$AccountsTableTableManager extends RootTableManager<_$AppDatabase, $Accou
                 return [
                   if (sessionStateTableRefs)
                     await $_getPrefetchedData<Account, $AccountsTable, SessionStateTableData>(
-                        currentTable: table,
-                        referencedTable: $$AccountsTableReferences._sessionStateTableRefsTable(db),
-                        managerFromTypedResult: (p0) => $$AccountsTableReferences(db, table, p0).sessionStateTableRefs,
-                        referencedItemsForCurrentItem: (item, referencedItems) => referencedItems.where((e) => e.accountId == item.id),
-                        typedResults: items)
+                      currentTable: table,
+                      referencedTable: $$AccountsTableReferences._sessionStateTableRefsTable(db),
+                      managerFromTypedResult: (p0) => $$AccountsTableReferences(db, table, p0).sessionStateTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) => referencedItems.where((e) => e.accountId == item.id),
+                      typedResults: items,
+                    ),
                 ];
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$AccountsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $AccountsTable,
-    Account,
-    $$AccountsTableFilterComposer,
-    $$AccountsTableOrderingComposer,
-    $$AccountsTableAnnotationComposer,
-    $$AccountsTableCreateCompanionBuilder,
-    $$AccountsTableUpdateCompanionBuilder,
-    (Account, $$AccountsTableReferences),
-    Account,
-    PrefetchHooks Function({bool sessionStateTableRefs})>;
-typedef $$FavoritesTableCreateCompanionBuilder = FavoritesCompanion Function({
-  Value<int> id,
-  required int accountId,
-  required int communityId,
-});
-typedef $$FavoritesTableUpdateCompanionBuilder = FavoritesCompanion Function({
-  Value<int> id,
-  Value<int> accountId,
-  Value<int> communityId,
-});
+typedef $$AccountsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AccountsTable,
+      Account,
+      $$AccountsTableFilterComposer,
+      $$AccountsTableOrderingComposer,
+      $$AccountsTableAnnotationComposer,
+      $$AccountsTableCreateCompanionBuilder,
+      $$AccountsTableUpdateCompanionBuilder,
+      (Account, $$AccountsTableReferences),
+      Account,
+      PrefetchHooks Function({bool sessionStateTableRefs})
+    >;
+typedef $$FavoritesTableCreateCompanionBuilder = FavoritesCompanion Function({Value<int> id, required int accountId, required int communityId});
+typedef $$FavoritesTableUpdateCompanionBuilder = FavoritesCompanion Function({Value<int> id, Value<int> accountId, Value<int> communityId});
 
 class $$FavoritesTableFilterComposer extends Composer<_$AppDatabase, $FavoritesTable> {
-  $$FavoritesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$FavoritesTableFilterComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get accountId => $composableBuilder(column: $table.accountId, builder: (column) => ColumnFilters(column));
@@ -1928,13 +1826,7 @@ class $$FavoritesTableFilterComposer extends Composer<_$AppDatabase, $FavoritesT
 }
 
 class $$FavoritesTableOrderingComposer extends Composer<_$AppDatabase, $FavoritesTable> {
-  $$FavoritesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$FavoritesTableOrderingComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get accountId => $composableBuilder(column: $table.accountId, builder: (column) => ColumnOrderings(column));
@@ -1943,13 +1835,7 @@ class $$FavoritesTableOrderingComposer extends Composer<_$AppDatabase, $Favorite
 }
 
 class $$FavoritesTableAnnotationComposer extends Composer<_$AppDatabase, $FavoritesTable> {
-  $$FavoritesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$FavoritesTableAnnotationComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<int> get accountId => $composableBuilder(column: $table.accountId, builder: (column) => column);
@@ -1957,62 +1843,53 @@ class $$FavoritesTableAnnotationComposer extends Composer<_$AppDatabase, $Favori
   GeneratedColumn<int> get communityId => $composableBuilder(column: $table.communityId, builder: (column) => column);
 }
 
-class $$FavoritesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $FavoritesTable,
-    Favorite,
-    $$FavoritesTableFilterComposer,
-    $$FavoritesTableOrderingComposer,
-    $$FavoritesTableAnnotationComposer,
-    $$FavoritesTableCreateCompanionBuilder,
-    $$FavoritesTableUpdateCompanionBuilder,
-    (Favorite, BaseReferences<_$AppDatabase, $FavoritesTable, Favorite>),
-    Favorite,
-    PrefetchHooks Function()> {
+class $$FavoritesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FavoritesTable,
+          Favorite,
+          $$FavoritesTableFilterComposer,
+          $$FavoritesTableOrderingComposer,
+          $$FavoritesTableAnnotationComposer,
+          $$FavoritesTableCreateCompanionBuilder,
+          $$FavoritesTableUpdateCompanionBuilder,
+          (Favorite, BaseReferences<_$AppDatabase, $FavoritesTable, Favorite>),
+          Favorite,
+          PrefetchHooks Function()
+        > {
   $$FavoritesTableTableManager(_$AppDatabase db, $FavoritesTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () => $$FavoritesTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () => $$FavoritesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () => $$FavoritesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> accountId = const Value.absent(),
-            Value<int> communityId = const Value.absent(),
-          }) =>
-              FavoritesCompanion(
-            id: id,
-            accountId: accountId,
-            communityId: communityId,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int accountId,
-            required int communityId,
-          }) =>
-              FavoritesCompanion.insert(
-            id: id,
-            accountId: accountId,
-            communityId: communityId,
-          ),
+          updateCompanionCallback: ({Value<int> id = const Value.absent(), Value<int> accountId = const Value.absent(), Value<int> communityId = const Value.absent()}) =>
+              FavoritesCompanion(id: id, accountId: accountId, communityId: communityId),
+          createCompanionCallback: ({Value<int> id = const Value.absent(), required int accountId, required int communityId}) =>
+              FavoritesCompanion.insert(id: id, accountId: accountId, communityId: communityId),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$FavoritesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $FavoritesTable,
-    Favorite,
-    $$FavoritesTableFilterComposer,
-    $$FavoritesTableOrderingComposer,
-    $$FavoritesTableAnnotationComposer,
-    $$FavoritesTableCreateCompanionBuilder,
-    $$FavoritesTableUpdateCompanionBuilder,
-    (Favorite, BaseReferences<_$AppDatabase, $FavoritesTable, Favorite>),
-    Favorite,
-    PrefetchHooks Function()>;
+typedef $$FavoritesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FavoritesTable,
+      Favorite,
+      $$FavoritesTableFilterComposer,
+      $$FavoritesTableOrderingComposer,
+      $$FavoritesTableAnnotationComposer,
+      $$FavoritesTableCreateCompanionBuilder,
+      $$FavoritesTableUpdateCompanionBuilder,
+      (Favorite, BaseReferences<_$AppDatabase, $FavoritesTable, Favorite>),
+      Favorite,
+      PrefetchHooks Function()
+    >;
 typedef $$LocalSubscriptionsTableCreateCompanionBuilder = LocalSubscriptionsCompanion Function({
   Value<int> id,
   required String name,
@@ -2020,22 +1897,10 @@ typedef $$LocalSubscriptionsTableCreateCompanionBuilder = LocalSubscriptionsComp
   required String actorId,
   Value<String?> icon,
 });
-typedef $$LocalSubscriptionsTableUpdateCompanionBuilder = LocalSubscriptionsCompanion Function({
-  Value<int> id,
-  Value<String> name,
-  Value<String> title,
-  Value<String> actorId,
-  Value<String?> icon,
-});
+typedef $$LocalSubscriptionsTableUpdateCompanionBuilder = LocalSubscriptionsCompanion Function({Value<int> id, Value<String> name, Value<String> title, Value<String> actorId, Value<String?> icon});
 
 class $$LocalSubscriptionsTableFilterComposer extends Composer<_$AppDatabase, $LocalSubscriptionsTable> {
-  $$LocalSubscriptionsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$LocalSubscriptionsTableFilterComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
@@ -2048,13 +1913,7 @@ class $$LocalSubscriptionsTableFilterComposer extends Composer<_$AppDatabase, $L
 }
 
 class $$LocalSubscriptionsTableOrderingComposer extends Composer<_$AppDatabase, $LocalSubscriptionsTable> {
-  $$LocalSubscriptionsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$LocalSubscriptionsTableOrderingComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get name => $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
@@ -2067,13 +1926,7 @@ class $$LocalSubscriptionsTableOrderingComposer extends Composer<_$AppDatabase, 
 }
 
 class $$LocalSubscriptionsTableAnnotationComposer extends Composer<_$AppDatabase, $LocalSubscriptionsTable> {
-  $$LocalSubscriptionsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$LocalSubscriptionsTableAnnotationComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get name => $composableBuilder(column: $table.name, builder: (column) => column);
@@ -2085,20 +1938,24 @@ class $$LocalSubscriptionsTableAnnotationComposer extends Composer<_$AppDatabase
   GeneratedColumn<String> get icon => $composableBuilder(column: $table.icon, builder: (column) => column);
 }
 
-class $$LocalSubscriptionsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $LocalSubscriptionsTable,
-    LocalSubscription,
-    $$LocalSubscriptionsTableFilterComposer,
-    $$LocalSubscriptionsTableOrderingComposer,
-    $$LocalSubscriptionsTableAnnotationComposer,
-    $$LocalSubscriptionsTableCreateCompanionBuilder,
-    $$LocalSubscriptionsTableUpdateCompanionBuilder,
-    (LocalSubscription, BaseReferences<_$AppDatabase, $LocalSubscriptionsTable, LocalSubscription>),
-    LocalSubscription,
-    PrefetchHooks Function()> {
+class $$LocalSubscriptionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalSubscriptionsTable,
+          LocalSubscription,
+          $$LocalSubscriptionsTableFilterComposer,
+          $$LocalSubscriptionsTableOrderingComposer,
+          $$LocalSubscriptionsTableAnnotationComposer,
+          $$LocalSubscriptionsTableCreateCompanionBuilder,
+          $$LocalSubscriptionsTableUpdateCompanionBuilder,
+          (LocalSubscription, BaseReferences<_$AppDatabase, $LocalSubscriptionsTable, LocalSubscription>),
+          LocalSubscription,
+          PrefetchHooks Function()
+        > {
   $$LocalSubscriptionsTableTableManager(_$AppDatabase db, $LocalSubscriptionsTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () => $$LocalSubscriptionsTableFilterComposer($db: db, $table: table),
@@ -2110,64 +1967,34 @@ class $$LocalSubscriptionsTableTableManager extends RootTableManager<
             Value<String> title = const Value.absent(),
             Value<String> actorId = const Value.absent(),
             Value<String?> icon = const Value.absent(),
-          }) =>
-              LocalSubscriptionsCompanion(
-            id: id,
-            name: name,
-            title: title,
-            actorId: actorId,
-            icon: icon,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-            required String title,
-            required String actorId,
-            Value<String?> icon = const Value.absent(),
-          }) =>
-              LocalSubscriptionsCompanion.insert(
-            id: id,
-            name: name,
-            title: title,
-            actorId: actorId,
-            icon: icon,
-          ),
+          }) => LocalSubscriptionsCompanion(id: id, name: name, title: title, actorId: actorId, icon: icon),
+          createCompanionCallback: ({Value<int> id = const Value.absent(), required String name, required String title, required String actorId, Value<String?> icon = const Value.absent()}) =>
+              LocalSubscriptionsCompanion.insert(id: id, name: name, title: title, actorId: actorId, icon: icon),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$LocalSubscriptionsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $LocalSubscriptionsTable,
-    LocalSubscription,
-    $$LocalSubscriptionsTableFilterComposer,
-    $$LocalSubscriptionsTableOrderingComposer,
-    $$LocalSubscriptionsTableAnnotationComposer,
-    $$LocalSubscriptionsTableCreateCompanionBuilder,
-    $$LocalSubscriptionsTableUpdateCompanionBuilder,
-    (LocalSubscription, BaseReferences<_$AppDatabase, $LocalSubscriptionsTable, LocalSubscription>),
-    LocalSubscription,
-    PrefetchHooks Function()>;
-typedef $$UserLabelsTableCreateCompanionBuilder = UserLabelsCompanion Function({
-  Value<int> id,
-  required String username,
-  required String label,
-});
-typedef $$UserLabelsTableUpdateCompanionBuilder = UserLabelsCompanion Function({
-  Value<int> id,
-  Value<String> username,
-  Value<String> label,
-});
+typedef $$LocalSubscriptionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalSubscriptionsTable,
+      LocalSubscription,
+      $$LocalSubscriptionsTableFilterComposer,
+      $$LocalSubscriptionsTableOrderingComposer,
+      $$LocalSubscriptionsTableAnnotationComposer,
+      $$LocalSubscriptionsTableCreateCompanionBuilder,
+      $$LocalSubscriptionsTableUpdateCompanionBuilder,
+      (LocalSubscription, BaseReferences<_$AppDatabase, $LocalSubscriptionsTable, LocalSubscription>),
+      LocalSubscription,
+      PrefetchHooks Function()
+    >;
+typedef $$UserLabelsTableCreateCompanionBuilder = UserLabelsCompanion Function({Value<int> id, required String username, required String label});
+typedef $$UserLabelsTableUpdateCompanionBuilder = UserLabelsCompanion Function({Value<int> id, Value<String> username, Value<String> label});
 
 class $$UserLabelsTableFilterComposer extends Composer<_$AppDatabase, $UserLabelsTable> {
-  $$UserLabelsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$UserLabelsTableFilterComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get username => $composableBuilder(column: $table.username, builder: (column) => ColumnFilters(column));
@@ -2176,13 +2003,7 @@ class $$UserLabelsTableFilterComposer extends Composer<_$AppDatabase, $UserLabel
 }
 
 class $$UserLabelsTableOrderingComposer extends Composer<_$AppDatabase, $UserLabelsTable> {
-  $$UserLabelsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$UserLabelsTableOrderingComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get username => $composableBuilder(column: $table.username, builder: (column) => ColumnOrderings(column));
@@ -2191,13 +2012,7 @@ class $$UserLabelsTableOrderingComposer extends Composer<_$AppDatabase, $UserLab
 }
 
 class $$UserLabelsTableAnnotationComposer extends Composer<_$AppDatabase, $UserLabelsTable> {
-  $$UserLabelsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$UserLabelsTableAnnotationComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get username => $composableBuilder(column: $table.username, builder: (column) => column);
@@ -2205,62 +2020,52 @@ class $$UserLabelsTableAnnotationComposer extends Composer<_$AppDatabase, $UserL
   GeneratedColumn<String> get label => $composableBuilder(column: $table.label, builder: (column) => column);
 }
 
-class $$UserLabelsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $UserLabelsTable,
-    UserLabel,
-    $$UserLabelsTableFilterComposer,
-    $$UserLabelsTableOrderingComposer,
-    $$UserLabelsTableAnnotationComposer,
-    $$UserLabelsTableCreateCompanionBuilder,
-    $$UserLabelsTableUpdateCompanionBuilder,
-    (UserLabel, BaseReferences<_$AppDatabase, $UserLabelsTable, UserLabel>),
-    UserLabel,
-    PrefetchHooks Function()> {
+class $$UserLabelsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UserLabelsTable,
+          UserLabel,
+          $$UserLabelsTableFilterComposer,
+          $$UserLabelsTableOrderingComposer,
+          $$UserLabelsTableAnnotationComposer,
+          $$UserLabelsTableCreateCompanionBuilder,
+          $$UserLabelsTableUpdateCompanionBuilder,
+          (UserLabel, BaseReferences<_$AppDatabase, $UserLabelsTable, UserLabel>),
+          UserLabel,
+          PrefetchHooks Function()
+        > {
   $$UserLabelsTableTableManager(_$AppDatabase db, $UserLabelsTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () => $$UserLabelsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () => $$UserLabelsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () => $$UserLabelsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> username = const Value.absent(),
-            Value<String> label = const Value.absent(),
-          }) =>
-              UserLabelsCompanion(
-            id: id,
-            username: username,
-            label: label,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String username,
-            required String label,
-          }) =>
-              UserLabelsCompanion.insert(
-            id: id,
-            username: username,
-            label: label,
-          ),
+          updateCompanionCallback: ({Value<int> id = const Value.absent(), Value<String> username = const Value.absent(), Value<String> label = const Value.absent()}) =>
+              UserLabelsCompanion(id: id, username: username, label: label),
+          createCompanionCallback: ({Value<int> id = const Value.absent(), required String username, required String label}) => UserLabelsCompanion.insert(id: id, username: username, label: label),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$UserLabelsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $UserLabelsTable,
-    UserLabel,
-    $$UserLabelsTableFilterComposer,
-    $$UserLabelsTableOrderingComposer,
-    $$UserLabelsTableAnnotationComposer,
-    $$UserLabelsTableCreateCompanionBuilder,
-    $$UserLabelsTableUpdateCompanionBuilder,
-    (UserLabel, BaseReferences<_$AppDatabase, $UserLabelsTable, UserLabel>),
-    UserLabel,
-    PrefetchHooks Function()>;
+typedef $$UserLabelsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UserLabelsTable,
+      UserLabel,
+      $$UserLabelsTableFilterComposer,
+      $$UserLabelsTableOrderingComposer,
+      $$UserLabelsTableAnnotationComposer,
+      $$UserLabelsTableCreateCompanionBuilder,
+      $$UserLabelsTableUpdateCompanionBuilder,
+      (UserLabel, BaseReferences<_$AppDatabase, $UserLabelsTable, UserLabel>),
+      UserLabel,
+      PrefetchHooks Function()
+    >;
 typedef $$DraftsTableCreateCompanionBuilder = DraftsCompanion Function({
   Value<int> id,
   required DraftType draftType,
@@ -2293,13 +2098,7 @@ typedef $$DraftsTableUpdateCompanionBuilder = DraftsCompanion Function({
 });
 
 class $$DraftsTableFilterComposer extends Composer<_$AppDatabase, $DraftsTable> {
-  $$DraftsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$DraftsTableFilterComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<DraftType, DraftType, String> get draftType => $composableBuilder(column: $table.draftType, builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -2328,13 +2127,7 @@ class $$DraftsTableFilterComposer extends Composer<_$AppDatabase, $DraftsTable> 
 }
 
 class $$DraftsTableOrderingComposer extends Composer<_$AppDatabase, $DraftsTable> {
-  $$DraftsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$DraftsTableOrderingComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get draftType => $composableBuilder(column: $table.draftType, builder: (column) => ColumnOrderings(column));
@@ -2363,13 +2156,7 @@ class $$DraftsTableOrderingComposer extends Composer<_$AppDatabase, $DraftsTable
 }
 
 class $$DraftsTableAnnotationComposer extends Composer<_$AppDatabase, $DraftsTable> {
-  $$DraftsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$DraftsTableAnnotationComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<DraftType, String> get draftType => $composableBuilder(column: $table.draftType, builder: (column) => column);
@@ -2397,90 +2184,111 @@ class $$DraftsTableAnnotationComposer extends Composer<_$AppDatabase, $DraftsTab
   GeneratedColumn<String> get body => $composableBuilder(column: $table.body, builder: (column) => column);
 }
 
-class $$DraftsTableTableManager extends RootTableManager<_$AppDatabase, $DraftsTable, Draft, $$DraftsTableFilterComposer, $$DraftsTableOrderingComposer, $$DraftsTableAnnotationComposer,
-    $$DraftsTableCreateCompanionBuilder, $$DraftsTableUpdateCompanionBuilder, (Draft, BaseReferences<_$AppDatabase, $DraftsTable, Draft>), Draft, PrefetchHooks Function()> {
+class $$DraftsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DraftsTable,
+          Draft,
+          $$DraftsTableFilterComposer,
+          $$DraftsTableOrderingComposer,
+          $$DraftsTableAnnotationComposer,
+          $$DraftsTableCreateCompanionBuilder,
+          $$DraftsTableUpdateCompanionBuilder,
+          (Draft, BaseReferences<_$AppDatabase, $DraftsTable, Draft>),
+          Draft,
+          PrefetchHooks Function()
+        > {
   $$DraftsTableTableManager(_$AppDatabase db, $DraftsTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () => $$DraftsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () => $$DraftsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () => $$DraftsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DraftType> draftType = const Value.absent(),
-            Value<int?> existingId = const Value.absent(),
-            Value<int?> replyId = const Value.absent(),
-            Value<bool> active = const Value.absent(),
-            Value<String?> accountId = const Value.absent(),
-            Value<String?> title = const Value.absent(),
-            Value<String?> url = const Value.absent(),
-            Value<String?> customThumbnail = const Value.absent(),
-            Value<String?> altText = const Value.absent(),
-            Value<bool> nsfw = const Value.absent(),
-            Value<int?> languageId = const Value.absent(),
-            Value<String?> body = const Value.absent(),
-          }) =>
-              DraftsCompanion(
-            id: id,
-            draftType: draftType,
-            existingId: existingId,
-            replyId: replyId,
-            active: active,
-            accountId: accountId,
-            title: title,
-            url: url,
-            customThumbnail: customThumbnail,
-            altText: altText,
-            nsfw: nsfw,
-            languageId: languageId,
-            body: body,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required DraftType draftType,
-            Value<int?> existingId = const Value.absent(),
-            Value<int?> replyId = const Value.absent(),
-            Value<bool> active = const Value.absent(),
-            Value<String?> accountId = const Value.absent(),
-            Value<String?> title = const Value.absent(),
-            Value<String?> url = const Value.absent(),
-            Value<String?> customThumbnail = const Value.absent(),
-            Value<String?> altText = const Value.absent(),
-            Value<bool> nsfw = const Value.absent(),
-            Value<int?> languageId = const Value.absent(),
-            Value<String?> body = const Value.absent(),
-          }) =>
-              DraftsCompanion.insert(
-            id: id,
-            draftType: draftType,
-            existingId: existingId,
-            replyId: replyId,
-            active: active,
-            accountId: accountId,
-            title: title,
-            url: url,
-            customThumbnail: customThumbnail,
-            altText: altText,
-            nsfw: nsfw,
-            languageId: languageId,
-            body: body,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DraftType> draftType = const Value.absent(),
+                Value<int?> existingId = const Value.absent(),
+                Value<int?> replyId = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<String?> accountId = const Value.absent(),
+                Value<String?> title = const Value.absent(),
+                Value<String?> url = const Value.absent(),
+                Value<String?> customThumbnail = const Value.absent(),
+                Value<String?> altText = const Value.absent(),
+                Value<bool> nsfw = const Value.absent(),
+                Value<int?> languageId = const Value.absent(),
+                Value<String?> body = const Value.absent(),
+              }) => DraftsCompanion(
+                id: id,
+                draftType: draftType,
+                existingId: existingId,
+                replyId: replyId,
+                active: active,
+                accountId: accountId,
+                title: title,
+                url: url,
+                customThumbnail: customThumbnail,
+                altText: altText,
+                nsfw: nsfw,
+                languageId: languageId,
+                body: body,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DraftType draftType,
+                Value<int?> existingId = const Value.absent(),
+                Value<int?> replyId = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<String?> accountId = const Value.absent(),
+                Value<String?> title = const Value.absent(),
+                Value<String?> url = const Value.absent(),
+                Value<String?> customThumbnail = const Value.absent(),
+                Value<String?> altText = const Value.absent(),
+                Value<bool> nsfw = const Value.absent(),
+                Value<int?> languageId = const Value.absent(),
+                Value<String?> body = const Value.absent(),
+              }) => DraftsCompanion.insert(
+                id: id,
+                draftType: draftType,
+                existingId: existingId,
+                replyId: replyId,
+                active: active,
+                accountId: accountId,
+                title: title,
+                url: url,
+                customThumbnail: customThumbnail,
+                altText: altText,
+                nsfw: nsfw,
+                languageId: languageId,
+                body: body,
+              ),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$DraftsTableProcessedTableManager = ProcessedTableManager<_$AppDatabase, $DraftsTable, Draft, $$DraftsTableFilterComposer, $$DraftsTableOrderingComposer, $$DraftsTableAnnotationComposer,
-    $$DraftsTableCreateCompanionBuilder, $$DraftsTableUpdateCompanionBuilder, (Draft, BaseReferences<_$AppDatabase, $DraftsTable, Draft>), Draft, PrefetchHooks Function()>;
-typedef $$SessionStateTableTableCreateCompanionBuilder = SessionStateTableCompanion Function({
-  Value<int> singleton,
-  Value<int?> accountId,
-});
-typedef $$SessionStateTableTableUpdateCompanionBuilder = SessionStateTableCompanion Function({
-  Value<int> singleton,
-  Value<int?> accountId,
-});
+typedef $$DraftsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DraftsTable,
+      Draft,
+      $$DraftsTableFilterComposer,
+      $$DraftsTableOrderingComposer,
+      $$DraftsTableAnnotationComposer,
+      $$DraftsTableCreateCompanionBuilder,
+      $$DraftsTableUpdateCompanionBuilder,
+      (Draft, BaseReferences<_$AppDatabase, $DraftsTable, Draft>),
+      Draft,
+      PrefetchHooks Function()
+    >;
+typedef $$SessionStateTableTableCreateCompanionBuilder = SessionStateTableCompanion Function({Value<int> singleton, Value<int?> accountId});
+typedef $$SessionStateTableTableUpdateCompanionBuilder = SessionStateTableCompanion Function({Value<int> singleton, Value<int?> accountId});
 
 final class $$SessionStateTableTableReferences extends BaseReferences<_$AppDatabase, $SessionStateTableTable, SessionStateTableData> {
   $$SessionStateTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
@@ -2498,121 +2306,98 @@ final class $$SessionStateTableTableReferences extends BaseReferences<_$AppDatab
 }
 
 class $$SessionStateTableTableFilterComposer extends Composer<_$AppDatabase, $SessionStateTableTable> {
-  $$SessionStateTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$SessionStateTableTableFilterComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnFilters<int> get singleton => $composableBuilder(column: $table.singleton, builder: (column) => ColumnFilters(column));
 
   $$AccountsTableFilterComposer get accountId {
     final $$AccountsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.accountId,
-        referencedTable: $db.accounts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$AccountsTableFilterComposer(
-              $db: $db,
-              $table: $db.accounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accounts,
+      getReferencedColumn: (t) => t.id,
+      builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$AccountsTableFilterComposer(
+        $db: $db,
+        $table: $db.accounts,
+        $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+        joinBuilder: joinBuilder,
+        $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+      ),
+    );
     return composer;
   }
 }
 
 class $$SessionStateTableTableOrderingComposer extends Composer<_$AppDatabase, $SessionStateTableTable> {
-  $$SessionStateTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$SessionStateTableTableOrderingComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   ColumnOrderings<int> get singleton => $composableBuilder(column: $table.singleton, builder: (column) => ColumnOrderings(column));
 
   $$AccountsTableOrderingComposer get accountId {
     final $$AccountsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.accountId,
-        referencedTable: $db.accounts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$AccountsTableOrderingComposer(
-              $db: $db,
-              $table: $db.accounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accounts,
+      getReferencedColumn: (t) => t.id,
+      builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$AccountsTableOrderingComposer(
+        $db: $db,
+        $table: $db.accounts,
+        $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+        joinBuilder: joinBuilder,
+        $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+      ),
+    );
     return composer;
   }
 }
 
 class $$SessionStateTableTableAnnotationComposer extends Composer<_$AppDatabase, $SessionStateTableTable> {
-  $$SessionStateTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
+  $$SessionStateTableTableAnnotationComposer({required super.$db, required super.$table, super.joinBuilder, super.$addJoinBuilderToRootComposer, super.$removeJoinBuilderFromRootComposer});
   GeneratedColumn<int> get singleton => $composableBuilder(column: $table.singleton, builder: (column) => column);
 
   $$AccountsTableAnnotationComposer get accountId {
     final $$AccountsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.accountId,
-        referencedTable: $db.accounts,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$AccountsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.accounts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.accounts,
+      getReferencedColumn: (t) => t.id,
+      builder: (joinBuilder, {$addJoinBuilderToRootComposer, $removeJoinBuilderFromRootComposer}) => $$AccountsTableAnnotationComposer(
+        $db: $db,
+        $table: $db.accounts,
+        $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+        joinBuilder: joinBuilder,
+        $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+      ),
+    );
     return composer;
   }
 }
 
-class $$SessionStateTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SessionStateTableTable,
-    SessionStateTableData,
-    $$SessionStateTableTableFilterComposer,
-    $$SessionStateTableTableOrderingComposer,
-    $$SessionStateTableTableAnnotationComposer,
-    $$SessionStateTableTableCreateCompanionBuilder,
-    $$SessionStateTableTableUpdateCompanionBuilder,
-    (SessionStateTableData, $$SessionStateTableTableReferences),
-    SessionStateTableData,
-    PrefetchHooks Function({bool accountId})> {
+class $$SessionStateTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SessionStateTableTable,
+          SessionStateTableData,
+          $$SessionStateTableTableFilterComposer,
+          $$SessionStateTableTableOrderingComposer,
+          $$SessionStateTableTableAnnotationComposer,
+          $$SessionStateTableTableCreateCompanionBuilder,
+          $$SessionStateTableTableUpdateCompanionBuilder,
+          (SessionStateTableData, $$SessionStateTableTableReferences),
+          SessionStateTableData,
+          PrefetchHooks Function({bool accountId})
+        > {
   $$SessionStateTableTableTableManager(_$AppDatabase db, $SessionStateTableTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () => $$SessionStateTableTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () => $$SessionStateTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () => $$SessionStateTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> singleton = const Value.absent(),
-            Value<int?> accountId = const Value.absent(),
-          }) =>
-              SessionStateTableCompanion(
-            singleton: singleton,
-            accountId: accountId,
-          ),
-          createCompanionCallback: ({
-            Value<int> singleton = const Value.absent(),
-            Value<int?> accountId = const Value.absent(),
-          }) =>
-              SessionStateTableCompanion.insert(
-            singleton: singleton,
-            accountId: accountId,
-          ),
+          updateCompanionCallback: ({Value<int> singleton = const Value.absent(), Value<int?> accountId = const Value.absent()}) =>
+              SessionStateTableCompanion(singleton: singleton, accountId: accountId),
+          createCompanionCallback: ({Value<int> singleton = const Value.absent(), Value<int?> accountId = const Value.absent()}) =>
+              SessionStateTableCompanion.insert(singleton: singleton, accountId: accountId),
           withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), $$SessionStateTableTableReferences(db, table, e))).toList(),
           prefetchHooksCallback: ({accountId = false}) {
             return PrefetchHooks(
@@ -2635,21 +2420,24 @@ class $$SessionStateTableTableTableManager extends RootTableManager<
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$SessionStateTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $SessionStateTableTable,
-    SessionStateTableData,
-    $$SessionStateTableTableFilterComposer,
-    $$SessionStateTableTableOrderingComposer,
-    $$SessionStateTableTableAnnotationComposer,
-    $$SessionStateTableTableCreateCompanionBuilder,
-    $$SessionStateTableTableUpdateCompanionBuilder,
-    (SessionStateTableData, $$SessionStateTableTableReferences),
-    SessionStateTableData,
-    PrefetchHooks Function({bool accountId})>;
+typedef $$SessionStateTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SessionStateTableTable,
+      SessionStateTableData,
+      $$SessionStateTableTableFilterComposer,
+      $$SessionStateTableTableOrderingComposer,
+      $$SessionStateTableTableAnnotationComposer,
+      $$SessionStateTableTableCreateCompanionBuilder,
+      $$SessionStateTableTableUpdateCompanionBuilder,
+      (SessionStateTableData, $$SessionStateTableTableReferences),
+      SessionStateTableData,
+      PrefetchHooks Function({bool accountId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;

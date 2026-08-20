@@ -5,13 +5,7 @@ import 'package:thunder/packages/ui/src/widgets/settings/thunder_settings_traili
 
 /// Expandable settings section with a chevron header and animated child content.
 class ThunderExpandableOption extends StatefulWidget {
-  const ThunderExpandableOption({
-    super.key,
-    this.leading,
-    required this.title,
-    required this.child,
-    this.initiallyExpanded = false,
-  });
+  const ThunderExpandableOption({super.key, this.leading, required this.title, required this.child, this.initiallyExpanded = false});
 
   /// Optional leading widget shown in the header tile.
   final Widget? leading;
@@ -32,15 +26,9 @@ class ThunderExpandableOption extends StatefulWidget {
 class _ThunderExpandableOptionState extends State<ThunderExpandableOption> with SingleTickerProviderStateMixin {
   late bool _isExpanded;
 
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 120),
-    vsync: this,
-  );
+  late final AnimationController _controller = AnimationController(duration: const Duration(milliseconds: 120), vsync: this);
 
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0),
-  ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(1.5, 0)).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
 
   @override
   void initState() {
@@ -74,12 +62,7 @@ class _ThunderExpandableOptionState extends State<ThunderExpandableOption> with 
               child: SlideTransition(position: _offsetAnimation, child: child),
             );
           },
-          child: _isExpanded
-              ? Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: widget.child,
-                )
-              : const SizedBox.shrink(),
+          child: _isExpanded ? Padding(padding: const EdgeInsets.all(6.0), child: widget.child) : const SizedBox.shrink(),
         ),
       ],
     );

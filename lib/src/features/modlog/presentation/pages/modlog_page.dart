@@ -14,16 +14,7 @@ import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Creates a [ModlogPage] which holds a list of modlog events.
 class ModlogFeedPage extends StatefulWidget {
-  const ModlogFeedPage({
-    super.key,
-    required this.account,
-    this.modlogActionType,
-    this.communityId,
-    this.userId,
-    this.moderatorId,
-    this.commentId,
-    required this.subtitle,
-  });
+  const ModlogFeedPage({super.key, required this.account, this.modlogActionType, this.communityId, this.userId, this.moderatorId, this.commentId, required this.subtitle});
 
   /// The filtering to be applied to the feed.
   final Account account;
@@ -55,16 +46,8 @@ class _ModlogFeedPageState extends State<ModlogFeedPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ModlogCubit>(
-      create: (_) => ModlogCubit(
-        repository: createModlogRepository(widget.account),
-      )..fetchModlogFeed(
-          modlogActionType: widget.modlogActionType,
-          communityId: widget.communityId,
-          userId: widget.userId,
-          moderatorId: widget.moderatorId,
-          commentId: widget.commentId,
-          reset: true,
-        ),
+      create: (_) => ModlogCubit(repository: createModlogRepository(widget.account))
+        ..fetchModlogFeed(modlogActionType: widget.modlogActionType, communityId: widget.communityId, userId: widget.userId, moderatorId: widget.moderatorId, commentId: widget.commentId, reset: true),
       child: ModlogFeedView(subtitle: widget.subtitle),
     );
   }
@@ -152,13 +135,13 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
               onRefresh: () async {
                 HapticFeedback.mediumImpact();
                 context.read<ModlogCubit>().fetchModlogFeed(
-                      modlogActionType: state.modlogActionType,
-                      communityId: state.communityId,
-                      userId: state.userId,
-                      moderatorId: state.moderatorId,
-                      commentId: state.commentId,
-                      reset: true,
-                    );
+                  modlogActionType: state.modlogActionType,
+                  communityId: state.communityId,
+                  userId: state.userId,
+                  moderatorId: state.moderatorId,
+                  commentId: state.commentId,
+                  reset: true,
+                );
               },
               edgeOffset: MediaQuery.of(context).padding.top + APP_BAR_HEIGHT, // This offset is placed to allow the correct positioning of the refresh indicator
               child: Stack(
@@ -168,11 +151,7 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                     slivers: <Widget>[
                       ModlogFeedPageAppBar(subtitle: Text(widget.subtitle)),
                       // Display loading indicator until the feed is fetched
-                      if (state.status == ModlogStatus.initial)
-                        const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
+                      if (state.status == ModlogStatus.initial) const SliverFillRemaining(hasScrollBody: false, child: Center(child: CircularProgressIndicator())),
 
                       // Widget representing the list of modlog events on the feed
                       SliverList.builder(
@@ -195,11 +174,8 @@ class _ModlogFeedViewState extends State<ModlogFeedView> {
                   ),
                   if (hideTopBarOnScroll)
                     Positioned(
-                      child: Container(
-                        height: MediaQuery.of(context).padding.top,
-                        color: theme.colorScheme.surface,
-                      ),
-                    )
+                      child: Container(height: MediaQuery.of(context).padding.top, color: theme.colorScheme.surface),
+                    ),
                 ],
               ),
             );

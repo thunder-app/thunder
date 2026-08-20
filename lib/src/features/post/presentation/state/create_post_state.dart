@@ -17,21 +17,9 @@ enum CreatePostStatus {
   unknown,
 }
 
-enum CreatePostPiefedMetadataStatus {
-  initial,
-  unsupported,
-  empty,
-  loading,
-  loaded,
-  error,
-}
+enum CreatePostPiefedMetadataStatus { initial, unsupported, empty, loading, loaded, error }
 
-enum CreatePostCrossPostsStatus {
-  initial,
-  loading,
-  loaded,
-  error,
-}
+enum CreatePostCrossPostsStatus { initial, loading, loaded, error }
 
 class CreatePostState extends Equatable {
   const CreatePostState({
@@ -216,32 +204,32 @@ class CreatePostState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        post,
-        imageUrls,
-        message,
-        errorReason,
-        title,
-        body,
-        url,
-        customThumbnail,
-        altText,
-        tags,
-        suggestedLinkTitle,
-        urlError,
-        customThumbnailError,
-        communityId,
-        community,
-        languageId,
-        isNsfw,
-        userChanged,
-        isPiefedComposer,
-        piefedMetadataStatus,
-        availablePiefedFlairs,
-        selectedPiefedFlairIds,
-        crossPostsStatus,
-        crossPosts,
-        restoredDraftNoticeId,
-        restoredDraftAvailable,
-      ];
+    status,
+    post,
+    imageUrls,
+    message,
+    errorReason,
+    title,
+    body,
+    url,
+    customThumbnail,
+    altText,
+    tags,
+    suggestedLinkTitle,
+    urlError,
+    customThumbnailError,
+    communityId,
+    community,
+    languageId,
+    isNsfw,
+    userChanged,
+    isPiefedComposer,
+    piefedMetadataStatus,
+    availablePiefedFlairs,
+    selectedPiefedFlairIds,
+    crossPostsStatus,
+    crossPosts,
+    restoredDraftNoticeId,
+    restoredDraftAvailable,
+  ];
 }

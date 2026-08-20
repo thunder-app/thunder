@@ -27,13 +27,7 @@ class UserInformation extends StatefulWidget {
   /// The communities that the user moderates.
   final List<ThunderCommunity> moderates;
 
-  const UserInformation({
-    super.key,
-    required this.launchContext,
-    required this.account,
-    required this.user,
-    required this.moderates,
-  });
+  const UserInformation({super.key, required this.launchContext, required this.account, required this.user, required this.moderates});
 
   @override
   State<UserInformation> createState() => _UserInformationState();
@@ -97,14 +91,8 @@ class UserStatsList extends StatelessWidget {
           label: '${l10n.joined(DateFormat.yMMMMd().format(user.published))} · ${l10n.ago(formatTimeToString(dateTime: user.published.toIso8601String()))}',
         ),
         const SizedBox(height: 8.0),
-        ThunderSidebarStat(
-          icon: Icons.wysiwyg_rounded,
-          label: l10n.totalPosts(NumberFormat("#,###,###,###").format(user.counts.posts)),
-        ),
-        ThunderSidebarStat(
-          icon: Icons.chat_rounded,
-          label: l10n.totalComments(NumberFormat("#,###,###,###").format(user.counts.comments)),
-        ),
+        ThunderSidebarStat(icon: Icons.wysiwyg_rounded, label: l10n.totalPosts(NumberFormat("#,###,###,###").format(user.counts.posts))),
+        ThunderSidebarStat(icon: Icons.chat_rounded, label: l10n.totalComments(NumberFormat("#,###,###,###").format(user.counts.comments))),
       ],
     );
   }
@@ -145,18 +133,9 @@ class UserActivityList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ThunderSidebarStat(
-          icon: Icons.wysiwyg_rounded,
-          label: l10n.averagePosts(NumberFormat("#,###,###,###").format(postsPerMonth)),
-        ),
-        ThunderSidebarStat(
-          icon: Icons.chat_rounded,
-          label: l10n.averageComments(NumberFormat("#,###,###,###").format(commentsPerMonth)),
-        ),
-        ThunderSidebarStat(
-          icon: Icons.score_rounded,
-          label: l10n.averageContributions(NumberFormat("#,###,###,###").format(totalContributionsPerMonth)),
-        ),
+        ThunderSidebarStat(icon: Icons.wysiwyg_rounded, label: l10n.averagePosts(NumberFormat("#,###,###,###").format(postsPerMonth))),
+        ThunderSidebarStat(icon: Icons.chat_rounded, label: l10n.averageComments(NumberFormat("#,###,###,###").format(commentsPerMonth))),
+        ThunderSidebarStat(icon: Icons.score_rounded, label: l10n.averageContributions(NumberFormat("#,###,###,###").format(totalContributionsPerMonth))),
       ],
     );
   }

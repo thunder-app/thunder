@@ -27,10 +27,7 @@ void showCommentActionBottomModalSheet(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (_) => wrapWithCapturedAccountContext(
-      context,
-      CommentActionBottomSheet(context: context, initialPage: page, comment: comment, onAction: onAction, isShowingSource: isShowingSource),
-    ),
+    builder: (_) => wrapWithCapturedAccountContext(context, CommentActionBottomSheet(context: context, initialPage: page, comment: comment, onAction: onAction, isShowingSource: isShowingSource)),
   );
 }
 
@@ -135,54 +132,50 @@ class _CommentActionBottomSheetState extends State<CommentActionBottomSheet> {
 
     Widget actions = switch (currentPage) {
       GeneralCommentAction.general => GeneralCommentActionBottomSheetPage(
-          account: account,
-          context: widget.context,
-          downvotesEnabled: downvotesEnabled,
-          comment: widget.comment,
-          onSwitchActivePage: (page) => setState(() => currentPage = page),
-          onAction: (CommentAction commentAction, ThunderComment? updatedComment) {
-            widget.onAction?.call(commentAction: commentAction, comment: updatedComment);
-          },
-        ),
+        account: account,
+        context: widget.context,
+        downvotesEnabled: downvotesEnabled,
+        comment: widget.comment,
+        onSwitchActivePage: (page) => setState(() => currentPage = page),
+        onAction: (CommentAction commentAction, ThunderComment? updatedComment) {
+          widget.onAction?.call(commentAction: commentAction, comment: updatedComment);
+        },
+      ),
       GeneralCommentAction.comment => CommentCommentActionBottomSheet(
-          account: account,
-          moderatedCommunities: moderatedCommunities,
-          context: widget.context,
-          comment: widget.comment,
-          isShowingSource: widget.isShowingSource,
-          onAction: (CommentAction commentAction, ThunderComment? updatedComment) {
-            widget.onAction?.call(commentAction: commentAction, comment: updatedComment);
-          },
-        ),
+        account: account,
+        moderatedCommunities: moderatedCommunities,
+        context: widget.context,
+        comment: widget.comment,
+        isShowingSource: widget.isShowingSource,
+        onAction: (CommentAction commentAction, ThunderComment? updatedComment) {
+          widget.onAction?.call(commentAction: commentAction, comment: updatedComment);
+        },
+      ),
       GeneralCommentAction.user => UserActionBottomSheet(
-          account: account,
-          context: widget.context,
-          blockedUsers: blockedUsers,
-          moderatedCommunities: moderatedCommunities,
-          user: widget.comment.creator!,
-          communityId: widget.comment.community!.id,
-          isUserCommunityModerator: widget.comment.context.creatorIsModerator,
-          isUserBannedFromCommunity: widget.comment.context.creatorBannedFromCommunity,
-          onAction: (UserAction userAction, ThunderUser? updatedUser) {
-            ProfileSiteInfoCache.instance.markDirty(account);
-            widget.onAction?.call(userAction: userAction, comment: widget.comment);
-          },
-        ),
+        account: account,
+        context: widget.context,
+        blockedUsers: blockedUsers,
+        moderatedCommunities: moderatedCommunities,
+        user: widget.comment.creator!,
+        communityId: widget.comment.community!.id,
+        isUserCommunityModerator: widget.comment.context.creatorIsModerator,
+        isUserBannedFromCommunity: widget.comment.context.creatorBannedFromCommunity,
+        onAction: (UserAction userAction, ThunderUser? updatedUser) {
+          ProfileSiteInfoCache.instance.markDirty(account);
+          widget.onAction?.call(userAction: userAction, comment: widget.comment);
+        },
+      ),
       GeneralCommentAction.instance => InstanceActionBottomSheet(
-          context: widget.context,
-          account: account,
-          blockedInstances: blockedInstances,
-          userInstanceId: widget.comment.creator!.instanceId,
-          userInstanceUrl: widget.comment.creator!.actorId,
-          onAction: () {
-            ProfileSiteInfoCache.instance.markDirty(account);
-          },
-        ),
-      GeneralCommentAction.share => ShareActionBottomSheet(
-          account: account,
-          context: widget.context,
-          comment: widget.comment,
-        ),
+        context: widget.context,
+        account: account,
+        blockedInstances: blockedInstances,
+        userInstanceId: widget.comment.creator!.instanceId,
+        userInstanceUrl: widget.comment.creator!.actorId,
+        onAction: () {
+          ProfileSiteInfoCache.instance.markDirty(account);
+        },
+      ),
+      GeneralCommentAction.share => ShareActionBottomSheet(account: account, context: widget.context, comment: widget.comment),
     };
 
     return SafeArea(

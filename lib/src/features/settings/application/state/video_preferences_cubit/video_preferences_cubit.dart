@@ -8,9 +8,7 @@ part 'video_preferences_state.dart';
 
 /// Cubit for managing video player preferences
 class VideoPreferencesCubit extends Cubit<VideoPreferencesState> {
-  VideoPreferencesCubit({required PreferencesStore preferencesStore})
-      : _preferencesStore = preferencesStore,
-        super(const VideoPreferencesState()) {
+  VideoPreferencesCubit({required PreferencesStore preferencesStore}) : _preferencesStore = preferencesStore, super(const VideoPreferencesState()) {
     load();
   }
 

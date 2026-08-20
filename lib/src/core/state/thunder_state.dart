@@ -73,18 +73,18 @@ class ThunderState extends Equatable {
 
   @override
   List<Object?> get props => [
-        tabletMode,
-        browserMode,
-        openInReaderMode,
-        useProfilePictureForDrawer,
-        showInAppUpdateNotification,
-        showUpdateChangelogs,
-        inboxNotificationType,
-        scoreCounters,
-        enableExperimentalFeatures,
-        showNavigationLabels,
-        hideTopBarOnScroll,
-        hideBottomBarOnScroll,
-        appLanguageCode,
-      ];
+    tabletMode,
+    browserMode,
+    openInReaderMode,
+    useProfilePictureForDrawer,
+    showInAppUpdateNotification,
+    showUpdateChangelogs,
+    inboxNotificationType,
+    scoreCounters,
+    enableExperimentalFeatures,
+    showNavigationLabels,
+    hideTopBarOnScroll,
+    hideBottomBarOnScroll,
+    appLanguageCode,
+  ];
 }

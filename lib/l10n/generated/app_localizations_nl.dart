@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -18,17 +19,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get accessibility => 'Toegankelĳkheid';
 
   @override
-  String get accessibilityProfilesDescription =>
-      'Met toegankelĳkheids­profielen kunt u meerdere instellingen tegelĳk toepassen om aan een specifieke toegankelĳkheids­vereiste te voldoen.';
+  String get accessibilityProfilesDescription => 'Met toegankelĳkheids­profielen kunt u meerdere instellingen tegelĳk toepassen om aan een specifieke toegankelĳkheids­vereiste te voldoen.';
 
   @override
   String account(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Accounts',
-      one: 'Account',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Accounts', one: 'Account');
     return '$_temp0 ';
   }
 
@@ -38,8 +33,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get accountSettingOverrideWarning =>
-      'Uw account­instellingen hebben voorrang op de volgende instellingen';
+  String get accountSettingOverrideWarning => 'Uw account­instellingen hebben voorrang op de volgende instellingen';
 
   @override
   String get accountSettings => 'Account­instellingen';
@@ -50,8 +44,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get accountSettingsImportedSuccessfully =>
-      'Lemmy-account­instellingen succesvol geïmporteerd!';
+  String get accountSettingsImportedSuccessfully => 'Lemmy-account­instellingen succesvol geïmporteerd!';
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
@@ -140,8 +133,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get allPosts => 'Alle berichten';
 
   @override
-  String get allowOpenSupportedLinks =>
-      'Sta toe dat de app ondersteunde links opent.';
+  String get allowOpenSupportedLinks => 'Sta toe dat de app ondersteunde links opent.';
 
   @override
   String get alreadyPostedTo => 'Al geplaatst in';
@@ -214,8 +206,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get backToTop => 'Terug naar boven';
 
   @override
-  String get backgroundCheckWarning =>
-      'Houd er rekening mee dat meldings­controles extra accu verbruiken';
+  String get backgroundCheckWarning => 'Houd er rekening mee dat meldings­controles extra accu verbruiken';
 
   @override
   String get ban => 'Verbannen';
@@ -295,8 +286,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get cancel => 'Annuleren';
 
   @override
-  String get cannotReportOwnComment =>
-      'U kunt uw eigen opmerking niet rapporteren.';
+  String get cannotReportOwnComment => 'U kunt uw eigen opmerking niet rapporteren.';
 
   @override
   String get cantBlockAdmin => 'U kunt een instantie­beheerder niet blokkeren.';
@@ -311,8 +301,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get cardView => 'Kaart­weergave';
 
   @override
-  String get cardViewDescription =>
-      'Schakel kaart­weergave in om instellingen aan te passen';
+  String get cardViewDescription => 'Schakel kaart­weergave in om instellingen aan te passen';
 
   @override
   String get cardViewSettings => 'Kaart­weergave­instellingen';
@@ -327,8 +316,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get changePassword => 'Wachtwoord wĳzigen';
 
   @override
-  String get changePasswordWarning =>
-      'Om uw wacht­woord te wĳzigen, wordt u door­gestuurd naar de website van uw instantie.\n\nWeet u zeker dat u wilt doorgaan?';
+  String get changePasswordWarning => 'Om uw wacht­woord te wĳzigen, wordt u door­gestuurd naar de website van uw instantie.\n\nWeet u zeker dat u wilt doorgaan?';
 
   @override
   String get changeSort => 'Sortering wĳzigen';
@@ -354,8 +342,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get clearedCache => 'Cache succesvol gewist.';
 
   @override
-  String get clearedDatabase =>
-      'Lokale database gewist. Start Thunder opnieuw op om de nieuwe wĳzigingen door te voeren.';
+  String get clearedDatabase => 'Lokale database gewist. Start Thunder opnieuw op om de nieuwe wĳzigingen door te voeren.';
 
   @override
   String get clearedUserPreferences => 'Alle gebruikers­voorkeuren gewist';
@@ -373,8 +360,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get collapseInformation => 'Informatie inklappen';
 
   @override
-  String get collapseParentCommentBodyOnGesture =>
-      'Boven­liggende opmerking verbergen wanneer ingeklapt';
+  String get collapseParentCommentBodyOnGesture => 'Boven­liggende opmerking verbergen wanneer ingeklapt';
 
   @override
   String get collapsePost => 'Bericht inklappen';
@@ -407,12 +393,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get combineCommentScoresLabel => 'Opmerking­scores combineren';
 
   @override
-  String get combineNavAndFab =>
-      'Zwevende actie­knop en navigatie­knoppen combineren';
+  String get combineNavAndFab => 'Zwevende actie­knop en navigatie­knoppen combineren';
 
   @override
-  String get combineNavAndFabDescription =>
-      'Zwevende actie­knop wordt getoond tussen de navigatie­knoppen.';
+  String get combineNavAndFabDescription => 'Zwevende actie­knop wordt getoond tussen de navigatie­knoppen.';
 
   @override
   String get comfortable => 'Comfortabel';
@@ -430,8 +414,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get commentFontScale => 'Lettertype­schaal van opmerkings­inhoud';
 
   @override
-  String get commentPreview =>
-      'Toon een voorbeeld van opmerkingen met de opgegeven instellingen';
+  String get commentPreview => 'Toon een voorbeeld van opmerkingen met de opgegeven instellingen';
 
   @override
   String get commentReported => 'De opmerking is gemarkeerd voor beoordeling.';
@@ -452,8 +435,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get commentSwipeActions => 'Veeg­acties voor opmerkingen';
 
   @override
-  String get commentSwipeGesturesHint =>
-      'Wilt u liever knoppen gebruiken? Schakel ze in onder opmerkingen van de algemene instellingen.';
+  String get commentSwipeGesturesHint => 'Wilt u liever knoppen gebruiken? Schakel ze in onder opmerkingen van de algemene instellingen.';
 
   @override
   String get comments => 'Opmerkingen';
@@ -488,15 +470,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get compact => 'Compact';
 
   @override
-  String get compactPostCardMetadataItems =>
-      'Meta­gegevens voor compacte weergave';
+  String get compactPostCardMetadataItems => 'Meta­gegevens voor compacte weergave';
 
   @override
   String get compactView => 'Compacte weergave';
 
   @override
-  String get compactViewDescription =>
-      'Schakel compacte weergave in om instellingen aan te passen';
+  String get compactViewDescription => 'Schakel compacte weergave in om instellingen aan te passen';
 
   @override
   String get compactViewSettings => 'Instellingen voor compacte weergave';
@@ -514,23 +494,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get confirmLogOutTitle => 'Uit­loggen?';
 
   @override
-  String get confirmMarkAllAsReadBody =>
-      'Weet u zeker dat u alle reacties, vermeldingen en berichten als gelezen wilt markeren?';
+  String get confirmMarkAllAsReadBody => 'Weet u zeker dat u alle reacties, vermeldingen en berichten als gelezen wilt markeren?';
 
   @override
   String get confirmMarkAllAsReadTitle => 'Alles als gelezen markeren?';
 
   @override
-  String get confirmResetCommentPreferences =>
-      'Hiermee worden alle opmerkings­voorkeuren gereset. Weet u zeker dat u wilt doorgaan?';
+  String get confirmResetCommentPreferences => 'Hiermee worden alle opmerkings­voorkeuren gereset. Weet u zeker dat u wilt doorgaan?';
 
   @override
-  String get confirmResetPostPreferences =>
-      'Hiermee worden alle bericht­voorkeuren gereset. Weet u zeker dat u wilt doorgaan?';
+  String get confirmResetPostPreferences => 'Hiermee worden alle bericht­voorkeuren gereset. Weet u zeker dat u wilt doorgaan?';
 
   @override
-  String get confirmUnsubscription =>
-      'Weet u zeker dat u zich wilt deabonneren?';
+  String get confirmUnsubscription => 'Weet u zeker dat u zich wilt deabonneren?';
 
   @override
   String connectedToUnifiedPushDistributorApp(Object app) {
@@ -562,20 +538,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get copyText => 'Tekst kopiëren';
 
   @override
-  String get couldNotDetermineCommentDelete =>
-      'Fout: Kon het bericht om de opmerking te verwĳderen niet bepalen.';
+  String get couldNotDetermineCommentDelete => 'Fout: Kon het bericht om de opmerking te verwĳderen niet bepalen.';
 
   @override
-  String get couldNotDeterminePostComment =>
-      'Fout: Kon het bericht om de opmerking bij te plaatsen niet bepalen.';
+  String get couldNotDeterminePostComment => 'Fout: Kon het bericht om de opmerking bij te plaatsen niet bepalen.';
 
   @override
-  String get couldntCreateReport =>
-      'Uw opmerkings­rapport kon op dit moment niet worden verzonden. Probeer het later opnieuw';
+  String get couldntCreateReport => 'Uw opmerkings­rapport kon op dit moment niet worden verzonden. Probeer het later opnieuw';
 
   @override
-  String get couldntFindPost =>
-      'Het opgevraagde bericht kan niet worden geladen. Het is mogelijk verwĳderd.';
+  String get couldntFindPost => 'Het opgevraagde bericht kan niet worden geladen. Het is mogelijk verwĳderd.';
 
   @override
   String countComments(Object count) {
@@ -665,8 +637,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get currentSinglePress => 'Momenteel ingesteld als één keer drukken';
 
   @override
-  String get customizeSwipeActions =>
-      'Veeg­acties aan­passen (druk om te wĳzigen)';
+  String get customizeSwipeActions => 'Veeg­acties aan­passen (druk om te wĳzigen)';
 
   @override
   String get dangerZone => 'Gevaren­zone';
@@ -675,8 +646,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get dark => 'Donker';
 
   @override
-  String get databaseExportWarning =>
-      'De data­base kan gevoelige informatie bevatten met betrekking tot uw Lemmy-account. Als u deze exporteert, deel deze dan met niemand. Wilt u doorgaan?';
+  String get databaseExportWarning => 'De data­base kan gevoelige informatie bevatten met betrekking tot uw Lemmy-account. Als u deze exporteert, deel deze dan met niemand. Wilt u doorgaan?';
 
   @override
   String databaseExportedSuccessfully(Object savedFilePath) {
@@ -684,16 +654,13 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get databaseImportedSuccessfully =>
-      'De database is succesvol geïmporteerd!';
+  String get databaseImportedSuccessfully => 'De database is succesvol geïmporteerd!';
 
   @override
-  String get databaseNotExportedSuccessfully =>
-      'De database is niet succesvol geëxporteerd of de bewerking is geannuleerd.';
+  String get databaseNotExportedSuccessfully => 'De database is niet succesvol geëxporteerd of de bewerking is geannuleerd.';
 
   @override
-  String get databaseNotImportedSuccessfully =>
-      'De database is niet succesvol geïmporteerd of de bewerking is geannuleerd.';
+  String get databaseNotImportedSuccessfully => 'De database is niet succesvol geïmporteerd of de bewerking is geannuleerd.';
 
   @override
   String get dateFormat => 'Datum­formaat';
@@ -702,12 +669,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get debug => 'Fout­opsporing';
 
   @override
-  String get debugDescription =>
-      'De volgende foutopsporingsinstellingen dienen alleen te worden gebruikt voor het oplossen van problemen.';
+  String get debugDescription => 'De volgende foutopsporingsinstellingen dienen alleen te worden gebruikt voor het oplossen van problemen.';
 
   @override
-  String get debugNotificationsDescription =>
-      'Gebruik de volgende opties om problemen met meldingen op te lossen.';
+  String get debugNotificationsDescription => 'Gebruik de volgende opties om problemen met meldingen op te lossen.';
 
   @override
   String get decline => 'Afwĳzen';
@@ -731,19 +696,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get deleteAccount => 'Account verwĳderen';
 
   @override
-  String get deleteAccountDescription =>
-      'Om uw account permanent te verwĳderen, wordt u doorgestuurd naar de website van uw instantie.\n\nWeet u zeker dat u wilt doorgaan?';
+  String get deleteAccountDescription => 'Om uw account permanent te verwĳderen, wordt u doorgestuurd naar de website van uw instantie.\n\nWeet u zeker dat u wilt doorgaan?';
 
   @override
   String get deleteComment => 'Opmerking verwĳderen';
 
   @override
-  String get deleteDraftConfirmation =>
-      'Weet u zeker dat u dit concept wilt verwijderen?';
+  String get deleteDraftConfirmation => 'Weet u zeker dat u dit concept wilt verwijderen?';
 
   @override
-  String get deleteImageConfirmMessage =>
-      'Weet u zeker dat u deze afbeelding wilt verwĳderen?';
+  String get deleteImageConfirmMessage => 'Weet u zeker dat u deze afbeelding wilt verwĳderen?';
 
   @override
   String get deleteImageConfirmTitle => 'Verwĳderen?';
@@ -752,22 +714,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get deleteLocalDatabase => 'Lokale database verwĳderen';
 
   @override
-  String get deleteLocalDatabaseDescription =>
-      'Deze actie verwĳdert de lokale database en meldt u af bĳ al uw accounts.\n\nWeet u zeker dat u wilt doorgaan?';
+  String get deleteLocalDatabaseDescription => 'Deze actie verwĳdert de lokale database en meldt u af bĳ al uw accounts.\n\nWeet u zeker dat u wilt doorgaan?';
 
   @override
   String get deleteLocalPreferences => 'Lokale voorkeuren verwĳderen';
 
   @override
-  String get deleteLocalPreferencesDescription =>
-      'Dit wist al uw gebruikers­voorkeuren en -instellingen in Thunder.\n\nWilt u doorgaan?';
+  String get deleteLocalPreferencesDescription => 'Dit wist al uw gebruikers­voorkeuren en -instellingen in Thunder.\n\nWilt u doorgaan?';
 
   @override
   String get deletePost => 'Bericht verwĳderen';
 
   @override
-  String get deleteUserLabelConfirmation =>
-      'Weet u zeker dat u het label wilt verwĳderen?';
+  String get deleteUserLabelConfirmation => 'Weet u zeker dat u het label wilt verwĳderen?';
 
   @override
   String get deleted => 'Verwĳderd';
@@ -785,8 +744,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get deletedPost => 'Bericht verwĳderd';
 
   @override
-  String get deselectUndeterminedWarning =>
-      'Als u ‘Onbepaald’ deselecteert, zult u de meeste inhoud niet zien.';
+  String get deselectUndeterminedWarning => 'Als u ‘Onbepaald’ deselecteert, zult u de meeste inhoud niet zien.';
 
   @override
   String detailedReason(Object reason) {
@@ -812,8 +770,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get discussionLanguages => 'Discussie­talen';
 
   @override
-  String get discussionLanguagesTooltip =>
-      'Inhoud wordt gefilterd op de geselecteerde talen.';
+  String get discussionLanguagesTooltip => 'Inhoud wordt gefilterd op de geselecteerde talen.';
 
   @override
   String get dismissRead => 'Gelezen items afwĳzen';
@@ -831,8 +788,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get doNotShowAgain => 'Niet opnieuw tonen';
 
   @override
-  String get doNotSupportMultipleUnifiedPushApps =>
-      'Er zĳn meerdere compatibele apps gevonden; installeer er slechts één';
+  String get doNotSupportMultipleUnifiedPushApps => 'Er zĳn meerdere compatibele apps gevonden; installeer er slechts één';
 
   @override
   String get downloadingMedia => 'Bezig met downloaden van media om te delen…';
@@ -847,8 +803,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get downvoted => 'Gedownvotet';
 
   @override
-  String get downvotesDisabled =>
-      'Downvotes zĳn uitgeschakeld op deze instantie.';
+  String get downvotesDisabled => 'Downvotes zĳn uitgeschakeld op deze instantie.';
 
   @override
   String get drafts => 'Concepten';
@@ -872,8 +827,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get emptyInbox => 'Postvak IN legen';
 
   @override
-  String get emptyUri =>
-      'De koppeling is leeg. Geef een geldige dynamische koppeling op om door te gaan.';
+  String get emptyUri => 'De koppeling is leeg. Geef een geldige dynamische koppeling op om door te gaan.';
 
   @override
   String get enableCommentNavigation => 'Opmerking­navigatie inschakelen';
@@ -885,16 +839,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get enableFeedFab => 'Zwevende knop op feeds inschakelen';
 
   @override
-  String get enableFloatingButtonOnFeeds =>
-      'Zwevende knop op feeds inschakelen';
+  String get enableFloatingButtonOnFeeds => 'Zwevende knop op feeds inschakelen';
 
   @override
-  String get enableFloatingButtonOnPosts =>
-      'Zwevende knop op berichten inschakelen';
+  String get enableFloatingButtonOnPosts => 'Zwevende knop op berichten inschakelen';
 
   @override
-  String get enableInboxNotifications =>
-      'Meldingen inschakelen voor postvak IN';
+  String get enableInboxNotifications => 'Meldingen inschakelen voor postvak IN';
 
   @override
   String get enablePostFab => 'Zwevende knop op berichten inschakelen';
@@ -916,43 +867,34 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get errorImportingAccountSettings =>
-      'Er is een fout opgetreden bĳ het importeren van de instellingen. Het bestand heeft mogelijk niet de juiste indeling.';
+  String get errorImportingAccountSettings => 'Er is een fout opgetreden bĳ het importeren van de instellingen. Het bestand heeft mogelijk niet de juiste indeling.';
 
   @override
-  String get errorInitializingClient =>
-      'Fout bĳ het initialiseren van de cliënt';
+  String get errorInitializingClient => 'Fout bĳ het initialiseren van de cliënt';
 
   @override
-  String get errorLoadingAccountSettings =>
-      'Er is een fout opgetreden bĳ het laden van het instellingenbestand of de bewerking is geannuleerd.';
+  String get errorLoadingAccountSettings => 'Er is een fout opgetreden bĳ het laden van het instellingenbestand of de bewerking is geannuleerd.';
 
   @override
-  String get errorMarkingReplyRead =>
-      'Er is een fout opgetreden bĳ het markeren van het antwoord als gelezen.';
+  String get errorMarkingReplyRead => 'Er is een fout opgetreden bĳ het markeren van het antwoord als gelezen.';
 
   @override
-  String get errorMarkingReplyUnread =>
-      'Er is een fout opgetreden bĳ het markeren van het antwoord als ongelezen.';
+  String get errorMarkingReplyUnread => 'Er is een fout opgetreden bĳ het markeren van het antwoord als ongelezen.';
 
   @override
   String get errorNoActiveInstance => 'Geen actieve instantie gevonden';
 
   @override
-  String get errorParsingJson =>
-      'Er is een fout opgetreden bĳ het parseren van het geselecteerde bestand. Het is mogelijk geen geldige JSON.';
+  String get errorParsingJson => 'Er is een fout opgetreden bĳ het parseren van het geselecteerde bestand. Het is mogelijk geen geldige JSON.';
 
   @override
-  String get errorSavingAccountSettings =>
-      'Er is een fout opgetreden bĳ het opslaan van het instellingenbestand of de bewerking is geannuleerd.';
+  String get errorSavingAccountSettings => 'Er is een fout opgetreden bĳ het opslaan van het instellingenbestand of de bewerking is geannuleerd.';
 
   @override
-  String get exceptionProcessingUri =>
-      'Er is een fout opgetreden bĳ het verwerken van de koppeling. Deze is mogelijk niet beschikbaar op uw instantie.';
+  String get exceptionProcessingUri => 'Er is een fout opgetreden bĳ het verwerken van de koppeling. Deze is mogelijk niet beschikbaar op uw instantie.';
 
   @override
-  String get excessiveApiCallsWarning =>
-      'Het kan even duren voordat uw feed is geladen vanwege trefwoord­filters.';
+  String get excessiveApiCallsWarning => 'Het kan even duren voordat uw feed is geladen vanwege trefwoord­filters.';
 
   @override
   String get expand => 'Uitvouwen';
@@ -992,16 +934,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get exportDatabase => 'Database exporteren';
 
   @override
-  String get exportDatabaseSubtitle =>
-      'De database bevat informatie over accounts, favorieten, anonieme abonnementen en gebruikers­labels.';
+  String get exportDatabaseSubtitle => 'De database bevat informatie over accounts, favorieten, anonieme abonnementen en gebruikers­labels.';
 
   @override
-  String get exportLemmyAccountSettingsDescription =>
-      'Lemmy-account­instellingen exporteren';
+  String get exportLemmyAccountSettingsDescription => 'Lemmy-account­instellingen exporteren';
 
   @override
-  String get exportSettingsSubtitle =>
-      'De instellingen bevatten alle voorkeuren die u hebt geconfigureerd in Thunder.';
+  String get exportSettingsSubtitle => 'De instellingen bevatten alle voorkeuren die u hebt geconfigureerd in Thunder.';
 
   @override
   String get extraLarge => 'Extra groot';
@@ -1012,8 +951,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String failedToCommunicateWithThunderNotificationServer(
-      Object serverAddress) {
+  String failedToCommunicateWithThunderNotificationServer(Object serverAddress) {
     return 'Kon niet communiceren met de Thunder-meldingenserver op $serverAddress.';
   }
 
@@ -1026,8 +964,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadVideo =>
-      'Kon video niet laden. Koppeling openen in browser?';
+  String get failedToLoadVideo => 'Kon video niet laden. Koppeling openen in browser?';
 
   @override
   String get failedToPerformAction => 'Kon actie niet uitvoeren';
@@ -1038,8 +975,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get failedToUpdateNotificationSettings =>
-      'Kon melding­instellingen niet bĳwerken';
+  String get failedToUpdateNotificationSettings => 'Kon melding­instellingen niet bĳwerken';
 
   @override
   String get favorite => 'Opslaan als favoriet';
@@ -1081,12 +1017,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'Thunder heeft een volledig aanpasbare zwevende actie­knop die een aantal gebaren ondersteunt.\n- Veeg omhoog om extra acties weer te geven\n- Veeg omlaag/omhoog om de zwevende actie­knop te verbergen of weer te geven\n\nHoud één van onderstaande acties lang ingedrukt om de hoofd- en secundaire acties aan te passen.';
 
   @override
-  String get floatingActionButtonLongPressDescription =>
-      'geeft de actie aan bĳ lang indrukken van de zwevende actie­knop.';
+  String get floatingActionButtonLongPressDescription => 'geeft de actie aan bĳ lang indrukken van de zwevende actie­knop.';
 
   @override
-  String get floatingActionButtonSinglePressDescription =>
-      'geeft de actie aan bĳ eenmalig drukken op de zwevende actie­knop.';
+  String get floatingActionButtonSinglePressDescription => 'geeft de actie aan bĳ eenmalig drukken op de zwevende actie­knop.';
 
   @override
   String get fonts => 'Letter­typen';
@@ -1095,12 +1029,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get forward => 'Vooruit';
 
   @override
-  String get foundUnifiedPushDistribtorApp =>
-      'Compatibele app gevonden; start Thunder opnieuw op om te verbinden';
+  String get foundUnifiedPushDistribtorApp => 'Compatibele app gevonden; start Thunder opnieuw op om te verbinden';
 
   @override
-  String get fullScreenNavigationSwipeDescription =>
-      'Veeg ergens om terug te gaan als links-naar-rechts-gebaren zĳn uitgeschakeld';
+  String get fullScreenNavigationSwipeDescription => 'Veeg ergens om terug te gaan als links-naar-rechts-gebaren zĳn uitgeschakeld';
 
   @override
   String get fullscreen => 'Volledig scherm';
@@ -1127,8 +1059,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get guestModeFeedSettings => 'Feed-instellingen voor gastmodus';
 
   @override
-  String get guestModeFeedSettingsLabel =>
-      'De volgende instellingen worden alleen toegepast op gast­accounts. Ga naar ‘Account­instellingen’ om feed­instellingen voor uw account aan te passen.';
+  String get guestModeFeedSettingsLabel => 'De volgende instellingen worden alleen toegepast op gast­accounts. Ga naar ‘Account­instellingen’ om feed­instellingen voor uw account aan te passen.';
 
   @override
   String get havingIssuesWithNotifications => 'Hebt u problemen met meldingen?';
@@ -1179,8 +1110,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get imagePeekDuration => 'Indruk­duur afbeeldings­voorvertoning';
 
   @override
-  String get imagePeekDurationDescription =>
-      'Hoe lang moet er worden ingedrukt voordat een voor­vertoning van de afbeelding wordt geactiveerd';
+  String get imagePeekDurationDescription => 'Hoe lang moet er worden ingedrukt voordat een voor­vertoning van de afbeelding wordt geactiveerd';
 
   @override
   String get importDatabase => 'Database importeren';
@@ -1189,23 +1119,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get importExportDatabase => 'Thunder-database importeren/exporteren';
 
   @override
-  String get importExportLemmyAccountSettings =>
-      'Lemmy-account­instellingen importeren/exporteren';
+  String get importExportLemmyAccountSettings => 'Lemmy-account­instellingen importeren/exporteren';
 
   @override
-  String get importExportLemmyAccountSettingsSubtitle =>
-      'Bevat abonnementen op gemeen­schappen, blokkeer­lĳsten en account­voorkeuren';
+  String get importExportLemmyAccountSettingsSubtitle => 'Bevat abonnementen op gemeen­schappen, blokkeer­lĳsten en account­voorkeuren';
 
   @override
   String get importExportSettings => 'Instellingen importeren/exporteren';
 
   @override
-  String get importExportThunderSettings =>
-      'Thunder-instellingen importeren/exporteren';
+  String get importExportThunderSettings => 'Thunder-instellingen importeren/exporteren';
 
   @override
-  String get importLemmyAccountSettingsDescription =>
-      'Lemmy-account­instellingen importeren';
+  String get importLemmyAccountSettingsDescription => 'Lemmy-account­instellingen importeren';
 
   @override
   String get importSettings => 'Instellingen importeren';
@@ -1244,12 +1170,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String instance(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Instanties',
-      one: 'Instantie',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Instanties', one: 'Instantie');
     return '$_temp0 ';
   }
 
@@ -1285,8 +1206,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get instances => 'Instanties';
 
   @override
-  String get internetOrInstanceIssues =>
-      'U bent mogelijk niet verbonden met het internet of uw instantie is momenteel niet beschikbaar.';
+  String get internetOrInstanceIssues => 'U bent mogelijk niet verbonden met het internet of uw instantie is momenteel niet beschikbaar.';
 
   @override
   String get invalidUrl => 'Ongeldige URL-indeling';
@@ -1297,8 +1217,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get keywordFilterDescription =>
-      'Filtert berichten die trefwoorden bevatten in de titel, inhoud of URL';
+  String get keywordFilterDescription => 'Filtert berichten die trefwoorden bevatten in de titel, inhoud of URL';
 
   @override
   String get keywordFilters => 'Trefwoord­filters';
@@ -1313,8 +1232,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get languageFilters => 'Op zoek naar taal­filters?';
 
   @override
-  String get languageNotAllowed =>
-      'De gemeenschap waarin u plaatst, staat geen berichten toe in de taal die u hebt geselecteerd. Probeer een andere taal.';
+  String get languageNotAllowed => 'De gemeenschap waarin u plaatst, staat geen berichten toe in de taal die u hebt geselecteerd. Probeer een andere taal.';
 
   @override
   String get large => 'Groot';
@@ -1330,12 +1248,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String link(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Koppelingen',
-      one: 'Koppeling',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Koppelingen', one: 'Koppeling');
     return '$_temp0 ';
   }
 
@@ -1343,8 +1256,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get linkActions => 'Link­acties';
 
   @override
-  String get linkHandlingCustomTabs =>
-      'Openen in systeembrowser ingebed in-app';
+  String get linkHandlingCustomTabs => 'Openen in systeembrowser ingebed in-app';
 
   @override
   String get linkHandlingCustomTabsShort => 'In-app ingebed';
@@ -1419,19 +1331,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get loginSucceeded => 'Ingelogd.';
 
   @override
-  String get loginToPerformAction =>
-      'U dient ingelogd te zĳn om deze taak uit te voeren.';
+  String get loginToPerformAction => 'U dient ingelogd te zĳn om deze taak uit te voeren.';
 
   @override
   String get loginToSeeInbox => 'Log in om uw postvak IN te bekijken';
 
   @override
-  String get lookingForAccountSpecificFeedSettings =>
-      'Op zoek naar account­specifieke feed­instellingen?';
+  String get lookingForAccountSpecificFeedSettings => 'Op zoek naar account­specifieke feed­instellingen?';
 
   @override
-  String get malformedUri =>
-      'De opgegeven koppeling heeft een niet-ondersteunde indeling. Zorg ervoor dat het een geldige koppeling is.';
+  String get malformedUri => 'De opgegeven koppeling heeft een niet-ondersteunde indeling. Zorg ervoor dat het een geldige koppeling is.';
 
   @override
   String get manageAccounts => 'Accounts beheren';
@@ -1446,8 +1355,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get markAsRead => 'Markeren als gelezen';
 
   @override
-  String get markPostAsReadOnMediaView =>
-      'Markeren als gelezen na bekijken van media';
+  String get markPostAsReadOnMediaView => 'Markeren als gelezen na bekijken van media';
 
   @override
   String get markPostAsReadOnScroll => 'Markeren als gelezen bĳ scrollen';
@@ -1469,12 +1377,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String mention(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Vermeldingen',
-      one: 'Vermelding',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Vermeldingen', one: 'Vermelding');
     return '$_temp0';
   }
 
@@ -1483,12 +1386,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String message(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Berichten',
-      one: 'Bericht',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Berichten', one: 'Bericht');
     return '$_temp0';
   }
 
@@ -1502,15 +1400,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get modAdd => 'Instantie­moderators toevoegen/verwĳderen';
 
   @override
-  String get modAddCommunity =>
-      'Moderators toevoegen aan/verwĳderen uit gemeen­schappen';
+  String get modAddCommunity => 'Moderators toevoegen aan/verwĳderen uit gemeen­schappen';
 
   @override
   String get modBan => 'Instantie­gebruikers verbannen/herstellen';
 
   @override
-  String get modBanFromCommunity =>
-      'Gebruikers verbannen uit/herstellen in gemeen­schappen';
+  String get modBanFromCommunity => 'Gebruikers verbannen uit/herstellen in gemeen­schappen';
 
   @override
   String get modFeaturePost => 'Berichten uitlichten/niet meer uitlichten';
@@ -1538,12 +1434,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String moderator(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Moderators',
-      one: 'Moderator',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Moderators', one: 'Moderator');
     return '$_temp0';
   }
 
@@ -1560,19 +1451,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get mustBeLoggedIn => 'U dient ingelogd te zĳn';
 
   @override
-  String get mustBeLoggedInComment =>
-      'U dient ingelogd te zĳn om een opmerking te plaatsen';
+  String get mustBeLoggedInComment => 'U dient ingelogd te zĳn om een opmerking te plaatsen';
 
   @override
-  String get mustBeLoggedInPost =>
-      'U dient ingelogd te zĳn om een bericht te plaatsen';
+  String get mustBeLoggedInPost => 'U dient ingelogd te zĳn om een bericht te plaatsen';
 
   @override
   String get names => 'Namen';
 
   @override
-  String get navbarDoubleTapGestures =>
-      'Dubbel-tik-gebaren voor navigatie­balk';
+  String get navbarDoubleTapGestures => 'Dubbel-tik-gebaren voor navigatie­balk';
 
   @override
   String get navbarSwipeGestures => 'Veeg­gebaren voor navigatie­balk';
@@ -1587,16 +1475,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get navigation => 'Navigatie';
 
   @override
-  String get nestedCommentIndicatorColor =>
-      'Kleur van indicator voor geneste opmerkingen';
+  String get nestedCommentIndicatorColor => 'Kleur van indicator voor geneste opmerkingen';
 
   @override
-  String get nestedCommentIndicatorStyle =>
-      'Stijl van indicator voor geneste opmerkingen';
+  String get nestedCommentIndicatorStyle => 'Stijl van indicator voor geneste opmerkingen';
 
   @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
+  String get networkErrorMessage => 'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get never => 'Nooit';
@@ -1617,8 +1502,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noAccountsAdded => 'Er zĳn geen accounts toegevoegd';
 
   @override
-  String get noAnonymousInstances =>
-      'Er zĳn geen anonieme instanties toegevoegd';
+  String get noAnonymousInstances => 'Er zĳn geen anonieme instanties toegevoegd';
 
   @override
   String get noCommentsFound => 'Geen opmerkingen gevonden';
@@ -1636,8 +1520,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noCompatibleAppFound => 'Geen compatibele app gevonden';
 
   @override
-  String get noDiscussionLanguages =>
-      'Er wordt geen inhoud verborgen op basis van taal.';
+  String get noDiscussionLanguages => 'Er wordt geen inhoud verborgen op basis van taal.';
 
   @override
   String get noDisplayNameSet => 'Geen weergave­naam ingesteld';
@@ -1652,8 +1535,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noFavoritedCommunities => 'Geen favoriete gemeenschappen';
 
   @override
-  String get noImages =>
-      'Het lĳkt erop dat u nog geen afbeeldingen hebt geüpload.';
+  String get noImages => 'Het lĳkt erop dat u nog geen afbeeldingen hebt geüpload.';
 
   @override
   String get noInstanceBlocks => 'Er zĳn geen geblokkeerde instanties.';
@@ -1683,8 +1565,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noProfileBioSet => 'Geen profiel­biografie ingesteld';
 
   @override
-  String get noReferencesToImage =>
-      'Er zĳn geen berichten of opmerkingen gevonden die deze afbeelding bevatten. Deze kan echter elders op het internet worden gebruikt.';
+  String get noReferencesToImage => 'Er zĳn geen berichten of opmerkingen gevonden die deze afbeelding bevatten. Deze kan echter elders op het internet worden gebruikt.';
 
   @override
   String get noReplies => 'Geen reacties';
@@ -1705,8 +1586,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noUsersFound => 'Geen gebruikers gevonden.';
 
   @override
-  String get noVisibleComments =>
-      'Opmerkingen zĳn mogelijk niet zichtbaar omdat de gemeenschap is geblokkeerd.';
+  String get noVisibleComments => 'Opmerkingen zĳn mogelijk niet zichtbaar omdat de gemeenschap is geblokkeerd.';
 
   @override
   String get none => 'Geen';
@@ -1730,12 +1610,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String notifications(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Meldingen',
-      one: 'Melding',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Meldingen', one: 'Melding');
     return '$_temp0';
   }
 
@@ -1743,8 +1618,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get notificationsBehaviourSettings => 'Meldingen';
 
   @override
-  String get notificationsNotAllowed =>
-      'Meldingen zĳn niet toegestaan voor Thunder in de systeeminstellingen';
+  String get notificationsNotAllowed => 'Meldingen zĳn niet toegestaan voor Thunder in de systeeminstellingen';
 
   @override
   String get notificationsWarningDialog =>
@@ -1775,8 +1649,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get onWifi => 'Op wifi';
 
   @override
-  String get onlyModsCanPostInCommunity =>
-      'Alleen moderators mogen berichten plaatsen in deze gemeenschap';
+  String get onlyModsCanPostInCommunity => 'Alleen moderators mogen berichten plaatsen in deze gemeenschap';
 
   @override
   String get open => 'Openen';
@@ -1794,8 +1667,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get openInstance => 'Instantie openen';
 
   @override
-  String get openLinksInExternalBrowser =>
-      'Koppelingen openen in externe browser';
+  String get openLinksInExternalBrowser => 'Koppelingen openen in externe browser';
 
   @override
   String get openLinksInReaderMode => 'Koppelingen openen in lees­modus';
@@ -1824,16 +1696,13 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get permissionDenied =>
-      'Thunder heeft geen toestemming gekregen om meldingen weer te geven. Schakel dit in via de systeeminstellingen.';
+  String get permissionDenied => 'Thunder heeft geen toestemming gekregen om meldingen weer te geven. Schakel dit in via de systeeminstellingen.';
 
   @override
-  String get permissionDeniedMessage =>
-      'Thunder heeft enkele machtigingen nodig om deze afbeelding op te slaan die zĳn geweigerd.';
+  String get permissionDeniedMessage => 'Thunder heeft enkele machtigingen nodig om deze afbeelding op te slaan die zĳn geweigerd.';
 
   @override
-  String get piefedSupportBeta =>
-      'PieFed support is currently in beta.\nNot all features are supported yet.';
+  String get piefedSupportBeta => 'PieFed support is currently in beta.\nNot all features are supported yet.';
 
   @override
   String get pinPostToCommunity => 'Bericht vastpinnen in gemeenschap';
@@ -1870,12 +1739,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get postBodySettings => 'Instellingen voor bericht­inhoud';
 
   @override
-  String get postBodySettingsDescription =>
-      'Deze instellingen hebben invloed op de weergave van de bericht­inhoud';
+  String get postBodySettingsDescription => 'Deze instellingen hebben invloed op de weergave van de bericht­inhoud';
 
   @override
-  String get postBodyShowCommunityInstance =>
-      'Gemeenschaps­instantie weergeven';
+  String get postBodyShowCommunityInstance => 'Gemeenschaps­instantie weergeven';
 
   @override
   String get postBodyShowUserInstance => 'Gebruikers­instantie weergeven';
@@ -1893,22 +1760,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get postFlairs => 'Flairs';
 
   @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postFlairsUnavailable => 'No flair options available for this community';
 
   @override
   String get postLocked => 'Bericht vergrendeld. Geen reacties toegestaan.';
 
   @override
-  String get postMetadataInstructions =>
-      'U kunt de metadata-informatie aanpassen door de gewenste informatie te slepen en neer te zetten';
+  String get postMetadataInstructions => 'U kunt de metadata-informatie aanpassen door de gewenste informatie te slepen en neer te zetten';
 
   @override
   String get postNSFW => 'Markeren als NSFW';
 
   @override
-  String get postPreview =>
-      'Toon een voorbeeld van het bericht met de opgegeven instellingen';
+  String get postPreview => 'Toon een voorbeeld van het bericht met de opgegeven instellingen';
 
   @override
   String get postSavedAsDraft => 'Bericht opgeslagen als concept';
@@ -1920,8 +1784,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get postSwipeActions => 'Veegacties voor berichten';
 
   @override
-  String get postSwipeGesturesHint =>
-      'Wilt u liever knoppen gebruiken? Wĳzig welke knoppen worden weergegeven op berichtkaarten in de algemene instellingen.';
+  String get postSwipeGesturesHint => 'Wilt u liever knoppen gebruiken? Wĳzig welke knoppen worden weergegeven op berichtkaarten in de algemene instellingen.';
 
   @override
   String get postTags => 'Labels';
@@ -2018,8 +1881,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Configureer de pushmeldingenserver. De server moet correct geconfigureerd zĳn om pushmeldingen naar uw apparaat te verzenden.\n\n **Voer alleen een server in die u vertrouwt met uw inloggegevens.**';
 
   @override
-  String get rateLimitErrorMessage =>
-      'U hebt de snelheidslimiet voor dit verzoek bereikt. Wacht even en probeer het later opnieuw.';
+  String get rateLimitErrorMessage => 'U hebt de snelheidslimiet voor dit verzoek bereikt. Wacht even en probeer het later opnieuw.';
 
   @override
   String get reachedTheBottom => 'Geen items meer om te laden';
@@ -2043,8 +1905,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get reduceAnimations => 'Animaties verminderen';
 
   @override
-  String get reducesAnimations =>
-      'Vermindert de animaties die in Thunder worden gebruikt';
+  String get reducesAnimations => 'Vermindert de animaties die in Thunder worden gebruikt';
 
   @override
   String get refresh => 'Vernieuwen';
@@ -2062,8 +1923,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get removeAccount => 'Account verwĳderen';
 
   @override
-  String get removeAsCommunityModerator =>
-      'Verwĳderen als gemeen­schaps­moderator';
+  String get removeAsCommunityModerator => 'Verwĳderen als gemeen­schaps­moderator';
 
   @override
   String get removeComment => 'Opmerking verwĳderen';
@@ -2119,12 +1979,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String reply(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Reacties',
-      one: 'Reactie',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Reacties', one: 'Reactie');
     return '$_temp0';
   }
 
@@ -2132,8 +1987,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get replyColor => 'Reactie­kleur';
 
   @override
-  String get replyNotSupported =>
-      'Reageren vanuit deze weergave wordt momenteel nog niet ondersteund';
+  String get replyNotSupported => 'Reageren vanuit deze weergave wordt momenteel nog niet ondersteund';
 
   @override
   String get replyToComment => 'Reactie op opmerking';
@@ -2148,12 +2002,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String report(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Rapportages',
-      one: 'Rapportage',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Rapportages', one: 'Rapportage');
     return '$_temp0 ';
   }
 
@@ -2239,15 +2088,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get scaled => 'Geschaald';
 
   @override
-  String get scrapeMissingLinkPreviews =>
-      'Ontbrekende koppelingsvoorvertoningen ophalen';
+  String get scrapeMissingLinkPreviews => 'Ontbrekende koppelingsvoorvertoningen ophalen';
 
   @override
   String get screenReaderProfile => 'Schermlezerprofiel';
 
   @override
-  String get screenReaderProfileDescription =>
-      'Optimaliseert Thunder voor schermlezers door het aantal elementen te verminderen en mogelijk conflicterende gebaren te verwĳderen.';
+  String get screenReaderProfileDescription => 'Optimaliseert Thunder voor schermlezers door het aantal elementen te verminderen en mogelijk conflicterende gebaren te verwĳderen.';
 
   @override
   String get search => 'Zoeken';
@@ -2298,12 +2145,10 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get selectAccountToCommentAs =>
-      'Selecteer account om opmerking mee te plaatsen';
+  String get selectAccountToCommentAs => 'Selecteer account om opmerking mee te plaatsen';
 
   @override
-  String get selectAccountToPostAs =>
-      'Selecteer account om bericht mee te plaatsen';
+  String get selectAccountToPostAs => 'Selecteer account om bericht mee te plaatsen';
 
   @override
   String get selectAll => 'Alles selecteren';
@@ -2330,27 +2175,22 @@ class AppLocalizationsNl extends AppLocalizations {
   String get send => 'Verzenden';
 
   @override
-  String get sendBackgroundTestLocalNotification =>
-      'Lokale test­melding op achter­grond verzenden';
+  String get sendBackgroundTestLocalNotification => 'Lokale test­melding op achter­grond verzenden';
 
   @override
-  String get sendBackgroundTestUnifiedPushNotification =>
-      'UnifiedPush-test­melding op achter­grond verzenden';
+  String get sendBackgroundTestUnifiedPushNotification => 'UnifiedPush-test­melding op achter­grond verzenden';
 
   @override
   String get sendTestLocalNotification => 'Lokale test­melding verzenden';
 
   @override
-  String get sendTestUnifiedPushNotification =>
-      'UnifiedPush-test­melding verzenden';
+  String get sendTestUnifiedPushNotification => 'UnifiedPush-test­melding verzenden';
 
   @override
-  String get sensitiveContentWarning =>
-      'Kan gevoelige inhoud bevatten. Druk om weer te geven.';
+  String get sensitiveContentWarning => 'Kan gevoelige inhoud bevatten. Druk om weer te geven.';
 
   @override
-  String get sentRequestForTestNotification =>
-      'Verzoek voor testmelding verzonden.';
+  String get sentRequestForTestNotification => 'Verzoek voor testmelding verzonden.';
 
   @override
   String serverErrorComments(Object message) {
@@ -2367,8 +2207,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get setShortPress => 'Instellen als actie voor één keer drukken';
 
   @override
-  String get settingOverrideLabel =>
-      'Deze instellingen over­schrĳven de standaard­instellingen van Thunder.';
+  String get settingOverrideLabel => 'Deze instellingen over­schrĳven de standaard­instellingen van Thunder.';
 
   @override
   String settingTypeNotSupported(Object settingType) {
@@ -2384,20 +2223,16 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get settingsFeedCards =>
-      'Deze instellingen gelden voor de kaarten in de hoofd­feed. Acties zijn altĳd beschikbaar wanneer u daad­werkelĳk berichten opent.';
+  String get settingsFeedCards => 'Deze instellingen gelden voor de kaarten in de hoofd­feed. Acties zijn altĳd beschikbaar wanneer u daad­werkelĳk berichten opent.';
 
   @override
-  String get settingsImportedSuccessfully =>
-      'Instellingen zĳn succesvol geïmporteerd!';
+  String get settingsImportedSuccessfully => 'Instellingen zĳn succesvol geïmporteerd!';
 
   @override
-  String get settingsNotExportedSuccessfully =>
-      'Instellingen zĳn niet succesvol opgeslagen of de bewerking is geannuleerd.';
+  String get settingsNotExportedSuccessfully => 'Instellingen zĳn niet succesvol opgeslagen of de bewerking is geannuleerd.';
 
   @override
-  String get settingsNotImportedSuccessfully =>
-      'Instellingen zĳn niet succesvol geïmporteerd of de bewerking is geannuleerd.';
+  String get settingsNotImportedSuccessfully => 'Instellingen zĳn niet succesvol geïmporteerd of de bewerking is geannuleerd.';
 
   @override
   String get settingsPage => 'Instellingen­pagina';
@@ -2469,8 +2304,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get shareCommunityLink => 'Gemeenschaps­koppeling delen';
 
   @override
-  String get shareCommunityLinkLocal =>
-      'Gemeenschaps­koppeling delen (mĳn instantie)';
+  String get shareCommunityLinkLocal => 'Gemeenschaps­koppeling delen (mĳn instantie)';
 
   @override
   String get shareImage => 'Afbeelding delen';
@@ -2521,8 +2355,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get showCommentActionButtons => 'Actie­knoppen voor opmerkingen tonen';
 
   @override
-  String get showCommunityDisplayNames =>
-      'Weergave­namen van gemeenschappen tonen';
+  String get showCommunityDisplayNames => 'Weergave­namen van gemeenschappen tonen';
 
   @override
   String get showCrossPosts => 'Kruis­berichten tonen';
@@ -2546,8 +2379,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get showHiddenPosts => 'Verborgen berichten tonen';
 
   @override
-  String get showInAppUpdateNotifications =>
-      'Meldingen ontvangen van nieuwe GitHub-releases';
+  String get showInAppUpdateNotifications => 'Meldingen ontvangen van nieuwe GitHub-releases';
 
   @override
   String get showLess => 'Minder tonen';
@@ -2559,8 +2391,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get showNavigationLabels => 'Navigatie­labels tonen';
 
   @override
-  String get showNavigationLabelsDescription =>
-      'Of labels onder de onderste navigatie­knoppen moeten worden weergegeven';
+  String get showNavigationLabelsDescription => 'Of labels onder de onderste navigatie­knoppen moeten worden weergegeven';
 
   @override
   String get showNsfwContent => 'NSFW-inhoud tonen';
@@ -2575,12 +2406,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get showPostAuthor => 'Bericht­auteur tonen';
 
   @override
-  String get showPostAuthorSubtitle =>
-      'Bericht­auteur wordt altĳd getoond in gemeenschaps­feeds';
+  String get showPostAuthorSubtitle => 'Bericht­auteur wordt altĳd getoond in gemeenschaps­feeds';
 
   @override
-  String get showPostCommunityFirst =>
-      'Gemeen­schap en auteur eerst weer­geven';
+  String get showPostCommunityFirst => 'Gemeen­schap en auteur eerst weer­geven';
 
   @override
   String get showPostCommunityIcons => 'Gemeenschaps­pictogrammen tonen';
@@ -2622,8 +2451,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get showUpdateChangelogs => 'Wĳzigings­logboek tonen bij updates';
 
   @override
-  String get showUpdateChangelogsSubtitle =>
-      'Een lĳst met wĳzigingen weergeven na een update';
+  String get showUpdateChangelogsSubtitle => 'Een lĳst met wĳzigingen weergeven na een update';
 
   @override
   String get showUserAvatar => 'Gebruikers­avatar tonen';
@@ -2638,12 +2466,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get sidebar => 'Zĳbalk';
 
   @override
-  String get sidebarBottomNavDoubleTapDescription =>
-      'Dubbeltik op onderbalk om zĳbalk te openen';
+  String get sidebarBottomNavDoubleTapDescription => 'Dubbeltik op onderbalk om zĳbalk te openen';
 
   @override
-  String get sidebarBottomNavSwipeDescription =>
-      'Veeg over onderbalk om zĳbalk te openen';
+  String get sidebarBottomNavSwipeDescription => 'Veeg over onderbalk om zĳbalk te openen';
 
   @override
   String get small => 'Klein';
@@ -2744,8 +2570,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get systemDarkMode => 'Puur zwart';
 
   @override
-  String get systemDarkModeDescription =>
-      'Puur zwart thema inschakelen voor donkere modus';
+  String get systemDarkModeDescription => 'Puur zwart thema inschakelen voor donkere modus';
 
   @override
   String get tabletMode => 'Tablet­modus (2-koloms­weergave)';
@@ -2760,8 +2585,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get teal => 'Blauw­groen';
 
   @override
-  String get testBackgroundNotificationDescription =>
-      'Thunder sluit zichzelf af en probeert vervolgens een melding op de achter­grond te genereren. (Dit duurt minimaal 15 minuten)';
+  String get testBackgroundNotificationDescription => 'Thunder sluit zichzelf af en probeert vervolgens een melding op de achter­grond te genereren. (Dit duurt minimaal 15 minuten)';
 
   @override
   String get testBackgroundUnifiedPushNotificationDescription =>
@@ -2814,19 +2638,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get timeoutComments => 'Fout: time-out bĳ het ophalen van opmerkingen';
 
   @override
-  String get timeoutErrorMessage =>
-      'Er is een time-out opgetreden bĳ het wachten op een reactie.';
+  String get timeoutErrorMessage => 'Er is een time-out opgetreden bĳ het wachten op een reactie.';
 
   @override
-  String get timeoutSaveComment =>
-      'Fout: time-out bĳ het opslaan van een opmerking';
+  String get timeoutSaveComment => 'Fout: time-out bĳ het opslaan van een opmerking';
 
   @override
   String get timeoutSavingPost => 'Fout: time-out bĳ het opslaan van bericht.';
 
   @override
-  String get timeoutUpvoteComment =>
-      'Fout: time-out bĳ het stemmen op opmerking';
+  String get timeoutUpvoteComment => 'Fout: time-out bĳ het stemmen op opmerking';
 
   @override
   String get timeoutVotingPost => 'Fout: time-out bĳ het stemmen op bericht.';
@@ -2887,8 +2708,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get transferredModToCommunity => 'Gemeen­schap over­gedragen';
 
   @override
-  String get translationsMayNotBeComplete =>
-      'Houd er rekening mee dat de vertalingen mogelijk niet volledig zĳn';
+  String get translationsMayNotBeComplete => 'Houd er rekening mee dat de vertalingen mogelijk niet volledig zĳn';
 
   @override
   String get trendingCommunities => 'Trending gemeen­schappen';
@@ -2905,8 +2725,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get unableToFindCommunityOnInstance =>
-      'Kan de geselecteerde gemeenschap niet vinden op de instantie van de geselecteerde gebruiker.';
+  String get unableToFindCommunityOnInstance => 'Kan de geselecteerde gemeenschap niet vinden op de instantie van de geselecteerde gebruiker.';
 
   @override
   String get unableToFindInstance => 'Kan instantie niet vinden';
@@ -2980,8 +2799,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get unblockCommunity => 'Blokkering van gemeen­schap opheffen';
 
   @override
-  String get unblockCommunityInstance =>
-      'Blokkering van gemeenschaps­instantie opheffen';
+  String get unblockCommunityInstance => 'Blokkering van gemeenschaps­instantie opheffen';
 
   @override
   String get unblockInstance => 'Blokkering van instantie opheffen';
@@ -2990,8 +2808,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get unblockUser => 'Blokkering van gebruiker opheffen';
 
   @override
-  String get unblockUserInstance =>
-      'Blokkering van gebruikers­instantie opheffen';
+  String get unblockUserInstance => 'Blokkering van gebruikers­instantie opheffen';
 
   @override
   String get understandEnable => 'Ik begrĳp het, inschakelen';
@@ -3089,8 +2906,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get upvoted => 'Geüpvotet';
 
   @override
-  String get uriNotSupported =>
-      'Dit type koppeling wordt momenteel niet ondersteund.';
+  String get uriNotSupported => 'Dit type koppeling wordt momenteel niet ondersteund.';
 
   @override
   String get url => 'URL';
@@ -3102,34 +2918,28 @@ class AppLocalizationsNl extends AppLocalizations {
   String get useApplePushNotifications => 'APNs-meldingen gebruiken';
 
   @override
-  String get useApplePushNotificationsDescription =>
-      'Maakt gebruik van Apple\'s pushmeldingsdienst';
+  String get useApplePushNotificationsDescription => 'Maakt gebruik van Apple\'s pushmeldingsdienst';
 
   @override
-  String get useCompactView =>
-      'Inschakelen voor kleine berichten, uitschakelen voor grote.';
+  String get useCompactView => 'Inschakelen voor kleine berichten, uitschakelen voor grote.';
 
   @override
-  String get useLocalNotifications =>
-      'Lokale meldingen gebruiken (experimenteel)';
+  String get useLocalNotifications => 'Lokale meldingen gebruiken (experimenteel)';
 
   @override
-  String get useLocalNotificationsDescription =>
-      'Controleert periodiek op meldingen op de achtergrond';
+  String get useLocalNotificationsDescription => 'Controleert periodiek op meldingen op de achtergrond';
 
   @override
   String get useMaterialYouTheme => 'Material You-thema gebruiken';
 
   @override
-  String get useMaterialYouThemeDescription =>
-      'Over­schrĳft het geselecteerde aangepaste thema';
+  String get useMaterialYouThemeDescription => 'Over­schrĳft het geselecteerde aangepaste thema';
 
   @override
   String get useProfilePictureForDrawer => 'Profiel­foto gebruiken voor zĳbalk';
 
   @override
-  String get useProfilePictureForDrawerSubtitle =>
-      'Toont de profiel­afbeelding van de gebruiker in plaats van het menu-pictogram wanneer u bent ingelogd';
+  String get useProfilePictureForDrawerSubtitle => 'Toont de profiel­afbeelding van de gebruiker in plaats van het menu-pictogram wanneer u bent ingelogd';
 
   @override
   String useSuggestedTitle(Object title) {
@@ -3140,8 +2950,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get useUnifiedPushNotifications => 'UnifiedPush-meldingen gebruiken';
 
   @override
-  String get useUnifiedPushNotificationsDescription =>
-      'Vereist een compatibele app';
+  String get useUnifiedPushNotificationsDescription => 'Vereist een compatibele app';
 
   @override
   String get user => 'Gebruiker';
@@ -3164,8 +2973,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get userLabels => 'Gebruikers­labels';
 
   @override
-  String get userLabelsSettingsPageDescription =>
-      'U kunt labels toevoegen, wĳzigen of verwĳderen die aan gebruikers zĳn gekoppeld.';
+  String get userLabelsSettingsPageDescription => 'U kunt labels toevoegen, wĳzigen of verwĳderen die aan gebruikers zĳn gekoppeld.';
 
   @override
   String get userNameColor => 'Kleur van gebruikers­naam';
@@ -3180,8 +2988,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get userProfiles => 'Gebruikers­profielen';
 
   @override
-  String get userSettingDescription =>
-      'Deze instellingen worden gesynchroniseerd met uw Lemmy-account en worden per account toegepast.';
+  String get userSettingDescription => 'Deze instellingen worden gesynchroniseerd met uw Lemmy-account en worden per account toegepast.';
 
   @override
   String get userStyle => 'Gebruikers­stĳl';
@@ -3190,8 +2997,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get username => 'Gebruikers­naam';
 
   @override
-  String get usernameFormattingRedirect =>
-      'Op zoek naar gebruikersnaam­opmaak?';
+  String get usernameFormattingRedirect => 'Op zoek naar gebruikersnaam­opmaak?';
 
   @override
   String get users => 'Gebruikers';
@@ -3220,8 +3026,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get videoDefaultPlaybackSpeed => 'Standaard­afspeelsnelheid';
 
   @override
-  String get videoLinkHandlingExternal =>
-      'Video\'s afspelen met een externe app';
+  String get videoLinkHandlingExternal => 'Video\'s afspelen met een externe app';
 
   @override
   String get videoPlayerInApp => 'Ingebouwde speler van Thunder gebruiken';
@@ -3296,11 +3101,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String xYearsOld(num count, Object x) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$x jaar oud',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$x jaar oud');
     return '$_temp0';
   }
 

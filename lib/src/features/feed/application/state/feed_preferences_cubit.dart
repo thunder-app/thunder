@@ -12,9 +12,7 @@ part 'feed_preferences_state.dart';
 
 /// Cubit for managing feed-related preferences. This includes settings for the feed list, post cards, and post body.
 class FeedPreferencesCubit extends Cubit<FeedPreferencesState> {
-  FeedPreferencesCubit({required PreferencesStore preferencesStore})
-      : _preferencesStore = preferencesStore,
-        super(const FeedPreferencesState()) {
+  FeedPreferencesCubit({required PreferencesStore preferencesStore}) : _preferencesStore = preferencesStore, super(const FeedPreferencesState()) {
     load();
   }
 

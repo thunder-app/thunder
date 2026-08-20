@@ -12,7 +12,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.hjiangsu.thunder"
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -26,10 +26,14 @@ android {
         jvmTarget = JavaVersion.VERSION_17
     }
 
+    buildFeatures {
+        resValues true
+    }
+
     defaultConfig {
         applicationId "com.hjiangsu.thunder"
         minSdk = flutter.minSdkVersion
-        targetSdk rootProject.ext.targetSdkVersion
+        targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -49,7 +53,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             // Only sign when key.properties is present so RB/unsigned rebuilds work without editing Gradle.
             if (keystorePropertiesFile.exists()) {
                 signingConfig signingConfigs.release

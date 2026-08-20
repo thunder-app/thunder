@@ -1,11 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class FeatureAccountResolutionRequest extends Equatable {
-  const FeatureAccountResolutionRequest({
-    this.communityActorId,
-    this.postActorId,
-    this.parentCommentActorId,
-  });
+  const FeatureAccountResolutionRequest({this.communityActorId, this.postActorId, this.parentCommentActorId});
 
   final String? communityActorId;
   final String? postActorId;

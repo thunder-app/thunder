@@ -4,11 +4,7 @@ import 'package:thunder/src/core/domain/enums/threadiverse_platform.dart';
 
 /// A supported instance identified through NodeInfo discovery.
 class InstanceDiscoveryResult extends Equatable {
-  const InstanceDiscoveryResult({
-    required this.host,
-    required this.platform,
-    this.version,
-  });
+  const InstanceDiscoveryResult({required this.host, required this.platform, this.version});
 
   /// Canonical lowercase host without a scheme or trailing path.
   final String host;

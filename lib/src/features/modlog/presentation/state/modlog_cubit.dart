@@ -16,14 +16,7 @@ class ModlogCubit extends Cubit<ModlogState> {
 
   /// Changes the current filter type of the modlog feed
   Future<void> changeFilterType(ModlogActionType modlogActionType) async {
-    await fetchModlogFeed(
-      modlogActionType: modlogActionType,
-      communityId: state.communityId,
-      userId: state.userId,
-      moderatorId: state.moderatorId,
-      commentId: state.commentId,
-      reset: true,
-    );
+    await fetchModlogFeed(modlogActionType: modlogActionType, communityId: state.communityId, userId: state.userId, moderatorId: state.moderatorId, commentId: state.commentId, reset: true);
   }
 
   /// Clears any messages from the state
@@ -33,14 +26,7 @@ class ModlogCubit extends Cubit<ModlogState> {
 
   /// Fetches the modlog feed based on the provided parameters.
   /// This method handles both the initial fetch and subsequent pagination.
-  Future<void> fetchModlogFeed({
-    ModlogActionType? modlogActionType,
-    int? communityId,
-    int? userId,
-    int? moderatorId,
-    int? commentId,
-    bool reset = false,
-  }) async {
+  Future<void> fetchModlogFeed({ModlogActionType? modlogActionType, int? communityId, int? userId, int? moderatorId, int? commentId, bool reset = false}) async {
     if (state.status == ModlogStatus.fetching) return;
 
     try {
@@ -48,14 +34,7 @@ class ModlogCubit extends Cubit<ModlogState> {
       if (reset) {
         emit(const ModlogState());
 
-        final feed = await repository.getModlogEvents(
-          page: 1,
-          modlogActionType: modlogActionType,
-          communityId: communityId,
-          userId: userId,
-          moderatorId: moderatorId,
-          commentId: commentId,
-        );
+        final feed = await repository.getModlogEvents(page: 1, modlogActionType: modlogActionType, communityId: communityId, userId: userId, moderatorId: moderatorId, commentId: commentId);
 
         // Extract information from the response
         List<ModlogEventItem> modlogEventItems = feed.items;
@@ -65,18 +44,20 @@ class ModlogCubit extends Cubit<ModlogState> {
         // Sort the modlog events by date
         modlogEventItems.sort((a, b) => b.dateTime.compareTo(a.dateTime));
 
-        emit(state.copyWith(
-          status: ModlogStatus.success,
-          modlogActionType: modlogActionType ?? ModlogActionType.all,
-          hasReachedEnd: hasReachedEnd,
-          communityId: communityId,
-          userId: userId,
-          moderatorId: moderatorId,
-          commentId: commentId,
-          modlogEventItems: modlogEventItems,
-          currentPage: currentPage,
-          message: null,
-        ));
+        emit(
+          state.copyWith(
+            status: ModlogStatus.success,
+            modlogActionType: modlogActionType ?? ModlogActionType.all,
+            hasReachedEnd: hasReachedEnd,
+            communityId: communityId,
+            userId: userId,
+            moderatorId: moderatorId,
+            commentId: commentId,
+            modlogEventItems: modlogEventItems,
+            currentPage: currentPage,
+            message: null,
+          ),
+        );
         return;
       }
 
@@ -111,13 +92,7 @@ class ModlogCubit extends Cubit<ModlogState> {
       // Sort the modlog events by date
       modlogEventItems.sort((a, b) => b.dateTime.compareTo(a.dateTime));
 
-      emit(state.copyWith(
-        status: ModlogStatus.success,
-        modlogEventItems: modlogEventItems,
-        hasReachedEnd: hasReachedEnd,
-        currentPage: currentPage,
-        message: null,
-      ));
+      emit(state.copyWith(status: ModlogStatus.success, modlogEventItems: modlogEventItems, hasReachedEnd: hasReachedEnd, currentPage: currentPage, message: null));
     } catch (e) {
       debugPrint(e.toString());
       emit(state.copyWith(status: ModlogStatus.failure, message: getExceptionErrorMessage(e)));

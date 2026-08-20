@@ -18,10 +18,7 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
 
   final view = View.maybeOf(context);
   final viewSize = view == null ? null : view.physicalSize / view.devicePixelRatio;
-  final constraints = BoxConstraints(
-    maxWidth: viewSize?.width ?? double.infinity,
-    maxHeight: double.maxFinite,
-  );
+  final constraints = BoxConstraints(maxWidth: viewSize?.width ?? double.infinity, maxHeight: double.maxFinite);
   final thumbnailUrl = advancedShareThumbnailUrl(post);
 
   return _captureSettledLongWidget(
@@ -64,10 +61,7 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: CommonMarkdownBody(
-                      body: post.body!,
-                      isComment: true,
-                    ),
+                    child: CommonMarkdownBody(body: post.body!, isComment: true),
                   ),
                 ),
               ],
@@ -75,10 +69,7 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
                 const SizedBox(height: 10.0),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: Text(
-                    post.community!.actorId,
-                    style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface),
-                  ),
+                  child: Text(post.community!.actorId, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface)),
                 ),
               ],
             ],
@@ -89,49 +80,24 @@ Future<Uint8List> generateShareImage(BuildContext context, AdvancedShareSheetOpt
   );
 }
 
-Future<Uint8List> _captureSettledLongWidget({
-  required BuildContext context,
-  required Widget child,
-  required BoxConstraints constraints,
-  required double pixelRatio,
-}) async {
-  final targetSize = await _measureSettledLongWidget(
-    context: context,
-    child: child,
-    constraints: constraints,
-  );
+Future<Uint8List> _captureSettledLongWidget({required BuildContext context, required Widget child, required BoxConstraints constraints, required double pixelRatio}) async {
+  final targetSize = await _measureSettledLongWidget(context: context, child: child, constraints: constraints);
 
-  return ScreenshotController().captureFromWidget(
-    child,
-    context: context,
-    targetSize: targetSize,
-    pixelRatio: pixelRatio,
-    delay: _settleDelay,
-  );
+  return ScreenshotController().captureFromWidget(child, context: context, targetSize: targetSize, pixelRatio: pixelRatio, delay: _settleDelay);
 }
 
-Future<Size> _measureSettledLongWidget({
-  required BuildContext context,
-  required Widget child,
-  required BoxConstraints constraints,
-}) async {
+Future<Size> _measureSettledLongWidget({required BuildContext context, required Widget child, required BoxConstraints constraints}) async {
   var isDirty = false;
   var previousSize = Size.zero;
 
   final pipelineOwner = PipelineOwner();
   final rootView = pipelineOwner.rootNode = _MeasurementView(constraints);
-  final buildOwner = BuildOwner(
-    focusManager: FocusManager(),
-    onBuildScheduled: () => isDirty = true,
-  );
+  final buildOwner = BuildOwner(focusManager: FocusManager(), onBuildScheduled: () => isDirty = true);
 
   final element = RenderObjectToWidgetAdapter<RenderBox>(
     container: rootView,
     debugShortDescription: 'advanced_share_image_measurement',
-    child: Directionality(
-      textDirection: Directionality.maybeOf(context) ?? TextDirection.ltr,
-      child: _inheritCaptureContext(context, child),
-    ),
+    child: Directionality(textDirection: Directionality.maybeOf(context) ?? TextDirection.ltr, child: _inheritCaptureContext(context, child)),
   ).attachToRenderTree(buildOwner);
 
   try {
@@ -166,10 +132,7 @@ Widget _inheritCaptureContext(BuildContext context, Widget child) {
     context,
     MediaQuery(
       data: MediaQuery.of(context),
-      child: Material(
-        color: Colors.transparent,
-        child: child,
-      ),
+      child: Material(color: Colors.transparent, child: child),
     ),
   );
 }

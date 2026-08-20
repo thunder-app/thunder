@@ -25,19 +25,9 @@ const int ANDROID_INTENT_FLAG_ACTIVITY_NEW_TASK = 268435456; // https://develope
 const String ANDROID_INTENT_ACTION_VIEW = "android.intent.action.VIEW";
 
 /// Post card metadata
-const List<PostCardMetadataItem> DEFAULT_COMPACT_POST_CARD_METADATA = [
-  PostCardMetadataItem.score,
-  PostCardMetadataItem.commentCount,
-  PostCardMetadataItem.dateTime,
-  PostCardMetadataItem.url,
-];
+const List<PostCardMetadataItem> DEFAULT_COMPACT_POST_CARD_METADATA = [PostCardMetadataItem.score, PostCardMetadataItem.commentCount, PostCardMetadataItem.dateTime, PostCardMetadataItem.url];
 
-const List<PostCardMetadataItem> DEFAULT_CARD_POST_CARD_METADATA = [
-  PostCardMetadataItem.score,
-  PostCardMetadataItem.commentCount,
-  PostCardMetadataItem.dateTime,
-  PostCardMetadataItem.url,
-];
+const List<PostCardMetadataItem> DEFAULT_CARD_POST_CARD_METADATA = [PostCardMetadataItem.score, PostCardMetadataItem.commentCount, PostCardMetadataItem.dateTime, PostCardMetadataItem.url];
 
 /// Settings Pages
 const String SETTINGS_GENERAL_PAGE = '/settings/general';

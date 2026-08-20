@@ -182,42 +182,38 @@ class ThemePreferencesState extends Equatable {
 
   @override
   List<Object?> get props => [
-        themeType,
-        selectedTheme,
-        useMaterialYouTheme,
-        reduceAnimations,
-        useDarkTheme,
-        upvoteColor,
-        downvoteColor,
-        saveColor,
-        markReadColor,
-        replyColor,
-        hideColor,
-        titleFontSizeScale,
-        titleFontWeight,
-        contentFontSizeScale,
-        commentFontSizeScale,
-        metadataFontSizeScale,
-        useDisplayNamesForUsers,
-        useDisplayNamesForCommunities,
-        userSeparator,
-        userFullNameUserNameThickness,
-        userFullNameUserNameColor,
-        userFullNameInstanceNameThickness,
-        userFullNameInstanceNameColor,
-        communitySeparator,
-        communityFullNameCommunityNameThickness,
-        communityFullNameCommunityNameColor,
-        communityFullNameInstanceNameThickness,
-        communityFullNameInstanceNameColor,
-      ];
+    themeType,
+    selectedTheme,
+    useMaterialYouTheme,
+    reduceAnimations,
+    useDarkTheme,
+    upvoteColor,
+    downvoteColor,
+    saveColor,
+    markReadColor,
+    replyColor,
+    hideColor,
+    titleFontSizeScale,
+    titleFontWeight,
+    contentFontSizeScale,
+    commentFontSizeScale,
+    metadataFontSizeScale,
+    useDisplayNamesForUsers,
+    useDisplayNamesForCommunities,
+    userSeparator,
+    userFullNameUserNameThickness,
+    userFullNameUserNameColor,
+    userFullNameInstanceNameThickness,
+    userFullNameInstanceNameColor,
+    communitySeparator,
+    communityFullNameCommunityNameThickness,
+    communityFullNameCommunityNameColor,
+    communityFullNameInstanceNameThickness,
+    communityFullNameInstanceNameColor,
+  ];
 }
 
-enum TitleFontWeight {
-  normal,
-  bold,
-  extraBold,
-}
+enum TitleFontWeight { normal, bold, extraBold }
 
 extension TitleFontWeightExtension on TitleFontWeight {
   FontWeight toWeight() {

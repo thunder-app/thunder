@@ -24,7 +24,9 @@ class PostViewAllCommentsBanner extends StatelessWidget {
       },
       child: Container(
         height: 60.0,
-        decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.dividerColor))),
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: theme.dividerColor)),
+        ),
         child: Row(
           spacing: 4.0,
           mainAxisAlignment: MainAxisAlignment.center,

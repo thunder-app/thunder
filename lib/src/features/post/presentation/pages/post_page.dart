@@ -31,13 +31,7 @@ class PostPage extends StatefulWidget {
   /// The path of the comment that should be initially highlighted.
   final String? commentPath;
 
-  const PostPage({
-    super.key,
-    required this.initialPost,
-    this.onPostUpdated,
-    this.highlightedCommentId,
-    this.commentPath,
-  });
+  const PostPage({super.key, required this.initialPost, this.onPostUpdated, this.highlightedCommentId, this.commentPath});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -102,12 +96,7 @@ class _PostPageState extends State<PostPage> {
     final bloc = context.read<PostBloc>();
     if (bloc.state.status != PostPageStatus.initial) return;
 
-    bloc.add(
-      GetPostEvent(
-        post: widget.initialPost,
-        selectedCommentPath: widget.commentPath,
-      ),
-    );
+    bloc.add(GetPostEvent(post: widget.initialPost, selectedCommentPath: widget.commentPath));
   }
 
   /// Handles pagination and scroll-position persistence for the post page.
@@ -249,11 +238,7 @@ class _PostPageState extends State<PostPage> {
         },
         edgeOffset: MediaQuery.of(context).padding.top + APP_BAR_HEIGHT,
         child: Scaffold(
-          floatingActionButton: PostPageFloatingActionButton(
-            initialPost: widget.initialPost,
-            scrollController: scrollController,
-            listController: listController,
-          ),
+          floatingActionButton: PostPageFloatingActionButton(initialPost: widget.initialPost, scrollController: scrollController, listController: listController),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           body: SafeArea(
             top: false,
@@ -275,9 +260,7 @@ class _PostPageState extends State<PostPage> {
                     commentPath: widget.commentPath,
                   ),
                 ),
-                ThunderTopBarScrim(
-                  visible: context.select<ThunderCubit, bool>((cubit) => cubit.state.hideTopBarOnScroll),
-                ),
+                ThunderTopBarScrim(visible: context.select<ThunderCubit, bool>((cubit) => cubit.state.hideTopBarOnScroll)),
                 const PostFabOverlay(),
               ],
             ),
@@ -290,11 +273,7 @@ class _PostPageState extends State<PostPage> {
 
 /// Calls [onScrollEnd] when the primary descendant scrollable becomes idle.
 class PostScrollEndListener extends StatelessWidget {
-  const PostScrollEndListener({
-    super.key,
-    required this.onScrollEnd,
-    required this.child,
-  });
+  const PostScrollEndListener({super.key, required this.onScrollEnd, required this.child});
 
   final VoidCallback onScrollEnd;
   final Widget child;

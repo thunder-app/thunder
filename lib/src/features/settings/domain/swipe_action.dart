@@ -12,9 +12,7 @@ enum SwipeAction {
   hide(label: 'Hide'),
   none(label: 'None');
 
-  const SwipeAction({
-    required this.label,
-  });
+  const SwipeAction({required this.label});
 
   final String label;
 
@@ -34,14 +32,14 @@ enum SwipeAction {
         return read == null
             ? Icons.markunread_outlined
             : read
-                ? Icons.mark_email_unread_rounded
-                : Icons.mark_email_read_outlined;
+            ? Icons.mark_email_unread_rounded
+            : Icons.mark_email_read_outlined;
       case SwipeAction.hide:
         return hidden == null
             ? Icons.visibility_off_rounded
             : hidden
-                ? Icons.visibility_rounded
-                : Icons.visibility_off_rounded;
+            ? Icons.visibility_rounded
+            : Icons.visibility_off_rounded;
       default:
         return Icons.not_interested_rounded;
     }

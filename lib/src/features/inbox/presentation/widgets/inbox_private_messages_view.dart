@@ -23,37 +23,25 @@ class InboxPrivateMessagesView extends StatelessWidget {
     final state = inboxBloc.state;
     final threads = groupPrivateMessagesByParticipant(privateMessages, inboxBloc.account);
 
-    return Builder(builder: (context) {
-      return CustomScrollView(
-        key: PageStorageKey<String>(l10n.message(10)),
-        slivers: [
-          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
-          if (state.status == InboxStatus.loading)
-            const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(child: CircularProgressIndicator()),
+    return Builder(
+      builder: (context) {
+        return CustomScrollView(
+          key: PageStorageKey<String>(l10n.message(10)),
+          slivers: [
+            SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+            if (state.status == InboxStatus.loading) const SliverFillRemaining(hasScrollBody: false, child: Center(child: CircularProgressIndicator())),
+            if (state.status != InboxStatus.loading && threads.isEmpty) SliverFillRemaining(hasScrollBody: false, child: Center(child: Text(l10n.noMessages))),
+            SliverList.builder(
+              itemCount: threads.length,
+              itemBuilder: (context, index) {
+                final thread = threads[index];
+                return InboxPrivateMessageThreadTile(account: inboxBloc.account, thread: thread);
+              },
             ),
-          if (state.status != InboxStatus.loading && threads.isEmpty)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(child: Text(l10n.noMessages)),
-            ),
-          SliverList.builder(
-            itemCount: threads.length,
-            itemBuilder: (context, index) {
-              final thread = threads[index];
-              return InboxPrivateMessageThreadTile(
-                account: inboxBloc.account,
-                thread: thread,
-              );
-            },
-          ),
-          if (threads.isNotEmpty)
-            SliverToBoxAdapter(
-              child: SizedBox(height: kBottomNavigationBarHeight),
-            )
-        ],
-      );
-    });
+            if (threads.isNotEmpty) SliverToBoxAdapter(child: SizedBox(height: kBottomNavigationBarHeight)),
+          ],
+        );
+      },
+    );
   }
 }

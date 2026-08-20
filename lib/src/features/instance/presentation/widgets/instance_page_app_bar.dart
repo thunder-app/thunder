@@ -35,15 +35,7 @@ class InstancePageAppBar extends StatefulWidget {
   /// Callback for when the query is changed.
   final Function(String query) onQueryChanged;
 
-  const InstancePageAppBar({
-    super.key,
-    required this.instance,
-    required this.searchSortType,
-    required this.account,
-    required this.onSortSelected,
-    required this.onQueryChanged,
-    this.bottom,
-  });
+  const InstancePageAppBar({super.key, required this.instance, required this.searchSortType, required this.account, required this.onSortSelected, required this.onQueryChanged, this.bottom});
 
   @override
   State<InstancePageAppBar> createState() => _InstancePageAppBarState();

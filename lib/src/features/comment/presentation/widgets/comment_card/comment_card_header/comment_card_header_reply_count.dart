@@ -31,10 +31,7 @@ class CommentCardHeaderReplyCount extends StatelessWidget {
       duration: const Duration(milliseconds: 130),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.primaryContainer,
-          borderRadius: const BorderRadius.all(Radius.elliptical(5.0, 5.0)),
-        ),
+        decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: const BorderRadius.all(Radius.elliptical(5.0, 5.0))),
         child: ThunderScalableText('+$replies', textScaleFactor: metadataFontSizeScale.textScaleFactor),
       ),
     );

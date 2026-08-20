@@ -35,19 +35,8 @@ class CommunityChip extends StatelessWidget {
         preferBelow: false,
         excludeFromSemantics: true,
         triggerMode: TooltipTriggerMode.longPress,
-        message: generateCommunityFullName(
-          context,
-          community.name,
-          community.title,
-          instanceName ?? '-',
-          useDisplayName: false,
-        ),
-        onTriggered: () => copyActivityPubFullName(
-          type: ActivityPubFullNameType.community,
-          name: community.name,
-          displayName: community.title,
-          instance: instanceName,
-        ),
+        message: generateCommunityFullName(context, community.name, community.title, instanceName ?? '-', useDisplayName: false),
+        onTriggered: () => copyActivityPubFullName(type: ActivityPubFullNameType.community, name: community.name, displayName: community.title, instance: instanceName),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,

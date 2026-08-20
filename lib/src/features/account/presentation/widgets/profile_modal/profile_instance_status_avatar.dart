@@ -6,14 +6,7 @@ import 'package:thunder/src/core/config/global_context.dart';
 
 /// Displays an instance icon with an animated availability indicator.
 class ProfileInstanceStatusAvatar extends StatelessWidget {
-  const ProfileInstanceStatusAvatar({
-    super.key,
-    required this.placeholderIcon,
-    required this.iconUrl,
-    required this.alive,
-    required this.selectedColor,
-    required this.active,
-  });
+  const ProfileInstanceStatusAvatar({super.key, required this.placeholderIcon, required this.iconUrl, required this.alive, required this.selectedColor, required this.active});
 
   /// Icon displayed while no remote instance icon is available.
   final IconData placeholderIcon;
@@ -49,16 +42,9 @@ class ProfileInstanceStatusAvatar extends StatelessWidget {
             crossFadeState: iconUrl == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
             duration: const Duration(milliseconds: 500),
             firstChild: SizedBox(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(placeholderIcon),
-              ),
+              child: Padding(padding: const EdgeInsets.all(8.0), child: Icon(placeholderIcon)),
             ),
-            secondChild: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              foregroundImage: iconUrl == null ? null : CachedNetworkImageProvider(iconUrl!),
-              maxRadius: 20.0,
-            ),
+            secondChild: CircleAvatar(backgroundColor: Colors.transparent, foregroundImage: iconUrl == null ? null : CachedNetworkImageProvider(iconUrl!), maxRadius: 20.0),
           ),
           Positioned(
             right: 0.0,
@@ -66,10 +52,7 @@ class ProfileInstanceStatusAvatar extends StatelessWidget {
             child: SizedBox(
               width: 12.0,
               height: 12.0,
-              child: Material(
-                borderRadius: BorderRadius.circular(10.0),
-                color: active ? selectedColor : null,
-              ),
+              child: Material(borderRadius: BorderRadius.circular(10.0), color: active ? selectedColor : null),
             ),
           ),
           Positioned(

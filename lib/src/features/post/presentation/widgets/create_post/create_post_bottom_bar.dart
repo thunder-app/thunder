@@ -114,11 +114,7 @@ class CreatePostBottomBar extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 2.0, top: 2.0, left: 4.0, right: 2.0),
             child: IconButton(
               onPressed: onTogglePreview,
-              icon: Icon(
-                showPreview ? Icons.visibility_off_rounded : Icons.visibility,
-                color: theme.colorScheme.onSecondary,
-                semanticLabel: l10n.postTogglePreview,
-              ),
+              icon: Icon(showPreview ? Icons.visibility_off_rounded : Icons.visibility, color: theme.colorScheme.onSecondary, semanticLabel: l10n.postTogglePreview),
               style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
             ),
           ),
@@ -130,20 +126,9 @@ class CreatePostBottomBar extends StatelessWidget {
                 key: const Key('create-post-submit-button'),
                 onPressed: !state.canSubmit || state.status == CreatePostStatus.submitting ? null : () => context.read<CreatePostCubit>().submitPost(),
                 icon: state.status == CreatePostStatus.submitting
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(),
-                      )
-                    : Icon(
-                        post != null ? Icons.edit_rounded : Icons.send_rounded,
-                        color: theme.colorScheme.onSecondary,
-                        semanticLabel: post != null ? l10n.editPost : l10n.createPost,
-                      ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.colorScheme.secondary,
-                  disabledBackgroundColor: getBackgroundColor(context),
-                ),
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator())
+                    : Icon(post != null ? Icons.edit_rounded : Icons.send_rounded, color: theme.colorScheme.onSecondary, semanticLabel: post != null ? l10n.editPost : l10n.createPost),
+                style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary, disabledBackgroundColor: getBackgroundColor(context)),
               ),
             ),
           ),

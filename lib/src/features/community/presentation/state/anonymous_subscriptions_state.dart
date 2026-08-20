@@ -5,13 +5,7 @@ enum AnonymousSubscriptionsStatus { initial, loading, refreshing, success, empty
 const _anonymousSubscriptionsUnset = Object();
 
 class AnonymousSubscriptionsState extends Equatable {
-  const AnonymousSubscriptionsState({
-    this.status = AnonymousSubscriptionsStatus.initial,
-    this.subscriptions = const [],
-    this.urls = const {},
-    this.message,
-    this.errorReason,
-  });
+  const AnonymousSubscriptionsState({this.status = AnonymousSubscriptionsStatus.initial, this.subscriptions = const [], this.urls = const {}, this.message, this.errorReason});
 
   final AnonymousSubscriptionsStatus status;
   final String? message;

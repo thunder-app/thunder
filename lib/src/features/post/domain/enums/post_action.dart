@@ -19,9 +19,7 @@ enum PostAction {
   pinInstance(permissionType: PermissionType.admin),
   purge(permissionType: PermissionType.admin);
 
-  const PostAction({
-    required this.permissionType,
-  });
+  const PostAction({required this.permissionType});
 
   final PermissionType permissionType;
 }

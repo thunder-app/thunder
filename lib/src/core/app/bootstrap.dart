@@ -26,10 +26,7 @@ Future<void> bootstrap() async {
     BlocProvider<AppStartupCubit>(
       create: (context) => AppStartupCubit(taskRunner: runStartupTasks),
       child: AppStartupGate(
-        builder: (context) => BlocProvider<SessionBloc>(
-          create: (context) => createSessionBloc()..add(const SessionInitialized()),
-          child: const ThunderApp(),
-        ),
+        builder: (context) => BlocProvider<SessionBloc>(create: (context) => createSessionBloc()..add(const SessionInitialized()), child: const ThunderApp()),
         onReady: () => clearImageCache(),
       ),
     ),
@@ -42,19 +39,13 @@ Future<void> bootstrap() async {
 Future<void> runStartupTasks() async {
   final appDatabase = initializeDatabase();
 
-  await Future.wait([
-    _initializePersistence(appDatabase),
-    _loadCompatibilityCertificate(),
-  ]);
+  await Future.wait([_initializePersistence(appDatabase), _loadCompatibilityCertificate()]);
 
   await performSharedPreferencesMigration();
 }
 
 Future<void> _initializePersistence(AppDatabase appDatabase) async {
-  await Future.wait([
-    performDatabaseIntegrityChecks(appDatabase),
-    UserPreferences.instance.initialize(),
-  ]);
+  await Future.wait([performDatabaseIntegrityChecks(appDatabase), UserPreferences.instance.initialize()]);
 }
 
 Future<void> _loadCompatibilityCertificate() async {

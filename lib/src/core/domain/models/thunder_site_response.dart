@@ -22,23 +22,9 @@ class ThunderSiteResponse {
   /// Site taglines.
   final List<ThunderTagline>? taglines;
 
-  ThunderSiteResponse({
-    required this.site,
-    required this.version,
-    this.myUser,
-    this.allLanguages,
-    this.discussionLanguages,
-    this.taglines,
-  });
+  ThunderSiteResponse({required this.site, required this.version, this.myUser, this.allLanguages, this.discussionLanguages, this.taglines});
 
-  ThunderSiteResponse copyWith({
-    ThunderSite? siteView,
-    String? version,
-    ThunderMyUser? myUser,
-    List<ThunderLanguage>? allLanguages,
-    List<int>? discussionLanguages,
-    List<ThunderTagline>? taglines,
-  }) {
+  ThunderSiteResponse copyWith({ThunderSite? siteView, String? version, ThunderMyUser? myUser, List<ThunderLanguage>? allLanguages, List<int>? discussionLanguages, List<ThunderTagline>? taglines}) {
     return ThunderSiteResponse(
       site: siteView ?? site,
       version: version ?? this.version,

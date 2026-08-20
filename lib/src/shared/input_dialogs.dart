@@ -18,12 +18,7 @@ import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/core/app/repository_factories.dart';
 
 /// Shows a dialog which allows typing/search for a user
-void showUserInputDialog(
-  BuildContext context, {
-  required String title,
-  required Account account,
-  required void Function(ThunderUser) onUserSelected,
-}) async {
+void showUserInputDialog(BuildContext context, {required String title, required Account account, required void Function(ThunderUser) onUserSelected}) async {
   final l10n = GlobalContext.l10n;
 
   Future<String?> onSubmitted({ThunderUser? payload, String? value}) async {
@@ -66,29 +61,16 @@ void showUserInputDialog(
   );
 }
 
-Future<List<ThunderUser>> getUserSuggestions(
-  BuildContext context, {
-  required String query,
-  required Account account,
-}) async {
+Future<List<ThunderUser>> getUserSuggestions(BuildContext context, {required String query, required Account account}) async {
   if (query.isEmpty) return [];
 
-  final response = await createSearchRepository(account).search(
-    query: query,
-    type: MetaSearchType.users,
-    limit: 20,
-  );
+  final response = await createSearchRepository(account).search(query: query, type: MetaSearchType.users, limit: 20);
 
   return response.users;
 }
 
 Widget buildUserSuggestionWidget(BuildContext context, ThunderUser payload, {void Function(ThunderUser)? onSelected}) {
-  final tooltip = generateUserFullName(
-    context,
-    payload.name,
-    payload.displayName,
-    fetchInstanceNameFromUrl(payload.actorId),
-  );
+  final tooltip = generateUserFullName(context, payload.name, payload.displayName, fetchInstanceNameFromUrl(payload.actorId));
 
   return Tooltip(
     message: tooltip,
@@ -188,12 +170,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(
 }) async {
   if (query.isEmpty) return suggestions ?? [];
 
-  final response = await createSearchRepository(account).search(
-    query: query,
-    type: MetaSearchType.communities,
-    limit: 20,
-    sort: SearchSortType.topAll,
-  );
+  final response = await createSearchRepository(account).search(query: query, type: MetaSearchType.communities, limit: 20, sort: SearchSortType.topAll);
 
   return prioritizeFavorites(response.communities, favouritedCommunities) ?? [];
 }
@@ -201,12 +178,7 @@ Future<List<ThunderCommunity>> getCommunitySuggestions(
 Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity payload, {Set<int>? favouriteCommunityIds, void Function(ThunderCommunity)? onSelected}) {
   final l10n = GlobalContext.l10n;
 
-  final tooltip = generateCommunityFullName(
-    context,
-    payload.name,
-    payload.title,
-    fetchInstanceNameFromUrl(payload.actorId),
-  );
+  final tooltip = generateCommunityFullName(context, payload.name, payload.title, fetchInstanceNameFromUrl(payload.actorId));
 
   return Tooltip(
     message: tooltip,
@@ -238,18 +210,17 @@ Widget buildCommunitySuggestionWidget(BuildContext context, ThunderCommunity pay
                     Icon(Icons.people_rounded, size: 16.0),
                     SizedBox(width: 5.0),
                     Text(formatNumberToK(payload.counts.subscribers ?? -1)),
-                    Text(' · ${switch (payload.context.subscribed) {
-                      SubscriptionStatus.pending => l10n.pending,
-                      SubscriptionStatus.subscribed => l10n.subscribed,
-                      SubscriptionStatus.notSubscribed => '',
-                      _ => '',
-                    }}'),
-                    if (favouriteCommunityIds?.contains(payload.id) == true) ...[
-                      Text(' · '),
-                      Icon(Icons.star_rounded, size: 15.0),
-                    ],
+                    Text(
+                      ' · ${switch (payload.context.subscribed) {
+                        SubscriptionStatus.pending => l10n.pending,
+                        SubscriptionStatus.subscribed => l10n.subscribed,
+                        SubscriptionStatus.notSubscribed => '',
+                        _ => '',
+                      }}',
+                    ),
+                    if (favouriteCommunityIds?.contains(payload.id) == true) ...[Text(' · '), Icon(Icons.star_rounded, size: 15.0)],
                   ],
-                )
+                ),
               ],
             ],
           ),
@@ -316,11 +287,7 @@ void showInstanceInputDialog(
 Future<void> _loadLinkedInstances(Account account, List<ThunderInstanceInfo> out) async {
   try {
     final federated = await createInstanceRepository(account).federated();
-    final linked = federated.linked
-        .map(
-          (instance) => ThunderInstanceInfo(id: instance.id, domain: instance.domain, name: instance.domain),
-        )
-        .toList();
+    final linked = federated.linked.map((instance) => ThunderInstanceInfo(id: instance.id, domain: instance.domain, name: instance.domain)).toList();
 
     out
       ..clear()
@@ -352,17 +319,10 @@ Widget buildInstanceSuggestionWidget(BuildContext context, ThunderInstanceInfo p
           child: Text(
             payload.domain[0].toUpperCase(),
             semanticsLabel: '',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
           ),
         ),
-        title: Text(
-          payload.domain,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        title: Text(payload.domain, maxLines: 1, overflow: TextOverflow.ellipsis),
       ),
     ),
   );
@@ -460,23 +420,13 @@ Widget buildLanguageSuggestionWidget(BuildContext context, ThunderLanguage paylo
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
-      child: ListTile(
-        title: Text(
-          payload.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
+      child: ListTile(title: Text(payload.name, maxLines: 1, overflow: TextOverflow.ellipsis)),
     ),
   );
 }
 
 /// Shows a dialog which allows typing/search for a keyword
-void showKeywordInputDialog(
-  BuildContext context, {
-  required String title,
-  required void Function(String) onKeywordSelected,
-}) async {
+void showKeywordInputDialog(BuildContext context, {required String title, required void Function(String) onKeywordSelected}) async {
   final l10n = GlobalContext.l10n;
 
   Future<String?> onSubmitted({String? payload, String? value}) async {

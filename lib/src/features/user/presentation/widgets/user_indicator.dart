@@ -85,13 +85,7 @@ class _UserIndicatorState extends State<UserIndicator> {
         if (user == null) {
           return SizedBox(
             height: 40,
-            child: Center(
-              child: SizedBox(
-                width: 28,
-                height: 28,
-                child: CircularProgressIndicator(),
-              ),
-            ),
+            child: Center(child: SizedBox(width: 28, height: 28, child: CircularProgressIndicator())),
           );
         }
 

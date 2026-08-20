@@ -42,11 +42,7 @@ class FeedScrollBody extends StatelessWidget {
       controller: scrollController,
       slivers: <Widget>[
         feedType == FeedType.account ? AccountPageAppBar(scrollController: scrollController) : FeedPageAppBar(scrollController: scrollController, scaffoldStateKey: scaffoldStateKey),
-        _FeedBodySliver(
-          selectedSubview: selectedSubview,
-          queuedForRemoval: queuedForRemoval,
-          onChangeFeedType: onChangeFeedType,
-        ),
+        _FeedBodySliver(selectedSubview: selectedSubview, queuedForRemoval: queuedForRemoval, onChangeFeedType: onChangeFeedType),
       ],
     );
   }
@@ -55,10 +51,10 @@ class FeedScrollBody extends StatelessWidget {
 enum FeedBodyPhase { loading, unavailable, content }
 
 FeedBodyPhase feedBodyPhaseForStatus(FeedStatus status) => switch (status) {
-      FeedStatus.initial => FeedBodyPhase.loading,
-      FeedStatus.failureLoadingCommunity || FeedStatus.failureLoadingUser => FeedBodyPhase.unavailable,
-      _ => FeedBodyPhase.content,
-    };
+  FeedStatus.initial => FeedBodyPhase.loading,
+  FeedStatus.failureLoadingCommunity || FeedStatus.failureLoadingUser => FeedBodyPhase.unavailable,
+  _ => FeedBodyPhase.content,
+};
 
 bool feedHeaderChanged(FeedState previous, FeedState current) =>
     previous.feedType != current.feedType ||
@@ -73,11 +69,7 @@ bool feedContentChanged(FeedState previous, FeedState current) => previous.posts
 bool feedEndStateChanged(FeedState previous, FeedState current) => previous.hasReachedPostsEnd != current.hasReachedPostsEnd || previous.hasReachedCommentsEnd != current.hasReachedCommentsEnd;
 
 class _FeedBodySliver extends StatelessWidget {
-  const _FeedBodySliver({
-    required this.selectedSubview,
-    required this.queuedForRemoval,
-    required this.onChangeFeedType,
-  });
+  const _FeedBodySliver({required this.selectedSubview, required this.queuedForRemoval, required this.onChangeFeedType});
 
   final FeedTypeSubview selectedSubview;
   final ValueListenable<Set<int>> queuedForRemoval;
@@ -91,28 +83,19 @@ class _FeedBodySliver extends StatelessWidget {
         FeedBodyPhase.loading => const FeedInitialLoadingSliver(),
         FeedBodyPhase.unavailable => const SliverToBoxAdapter(child: SizedBox.shrink()),
         FeedBodyPhase.content => SliverMainAxisGroup(
-            slivers: [
-              _FeedHeaderSliverBuilder(
-                selectedSubview: selectedSubview,
-                onChangeFeedType: onChangeFeedType,
-              ),
-              _FeedContentSliverBuilder(
-                selectedSubview: selectedSubview,
-                queuedForRemoval: queuedForRemoval,
-              ),
-              _FeedBottomSliverBuilder(selectedSubview: selectedSubview),
-            ],
-          ),
+          slivers: [
+            _FeedHeaderSliverBuilder(selectedSubview: selectedSubview, onChangeFeedType: onChangeFeedType),
+            _FeedContentSliverBuilder(selectedSubview: selectedSubview, queuedForRemoval: queuedForRemoval),
+            _FeedBottomSliverBuilder(selectedSubview: selectedSubview),
+          ],
+        ),
       },
     );
   }
 }
 
 class _FeedHeaderSliverBuilder extends StatelessWidget {
-  const _FeedHeaderSliverBuilder({
-    required this.selectedSubview,
-    required this.onChangeFeedType,
-  });
+  const _FeedHeaderSliverBuilder({required this.selectedSubview, required this.onChangeFeedType});
 
   final FeedTypeSubview selectedSubview;
   final ValueChanged<FeedTypeSubview> onChangeFeedType;
@@ -136,10 +119,7 @@ class _FeedHeaderSliverBuilder extends StatelessWidget {
 }
 
 class _FeedContentSliverBuilder extends StatelessWidget {
-  const _FeedContentSliverBuilder({
-    required this.selectedSubview,
-    required this.queuedForRemoval,
-  });
+  const _FeedContentSliverBuilder({required this.selectedSubview, required this.queuedForRemoval});
 
   final FeedTypeSubview selectedSubview;
   final ValueListenable<Set<int>> queuedForRemoval;
@@ -151,13 +131,8 @@ class _FeedContentSliverBuilder extends StatelessWidget {
       builder: (context, state) {
         return ValueListenableBuilder<Set<int>>(
           valueListenable: queuedForRemoval,
-          builder: (context, queuedPostIds, child) => FeedContentSliver(
-            posts: state.posts,
-            comments: state.comments,
-            feedType: state.feedType,
-            selectedSubview: selectedSubview,
-            queuedForRemoval: queuedPostIds,
-          ),
+          builder: (context, queuedPostIds, child) =>
+              FeedContentSliver(posts: state.posts, comments: state.comments, feedType: state.feedType, selectedSubview: selectedSubview, queuedForRemoval: queuedPostIds),
         );
       },
     );
@@ -173,9 +148,7 @@ class _FeedBottomSliverBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<FeedBloc, FeedState>(
       buildWhen: feedEndStateChanged,
-      builder: (context, state) => FeedBottomSliver(
-        hasReachedEnd: selectedSubview == FeedTypeSubview.post ? state.hasReachedPostsEnd : state.hasReachedCommentsEnd,
-      ),
+      builder: (context, state) => FeedBottomSliver(hasReachedEnd: selectedSubview == FeedTypeSubview.post ? state.hasReachedPostsEnd : state.hasReachedCommentsEnd),
     );
   }
 }

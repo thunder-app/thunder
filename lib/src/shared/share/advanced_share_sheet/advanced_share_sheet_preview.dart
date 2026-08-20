@@ -70,14 +70,7 @@ class _ShareImagePreviewState extends State<ShareImagePreview> {
                 if (widget.nsfw && blur) {
                   setState(() => blur = false);
                 } else {
-                  showImageViewer(
-                    context,
-                    url: widget.url,
-                    bytes: widget.bytes,
-                    postId: widget.postId,
-                    navigateToPost: widget.navigateToPost,
-                    altText: widget.altText,
-                  );
+                  showImageViewer(context, url: widget.url, bytes: widget.bytes, postId: widget.postId, navigateToPost: widget.navigateToPost, altText: widget.altText);
                 }
               },
             )
@@ -93,13 +86,8 @@ class _ShareImagePreviewState extends State<ShareImagePreview> {
     final readBlendMode = widget.read == true ? BlendMode.modulate : null;
     final alignment = widget.isComment == true ? Alignment.topCenter : Alignment.center;
     final constraints = widget.isComment == true
-        ? BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.width * 0.55,
-            maxWidth: MediaQuery.of(context).size.width * 0.60,
-          )
-        : BoxConstraints(
-            maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - (widget.url != null && widget.edgeToEdgeImages ? 0 : 24),
-          );
+        ? BoxConstraints(maxHeight: MediaQuery.of(context).size.width * 0.55, maxWidth: MediaQuery.of(context).size.width * 0.60)
+        : BoxConstraints(maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - (widget.url != null && widget.edgeToEdgeImages ? 0 : 24));
 
     return Container(
       clipBehavior: Clip.hardEdge,
@@ -123,20 +111,9 @@ class _ShareImagePreviewState extends State<ShareImagePreview> {
                     fadeOutDuration: Duration.zero,
                     memCacheWidth: memCacheWidth,
                     placeholder: (context, url) => Container(color: getBackgroundColor(context)),
-                    errorWidget: (context, url, error) => Container(
-                      color: getBackgroundColor(context),
-                      child: const Icon(Icons.image_not_supported_outlined),
-                    ),
+                    errorWidget: (context, url, error) => Container(color: getBackgroundColor(context), child: const Icon(Icons.image_not_supported_outlined)),
                     imageBuilder: (context, imageProvider) {
-                      return Image(
-                        image: imageProvider,
-                        color: readColor,
-                        colorBlendMode: readBlendMode,
-                        alignment: alignment,
-                        height: widget.height,
-                        width: widget.width,
-                        fit: BoxFit.cover,
-                      );
+                      return Image(image: imageProvider, color: readColor, colorBlendMode: readBlendMode, alignment: alignment, height: widget.height, width: widget.width, fit: BoxFit.cover);
                     },
                   )
                 : Image.memory(
@@ -149,12 +126,7 @@ class _ShareImagePreviewState extends State<ShareImagePreview> {
                     fit: BoxFit.cover,
                     cacheWidth: memCacheWidth,
                     errorBuilder: (context, error, stackTrace) {
-                      return Text(
-                        l10n.unableToLoadImage,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
-                        ),
-                      );
+                      return Text(l10n.unableToLoadImage, style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5)));
                     },
                   ),
           ),
@@ -167,10 +139,8 @@ class _ShareImagePreviewState extends State<ShareImagePreview> {
                 child: child,
               );
             },
-            child: DecoratedBox(
-              decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5)),
-            ),
-          )
+            child: DecoratedBox(decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5))),
+          ),
         ],
       ),
     );

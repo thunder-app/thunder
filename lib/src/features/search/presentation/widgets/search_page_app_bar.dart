@@ -24,14 +24,7 @@ class SearchPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Called when the clear button is pressed.
   final VoidCallback onClear;
 
-  const SearchPageAppBar({
-    super.key,
-    required this.controller,
-    required this.focusNode,
-    required this.hintText,
-    required this.onChanged,
-    required this.onClear,
-  });
+  const SearchPageAppBar({super.key, required this.controller, required this.focusNode, required this.hintText, required this.onChanged, required this.onClear});
 
   @override
   Size get preferredSize => const Size.fromHeight(APP_BAR_HEIGHT);
@@ -53,10 +46,7 @@ class SearchPageAppBar extends StatelessWidget implements PreferredSizeWidget {
           keyboardType: (!kIsWeb && Platform.isIOS) ? TextInputType.text : TextInputType.url,
           onChanged: onChanged,
           onTap: () => HapticFeedback.selectionClick(),
-          leading: const Padding(
-            padding: EdgeInsets.only(left: 8.0),
-            child: Icon(Icons.search_rounded),
-          ),
+          leading: const Padding(padding: EdgeInsets.only(left: 8.0), child: Icon(Icons.search_rounded)),
           trailing: controller.text.isNotEmpty
               ? [
                   IconButton(

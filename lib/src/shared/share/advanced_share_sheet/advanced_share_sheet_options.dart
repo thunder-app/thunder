@@ -30,22 +30,22 @@ class AdvancedShareSheetOptions {
   bool includeCommnity;
 
   AdvancedShareSheetOptions copy() => AdvancedShareSheetOptions(
-        includePostLink: includePostLink,
-        includeExternalLink: includeExternalLink,
-        includeImage: includeImage,
-        includeText: includeText,
-        includeTitle: includeTitle,
-        includeCommnity: includeCommnity,
-      );
+    includePostLink: includePostLink,
+    includeExternalLink: includeExternalLink,
+    includeImage: includeImage,
+    includeText: includeText,
+    includeTitle: includeTitle,
+    includeCommnity: includeCommnity,
+  );
 
   Map<String, dynamic> toJson() => {
-        'includePostLink': includePostLink,
-        'includeExternalLink': includeExternalLink,
-        'includeImage': includeImage,
-        'includeText': includeText,
-        'includeTitle': includeTitle,
-        'includeCommnity': includeCommnity,
-      };
+    'includePostLink': includePostLink,
+    'includeExternalLink': includeExternalLink,
+    'includeImage': includeImage,
+    'includeText': includeText,
+    'includeTitle': includeTitle,
+    'includeCommnity': includeCommnity,
+  };
 
   static AdvancedShareSheetOptions fromJson(Map<String, dynamic> json) {
     final defaults = AdvancedShareSheetOptions();
@@ -97,10 +97,7 @@ bool advancedShareIsImageCustomized(AdvancedShareSheetOptions options, ThunderPo
 }
 
 String? advancedShareText(AdvancedShareSheetOptions options, ThunderPost post) {
-  final parts = [
-    if (options.includePostLink) post.apId,
-    if (options.includeExternalLink) advancedShareExternalLink(post),
-  ].whereType<String>().toList();
+  final parts = [if (options.includePostLink) post.apId, if (options.includeExternalLink) advancedShareExternalLink(post)].whereType<String>().toList();
 
   return parts.isEmpty ? null : parts.join('\n');
 }

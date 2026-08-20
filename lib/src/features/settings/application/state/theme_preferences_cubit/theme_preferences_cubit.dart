@@ -13,9 +13,7 @@ part 'theme_preferences_state.dart';
 
 /// Cubit for managing theme-related preferences
 class ThemePreferencesCubit extends Cubit<ThemePreferencesState> {
-  ThemePreferencesCubit({required PreferencesStore preferencesStore})
-      : _preferencesStore = preferencesStore,
-        super(const ThemePreferencesState()) {
+  ThemePreferencesCubit({required PreferencesStore preferencesStore}) : _preferencesStore = preferencesStore, super(const ThemePreferencesState()) {
     load();
   }
 
@@ -68,35 +66,37 @@ class ThemePreferencesCubit extends Cubit<ThemePreferencesState> {
     final communityFullNameInstanceNameThickness = NameThickness.values.byName(_preferencesStore.getLocalSetting(LocalSettings.communityFullNameInstanceNameThickness) ?? NameThickness.light.name);
     final communityFullNameInstanceNameColor = NameColor.fromString(color: _preferencesStore.getLocalSetting(LocalSettings.communityFullNameInstanceNameColor) ?? NameColor.defaultColor);
 
-    emit(ThemePreferencesState(
-      themeType: themeType,
-      selectedTheme: selectedTheme,
-      useMaterialYouTheme: useMaterialYouTheme,
-      reduceAnimations: reduceAnimations,
-      upvoteColor: upvoteColor,
-      downvoteColor: downvoteColor,
-      saveColor: saveColor,
-      markReadColor: markReadColor,
-      replyColor: replyColor,
-      hideColor: hideColor,
-      titleFontSizeScale: titleFontSizeScale,
-      titleFontWeight: titleFontWeight,
-      contentFontSizeScale: contentFontSizeScale,
-      commentFontSizeScale: commentFontSizeScale,
-      metadataFontSizeScale: metadataFontSizeScale,
-      useDisplayNamesForUsers: useDisplayNamesForUsers,
-      useDisplayNamesForCommunities: useDisplayNamesForCommunities,
-      userSeparator: userSeparator,
-      userFullNameUserNameThickness: userFullNameUserNameThickness,
-      userFullNameUserNameColor: userFullNameUserNameColor,
-      userFullNameInstanceNameThickness: userFullNameInstanceNameThickness,
-      userFullNameInstanceNameColor: userFullNameInstanceNameColor,
-      communitySeparator: communitySeparator,
-      communityFullNameCommunityNameThickness: communityFullNameCommunityNameThickness,
-      communityFullNameCommunityNameColor: communityFullNameCommunityNameColor,
-      communityFullNameInstanceNameThickness: communityFullNameInstanceNameThickness,
-      communityFullNameInstanceNameColor: communityFullNameInstanceNameColor,
-    ));
+    emit(
+      ThemePreferencesState(
+        themeType: themeType,
+        selectedTheme: selectedTheme,
+        useMaterialYouTheme: useMaterialYouTheme,
+        reduceAnimations: reduceAnimations,
+        upvoteColor: upvoteColor,
+        downvoteColor: downvoteColor,
+        saveColor: saveColor,
+        markReadColor: markReadColor,
+        replyColor: replyColor,
+        hideColor: hideColor,
+        titleFontSizeScale: titleFontSizeScale,
+        titleFontWeight: titleFontWeight,
+        contentFontSizeScale: contentFontSizeScale,
+        commentFontSizeScale: commentFontSizeScale,
+        metadataFontSizeScale: metadataFontSizeScale,
+        useDisplayNamesForUsers: useDisplayNamesForUsers,
+        useDisplayNamesForCommunities: useDisplayNamesForCommunities,
+        userSeparator: userSeparator,
+        userFullNameUserNameThickness: userFullNameUserNameThickness,
+        userFullNameUserNameColor: userFullNameUserNameColor,
+        userFullNameInstanceNameThickness: userFullNameInstanceNameThickness,
+        userFullNameInstanceNameColor: userFullNameInstanceNameColor,
+        communitySeparator: communitySeparator,
+        communityFullNameCommunityNameThickness: communityFullNameCommunityNameThickness,
+        communityFullNameCommunityNameColor: communityFullNameCommunityNameColor,
+        communityFullNameInstanceNameThickness: communityFullNameInstanceNameThickness,
+        communityFullNameInstanceNameColor: communityFullNameInstanceNameColor,
+      ),
+    );
   }
 
   /// Reloads preferences from storage. This should be called when preferences are updated elsewhere

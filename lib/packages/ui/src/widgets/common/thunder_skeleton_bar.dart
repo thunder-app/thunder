@@ -3,13 +3,7 @@ import 'package:flutter/material.dart';
 /// A single skeleton placeholder bar.
 @immutable
 class ThunderSkeletonBar extends StatelessWidget {
-  const ThunderSkeletonBar({
-    super.key,
-    required this.width,
-    this.height = 10.0,
-    this.opacity = 0.25,
-    this.padding = EdgeInsets.zero,
-  });
+  const ThunderSkeletonBar({super.key, required this.width, this.height = 10.0, this.opacity = 0.25, this.padding = EdgeInsets.zero});
 
   /// Bar width.
   final double width;

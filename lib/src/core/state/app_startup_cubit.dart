@@ -6,9 +6,7 @@ part 'app_startup_state.dart';
 typedef StartupTaskRunner = Future<void> Function();
 
 class AppStartupCubit extends Cubit<AppStartupState> {
-  AppStartupCubit({required StartupTaskRunner taskRunner})
-      : _taskRunner = taskRunner,
-        super(const AppStartupState());
+  AppStartupCubit({required StartupTaskRunner taskRunner}) : _taskRunner = taskRunner, super(const AppStartupState());
 
   final StartupTaskRunner _taskRunner;
 

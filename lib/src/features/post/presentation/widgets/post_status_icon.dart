@@ -29,16 +29,7 @@ class PostStatusIcon extends StatelessWidget {
   /// Determines whether the status icons should be dimmed or not. This is usually to indicate when a post has been read.
   final bool dim;
 
-  const PostStatusIcon({
-    super.key,
-    this.hidden = false,
-    this.locked = false,
-    this.saved = false,
-    this.pinned = false,
-    this.deleted = false,
-    this.removed = false,
-    this.dim = false,
-  });
+  const PostStatusIcon({super.key, this.hidden = false, this.locked = false, this.saved = false, this.pinned = false, this.deleted = false, this.removed = false, this.dim = false});
 
   static Color getDimmedColor(Color color) => color.withValues(alpha: 0.55);
 
@@ -46,12 +37,7 @@ class PostStatusIcon extends StatelessWidget {
   Widget _buildStatusIcon(BuildContext context, PostStatusType status, double textScaleFactor) {
     final color = dim ? getDimmedColor(status.getColor(context)) : status.getColor(context);
 
-    return Icon(
-      status.icon,
-      color: color,
-      size: status.getScaledSize(textScaleFactor),
-      semanticLabel: status.getLabel(),
-    );
+    return Icon(status.icon, color: color, size: status.getScaledSize(textScaleFactor), semanticLabel: status.getLabel());
   }
 
   /// Builds the status icons for the post.
@@ -75,9 +61,6 @@ class PostStatusIcon extends StatelessWidget {
 
     if (statuses.isEmpty) return SizedBox.shrink();
 
-    return Wrap(
-      spacing: 2.0,
-      children: [...statuses, SizedBox(width: 3.5)],
-    );
+    return Wrap(spacing: 2.0, children: [...statuses, SizedBox(width: 3.5)]);
   }
 }

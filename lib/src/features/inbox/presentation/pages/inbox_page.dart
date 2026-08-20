@@ -39,8 +39,8 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
   InboxType get inboxType => tabController.index == 0
       ? InboxType.replies
       : tabController.index == 1
-          ? InboxType.mentions
-          : InboxType.messages;
+      ? InboxType.mentions
+      : InboxType.messages;
 
   @override
   void initState() {
@@ -148,7 +148,10 @@ class _InboxPageState extends State<InboxPage> with SingleTickerProviderStateMix
                         icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
                         onPressed: () => context.read<InboxBloc>().add(GetInboxEvent(inboxType: inboxType, reset: true, showAll: showAll)),
                       ),
-                      IconButton(onPressed: () => showSortBottomSheet(), icon: Icon(Icons.sort, semanticLabel: l10n.sortBy)),
+                      IconButton(
+                        onPressed: () => showSortBottomSheet(),
+                        icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
+                      ),
                       Semantics(
                         label: l10n.menu,
                         child: PopupMenuButton(

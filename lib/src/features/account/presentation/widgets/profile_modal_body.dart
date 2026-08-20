@@ -15,12 +15,7 @@ import 'package:thunder/src/features/settings/api.dart';
 ///
 /// The widget owns a nested navigator so the login page can be opened without dismissing the surrounding modal sheet.
 class ProfileModalBody extends StatefulWidget {
-  const ProfileModalBody({
-    super.key,
-    this.showLogoutDialog = false,
-    this.quickSelectMode = false,
-    this.customHeading,
-  });
+  const ProfileModalBody({super.key, this.showLogoutDialog = false, this.quickSelectMode = false, this.customHeading});
 
   /// Whether to show the logout confirmation dialog after the modal opens.
   final bool showLogoutDialog;
@@ -57,33 +52,19 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
       child: Navigator(
         key: _shellNavigatorKey,
         onDidRemovePage: (_) {},
-        pages: [
-          MaterialPage(
-            canPop: false,
-            child: _buildProfileSelect(),
-          ),
-        ],
+        pages: [MaterialPage(canPop: false, child: _buildProfileSelect())],
         onGenerateRoute: _onGenerateRoute,
       ),
     );
   }
 
   Widget _buildProfileSelect() {
-    return ProfileSelect(
-      pushRegister: _pushRegister,
-      showLogoutDialog: widget.showLogoutDialog,
-      quickSelectMode: widget.quickSelectMode,
-      customHeading: widget.customHeading,
-    );
+    return ProfileSelect(pushRegister: _pushRegister, showLogoutDialog: widget.showLogoutDialog, quickSelectMode: widget.quickSelectMode, customHeading: widget.customHeading);
   }
 
   Route<dynamic> _onGenerateRoute(RouteSettings settings) {
     final Widget page = switch (settings.name) {
-      '/login' => LoginPage(
-          popRegister: _popRegister,
-          popModal: _popModal,
-          anonymous: ((settings.arguments as Map<String, bool>?)?['anonymous']) ?? false,
-        ),
+      '/login' => LoginPage(popRegister: _popRegister, popModal: _popModal, anonymous: ((settings.arguments as Map<String, bool>?)?['anonymous']) ?? false),
       _ => _buildProfileSelect(),
     };
 

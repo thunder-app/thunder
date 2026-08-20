@@ -16,12 +16,7 @@ import 'package:thunder/src/shared/name/full_name_widgets.dart';
 /// Page showing a direct-message conversation with one participant.
 class PrivateMessageThreadPage extends StatefulWidget {
   /// Creates a direct-message thread page.
-  const PrivateMessageThreadPage({
-    super.key,
-    required this.account,
-    required this.participant,
-    this.onThreadUpdated,
-  });
+  const PrivateMessageThreadPage({super.key, required this.account, required this.participant, this.onThreadUpdated});
 
   /// Account viewing the thread.
   final Account account;
@@ -74,12 +69,7 @@ class _PrivateMessageThreadPageState extends State<PrivateMessageThreadPage> {
 
   Future<void> _openComposer() async {
     final cubit = context.read<PrivateMessageThreadCubit>();
-    final result = await navigateToCreatePrivateMessagePage(
-      context,
-      account: widget.account,
-      recipient: widget.participant,
-      initialContent: cubit.state.quickReply,
-    );
+    final result = await navigateToCreatePrivateMessagePage(context, account: widget.account, recipient: widget.participant, initialContent: cubit.state.quickReply);
 
     if (!mounted || result == null) return;
     if (!_belongsToCurrentThread(result)) return;
@@ -160,17 +150,11 @@ class _PrivateMessageThreadPageState extends State<PrivateMessageThreadPage> {
                                 itemCount: state.messages.length,
                                 itemBuilder: (context, index) {
                                   final message = state.messages[index];
-                                  return PrivateMessageBubble(
-                                    account: widget.account,
-                                    message: message,
-                                  );
+                                  return PrivateMessageBubble(account: widget.account, message: message);
                                 },
                               ),
                             ),
-                            const SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: SizedBox.shrink(),
-                            ),
+                            const SliverFillRemaining(hasScrollBody: false, child: SizedBox.shrink()),
                           ],
                         ),
                 ),

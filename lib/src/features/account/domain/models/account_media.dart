@@ -15,11 +15,5 @@ class AccountMediaItem {
   /// Delete token used by older pictrs-backed services.
   final String? deleteToken;
 
-  const AccountMediaItem({
-    required this.alias,
-    required this.url,
-    this.uploadedAt,
-    this.thumbnailForPostId,
-    this.deleteToken,
-  });
+  const AccountMediaItem({required this.alias, required this.url, this.uploadedAt, this.thumbnailForPostId, this.deleteToken});
 }

@@ -8,31 +8,13 @@ abstract class CommentRepository {
   Future<ThunderComment> getComment(int commentId);
 
   /// Fetches comments for a post
-  Future<CommentPage> getComments({
-    required int postId,
-    int? parentId,
-    int? page,
-    String? cursor,
-    CommentSortType? commentSortType,
-    int? maxDepth,
-    int? limit,
-    int? communityId,
-  });
+  Future<CommentPage> getComments({required int postId, int? parentId, int? page, String? cursor, CommentSortType? commentSortType, int? maxDepth, int? limit, int? communityId});
 
   /// Creates a new comment
-  Future<ThunderComment> create({
-    required int postId,
-    required String content,
-    int? parentId,
-    int? languageId,
-  });
+  Future<ThunderComment> create({required int postId, required String content, int? parentId, int? languageId});
 
   /// Edits an existing comment
-  Future<ThunderComment> edit({
-    required int commentId,
-    required String content,
-    int? languageId,
-  });
+  Future<ThunderComment> edit({required int commentId, required String content, int? languageId});
 
   /// Votes on a comment
   Future<ThunderComment> vote(ThunderComment comment, int score);
@@ -61,12 +43,9 @@ class CommentRepositoryImpl implements CommentRepository {
   /// Creates a new CommentRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  CommentRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  CommentRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
   Future<ThunderComment> getComment(int commentId) async {
@@ -75,16 +54,7 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
-  Future<CommentPage> getComments({
-    required int postId,
-    int? parentId,
-    int? page,
-    String? cursor,
-    CommentSortType? commentSortType,
-    int? maxDepth,
-    int? limit,
-    int? communityId,
-  }) async {
+  Future<CommentPage> getComments({required int postId, int? parentId, int? page, String? cursor, CommentSortType? commentSortType, int? maxDepth, int? limit, int? communityId}) async {
     final api = await _api.get();
     final response = await api.getComments(
       postId: postId,
@@ -97,46 +67,25 @@ class CommentRepositoryImpl implements CommentRepository {
       commentSortType: commentSortType,
     );
 
-    return CommentPage(
-      comments: response.comments,
-      nextPage: response.nextPage,
-    );
+    return CommentPage(comments: response.comments, nextPage: response.nextPage);
   }
 
   @override
-  Future<ThunderComment> create({
-    required int postId,
-    required String content,
-    int? parentId,
-    int? languageId,
-  }) async {
+  Future<ThunderComment> create({required int postId, required String content, int? parentId, int? languageId}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final api = await _api.get();
-    return api.createComment(
-      postId: postId,
-      content: content,
-      parentId: parentId,
-      languageId: languageId,
-    );
+    return api.createComment(postId: postId, content: content, parentId: parentId, languageId: languageId);
   }
 
   @override
-  Future<ThunderComment> edit({
-    required int commentId,
-    required String content,
-    int? languageId,
-  }) async {
+  Future<ThunderComment> edit({required int commentId, required String content, int? languageId}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
     final api = await _api.get();
-    return api.editComment(
-      commentId: commentId,
-      content: content,
-      languageId: languageId,
-    );
+    return api.editComment(commentId: commentId, content: content, languageId: languageId);
   }
 
   @override

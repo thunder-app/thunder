@@ -16,13 +16,7 @@ class PostFlairTags extends StatelessWidget {
   /// Maximum number of tags to display before collapsing into a counter.
   final int? maxVisibleTags;
 
-  const PostFlairTags({
-    super.key,
-    this.flairs = const [],
-    this.tags = const [],
-    this.dim = false,
-    this.maxVisibleTags,
-  });
+  const PostFlairTags({super.key, this.flairs = const [], this.tags = const [], this.dim = false, this.maxVisibleTags});
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +24,7 @@ class PostFlairTags extends StatelessWidget {
 
     final visibleTags = maxVisibleTags == null ? tags : tags.take(maxVisibleTags!).toList();
     final hiddenTagCount = tags.length - visibleTags.length;
-    final labels = [
-      ...flairs.map(_PostLabel.flair),
-      ...visibleTags.map(_PostLabel.tag),
-      if (hiddenTagCount > 0) _PostLabel.tag('+$hiddenTagCount'),
-    ];
+    final labels = [...flairs.map(_PostLabel.flair), ...visibleTags.map(_PostLabel.tag), if (hiddenTagCount > 0) _PostLabel.tag('+$hiddenTagCount')];
 
     return Wrap(
       spacing: 6.0,
@@ -60,12 +50,7 @@ class _PostLabel {
   const _PostLabel({required this.text, required this.isFlair, this.backgroundColor, this.foregroundColor});
 
   factory _PostLabel.flair(ThunderFlair flair) {
-    return _PostLabel(
-      text: flair.title,
-      isFlair: true,
-      backgroundColor: flair.parsedBackgroundColor,
-      foregroundColor: flair.parsedTextColor,
-    );
+    return _PostLabel(text: flair.title, isFlair: true, backgroundColor: flair.parsedBackgroundColor, foregroundColor: flair.parsedTextColor);
   }
 
   factory _PostLabel.tag(String tag) {
@@ -94,19 +79,12 @@ class _PostLabelChip extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
-      decoration: BoxDecoration(
-        color: resolvedBackground,
-        borderRadius: BorderRadius.circular(999),
-      ),
+      decoration: BoxDecoration(color: resolvedBackground, borderRadius: BorderRadius.circular(999)),
       child: Text(
         label.text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: resolvedForeground,
-          fontWeight: label.isFlair ? FontWeight.w600 : FontWeight.w500,
-          height: 1.1,
-        ),
+        style: theme.textTheme.labelSmall?.copyWith(color: resolvedForeground, fontWeight: label.isFlair ? FontWeight.w600 : FontWeight.w500, height: 1.1),
       ),
     );
   }

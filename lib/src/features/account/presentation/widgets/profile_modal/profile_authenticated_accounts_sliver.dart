@@ -97,10 +97,6 @@ class ProfileAuthenticatedAccountsSliver extends StatelessWidget {
 Widget profileReorderProxyDecorator(Widget child, int index, Animation<double> animation) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-    child: Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(50.0),
-      child: child,
-    ),
+    child: Material(elevation: 5.0, borderRadius: BorderRadius.circular(50.0), child: child),
   );
 }

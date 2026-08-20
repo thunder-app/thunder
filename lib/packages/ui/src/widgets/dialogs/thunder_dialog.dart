@@ -69,10 +69,7 @@ class _ThunderDialogState extends State<ThunderDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.title),
-      content: SizedBox(
-        width: min(MediaQuery.of(context).size.width, 700),
-        child: widget.contentText != null ? Text(widget.contentText!) : widget.contentWidgetBuilder!(_setPrimaryButtonEnabled),
-      ),
+      content: SizedBox(width: min(MediaQuery.of(context).size.width, 700), child: widget.contentText != null ? Text(widget.contentText!) : widget.contentWidgetBuilder!(_setPrimaryButtonEnabled)),
       actions: [
         _ThunderDialogActions(
           primaryButtonEnabled: _primaryButtonEnabled,
@@ -126,25 +123,10 @@ class _ThunderDialogActions extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        if (tertiaryButtonText != null) ...[
-          TextButton(
-            onPressed: onTertiaryButtonPressed,
-            child: Text(tertiaryButtonText!),
-          ),
-        ],
+        if (tertiaryButtonText != null) ...[TextButton(onPressed: onTertiaryButtonPressed, child: Text(tertiaryButtonText!))],
         const Spacer(),
-        if (secondaryButtonText != null) ...[
-          TextButton(
-            onPressed: onSecondaryButtonPressed,
-            child: Text(secondaryButtonText!),
-          ),
-          const SizedBox(width: 5.0),
-        ],
-        if (primaryButtonText != null)
-          FilledButton(
-            onPressed: !primaryButtonEnabled || onPrimaryButtonPressed == null ? null : onPrimaryButtonPressed,
-            child: Text(primaryButtonText!),
-          ),
+        if (secondaryButtonText != null) ...[TextButton(onPressed: onSecondaryButtonPressed, child: Text(secondaryButtonText!)), const SizedBox(width: 5.0)],
+        if (primaryButtonText != null) FilledButton(onPressed: !primaryButtonEnabled || onPrimaryButtonPressed == null ? null : onPrimaryButtonPressed, child: Text(primaryButtonText!)),
       ],
     );
   }

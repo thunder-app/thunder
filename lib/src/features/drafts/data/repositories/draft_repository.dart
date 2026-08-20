@@ -49,11 +49,12 @@ class DraftRepositoryImpl implements DraftRepository {
         await clearActiveDraft();
       }
 
-      final existingDrafts = await (_database.select(_database.drafts)
-            ..where((t) => t.draftType.isIn(draftTypeSqlValues))
-            ..where((t) => normalizedDraft.existingId == null ? t.existingId.isNull() : t.existingId.equals(normalizedDraft.existingId!))
-            ..where((t) => normalizedDraft.replyId == null ? t.replyId.isNull() : t.replyId.equals(normalizedDraft.replyId!)))
-          .get();
+      final existingDrafts =
+          await (_database.select(_database.drafts)
+                ..where((t) => t.draftType.isIn(draftTypeSqlValues))
+                ..where((t) => normalizedDraft.existingId == null ? t.existingId.isNull() : t.existingId.equals(normalizedDraft.existingId!))
+                ..where((t) => normalizedDraft.replyId == null ? t.replyId.isNull() : t.replyId.equals(normalizedDraft.replyId!)))
+              .get();
 
       dynamic existingDraft;
 
@@ -69,7 +70,9 @@ class DraftRepositoryImpl implements DraftRepository {
       final bool isActive = active ? true : normalizedDraft.active;
 
       if (existingDraft == null) {
-        final id = await _database.into(_database.drafts).insert(
+        final id = await _database
+            .into(_database.drafts)
+            .insert(
               DraftsCompanion.insert(
                 draftType: normalizedDraft.draftType,
                 existingId: Value(normalizedDraft.existingId),
@@ -89,7 +92,9 @@ class DraftRepositoryImpl implements DraftRepository {
         return normalizedDraft.copyWith(id: id.toString(), active: isActive);
       }
 
-      await _database.update(_database.drafts).replace(
+      await _database
+          .update(_database.drafts)
+          .replace(
             DraftsCompanion(
               id: Value(existingDraft.id),
               draftType: Value(normalizedDraft.draftType),
@@ -114,11 +119,12 @@ class DraftRepositoryImpl implements DraftRepository {
   @override
   Future<Draft?> fetchDraft(DraftType draftType, int? existingId, int? replyId) async {
     final List<String> draftTypeSqlValues = _compatibleDraftTypes(draftType).map((t) => _draftTypeConverter.toSql(t)).toList();
-    final drafts = await (_database.select(_database.drafts)
-          ..where((t) => t.draftType.isIn(draftTypeSqlValues))
-          ..where((t) => existingId == null ? t.existingId.isNull() : t.existingId.equals(existingId))
-          ..where((t) => replyId == null ? t.replyId.isNull() : t.replyId.equals(replyId)))
-        .get();
+    final drafts =
+        await (_database.select(_database.drafts)
+              ..where((t) => t.draftType.isIn(draftTypeSqlValues))
+              ..where((t) => existingId == null ? t.existingId.isNull() : t.existingId.equals(existingId))
+              ..where((t) => replyId == null ? t.replyId.isNull() : t.replyId.equals(replyId)))
+            .get();
 
     if (drafts.isEmpty) return null;
 
@@ -138,12 +144,9 @@ class DraftRepositoryImpl implements DraftRepository {
 
   @override
   Future<List<Draft>> fetchAllDrafts() async {
-    final drafts = await (_database.select(_database.drafts)
-          ..orderBy([
-            (t) => OrderingTerm(expression: t.active, mode: OrderingMode.desc),
-            (t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc),
-          ]))
-        .get();
+    final drafts = await (_database.select(
+      _database.drafts,
+    )..orderBy([(t) => OrderingTerm(expression: t.active, mode: OrderingMode.desc), (t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc)])).get();
 
     return drafts.map(_toDraft).where((draft) => draft.hasRestorableContent).toList();
   }

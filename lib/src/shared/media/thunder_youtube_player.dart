@@ -9,11 +9,7 @@ import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/core/domain/domain.dart';
 
 class ThunderYoutubePlayer extends StatefulWidget {
-  const ThunderYoutubePlayer({
-    super.key,
-    required this.videoUrl,
-    this.postId,
-  });
+  const ThunderYoutubePlayer({super.key, required this.videoUrl, this.postId});
 
   final int? postId;
   final String videoUrl;
@@ -44,10 +40,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> {
       videoId: videoId,
       autoPlay: _shouldAutoPlay(),
       startSeconds: startSeconds.toDouble(),
-      params: YoutubePlayerParams(
-        mute: _isMuted,
-        loop: videoPreferences.videoAutoLoop,
-      ),
+      params: YoutubePlayerParams(mute: _isMuted, loop: videoPreferences.videoAutoLoop),
     );
 
     _controller.setPlaybackRate(videoPreferences.videoDefaultPlaybackSpeed.value);
@@ -129,9 +122,7 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> {
       body: SafeArea(
         child: Stack(
           children: [
-            Center(
-              child: YoutubePlayer(controller: _controller),
-            ),
+            Center(child: YoutubePlayer(controller: _controller)),
             Positioned(
               top: 0,
               left: 0,
@@ -142,27 +133,16 @@ class _ThunderYoutubePlayerState extends State<ThunderYoutubePlayer> {
                   children: [
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.arrow_back,
-                        semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ),
+                      icon: Icon(Icons.arrow_back, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip, color: Colors.white.withValues(alpha: 0.9)),
                     ),
                     const Spacer(),
                     IconButton(
                       onPressed: _toggleMute,
-                      icon: Icon(
-                        _isMuted ? Icons.volume_off : Icons.volume_up,
-                        color: Colors.white,
-                      ),
+                      icon: Icon(_isMuted ? Icons.volume_off : Icons.volume_up, color: Colors.white),
                     ),
                     IconButton(
                       onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
-                      icon: Icon(
-                        Icons.open_in_browser_rounded,
-                        semanticLabel: GlobalContext.l10n.openInBrowser,
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ),
+                      icon: Icon(Icons.open_in_browser_rounded, semanticLabel: GlobalContext.l10n.openInBrowser, color: Colors.white.withValues(alpha: 0.9)),
                     ),
                   ],
                 ),

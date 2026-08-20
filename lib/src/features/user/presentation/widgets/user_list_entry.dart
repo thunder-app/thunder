@@ -34,12 +34,7 @@ class UserListEntry extends StatelessWidget {
 
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${user.displayNameOrName}\n${generateUserFullName(
-        context,
-        user.name,
-        user.displayName,
-        fetchInstanceNameFromUrl(user.actorId),
-      )}',
+      message: '${user.displayNameOrName}\n${generateUserFullName(context, user.name, user.displayName, fetchInstanceNameFromUrl(user.actorId))}',
       preferBelow: false,
       child: ListTile(
         leading: UserAvatar(user: user, radius: 25),

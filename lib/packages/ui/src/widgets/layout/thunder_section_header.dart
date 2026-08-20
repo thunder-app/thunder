@@ -18,14 +18,7 @@ enum ThunderSectionHeaderVariant {
 /// Composable section header for sidebars, settings groups, and sliver lists.
 @immutable
 class ThunderSectionHeader extends StatelessWidget {
-  const ThunderSectionHeader({
-    super.key,
-    required this.title,
-    this.description,
-    this.actions = const [],
-    this.variant = ThunderSectionHeaderVariant.settings,
-    this.padding,
-  });
+  const ThunderSectionHeader({super.key, required this.title, this.description, this.actions = const [], this.variant = ThunderSectionHeaderVariant.settings, this.padding});
 
   /// Section title text.
   final String title;
@@ -58,11 +51,7 @@ class ThunderSectionHeader extends StatelessWidget {
           ),
         );
       case ThunderSectionHeaderVariant.settings:
-        return ThunderSectionTitle(
-          title: title,
-          description: description,
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        );
+        return ThunderSectionTitle(title: title, description: description, padding: padding ?? const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0));
       case ThunderSectionHeaderVariant.sliver:
         return SliverToBoxAdapter(
           child: Padding(
@@ -71,10 +60,7 @@ class ThunderSectionHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: ThunderSectionTitle(
-                    title: title,
-                    description: description,
-                  ),
+                  child: ThunderSectionTitle(title: title, description: description),
                 ),
                 ...actions,
               ],

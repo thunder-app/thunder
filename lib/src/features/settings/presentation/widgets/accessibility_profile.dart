@@ -17,13 +17,7 @@ class SettingProfile extends StatelessWidget {
   final String description;
   final Map<LocalSettings, Object> settingsToChange;
 
-  const SettingProfile({
-    super.key,
-    required this.icon,
-    required this.name,
-    required this.description,
-    required this.settingsToChange,
-  });
+  const SettingProfile({super.key, required this.icon, required this.name, required this.description, required this.settingsToChange});
 
   @override
   Widget build(BuildContext context) {
@@ -37,17 +31,9 @@ class SettingProfile extends StatelessWidget {
       child: Column(
         children: [
           Text(description),
-          ...settingsToChange.entries.map(
-            (entry) {
-              return Row(
-                children: [
-                  Text('• ${l10n.getLocalSettingLocalization(entry.key.key)}'),
-                  const Icon(Icons.arrow_right_rounded, size: 20),
-                  Text(_humanizeValue(context, entry.value)),
-                ],
-              );
-            },
-          ),
+          ...settingsToChange.entries.map((entry) {
+            return Row(children: [Text('• ${l10n.getLocalSettingLocalization(entry.key.key)}'), const Icon(Icons.arrow_right_rounded, size: 20), Text(_humanizeValue(context, entry.value))]);
+          }),
           const SizedBox(height: 12),
           StatefulBuilder(
             builder: (context, setState) => TextButton(

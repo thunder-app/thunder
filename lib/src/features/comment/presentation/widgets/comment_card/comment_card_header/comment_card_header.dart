@@ -26,12 +26,7 @@ class CommentCardHeader extends StatelessWidget {
 
   final List<UserType> userGroups;
 
-  CommentCardHeader({
-    super.key,
-    required this.account,
-    required this.comment,
-    required this.hidden,
-  }) : userGroups = getCommentUserGroups(comment, account);
+  CommentCardHeader({super.key, required this.account, required this.comment, required this.hidden}) : userGroups = getCommentUserGroups(comment, account);
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +59,12 @@ class CommentCardHeader extends StatelessWidget {
                       constraints: constraints,
                     ),
                     CommentCardHeaderScore(
-                        account: account, score: comment.counts.score!, upvotes: comment.counts.upvotes!, downvotes: comment.counts.downvotes!, voteType: comment.context.vote.score),
+                      account: account,
+                      score: comment.counts.score!,
+                      upvotes: comment.counts.upvotes!,
+                      downvotes: comment.counts.downvotes!,
+                      voteType: comment.context.vote.score,
+                    ),
                   ],
                 ),
                 Row(
@@ -76,10 +76,10 @@ class CommentCardHeader extends StatelessWidget {
                           if (comment.updated != null) Icon(Icons.create_rounded, color: theme.colorScheme.onSurface.withValues(alpha: 0.75), size: 16.0),
                           CommentCardHeaderDate(created: comment.published, updated: comment.updated),
                         ],
-                )
+                ),
               ],
             ),
-            UserLabelChip(username: UserLabel.usernameFromParts(comment.creator!.displayNameOrName, comment.creator!.actorId))
+            UserLabelChip(username: UserLabel.usernameFromParts(comment.creator!.displayNameOrName, comment.creator!.actorId)),
           ],
         ),
       ),

@@ -18,11 +18,11 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     required AccountRepository Function(Account) accountRepositoryFactory,
     required InstanceRepository Function(Account) instanceRepositoryFactory,
     required LocalizationService localizationService,
-  })  : _sessionRepository = sessionRepository,
-        _accountRepositoryFactory = accountRepositoryFactory,
-        _instanceRepositoryFactory = instanceRepositoryFactory,
-        _localizationService = localizationService,
-        super(const SessionState()) {
+  }) : _sessionRepository = sessionRepository,
+       _accountRepositoryFactory = accountRepositoryFactory,
+       _instanceRepositoryFactory = instanceRepositoryFactory,
+       _localizationService = localizationService,
+       super(const SessionState()) {
     on<SessionInitialized>(_onBootstrapRequested);
     on<SessionSwitched>(_onSwitched);
     on<SessionRemoved>(_onRemoved);
@@ -112,15 +112,17 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
       tempAccount = Account(id: '', index: -1, jwt: jwt, instance: tempAccount.instance, platform: platform);
       final siteResponse = await _instanceRepositoryFactory(tempAccount).info();
 
-      final persistedSession = await _sessionRepository.addAuthenticatedSession(Account(
-        id: '',
-        username: siteResponse.myUser?.localUserView.person.name,
-        jwt: jwt,
-        instance: tempAccount.instance,
-        userId: siteResponse.myUser?.localUserView.person.id,
-        index: -1,
-        platform: platform,
-      ));
+      final persistedSession = await _sessionRepository.addAuthenticatedSession(
+        Account(
+          id: '',
+          username: siteResponse.myUser?.localUserView.person.name,
+          jwt: jwt,
+          instance: tempAccount.instance,
+          userId: siteResponse.myUser?.localUserView.person.id,
+          index: -1,
+          platform: platform,
+        ),
+      );
 
       if (persistedSession == null) {
         final message = _localizationService.l10n.unexpectedError;
@@ -135,12 +137,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     }
   }
 
-  Future<void> _persistSession(
-    Emitter<SessionState> emit, {
-    required Account account,
-    required bool activate,
-    required bool isAnonymous,
-  }) async {
+  Future<void> _persistSession(Emitter<SessionState> emit, {required Account account, required bool activate, required bool isAnonymous}) async {
     final mutationType = isAnonymous ? SessionMutationType.addAnonymousSession : SessionMutationType.addAuthenticatedSession;
     emit(state.copyWith(mutationStatus: SessionMutationStatus.loading, lastMutation: () => mutationType, error: () => null));
 
@@ -159,18 +156,14 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     }
   }
 
-  Future<void> _refreshState(
-    Emitter<SessionState> emit, {
-    SessionStatus status = SessionStatus.success,
-    SessionMutationStatus? mutationStatus,
-    SessionMutationType? mutationType,
-  }) async {
+  Future<void> _refreshState(Emitter<SessionState> emit, {SessionStatus status = SessionStatus.success, SessionMutationStatus? mutationStatus, SessionMutationType? mutationType}) async {
     try {
       final activeAccount = await _sessionRepository.bootstrap();
       final authenticatedSessions = await _sessionRepository.getAuthenticatedSessions();
       final anonymousSessions = await _sessionRepository.getAnonymousSessions();
 
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           status: status,
           mutationStatus: mutationStatus ?? state.mutationStatus,
           lastMutation: () => mutationType ?? state.lastMutation,
@@ -178,7 +171,9 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
           activeAccount: () => activeAccount,
           authenticatedSessions: authenticatedSessions,
           anonymousSessions: anonymousSessions,
-          error: () => null));
+          error: () => null,
+        ),
+      );
     } catch (error) {
       emit(state.copyWith(status: SessionStatus.failure, error: () => error.toString()));
     }

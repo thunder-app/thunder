@@ -10,10 +10,7 @@ class PostList extends Equatable {
   /// The cursor/page token for the next page, if available.
   final String? nextPage;
 
-  const PostList({
-    required this.posts,
-    this.nextPage,
-  });
+  const PostList({required this.posts, this.nextPage});
 
   @override
   List<Object?> get props => [posts, nextPage];

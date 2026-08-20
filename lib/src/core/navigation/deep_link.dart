@@ -224,10 +224,7 @@ Future<DeepLinkResult> _navigateToModlog(BuildContext context, String link) asyn
 
     ModlogActionType actionType;
     try {
-      actionType = ModlogActionType.values.firstWhere(
-        (type) => type.name.toLowerCase() == uri.queryParameters['actionType']?.toLowerCase(),
-        orElse: () => ModlogActionType.all,
-      );
+      actionType = ModlogActionType.values.firstWhere((type) => type.name.toLowerCase() == uri.queryParameters['actionType']?.toLowerCase(), orElse: () => ModlogActionType.all);
     } catch (_) {
       actionType = ModlogActionType.all;
     }
@@ -236,14 +233,7 @@ Future<DeepLinkResult> _navigateToModlog(BuildContext context, String link) asyn
     final userId = int.tryParse(uri.queryParameters['userId'] ?? '');
     final moderatorId = int.tryParse(uri.queryParameters['modId'] ?? '');
 
-    await navigateToModlogPage(
-      context,
-      modlogActionType: actionType,
-      communityId: communityId,
-      userId: userId,
-      moderatorId: moderatorId,
-      subtitle: uri.host,
-    );
+    await navigateToModlogPage(context, modlogActionType: actionType, communityId: communityId, userId: userId, moderatorId: moderatorId, subtitle: uri.host);
 
     return DeepLinkResult.successful();
   } catch (e) {

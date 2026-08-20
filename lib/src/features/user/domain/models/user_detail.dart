@@ -22,14 +22,7 @@ class UserDetail extends Equatable {
   /// The cursor/page token for the next page, if available.
   final String? nextPage;
 
-  const UserDetail({
-    required this.user,
-    this.site,
-    this.posts = const [],
-    this.comments = const [],
-    this.moderates = const [],
-    this.nextPage,
-  });
+  const UserDetail({required this.user, this.site, this.posts = const [], this.comments = const [], this.moderates = const [], this.nextPage});
 
   @override
   List<Object?> get props => [user, site, posts, comments, moderates, nextPage];

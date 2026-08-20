@@ -3,12 +3,7 @@ import 'package:flutter/foundation.dart';
 /// Immutable configuration for [ThunderAvatar].
 @immutable
 class ThunderAvatarData {
-  const ThunderAvatarData({
-    this.imageUrl,
-    this.radius = 16.0,
-    this.fallbackLabel,
-    this.semanticLabel,
-  });
+  const ThunderAvatarData({this.imageUrl, this.radius = 16.0, this.fallbackLabel, this.semanticLabel});
 
   /// The URL of the avatar image.
   final String? imageUrl;

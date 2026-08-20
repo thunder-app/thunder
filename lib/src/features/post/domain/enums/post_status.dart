@@ -58,9 +58,5 @@ enum PostStatusType {
     }
   }
 
-  const PostStatusType({
-    required this.icon,
-    required this.size,
-    this.color,
-  });
+  const PostStatusType({required this.icon, required this.size, this.color});
 }

@@ -9,9 +9,7 @@ part 'comment_preferences_state.dart';
 
 /// Cubit for managing comment-related preferences
 class CommentPreferencesCubit extends Cubit<CommentPreferencesState> {
-  CommentPreferencesCubit({required PreferencesStore preferences})
-      : _preferences = preferences,
-        super(const CommentPreferencesState()) {
+  CommentPreferencesCubit({required PreferencesStore preferences}) : _preferences = preferences, super(const CommentPreferencesState()) {
     load();
   }
 

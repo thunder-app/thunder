@@ -5,16 +5,7 @@ import 'package:thunder/packages/ui/src/widgets/identity/thunder_scalable_text.d
 /// Horizontally lays out an icon with an optional label.
 @immutable
 class ThunderIconLabel extends StatelessWidget {
-  const ThunderIconLabel({
-    super.key,
-    required this.icon,
-    this.label,
-    this.labelStyle,
-    this.textScaleFactor = 1.0,
-    this.semanticsLabel,
-    this.gap = 4.0,
-    this.mainAxisSize = MainAxisSize.min,
-  });
+  const ThunderIconLabel({super.key, required this.icon, this.label, this.labelStyle, this.textScaleFactor = 1.0, this.semanticsLabel, this.gap = 4.0, this.mainAxisSize = MainAxisSize.min});
 
   /// The icon widget displayed at the start of the row.
   final Widget icon;
@@ -49,12 +40,7 @@ class ThunderIconLabel extends StatelessWidget {
       children: [
         icon,
         SizedBox(width: gap),
-        ThunderScalableText(
-          label!,
-          style: labelStyle ?? theme.textTheme.bodyMedium,
-          textScaleFactor: textScaleFactor,
-          semanticsLabel: semanticsLabel,
-        ),
+        ThunderScalableText(label!, style: labelStyle ?? theme.textTheme.bodyMedium, textScaleFactor: textScaleFactor, semanticsLabel: semanticsLabel),
       ],
     );
   }

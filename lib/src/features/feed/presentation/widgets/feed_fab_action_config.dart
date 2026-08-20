@@ -3,12 +3,7 @@ import 'package:thunder/src/core/domain/domain.dart';
 
 /// Resolved action configuration for [FeedFAB].
 class FeedFabActionConfig {
-  const FeedFabActionConfig({
-    required this.singlePressAction,
-    required this.longPressAction,
-    required this.disabledActions,
-    required this.isPostLocked,
-  });
+  const FeedFabActionConfig({required this.singlePressAction, required this.longPressAction, required this.disabledActions, required this.isPostLocked});
 
   /// Action executed by a normal FAB press.
   final FeedFabAction singlePressAction;

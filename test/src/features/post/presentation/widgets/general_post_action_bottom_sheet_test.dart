@@ -13,28 +13,14 @@ void main() {
   setUpAll(setUpRepositoryTests);
 
   testWidgets('shows hide action for PieFed accounts', (tester) async {
-    const account = Account(
-      id: '1',
-      index: 0,
-      instance: 'piefed.test',
-      platform: ThreadiversePlatform.piefed,
-      jwt: 'token',
-      userId: 1,
-    );
+    const account = Account(id: '1', index: 0, instance: 'piefed.test', platform: ThreadiversePlatform.piefed, jwt: 'token', userId: 1);
 
     await pumpLocalizedWidget(
       tester,
       wrapWithThemePreferences(
         Builder(
           builder: (context) {
-            return GeneralPostActionBottomSheetPage(
-              context: context,
-              account: account,
-              post: testPost(),
-              downvotesEnabled: true,
-              onSwitchActivePage: (_) {},
-              onAction: (_, __) {},
-            );
+            return GeneralPostActionBottomSheetPage(context: context, account: account, post: testPost(), downvotesEnabled: true, onSwitchActivePage: (_) {}, onAction: (_, _) {});
           },
         ),
       ),

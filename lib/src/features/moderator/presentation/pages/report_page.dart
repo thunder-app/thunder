@@ -112,12 +112,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                         HapticFeedback.mediumImpact();
                         ReportBloc reportBloc = context.read<ReportBloc>();
 
-                        reportBloc.add(ReportFeedFetchedEvent(
-                          reportFeedType: reportFeedType,
-                          showResolved: showResolved,
-                          communityId: reportBloc.state.communityId,
-                          reset: true,
-                        ));
+                        reportBloc.add(ReportFeedFetchedEvent(reportFeedType: reportFeedType, showResolved: showResolved, communityId: reportBloc.state.communityId, reset: true));
                       },
                       icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
                     ),
@@ -136,10 +131,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                               HapticFeedback.mediumImpact(),
                               Navigator.of(context).maybePop(),
                               setState(() => showResolved = status != ReportResolveStatus.unresolved),
-                              BlocProvider.of<ReportBloc>(context).add(ReportFeedChangeFilterTypeEvent(
-                                showResolved: status != ReportResolveStatus.unresolved,
-                                communityId: community?.id,
-                              ))
+                              BlocProvider.of<ReportBloc>(context).add(ReportFeedChangeFilterTypeEvent(showResolved: status != ReportResolveStatus.unresolved, communityId: community?.id)),
                             },
                           ),
                         );
@@ -158,12 +150,14 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                           reportFeedType = ReportFeedType.comment;
                         }
                       });
-                      context.read<ReportBloc>().add(ReportFeedFetchedEvent(
-                            reportFeedType: index == 0 ? ReportFeedType.post : ReportFeedType.comment,
-                            showResolved: showResolved,
-                            communityId: context.read<ReportBloc>().state.communityId,
-                            reset: true,
-                          ));
+                      context.read<ReportBloc>().add(
+                        ReportFeedFetchedEvent(
+                          reportFeedType: index == 0 ? ReportFeedType.post : ReportFeedType.comment,
+                          showResolved: showResolved,
+                          communityId: context.read<ReportBloc>().state.communityId,
+                          reset: true,
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -197,11 +191,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                         slivers: <Widget>[
                           SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
                           // Display loading indicator until the feed is fetched
-                          if (state.status == ReportStatus.initial)
-                            const SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: Center(child: CircularProgressIndicator()),
-                            ),
+                          if (state.status == ReportStatus.initial) const SliverFillRemaining(hasScrollBody: false, child: Center(child: CircularProgressIndicator())),
 
                           // Widget representing the list of reports on the feed
                           if (reportFeedType == ReportFeedType.post)
@@ -218,13 +208,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                           onTap: () => navigateToPost(context, postId: post.id),
                                           child: Padding(
                                             padding: const EdgeInsets.only(top: 8.0),
-                                            child: PostCardViewCompact(
-                                              showMedia: false,
-                                              post: post,
-                                              creator: post.creator!,
-                                              community: post.community!,
-                                              isLastTapped: false,
-                                            ),
+                                            child: PostCardViewCompact(showMedia: false, post: post, creator: post.creator!, community: post.community!, isLastTapped: false),
                                           ),
                                         ),
                                         Padding(
@@ -245,9 +229,10 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                       child: UserFullNameWidget(
-                                                          name: report.creator?.name ?? '',
-                                                          displayName: report.creator?.displayName ?? '',
-                                                          instance: fetchInstanceNameFromUrl(report.creator?.actorId ?? '')),
+                                                        name: report.creator?.name ?? '',
+                                                        displayName: report.creator?.displayName ?? '',
+                                                        instance: fetchInstanceNameFromUrl(report.creator?.actorId ?? ''),
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -262,20 +247,15 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
                                                     textScaleFactor: contentFontSizeScale.textScaleFactor,
-                                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                                      color: theme.colorScheme.error,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
+                                                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.error, fontWeight: FontWeight.w600),
                                                   ),
                                                   IconButton(
                                                     visualDensity: VisualDensity.compact,
                                                     onPressed: () {
                                                       HapticFeedback.mediumImpact();
-                                                      context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
-                                                            reportAction: ReportAction.resolve,
-                                                            report: report,
-                                                            actionInput: ResolveReportActionInput(!report.resolved),
-                                                          ));
+                                                      context.read<ReportBloc>().add(
+                                                        ReportFeedItemActionedEvent(reportAction: ReportAction.resolve, report: report, actionInput: ResolveReportActionInput(!report.resolved)),
+                                                      );
                                                     },
                                                     icon: Icon(report.resolved ? Icons.undo_rounded : Icons.check_rounded),
                                                   ),
@@ -286,15 +266,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                         ),
                                       ],
                                     ),
-                                    Divider(
-                                      height: 1.0,
-                                      thickness: 4.0,
-                                      color: ElevationOverlay.applySurfaceTint(
-                                        theme.colorScheme.surface,
-                                        theme.colorScheme.surfaceTint,
-                                        10,
-                                      ),
-                                    ),
+                                    Divider(height: 1.0, thickness: 4.0, color: ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10)),
                                   ],
                                 );
                               },
@@ -331,7 +303,10 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                       child: UserFullNameWidget(
-                                                          name: report.creator?.name, displayName: report.creator?.displayName, instance: fetchInstanceNameFromUrl(report.creator?.actorId)),
+                                                        name: report.creator?.name,
+                                                        displayName: report.creator?.displayName,
+                                                        instance: fetchInstanceNameFromUrl(report.creator?.actorId),
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -346,21 +321,16 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                                     maxLines: 4,
                                                     overflow: TextOverflow.ellipsis,
                                                     textScaleFactor: contentFontSizeScale.textScaleFactor,
-                                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                                      color: theme.colorScheme.error,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
+                                                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.error, fontWeight: FontWeight.w600),
                                                   ),
                                                   IconButton(
                                                     visualDensity: VisualDensity.compact,
                                                     onPressed: () {
                                                       HapticFeedback.mediumImpact();
 
-                                                      context.read<ReportBloc>().add(ReportFeedItemActionedEvent(
-                                                            reportAction: ReportAction.resolve,
-                                                            report: report,
-                                                            actionInput: ResolveReportActionInput(!report.resolved),
-                                                          ));
+                                                      context.read<ReportBloc>().add(
+                                                        ReportFeedItemActionedEvent(reportAction: ReportAction.resolve, report: report, actionInput: ResolveReportActionInput(!report.resolved)),
+                                                      );
                                                     },
                                                     icon: Icon(report.resolved ? Icons.undo_rounded : Icons.check_rounded),
                                                   ),
@@ -371,15 +341,7 @@ class _ReportFeedViewState extends State<ReportFeedView> {
                                         ),
                                       ],
                                     ),
-                                    Divider(
-                                      height: 1.0,
-                                      thickness: 4.0,
-                                      color: ElevationOverlay.applySurfaceTint(
-                                        theme.colorScheme.surface,
-                                        theme.colorScheme.surfaceTint,
-                                        10,
-                                      ),
-                                    ),
+                                    Divider(height: 1.0, thickness: 4.0, color: ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10)),
                                   ],
                                 );
                               },

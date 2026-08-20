@@ -31,22 +31,12 @@ class NotificationRef extends Equatable {
   /// Time the notification was created.
   final DateTime createdAt;
 
-  const NotificationRef({
-    required this.id,
-    required this.kind,
-    required this.read,
-    required this.createdAt,
-  });
+  const NotificationRef({required this.id, required this.kind, required this.read, required this.createdAt});
 
   @override
   List<Object?> get props => [id, kind, read, createdAt];
 
   NotificationRef copyWith({int? id, NotificationKind? kind, bool? read, DateTime? createdAt}) {
-    return NotificationRef(
-      id: id ?? this.id,
-      kind: kind ?? this.kind,
-      read: read ?? this.read,
-      createdAt: createdAt ?? this.createdAt,
-    );
+    return NotificationRef(id: id ?? this.id, kind: kind ?? this.kind, read: read ?? this.read, createdAt: createdAt ?? this.createdAt);
   }
 }

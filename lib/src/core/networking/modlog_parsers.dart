@@ -6,10 +6,7 @@ import 'package:thunder/src/core/domain/enums/modlog_action_type.dart';
 import 'package:thunder/src/core/domain/models/modlog_event_item.dart';
 
 /// Parses a grouped Lemmy v3 modlog response into normalized events.
-List<ModlogEvent> modlogEventsFromV3Response(
-  Map<String, dynamic> response,
-  PrimitiveMapper mapper,
-) {
+List<ModlogEvent> modlogEventsFromV3Response(Map<String, dynamic> response, PrimitiveMapper mapper) {
   const groupedKeys = <String, ModlogActionType>{
     'removed_posts': ModlogActionType.modRemovePost,
     'locked_posts': ModlogActionType.modLockPost,
@@ -38,11 +35,7 @@ List<ModlogEvent> modlogEventsFromV3Response(
 }
 
 /// Parses a single Lemmy v3 modlog event into a normalized [ModlogEvent].
-ModlogEvent modlogEventFromV3(
-  ModlogActionType type,
-  dynamic event,
-  PrimitiveMapper mapper,
-) {
+ModlogEvent modlogEventFromV3(ModlogActionType type, dynamic event, PrimitiveMapper mapper) {
   switch (type) {
     case ModlogActionType.modRemovePost:
       return ModlogEvent(
@@ -185,10 +178,7 @@ ModlogEvent modlogEventFromV3(
 }
 
 /// Parses a Lemmy v4 modlog item into a normalized [ModlogEvent].
-ModlogEvent? modlogEventFromV4(
-  dynamic raw,
-  LemmyV4PrimitiveMapper mapper,
-) {
+ModlogEvent? modlogEventFromV4(dynamic raw, LemmyV4PrimitiveMapper mapper) {
   if (raw is! Map<String, dynamic>) return null;
   final modlog = raw['modlog'];
   if (modlog is! Map<String, dynamic>) return null;

@@ -5,11 +5,7 @@ import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
 /// Icon and muted label row for sidebar statistics.
 @immutable
 class ThunderSidebarStat extends StatelessWidget {
-  const ThunderSidebarStat({
-    super.key,
-    required this.icon,
-    required this.label,
-  });
+  const ThunderSidebarStat({super.key, required this.icon, required this.label});
 
   /// Stat icon.
   final IconData icon;

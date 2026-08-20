@@ -66,22 +66,7 @@ class ThunderCommunity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-        id,
-        name,
-        title,
-        description,
-        published,
-        updated,
-        actorId,
-        icon,
-        banner,
-        instanceId,
-        visibility,
-        status,
-        counts,
-        context,
-      ];
+  List<Object?> get props => [id, name, title, description, published, updated, actorId, icon, banner, instanceId, visibility, status, counts, context];
 
   ThunderCommunity copyWith({
     int? id,
@@ -137,14 +122,7 @@ class CommunityStatus extends Equatable {
   /// Whether only moderators can create posts.
   final bool postingRestrictedToMods;
 
-  const CommunityStatus({
-    required this.removed,
-    required this.deleted,
-    required this.nsfw,
-    required this.local,
-    required this.hidden,
-    required this.postingRestrictedToMods,
-  });
+  const CommunityStatus({required this.removed, required this.deleted, required this.nsfw, required this.local, required this.hidden, required this.postingRestrictedToMods});
 
   @override
   List<Object?> get props => [removed, deleted, nsfw, local, hidden, postingRestrictedToMods];
@@ -175,16 +153,7 @@ class CommunityCounts extends Equatable {
   /// Active users in the last half year.
   final int? usersActiveHalfYear;
 
-  const CommunityCounts({
-    this.subscribers,
-    this.subscribersLocal,
-    this.posts,
-    this.comments,
-    this.usersActiveDay,
-    this.usersActiveWeek,
-    this.usersActiveMonth,
-    this.usersActiveHalfYear,
-  });
+  const CommunityCounts({this.subscribers, this.subscribersLocal, this.posts, this.comments, this.usersActiveDay, this.usersActiveWeek, this.usersActiveMonth, this.usersActiveHalfYear});
 
   @override
   List<Object?> get props => [subscribers, subscribersLocal, posts, comments, usersActiveDay, usersActiveWeek, usersActiveMonth, usersActiveHalfYear];

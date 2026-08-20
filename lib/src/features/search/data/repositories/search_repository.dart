@@ -38,12 +38,9 @@ class SearchRepositoryImpl implements SearchRepository {
   /// Creates a new SearchRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  SearchRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  SearchRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
   Future<SearchResults> search({
@@ -73,13 +70,7 @@ class SearchRepositoryImpl implements SearchRepository {
     );
 
     // Lists are already parsed by the API client
-    return SearchResults(
-      type: response.type,
-      comments: response.comments,
-      posts: response.posts,
-      communities: response.communities,
-      users: response.users,
-    );
+    return SearchResults(type: response.type, comments: response.comments, posts: response.posts, communities: response.communities, users: response.users);
   }
 
   @override
@@ -87,11 +78,6 @@ class SearchRepositoryImpl implements SearchRepository {
     final api = await _api.get();
     final response = await api.resolve(query: query);
 
-    return SearchResolveResult(
-      community: response.community,
-      post: response.post,
-      comment: response.comment,
-      user: response.user,
-    );
+    return SearchResolveResult(community: response.community, post: response.post, comment: response.comment, user: response.user);
   }
 }

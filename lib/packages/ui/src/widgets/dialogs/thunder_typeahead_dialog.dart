@@ -105,11 +105,7 @@ class _ThunderTypeaheadDialogContentState<T> extends State<_ThunderTypeaheadDial
             setError(null);
           },
           autofocus: true,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: widget.inputLabel,
-            errorText: _errorText,
-          ),
+          decoration: InputDecoration(border: const OutlineInputBorder(), labelText: widget.inputLabel, errorText: _errorText),
           onSubmitted: (text) => _submit(value: text),
         ),
         suggestionsCallback: widget.getSuggestions,

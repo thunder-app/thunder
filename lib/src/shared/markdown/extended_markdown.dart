@@ -56,11 +56,7 @@ class ExtendedMarkdownBody extends ExtendedMarkdownWidget {
     if (children!.length == 1 && shrinkWrap) {
       return children.single;
     }
-    return Column(
-      mainAxisSize: shrinkWrap ? MainAxisSize.min : MainAxisSize.max,
-      crossAxisAlignment: fitContent ? CrossAxisAlignment.start : CrossAxisAlignment.stretch,
-      children: children,
-    );
+    return Column(mainAxisSize: shrinkWrap ? MainAxisSize.min : MainAxisSize.max, crossAxisAlignment: fitContent ? CrossAxisAlignment.start : CrossAxisAlignment.stretch, children: children);
   }
 }
 
@@ -245,10 +241,7 @@ class _MarkdownWidgetState extends State<ExtendedMarkdownWidget> implements Mark
 /// A default style sheet generator.
 final MarkdownStyleSheet Function(BuildContext, MarkdownStyleSheetBaseTheme?)
 // ignore: prefer_function_declarations_over_variables
-    kFallbackStyle = (
-  BuildContext context,
-  MarkdownStyleSheetBaseTheme? baseTheme,
-) {
+kFallbackStyle = (BuildContext context, MarkdownStyleSheetBaseTheme? baseTheme) {
   MarkdownStyleSheet result;
   switch (baseTheme) {
     case MarkdownStyleSheetBaseTheme.platform:

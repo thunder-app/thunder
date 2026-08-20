@@ -28,13 +28,7 @@ class CommunityHeader extends StatefulWidget {
   /// Whether to show the condensed version of the header
   final bool condensed;
 
-  const CommunityHeader({
-    super.key,
-    required this.community,
-    this.instance,
-    required this.moderators,
-    required this.condensed,
-  });
+  const CommunityHeader({super.key, required this.community, this.instance, required this.moderators, required this.condensed});
 
   @override
   State<CommunityHeader> createState() => _CommunityHeaderState();
@@ -62,13 +56,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
           scrollControlDisabledMaxHeightRatio: 0.90,
           builder: (_) => wrapWithCapturedAccountContext(
             context,
-            CommunityInformation(
-              launchContext: context,
-              account: account,
-              community: widget.community,
-              instance: widget.instance,
-              moderators: widget.moderators,
-            ),
+            CommunityInformation(launchContext: context, account: account, community: widget.community, instance: widget.instance, moderators: widget.moderators),
           ),
         );
       },
@@ -81,11 +69,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
       spacing: 8.0,
       children: [
         content,
-        CommunityHeaderActions(
-          community: widget.community,
-          instance: widget.instance,
-          moderators: widget.moderators,
-        ),
+        CommunityHeaderActions(community: widget.community, instance: widget.instance, moderators: widget.moderators),
       ],
     );
   }
@@ -128,10 +112,7 @@ class _CommunityInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          community.title,
-          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-        ),
+        Text(community.title, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600)),
         CommunityFullNameWidget(
           name: community.name,
           displayName: community.title,
@@ -189,22 +170,14 @@ class _CommunityHeaderWithBanner extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        if (community.banner != null) ...[
-          _BannerImage(url: community.banner!),
-          _BannerGradient(),
-        ],
+        if (community.banner != null) ...[_BannerImage(url: community.banner!), _BannerGradient()],
         Positioned(
           right: 20.0,
           child: Icon(
             Icons.info_outline_rounded,
             size: 24.0,
             color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
-            shadows: [
-              Shadow(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
-                blurRadius: 16.0,
-              ),
-            ],
+            shadows: [Shadow(color: theme.colorScheme.onSurface.withValues(alpha: 0.1), blurRadius: 16.0)],
           ),
         ),
         child,
@@ -223,10 +196,7 @@ class _BannerImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: ImagePreview(
-        url: url,
-        fit: BoxFit.cover,
-      ),
+      child: ImagePreview(url: url, fit: BoxFit.cover),
     );
   }
 }
@@ -245,12 +215,7 @@ class _BannerGradient extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
-            colors: [
-              theme.colorScheme.surface,
-              theme.colorScheme.surface.withValues(alpha: 0.9),
-              theme.colorScheme.surface.withValues(alpha: 0.6),
-              theme.colorScheme.surface.withValues(alpha: 0.3),
-            ],
+            colors: [theme.colorScheme.surface, theme.colorScheme.surface.withValues(alpha: 0.9), theme.colorScheme.surface.withValues(alpha: 0.6), theme.colorScheme.surface.withValues(alpha: 0.3)],
             stops: [0.0, 0.4, 0.7, 1.0],
           ),
         ),

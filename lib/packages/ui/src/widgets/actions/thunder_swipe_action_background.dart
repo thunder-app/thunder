@@ -3,14 +3,7 @@ import 'package:flutter/material.dart';
 /// Animated background revealed during swipe actions on list cards.
 @immutable
 class ThunderSwipeActionBackground extends StatelessWidget {
-  const ThunderSwipeActionBackground({
-    super.key,
-    required this.alignment,
-    required this.backgroundColor,
-    required this.width,
-    this.icon,
-    this.duration = const Duration(milliseconds: 200),
-  });
+  const ThunderSwipeActionBackground({super.key, required this.alignment, required this.backgroundColor, required this.width, this.icon, this.duration = const Duration(milliseconds: 200)});
 
   /// Horizontal alignment of the background content.
   final Alignment alignment;
@@ -33,10 +26,7 @@ class ThunderSwipeActionBackground extends StatelessWidget {
       alignment: alignment,
       duration: duration,
       color: backgroundColor,
-      child: SizedBox(
-        width: width,
-        child: icon != null ? Icon(icon) : const SizedBox.shrink(),
-      ),
+      child: SizedBox(width: width, child: icon != null ? Icon(icon) : const SizedBox.shrink()),
     );
   }
 }

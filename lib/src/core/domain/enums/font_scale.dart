@@ -6,13 +6,7 @@ import 'package:thunder/l10n/generated/app_localizations.dart';
 
 import 'package:thunder/src/core/config/global_context.dart';
 
-enum FontScale {
-  small,
-  base,
-  medium,
-  large,
-  extraLarge,
-}
+enum FontScale { small, base, medium, large, extraLarge }
 
 extension FontScaleExtension on FontScale {
   double get textScaleFactor {

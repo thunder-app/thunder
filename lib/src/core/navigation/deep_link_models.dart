@@ -1,13 +1,4 @@
-enum LinkType {
-  user,
-  post,
-  comment,
-  instance,
-  unknown,
-  community,
-  modlog,
-  thunder,
-}
+enum LinkType { user, post, comment, instance, unknown, community, modlog, thunder }
 
 /// Custom exception for deep link related errors
 class DeepLinkException implements Exception {
@@ -44,19 +35,11 @@ class DeepLinkResult {
   /// Optional fallback URL that can be opened in an external browser
   final String? fallbackUrl;
 
-  const DeepLinkResult({
-    required this.success,
-    this.errorMessage,
-    this.fallbackUrl,
-  });
+  const DeepLinkResult({required this.success, this.errorMessage, this.fallbackUrl});
 
   /// Creates a successful navigation result
   static DeepLinkResult successful() => const DeepLinkResult(success: true);
 
   /// Creates a failed navigation result with an optional fallback URL
-  static DeepLinkResult failure(String message, [String? url]) => DeepLinkResult(
-        success: false,
-        errorMessage: message,
-        fallbackUrl: url,
-      );
+  static DeepLinkResult failure(String message, [String? url]) => DeepLinkResult(success: false, errorMessage: message, fallbackUrl: url);
 }

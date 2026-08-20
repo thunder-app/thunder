@@ -5,32 +5,16 @@ import 'package:thunder/src/features/notification/domain/models/unread_notificat
 /// Repository contract for notification inbox reads and read state.
 abstract class NotificationRepository {
   /// Fetches any comment replies
-  Future<List<ThunderComment>> replies({
-    bool unread,
-    int limit,
-    CommentSortType sort,
-    int page,
-  });
+  Future<List<ThunderComment>> replies({bool unread, int limit, CommentSortType sort, int page});
 
   /// Marks a comment reply as read
-  Future<void> markReplyAsRead({
-    required int replyId,
-    bool read = true,
-  });
+  Future<void> markReplyAsRead({required int replyId, bool read = true});
 
   /// Fetches any comment mentions
-  Future<List<ThunderComment>> mentions({
-    bool unread,
-    int limit,
-    CommentSortType sort,
-    int page,
-  });
+  Future<List<ThunderComment>> mentions({bool unread, int limit, CommentSortType sort, int page});
 
   /// Marks a comment mention as read
-  Future<void> markMentionAsRead({
-    required int mentionId,
-    bool read = true,
-  });
+  Future<void> markMentionAsRead({required int mentionId, bool read = true});
 
   /// Fetches number of unread notifications
   Future<UnreadNotificationsCount> unreadNotificationsCount();
@@ -53,20 +37,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
   /// Creates a new NotificationRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  NotificationRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  NotificationRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
-  Future<List<ThunderComment>> replies({
-    bool unread = false,
-    int limit = 50,
-    CommentSortType sort = CommentSortType.new_,
-    int page = 1,
-  }) async {
+  Future<List<ThunderComment>> replies({bool unread = false, int limit = 50, CommentSortType sort = CommentSortType.new_, int page = 1}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
@@ -84,12 +60,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<List<ThunderComment>> mentions({
-    bool unread = false,
-    int limit = 50,
-    CommentSortType sort = CommentSortType.new_,
-    int page = 1,
-  }) async {
+  Future<List<ThunderComment>> mentions({bool unread = false, int limit = 50, CommentSortType sort = CommentSortType.new_, int page = 1}) async {
     final l10n = _localization.l10n;
     if (account.anonymous) throw NotLoggedInException(l10n.userNotLoggedIn);
 
@@ -113,11 +84,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     final api = await _api.get();
     final response = await api.unreadCount();
-    return UnreadNotificationsCount(
-      replies: response.replies,
-      mentions: response.mentions,
-      privateMessages: response.privateMessages,
-    );
+    return UnreadNotificationsCount(replies: response.replies, mentions: response.mentions, privateMessages: response.privateMessages);
   }
 
   @override

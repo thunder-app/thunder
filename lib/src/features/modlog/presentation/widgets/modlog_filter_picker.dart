@@ -5,86 +5,35 @@ import 'package:thunder/src/features/modlog/modlog.dart';
 import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
-List<ThunderListPickerItem<ModlogActionType>> defaultModlogActionTypeItems = [
-  ThunderListPickerItem(
-    payload: ModlogActionType.all,
-    icon: Icons.check_box_outline_blank,
-    label: GlobalContext.l10n.all,
-  ),
-];
+List<ThunderListPickerItem<ModlogActionType>> defaultModlogActionTypeItems = [ThunderListPickerItem(payload: ModlogActionType.all, icon: Icons.check_box_outline_blank, label: GlobalContext.l10n.all)];
 
 List<ThunderListPickerItem<ModlogActionType>> postModlogActionTypeItems = [
-  ThunderListPickerItem(
-    payload: ModlogActionType.modRemovePost,
-    icon: Icons.delete_rounded,
-    label: GlobalContext.l10n.modRemovePost,
-  ),
-  ThunderListPickerItem(
-    payload: ModlogActionType.modLockPost,
-    icon: Icons.lock_person_rounded,
-    label: GlobalContext.l10n.modLockPost,
-  ),
-  ThunderListPickerItem(
-    payload: ModlogActionType.modFeaturePost,
-    icon: Icons.push_pin_rounded,
-    label: GlobalContext.l10n.modFeaturePost,
-  ),
+  ThunderListPickerItem(payload: ModlogActionType.modRemovePost, icon: Icons.delete_rounded, label: GlobalContext.l10n.modRemovePost),
+  ThunderListPickerItem(payload: ModlogActionType.modLockPost, icon: Icons.lock_person_rounded, label: GlobalContext.l10n.modLockPost),
+  ThunderListPickerItem(payload: ModlogActionType.modFeaturePost, icon: Icons.push_pin_rounded, label: GlobalContext.l10n.modFeaturePost),
 ];
 
 List<ThunderListPickerItem<ModlogActionType>> commentModlogActionTypeItems = [
-  ThunderListPickerItem(
-    payload: ModlogActionType.modRemoveComment,
-    icon: Icons.comments_disabled_rounded,
-    label: GlobalContext.l10n.modRemoveComment,
-  ),
+  ThunderListPickerItem(payload: ModlogActionType.modRemoveComment, icon: Icons.comments_disabled_rounded, label: GlobalContext.l10n.modRemoveComment),
 ];
 
 List<ThunderListPickerItem<ModlogActionType>> communityModlogActionTypeItems = [
-  ThunderListPickerItem(
-    payload: ModlogActionType.modRemoveCommunity,
-    icon: Icons.domain_disabled_rounded,
-    label: GlobalContext.l10n.modRemoveCommunity,
-  ),
-  ThunderListPickerItem(
-    payload: ModlogActionType.modBanFromCommunity,
-    icon: Icons.person_off_rounded,
-    label: GlobalContext.l10n.modBanFromCommunity,
-  ),
-  ThunderListPickerItem(
-    payload: ModlogActionType.modAddCommunity,
-    icon: Icons.person_add_alt_1_rounded,
-    label: GlobalContext.l10n.modAddCommunity,
-  ),
-  ThunderListPickerItem(
-    payload: ModlogActionType.modTransferCommunity,
-    icon: Icons.swap_horiz_rounded,
-    label: GlobalContext.l10n.modTransferCommunity,
-  ),
+  ThunderListPickerItem(payload: ModlogActionType.modRemoveCommunity, icon: Icons.domain_disabled_rounded, label: GlobalContext.l10n.modRemoveCommunity),
+  ThunderListPickerItem(payload: ModlogActionType.modBanFromCommunity, icon: Icons.person_off_rounded, label: GlobalContext.l10n.modBanFromCommunity),
+  ThunderListPickerItem(payload: ModlogActionType.modAddCommunity, icon: Icons.person_add_alt_1_rounded, label: GlobalContext.l10n.modAddCommunity),
+  ThunderListPickerItem(payload: ModlogActionType.modTransferCommunity, icon: Icons.swap_horiz_rounded, label: GlobalContext.l10n.modTransferCommunity),
 ];
 
 List<ThunderListPickerItem<ModlogActionType>> instanceModlogActionTypeItems = [
-  ThunderListPickerItem(
-    payload: ModlogActionType.modAdd,
-    icon: Icons.person_add_alt_1_rounded,
-    label: GlobalContext.l10n.modAdd,
-  ),
-  ThunderListPickerItem(
-    payload: ModlogActionType.modBan,
-    icon: Icons.person_off_rounded,
-    label: GlobalContext.l10n.modBan,
-  ),
+  ThunderListPickerItem(payload: ModlogActionType.modAdd, icon: Icons.person_add_alt_1_rounded, label: GlobalContext.l10n.modAdd),
+  ThunderListPickerItem(payload: ModlogActionType.modBan, icon: Icons.person_off_rounded, label: GlobalContext.l10n.modBan),
 ];
 
 /// Creates a [ModlogActionTypePicker] which holds a list of modlog action types.
 /// The modlog action type is used to filter the modlog events.
 class ModlogActionTypePicker extends ThunderBottomSheetListPicker<ModlogActionType> {
-  ModlogActionTypePicker({
-    super.key,
-    required super.onSelect,
-    required super.title,
-    List<ThunderListPickerItem<ModlogActionType>>? items,
-    super.previouslySelected,
-  }) : super(items: items ?? defaultModlogActionTypeItems);
+  ModlogActionTypePicker({super.key, required super.onSelect, required super.title, List<ThunderListPickerItem<ModlogActionType>>? items, super.previouslySelected})
+    : super(items: items ?? defaultModlogActionTypeItems);
 
   @override
   State<StatefulWidget> createState() => _ModlogActionTypePickerState();
@@ -102,33 +51,33 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
         child: switch (category) {
           ModlogActionTypeCategory.all => defaultModlogActionTypePicker(),
           ModlogActionTypeCategory.post => ModlogSubFilterPicker(
-              title: GlobalContext.l10n.posts,
-              items: postModlogActionTypeItems,
-              onNavigateBack: () => setState(() => category = ModlogActionTypeCategory.all),
-              onSelect: (item) => widget.onSelect?.call(item),
-              previouslySelectedItem: widget.previouslySelected,
-            ),
+            title: GlobalContext.l10n.posts,
+            items: postModlogActionTypeItems,
+            onNavigateBack: () => setState(() => category = ModlogActionTypeCategory.all),
+            onSelect: (item) => widget.onSelect?.call(item),
+            previouslySelectedItem: widget.previouslySelected,
+          ),
           ModlogActionTypeCategory.comment => ModlogSubFilterPicker(
-              title: GlobalContext.l10n.comments,
-              items: commentModlogActionTypeItems,
-              onNavigateBack: () => setState(() => category = ModlogActionTypeCategory.all),
-              onSelect: (item) => widget.onSelect?.call(item),
-              previouslySelectedItem: widget.previouslySelected,
-            ),
+            title: GlobalContext.l10n.comments,
+            items: commentModlogActionTypeItems,
+            onNavigateBack: () => setState(() => category = ModlogActionTypeCategory.all),
+            onSelect: (item) => widget.onSelect?.call(item),
+            previouslySelectedItem: widget.previouslySelected,
+          ),
           ModlogActionTypeCategory.community => ModlogSubFilterPicker(
-              title: GlobalContext.l10n.community,
-              items: communityModlogActionTypeItems,
-              onNavigateBack: () => setState(() => category = ModlogActionTypeCategory.all),
-              onSelect: (item) => widget.onSelect?.call(item),
-              previouslySelectedItem: widget.previouslySelected,
-            ),
+            title: GlobalContext.l10n.community,
+            items: communityModlogActionTypeItems,
+            onNavigateBack: () => setState(() => category = ModlogActionTypeCategory.all),
+            onSelect: (item) => widget.onSelect?.call(item),
+            previouslySelectedItem: widget.previouslySelected,
+          ),
           ModlogActionTypeCategory.instance => ModlogSubFilterPicker(
-              title: GlobalContext.l10n.instance(1),
-              items: instanceModlogActionTypeItems,
-              onNavigateBack: () => setState(() => category = ModlogActionTypeCategory.all),
-              onSelect: (item) => widget.onSelect?.call(item),
-              previouslySelectedItem: widget.previouslySelected,
-            ),
+            title: GlobalContext.l10n.instance(1),
+            items: instanceModlogActionTypeItems,
+            onNavigateBack: () => setState(() => category = ModlogActionTypeCategory.all),
+            onSelect: (item) => widget.onSelect?.call(item),
+            previouslySelectedItem: widget.previouslySelected,
+          ),
         },
       ),
     );
@@ -146,10 +95,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
           padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              widget.title,
-              style: theme.textTheme.titleLarge,
-            ),
+            child: Text(widget.title, style: theme.textTheme.titleLarge),
           ),
         ),
         ListView(
@@ -207,7 +153,7 @@ class _ModlogActionTypePickerState extends State<ModlogActionTypePicker> {
               },
               isSelected: instanceModlogActionTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
               trailingIcon: Icons.chevron_right,
-            )
+            ),
           ],
         ),
         const SizedBox(height: 16.0),
@@ -232,14 +178,7 @@ class ModlogSubFilterPicker extends StatelessWidget {
   /// The previously selected modlog action type.
   final ModlogActionType? previouslySelectedItem;
 
-  const ModlogSubFilterPicker({
-    super.key,
-    required this.title,
-    required this.items,
-    required this.onNavigateBack,
-    required this.onSelect,
-    this.previouslySelectedItem,
-  });
+  const ModlogSubFilterPicker({super.key, required this.title, required this.items, required this.onNavigateBack, required this.onSelect, this.previouslySelectedItem});
 
   @override
   Widget build(BuildContext context) {
@@ -271,13 +210,7 @@ class ModlogSubFilterPicker extends StatelessWidget {
                       children: [
                         const Icon(Icons.chevron_left, size: 30),
                         const SizedBox(width: 12),
-                        Semantics(
-                          excludeSemantics: true,
-                          child: Text(
-                            title,
-                            style: theme.textTheme.titleLarge,
-                          ),
-                        ),
+                        Semantics(excludeSemantics: true, child: Text(title, style: theme.textTheme.titleLarge)),
                       ],
                     ),
                   ),
@@ -292,14 +225,15 @@ class ModlogSubFilterPicker extends StatelessWidget {
           children: items
               .map(
                 (item) => ThunderPickerItem(
-                    label: item.label,
-                    icon: item.icon,
-                    onSelected: () {
-                      HapticFeedback.mediumImpact();
-                      Navigator.of(context).pop();
-                      onSelect(item);
-                    },
-                    isSelected: previouslySelectedItem == item.payload),
+                  label: item.label,
+                  icon: item.icon,
+                  onSelected: () {
+                    HapticFeedback.mediumImpact();
+                    Navigator.of(context).pop();
+                    onSelect(item);
+                  },
+                  isSelected: previouslySelectedItem == item.payload,
+                ),
               )
               .toList(),
         ),

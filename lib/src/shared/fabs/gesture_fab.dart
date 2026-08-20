@@ -73,7 +73,8 @@ class GestureFab extends StatelessWidget {
           onOpenChanged: (open) => _setOpen(context, open),
           onSlideUp: onSlideUp,
           onSlideLeft: onSlideLeft,
-          onSlideDown: onSlideDown ??
+          onSlideDown:
+              onSlideDown ??
               () {
                 if (!Navigator.of(context).canPop()) {
                   _setSummoned(context, false);
@@ -91,15 +92,7 @@ class GestureFab extends StatelessWidget {
 // ActionButton mutates first/last when placed inside expanding FAB stacks.
 // ignore: must_be_immutable
 class ActionButton extends StatelessWidget {
-  ActionButton({
-    super.key,
-    this.onPressed,
-    this.title,
-    required this.icon,
-    this.centered = false,
-    this.backgroundColor,
-    this.fabType = FabType.feed,
-  });
+  ActionButton({super.key, this.onPressed, this.title, required this.icon, this.centered = false, this.backgroundColor, this.fabType = FabType.feed});
 
   final VoidCallback? onPressed;
   final Icon icon;

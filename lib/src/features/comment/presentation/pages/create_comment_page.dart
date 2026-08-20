@@ -46,14 +46,7 @@ class CreateCommentPage extends StatefulWidget {
   /// Callback function that is triggered whenever the comment is successfully created or updated
   final Function(ThunderComment comment, bool userChanged)? onCommentSuccess;
 
-  const CreateCommentPage({
-    super.key,
-    this.account,
-    this.post,
-    this.comment,
-    this.parentComment,
-    this.onCommentSuccess,
-  });
+  const CreateCommentPage({super.key, this.account, this.post, this.comment, this.parentComment, this.onCommentSuccess});
 
   @override
   State<CreateCommentPage> createState() => _CreateCommentPageState();
@@ -208,17 +201,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
     }
   }
 
-  DraftContext get _draftContext => resolveCommentDraftContext(
-        editingCommentId: widget.comment?.id,
-        postId: postId,
-        parentCommentId: parentCommentId,
-      );
+  DraftContext get _draftContext => resolveCommentDraftContext(editingCommentId: widget.comment?.id, postId: postId, parentCommentId: parentCommentId);
 
-  Draft _buildDraft() => buildCommentDraft(
-        context: _draftContext,
-        languageId: languageId,
-        body: _bodyTextController.text,
-      );
+  Draft _buildDraft() => buildCommentDraft(context: _draftContext, languageId: languageId, body: _bodyTextController.text);
 
   void _onDraftInputChanged() {
     _draftDebounceTimer?.cancel();
@@ -297,11 +282,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
                   controller: _keyboardDetectionController,
                   child: Scaffold(
                     resizeToAvoidBottomInset: false,
-                    appBar: AppBar(
-                      title: Text(widget.comment != null ? l10n.editComment : l10n.createComment),
-                      toolbarHeight: APP_BAR_HEIGHT,
-                      centerTitle: false,
-                    ),
+                    appBar: AppBar(title: Text(widget.comment != null ? l10n.editComment : l10n.createComment), toolbarHeight: APP_BAR_HEIGHT, centerTitle: false),
                     body: SafeArea(
                       bottom: false,
                       child: Column(
@@ -317,10 +298,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
                                       padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
                                       child: Container(
                                         padding: const EdgeInsets.only(top: 6.0, bottom: 12.0),
-                                        decoration: BoxDecoration(
-                                          color: getBackgroundColor(context),
-                                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                        ),
+                                        decoration: BoxDecoration(color: getBackgroundColor(context), borderRadius: const BorderRadius.all(Radius.circular(8.0))),
                                         child: PostBody(
                                           post: post!,
                                           crossPosts: const [],
@@ -337,10 +315,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
                                     Padding(
                                       padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 16.0),
                                       child: Container(
-                                        decoration: BoxDecoration(
-                                          color: getBackgroundColor(context),
-                                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                        ),
+                                        decoration: BoxDecoration(color: getBackgroundColor(context), borderRadius: const BorderRadius.all(Radius.circular(8.0))),
                                         child: CommentContent(
                                           account: account,
                                           comment: parentComment!,
@@ -408,10 +383,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
                                           child: Container(
                                             width: double.infinity,
                                             padding: const EdgeInsets.all(8.0),
-                                            decoration: BoxDecoration(
-                                              color: getBackgroundColor(context),
-                                              borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                            ),
+                                            decoration: BoxDecoration(color: getBackgroundColor(context), borderRadius: const BorderRadius.all(Radius.circular(8.0))),
                                             child: CommonMarkdownBody(body: _bodyTextController.text, isComment: true),
                                           ),
                                         ),
@@ -430,7 +402,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
                                         crossFadeState: showPreview ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                                         duration: const Duration(milliseconds: 120),
                                         excludeBottomFocus: false,
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -523,11 +495,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
                                         _bodyFocusNode.requestFocus();
                                       }
                                     },
-                                    icon: Icon(
-                                      showPreview ? Icons.visibility_off_rounded : Icons.visibility,
-                                      color: theme.colorScheme.onSecondary,
-                                      semanticLabel: l10n.postTogglePreview,
-                                    ),
+                                    icon: Icon(showPreview ? Icons.visibility_off_rounded : Icons.visibility, color: theme.colorScheme.onSecondary, semanticLabel: l10n.postTogglePreview),
                                     style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondaryContainer),
                                   ),
                                 ),
@@ -538,30 +506,20 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
                                     child: IconButton(
                                       onPressed: isSubmitButtonDisabled || state.status == CreateCommentStatus.submitting ? null : () => _onCreateComment(context),
                                       icon: state.status == CreateCommentStatus.submitting
-                                          ? const SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(),
-                                            )
+                                          ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator())
                                           : Icon(
                                               widget.comment != null ? Icons.edit_rounded : Icons.send_rounded,
                                               color: theme.colorScheme.onSecondary,
                                               semanticLabel: widget.comment != null ? l10n.editComment : l10n.createComment,
                                             ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: theme.colorScheme.secondary,
-                                        disabledBackgroundColor: getBackgroundColor(context),
-                                      ),
+                                      style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary, disabledBackgroundColor: getBackgroundColor(context)),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Container(
-                            height: MediaQuery.of(context).padding.bottom,
-                            color: theme.cardColor,
-                          ),
+                          Container(height: MediaQuery.of(context).padding.bottom, color: theme.cardColor),
                         ],
                       ),
                     ),
@@ -597,11 +555,11 @@ class _CreateCommentPageState extends State<CreateCommentPage> with WidgetsBindi
     saveDraft = false;
 
     context.read<CreateCommentCubit>().createOrEditComment(
-          postId: postId,
-          parentCommentId: parentCommentId,
-          content: _bodyTextController.text,
-          commentIdBeingEdited: widget.comment?.id,
-          languageId: languageId,
-        );
+      postId: postId,
+      parentCommentId: parentCommentId,
+      content: _bodyTextController.text,
+      commentIdBeingEdited: widget.comment?.id,
+      languageId: languageId,
+    );
   }
 }

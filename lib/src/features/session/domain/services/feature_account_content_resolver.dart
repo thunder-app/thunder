@@ -10,11 +10,9 @@ import 'package:thunder/src/features/session/domain/models/feature_account_resol
 import 'package:thunder/src/core/app/repository_factories.dart';
 
 class FeatureAccountContentResolver {
-  FeatureAccountContentResolver({
-    SearchRepository Function(Account account)? searchRepositoryFactory,
-    Future<List<ThunderPost>> Function(List<ThunderPost> posts)? postParser,
-  })  : _searchRepositoryFactory = searchRepositoryFactory ?? ((account) => createSearchRepository(account)),
-        _postParser = postParser ?? ((posts) => parsePosts(posts));
+  FeatureAccountContentResolver({SearchRepository Function(Account account)? searchRepositoryFactory, Future<List<ThunderPost>> Function(List<ThunderPost> posts)? postParser})
+    : _searchRepositoryFactory = searchRepositoryFactory ?? ((account) => createSearchRepository(account)),
+      _postParser = postParser ?? ((posts) => parsePosts(posts));
 
   final SearchRepository Function(Account account) _searchRepositoryFactory;
   final Future<List<ThunderPost>> Function(List<ThunderPost> posts) _postParser;
@@ -26,11 +24,7 @@ class FeatureAccountContentResolver {
     final post = await _resolvePost(repository, request.postActorId);
     final parentComment = await _resolveParentComment(repository, request.parentCommentActorId);
 
-    return FeatureAccountResolvedContent(
-      community: community,
-      post: post,
-      parentComment: parentComment,
-    );
+    return FeatureAccountResolvedContent(community: community, post: post, parentComment: parentComment);
   }
 
   Future<ThunderCommunity?> _resolveCommunity(SearchRepository repository, String? actorId) async {

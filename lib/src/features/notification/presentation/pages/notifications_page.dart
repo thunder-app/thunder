@@ -22,44 +22,18 @@ class NotificationsPage extends StatelessWidget {
   /// The list of private messages (used for messages).
   final List<ThunderPrivateMessage> messages;
 
-  const NotificationsPage({
-    super.key,
-    required this.inboxType,
-    this.comments = const [],
-    this.messages = const [],
-  });
+  const NotificationsPage({super.key, required this.inboxType, this.comments = const [], this.messages = const []});
 
-  factory NotificationsPage.replies({
-    Key? key,
-    required List<ThunderComment> replies,
-  }) {
-    return NotificationsPage(
-      key: key,
-      inboxType: InboxType.replies,
-      comments: replies,
-    );
+  factory NotificationsPage.replies({Key? key, required List<ThunderComment> replies}) {
+    return NotificationsPage(key: key, inboxType: InboxType.replies, comments: replies);
   }
 
-  factory NotificationsPage.mentions({
-    Key? key,
-    required List<ThunderComment> mentions,
-  }) {
-    return NotificationsPage(
-      key: key,
-      inboxType: InboxType.mentions,
-      comments: mentions,
-    );
+  factory NotificationsPage.mentions({Key? key, required List<ThunderComment> mentions}) {
+    return NotificationsPage(key: key, inboxType: InboxType.mentions, comments: mentions);
   }
 
-  factory NotificationsPage.messages({
-    Key? key,
-    required List<ThunderPrivateMessage> messages,
-  }) {
-    return NotificationsPage(
-      key: key,
-      inboxType: InboxType.messages,
-      messages: messages,
-    );
+  factory NotificationsPage.messages({Key? key, required List<ThunderPrivateMessage> messages}) {
+    return NotificationsPage(key: key, inboxType: InboxType.messages, messages: messages);
   }
 
   @override
@@ -79,9 +53,7 @@ class NotificationsPage extends StatelessWidget {
                   notificationRepository: createNotificationRepository(account),
                   privateMessageRepository: createPrivateMessageRepository(account),
                   localizationService: const ThunderLocalizationService(),
-                )..add(
-                  const GetInboxEvent(reset: true, inboxType: InboxType.messages),
-                ))
+                )..add(const GetInboxEvent(reset: true, inboxType: InboxType.messages)))
               : InboxBloc.initWith(
                   account: account,
                   replies: comments,
@@ -127,9 +99,7 @@ class NotificationsPage extends StatelessWidget {
           final body = switch (inboxType) {
             InboxType.replies => InboxRepliesView(replies: state.replies),
             InboxType.mentions => InboxMentionsView(mentions: state.replies),
-            InboxType.messages => InboxPrivateMessagesView(
-                privateMessages: state.privateMessages.isEmpty ? messages : state.privateMessages,
-              ),
+            InboxType.messages => InboxPrivateMessagesView(privateMessages: state.privateMessages.isEmpty ? messages : state.privateMessages),
             InboxType.all => const SizedBox.shrink(),
           };
 
@@ -138,9 +108,7 @@ class NotificationsPage extends StatelessWidget {
               headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                 return [
                   SliverOverlapAbsorber(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                      context,
-                    ),
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                     sliver: SliverAppBar(
                       pinned: true,
                       centerTitle: false,

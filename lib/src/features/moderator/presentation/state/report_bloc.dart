@@ -21,41 +21,21 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class ReportBloc extends Bloc<ReportEvent, ReportState> {
-  ReportBloc({
-    required this.account,
-    required this.reportRepository,
-    required LocalizationService localizationService,
-  })  : _localizationService = localizationService,
-        super(const ReportState()) {
+  ReportBloc({required this.account, required this.reportRepository, required LocalizationService localizationService}) : _localizationService = localizationService, super(const ReportState()) {
     /// Handles resetting the report feed to its initial state
-    on<ResetReportEvent>(
-      _onResetReportFeed,
-      transformer: restartable(),
-    );
+    on<ResetReportEvent>(_onResetReportFeed, transformer: restartable());
 
     /// Handles fetching the report
-    on<ReportFeedFetchedEvent>(
-      _onReportFeedFetched,
-      transformer: restartable(),
-    );
+    on<ReportFeedFetchedEvent>(_onReportFeedFetched, transformer: restartable());
 
     /// Handles actions on a given item within the feed
-    on<ReportFeedItemActionedEvent>(
-      _onReportFeedItemActioned,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<ReportFeedItemActionedEvent>(_onReportFeedItemActioned, transformer: throttleDroppable(Duration.zero));
 
     /// Handles changing the filter type of the report feed
-    on<ReportFeedChangeFilterTypeEvent>(
-      _onReportFeedChangeFilterType,
-      transformer: restartable(),
-    );
+    on<ReportFeedChangeFilterTypeEvent>(_onReportFeedChangeFilterType, transformer: restartable());
 
     /// Handles clearing any messages from the state
-    on<ReportFeedClearMessageEvent>(
-      _onReportFeedClearMessage,
-      transformer: throttleDroppable(Duration.zero),
-    );
+    on<ReportFeedClearMessageEvent>(_onReportFeedClearMessage, transformer: throttleDroppable(Duration.zero));
   }
 
   final Account account;
@@ -64,13 +44,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
   /// Handles clearing any messages from the state
   Future<void> _onReportFeedClearMessage(ReportFeedClearMessageEvent event, Emitter<ReportState> emit) async {
-    emit(
-      state.copyWith(
-        status: state.status == ReportStatus.failure ? state.status : ReportStatus.success,
-        message: null,
-        errorReason: null,
-      ),
-    );
+    emit(state.copyWith(status: state.status == ReportStatus.failure ? state.status : ReportStatus.success, message: null, errorReason: null));
   }
 
   /// Resets the ReportState to its initial state
@@ -93,12 +67,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
   /// Changes the current filter type of the report feed
   Future<void> _onReportFeedChangeFilterType(ReportFeedChangeFilterTypeEvent event, Emitter<ReportState> emit) async {
-    add(ReportFeedFetchedEvent(
-      reportFeedType: state.reportFeedType,
-      showResolved: event.showResolved,
-      communityId: event.communityId,
-      reset: true,
-    ));
+    add(ReportFeedFetchedEvent(reportFeedType: state.reportFeedType, showResolved: event.showResolved, communityId: event.communityId, reset: true));
   }
 
   /// Fetches the list of report events
@@ -108,12 +77,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       if (event.reset) {
         if (state.status != ReportStatus.initial) add(ResetReportEvent());
 
-        final response = await reportRepository.getReports(
-          page: 1,
-          unresolved: !event.showResolved,
-          communityId: event.communityId,
-          reportFeedType: event.reportFeedType,
-        );
+        final response = await reportRepository.getReports(page: 1, unresolved: !event.showResolved, communityId: event.communityId, reportFeedType: event.reportFeedType);
 
         return emit(
           state.copyWith(
@@ -130,10 +94,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         );
       }
 
-      if (shouldSkipPagination(
-        isFetching: state.status == ReportStatus.fetching,
-        hasReachedReportsEnd: state.hasReachedReportsEnd,
-      )) {
+      if (shouldSkipPagination(isFetching: state.status == ReportStatus.fetching, hasReachedReportsEnd: state.hasReachedReportsEnd)) {
         return;
       }
 
@@ -148,10 +109,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         reportFeedType: state.reportFeedType,
       );
 
-      final reports = appendReports(
-        current: state.reports,
-        incoming: response.items,
-      );
+      final reports = appendReports(current: state.reports, incoming: response.items);
 
       return emit(
         state.copyWith(
@@ -166,14 +124,13 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       );
     } catch (e) {
       final message = e.toString();
-      return emit(state.copyWith(
-        status: ReportStatus.failure,
-        message: message,
-        errorReason: AppErrorReason.unexpected(
+      return emit(
+        state.copyWith(
+          status: ReportStatus.failure,
           message: message,
-          details: e.toString(),
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
         ),
-      ));
+      );
     }
   }
 
@@ -186,21 +143,25 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         final input = event.actionInput;
         if (input is! ResolveReportActionInput) {
           final message = _localizationService.l10n.unableToResolveReport;
-          return emit(state.copyWith(
-            status: ReportStatus.failure,
-            message: message,
-            errorReason: AppErrorReason.validation(message: message),
-          ));
+          return emit(
+            state.copyWith(
+              status: ReportStatus.failure,
+              message: message,
+              errorReason: AppErrorReason.validation(message: message),
+            ),
+          );
         }
         // Optimistically update the report
         final existingReportIndex = state.reports.indexWhere((report) => report.kind == event.report.kind && report.id == event.report.id);
         if (existingReportIndex == -1) {
           final message = _localizationService.l10n.unableToResolveReport;
-          return emit(state.copyWith(
-            status: ReportStatus.failure,
-            message: message,
-            errorReason: AppErrorReason.actionFailed(message: message),
-          ));
+          return emit(
+            state.copyWith(
+              status: ReportStatus.failure,
+              message: message,
+              errorReason: AppErrorReason.actionFailed(message: message),
+            ),
+          );
         }
 
         final report = state.reports[existingReportIndex];
@@ -209,11 +170,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
         try {
           final updatedReport = optimisticallyResolveReport(report, value);
-          final optimisticReports = replaceAt(
-            source: state.reports,
-            index: existingReportIndex,
-            value: updatedReport,
-          );
+          final optimisticReports = replaceAt(source: state.reports, index: existingReportIndex, value: updatedReport);
 
           // Emit the state to update UI immediately
           emit(state.copyWith(status: ReportStatus.success, reports: optimisticReports));
@@ -221,11 +178,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
           final success = await reportRepository.resolveReport(report, value);
           if (success) {
-            return emit(state.copyWith(
-              status: ReportStatus.success,
-              reports: optimisticReports,
-              errorReason: null,
-            ));
+            return emit(state.copyWith(status: ReportStatus.success, reports: optimisticReports, errorReason: null));
           }
 
           final message = _localizationService.l10n.unableToResolveReport;
@@ -239,15 +192,14 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
           );
         } catch (e) {
           final message = e.toString();
-          emit(state.copyWith(
-            status: ReportStatus.failure,
-            reports: originalReports,
-            message: message,
-            errorReason: AppErrorReason.unexpected(
+          emit(
+            state.copyWith(
+              status: ReportStatus.failure,
+              reports: originalReports,
               message: message,
-              details: e.toString(),
+              errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
             ),
-          ));
+          );
         }
     }
   }

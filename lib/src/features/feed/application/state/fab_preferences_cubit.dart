@@ -9,9 +9,7 @@ part 'fab_preferences_state.dart';
 
 /// Cubit for managing floating action button (FAB) preferences
 class FabPreferencesCubit extends Cubit<FabPreferencesState> {
-  FabPreferencesCubit({required PreferencesStore preferencesStore})
-      : _preferencesStore = preferencesStore,
-        super(const FabPreferencesState()) {
+  FabPreferencesCubit({required PreferencesStore preferencesStore}) : _preferencesStore = preferencesStore, super(const FabPreferencesState()) {
     load();
   }
 

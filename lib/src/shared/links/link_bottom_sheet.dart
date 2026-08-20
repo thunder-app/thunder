@@ -28,21 +28,12 @@ void handleLinkLongPress(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
-    builder: (ctx) => LinkBottomSheet(
-      text: text,
-      url: url,
-      initialPage: initialPage,
-      preferredImageUrl: preferredImageUrl,
-      customNavigation: customNavigation,
-    ),
+    builder: (ctx) => LinkBottomSheet(text: text, url: url, initialPage: initialPage, preferredImageUrl: preferredImageUrl, customNavigation: customNavigation),
   );
 }
 
 /// The pages that can be displayed in the link bottom sheet
-enum LinkBottomSheetPage {
-  general,
-  alternateLinks,
-}
+enum LinkBottomSheetPage { general, alternateLinks }
 
 /// A bottom sheet that displays the link details.
 class LinkBottomSheet extends StatefulWidget {
@@ -61,14 +52,7 @@ class LinkBottomSheet extends StatefulWidget {
   /// The preferred image URL to display before falling back to fetched metadata.
   final String? preferredImageUrl;
 
-  const LinkBottomSheet({
-    super.key,
-    required this.text,
-    required this.url,
-    this.initialPage = LinkBottomSheetPage.general,
-    this.preferredImageUrl,
-    this.customNavigation,
-  });
+  const LinkBottomSheet({super.key, required this.text, required this.url, this.initialPage = LinkBottomSheetPage.general, this.preferredImageUrl, this.customNavigation});
 
   @override
   State<LinkBottomSheet> createState() => _LinkBottomSheetState();
@@ -123,20 +107,14 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
           Padding(
             padding: const EdgeInsets.only(left: 24, right: 24),
             child: Container(
-              decoration: BoxDecoration(
-                color: theme.dividerColor.withValues(alpha: 0.25),
-                borderRadius: BorderRadius.circular(10),
-              ),
+              decoration: BoxDecoration(color: theme.dividerColor.withValues(alpha: 0.25), borderRadius: BorderRadius.circular(10)),
               clipBehavior: Clip.antiAlias,
               child: CachedNetworkImage(
                 imageUrl: preferredImageUrl!,
                 width: double.infinity,
                 height: 160,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => const SizedBox(
-                  height: 160,
-                  child: Center(child: CircularProgressIndicator()),
-                ),
+                placeholder: (context, url) => const SizedBox(height: 160, child: Center(child: CircularProgressIndicator())),
                 errorWidget: (context, url, error) => const SizedBox.shrink(),
               ),
             ),
@@ -156,10 +134,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                 padding: const EdgeInsets.only(left: 24, right: 24),
                 child: Container(
                   height: 96,
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor.withValues(alpha: 0.25),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  decoration: BoxDecoration(color: theme.dividerColor.withValues(alpha: 0.25), borderRadius: BorderRadius.circular(10)),
                   alignment: Alignment.center,
                   child: const CircularProgressIndicator(),
                 ),
@@ -184,10 +159,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
             Padding(
               padding: const EdgeInsets.only(left: 24, right: 24),
               child: Container(
-                decoration: BoxDecoration(
-                  color: theme.dividerColor.withValues(alpha: 0.25),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                decoration: BoxDecoration(color: theme.dividerColor.withValues(alpha: 0.25), borderRadius: BorderRadius.circular(10)),
                 clipBehavior: Clip.antiAlias,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,10 +170,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                         width: double.infinity,
                         height: 160,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => const SizedBox(
-                          height: 160,
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
+                        placeholder: (context, url) => const SizedBox(height: 160, child: Center(child: CircularProgressIndicator())),
                         errorWidget: (context, url, error) => const SizedBox.shrink(),
                       ),
                     if (title != null || description != null)
@@ -210,21 +179,9 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (title != null)
-                              Text(
-                                title,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.titleMedium,
-                              ),
+                            if (title != null) Text(title, maxLines: 2, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleMedium),
                             if (title != null && description != null) const SizedBox(height: 6),
-                            if (description != null)
-                              Text(
-                                description,
-                                maxLines: 4,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.bodyMedium,
-                              ),
+                            if (description != null) Text(description, maxLines: 4, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodyMedium),
                           ],
                         ),
                       ),
@@ -275,17 +232,11 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                         alignment: Alignment.centerLeft,
                         child: Row(
                           children: [
-                            if ((page ?? widget.initialPage) != LinkBottomSheetPage.general) ...[
-                              const Icon(Icons.chevron_left, size: 30),
-                              const SizedBox(width: 12),
-                            ],
-                            Text(
-                              switch (page ?? widget.initialPage) {
-                                LinkBottomSheetPage.alternateLinks => l10n.alternateSources,
-                                _ => l10n.linkActions,
-                              },
-                              style: theme.textTheme.titleLarge,
-                            ),
+                            if ((page ?? widget.initialPage) != LinkBottomSheetPage.general) ...[const Icon(Icons.chevron_left, size: 30), const SizedBox(width: 12)],
+                            Text(switch (page ?? widget.initialPage) {
+                              LinkBottomSheetPage.alternateLinks => l10n.alternateSources,
+                              _ => l10n.linkActions,
+                            }, style: theme.textTheme.titleLarge),
                           ],
                         ),
                       ),
@@ -294,16 +245,11 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                 ),
               ),
               const SizedBox(height: 10),
-              if (isValidUrl && (page ?? widget.initialPage) == LinkBottomSheetPage.general) ...[
-                _buildLinkMetadataPreviewSection(theme),
-              ],
+              if (isValidUrl && (page ?? widget.initialPage) == LinkBottomSheetPage.general) ...[_buildLinkMetadataPreviewSection(theme)],
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor.withValues(alpha: 0.25),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  decoration: BoxDecoration(color: theme.dividerColor.withValues(alpha: 0.25), borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: const EdgeInsets.all(5),
                     child: Text(
@@ -316,11 +262,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
               ),
               const SizedBox(height: 10),
               if ((page ?? widget.initialPage) == LinkBottomSheetPage.general) ...[
-                ThunderPickerItem(
-                  label: l10n.open,
-                  icon: Icons.language,
-                  onSelected: () => handleLinkTap(context, widget.text, widget.url),
-                ),
+                ThunderPickerItem(label: l10n.open, icon: Icons.language, onSelected: () => handleLinkTap(context, widget.text, widget.url)),
                 ThunderPickerItem(
                   label: l10n.copy,
                   icon: Icons.copy_rounded,
@@ -329,10 +271,7 @@ class _LinkBottomSheetState extends State<LinkBottomSheet> {
                 ThunderPickerItem(
                   label: l10n.share,
                   icon: Icons.share_rounded,
-                  onSelected: () => SharePlus.instance.share(ShareParams(
-                    text: widget.url ?? widget.text,
-                    sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-                  )),
+                  onSelected: () => SharePlus.instance.share(ShareParams(text: widget.url ?? widget.text, sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1))),
                 ),
                 ThunderPickerItem(
                   label: l10n.alternateSources,

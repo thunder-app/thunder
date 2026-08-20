@@ -18,9 +18,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
 
   NotificationsCubit({required this.notificationsStream}) : super(const NotificationsState());
 
-  NotificationsCubit.fromService(NotificationService notificationService)
-      : notificationsStream = notificationService.notifications,
-        super(const NotificationsState());
+  NotificationsCubit.fromService(NotificationService notificationService) : notificationsStream = notificationService.notifications, super(const NotificationsState());
 
   void handleNotifications() {
     if (_notificationsStreamSubscription != null) {
@@ -28,11 +26,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     }
 
     _notificationsStreamSubscription = notificationsStream.listen((notificationResponse) async {
-      final payload = notificationResponse.payload?.isNotEmpty == true
-          ? NotificationPayload.fromJson(
-              jsonDecode(notificationResponse.payload!),
-            )
-          : null;
+      final payload = notificationResponse.payload?.isNotEmpty == true ? NotificationPayload.fromJson(jsonDecode(notificationResponse.payload!)) : null;
 
       if (payload == null) return;
 
@@ -42,14 +36,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
         NotificationInboxType.message => NotificationsStatus.message,
       };
 
-      emit(
-        state.copyWith(
-          status: status,
-          notificationId: payload.id,
-          accountId: payload.accountId,
-          pending: false,
-        ),
-      );
+      emit(state.copyWith(status: status, notificationId: payload.id, accountId: payload.accountId, pending: false));
     });
   }
 

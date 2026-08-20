@@ -62,10 +62,7 @@ class _WebViewState extends State<WebView> {
     late final PlatformWebViewControllerCreationParams params;
 
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-      params = WebKitWebViewControllerCreationParams(
-        allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-      );
+      params = WebKitWebViewControllerCreationParams(allowsInlineMediaPlayback: true, mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{});
     } else {
       params = const PlatformWebViewControllerCreationParams();
     }
@@ -75,25 +72,27 @@ class _WebViewState extends State<WebView> {
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..loadRequest(Uri.parse(widget.url))
-      ..setNavigationDelegate(NavigationDelegate(
-        onNavigationRequest: (navigationRequest) {
-          if (!kIsWeb && Platform.isAndroid) {
-            Uri? uri = Uri.tryParse(navigationRequest.url);
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onNavigationRequest: (navigationRequest) {
+            if (!kIsWeb && Platform.isAndroid) {
+              Uri? uri = Uri.tryParse(navigationRequest.url);
 
-            // Check if the scheme is not https, in which case the in-app browser can't handle it
-            if (uri != null && uri.scheme != 'https') {
-              // Although a non-https scheme is an indication that this link is intended for another app,
-              // we actually have to change it back to https in order for the intent to be properly passed to another app.
-              launchUrl(uri.replace(scheme: 'https'), mode: LaunchMode.externalApplication);
+              // Check if the scheme is not https, in which case the in-app browser can't handle it
+              if (uri != null && uri.scheme != 'https') {
+                // Although a non-https scheme is an indication that this link is intended for another app,
+                // we actually have to change it back to https in order for the intent to be properly passed to another app.
+                launchUrl(uri.replace(scheme: 'https'), mode: LaunchMode.externalApplication);
 
-              // Finally, navigate back to the previous URL.
-              return NavigationDecision.prevent;
+                // Finally, navigate back to the previous URL.
+                return NavigationDecision.prevent;
+              }
             }
-          }
-          return NavigationDecision.navigate;
-        },
-        onUrlChange: (urlChange) => setState(() => currentUrl = urlChange.url),
-      ));
+            return NavigationDecision.navigate;
+          },
+          onUrlChange: (urlChange) => setState(() => currentUrl = urlChange.url),
+        ),
+      );
 
     if (controller.platform is AndroidWebViewController) {
       (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
@@ -115,12 +114,7 @@ class _WebViewState extends State<WebView> {
             title: Text(snapshot.data?[0] ?? snapshot.data?[1] ?? '', overflow: TextOverflow.fade, softWrap: false),
             subtitle: Text(snapshot.data?[1]?.replaceFirst('https://', '').replaceFirst('www.', '') ?? '', overflow: TextOverflow.fade, softWrap: false),
           ),
-          actions: <Widget>[
-            NavigationControls(
-              webViewController: _controller,
-              url: currentUrl ?? widget.url,
-            )
-          ],
+          actions: <Widget>[NavigationControls(webViewController: _controller, url: currentUrl ?? widget.url)],
         ),
         body: WebViewWidget(controller: _controller.controller),
       ),
@@ -129,11 +123,7 @@ class _WebViewState extends State<WebView> {
 }
 
 class NavigationControls extends StatelessWidget {
-  const NavigationControls({
-    super.key,
-    required this.webViewController,
-    required this.url,
-  });
+  const NavigationControls({super.key, required this.webViewController, required this.url});
 
   final IWebController webViewController;
   final String url;
@@ -148,50 +138,31 @@ class NavigationControls extends StatelessWidget {
         return Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.arrow_back_rounded,
-                semanticLabel: l10n.back,
-              ),
+              icon: Icon(Icons.arrow_back_rounded, semanticLabel: l10n.back),
               onPressed: snapshot.hasData && snapshot.data![0] == true ? () async => await webViewController.goBack() : null,
             ),
             IconButton(
-              icon: Icon(
-                Icons.arrow_forward_rounded,
-                semanticLabel: l10n.forward,
-              ),
+              icon: Icon(Icons.arrow_forward_rounded, semanticLabel: l10n.forward),
               onPressed: snapshot.hasData && snapshot.data![1] == true ? () async => await webViewController.goForward() : null,
             ),
             Semantics(
               label: l10n.menu,
               child: PopupMenuButton(
                 itemBuilder: (BuildContext context) => [
-                  ThunderPopupMenuItem(
-                    onTap: () async => await webViewController.reload(),
-                    icon: Icons.replay_rounded,
-                    title: l10n.refresh,
-                  ),
+                  ThunderPopupMenuItem(onTap: () async => await webViewController.reload(), icon: Icons.replay_rounded, title: l10n.refresh),
                   ThunderPopupMenuItem(
                     onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
                     icon: Icons.open_in_browser_rounded,
                     title: l10n.openInBrowser,
                   ),
                   ThunderPopupMenuItem(
-                    onTap: () => SharePlus.instance.share(ShareParams(
-                      uri: Uri.parse(url),
-                      sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-                    )),
+                    onTap: () => SharePlus.instance.share(ShareParams(uri: Uri.parse(url), sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1))),
                     icon: Icons.share_rounded,
                     title: l10n.share,
                   ),
                   ThunderPopupMenuItem(
                     onTap: () {
-                      handleLinkLongPress(
-                        context,
-                        url,
-                        url,
-                        initialPage: LinkBottomSheetPage.alternateLinks,
-                        customNavigation: (url) => webViewController.loadRequest(Uri.parse(url)),
-                      );
+                      handleLinkLongPress(context, url, url, initialPage: LinkBottomSheetPage.alternateLinks, customNavigation: (url) => webViewController.loadRequest(Uri.parse(url)));
                     },
                     icon: Icons.link_rounded,
                     title: l10n.alternateSources,

@@ -24,12 +24,9 @@ class LinkMetadataRepositoryImpl implements LinkMetadataRepository {
   /// Creates a new LinkMetadataRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  LinkMetadataRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  LinkMetadataRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
   Future<ThunderLinkMetadata?> getLinkMetadata({required String url}) async {
@@ -38,7 +35,7 @@ class LinkMetadataRepositoryImpl implements LinkMetadataRepository {
 
     final api = await _api.get();
     try {
-      return api.getLinkMetadata(url: trimmedUrl);
+      return await api.getLinkMetadata(url: trimmedUrl);
     } catch (error) {
       if (kDebugMode) debugPrint('Failed to fetch link metadata for $trimmedUrl: $error');
       return null;

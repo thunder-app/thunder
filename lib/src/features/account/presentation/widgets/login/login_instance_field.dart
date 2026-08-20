@@ -11,14 +11,7 @@ import 'package:thunder/src/features/instance/data/constants/known_instances.dar
 /// Displays instance suggestions and live validation feedback.
 class LoginInstanceField extends StatelessWidget {
   /// Creates an instance input field.
-  const LoginInstanceField({
-    super.key,
-    required this.anonymous,
-    required this.controller,
-    required this.usernameFocusNode,
-    required this.submissionError,
-    required this.onSubmit,
-  });
+  const LoginInstanceField({super.key, required this.anonymous, required this.controller, required this.usernameFocusNode, required this.submissionError, required this.onSubmit});
 
   /// Whether a valid submitted host should immediately add an anonymous session.
   final bool anonymous;
@@ -62,28 +55,21 @@ class LoginInstanceField extends StatelessWidget {
                   errorMaxLines: 2,
                   suffixIcon: switch (state.status) {
                     InstanceValidationStatus.detecting => Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Semantics(
-                          label: l10n.loading,
-                          child: const SizedBox.square(
-                            key: Key('login-instance-detecting'),
-                            dimension: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        ),
+                      padding: const EdgeInsets.all(14),
+                      child: Semantics(
+                        label: l10n.loading,
+                        child: const SizedBox.square(key: Key('login-instance-detecting'), dimension: 20, child: CircularProgressIndicator(strokeWidth: 2)),
                       ),
-                    InstanceValidationStatus.valid => const Icon(
-                        Icons.check_circle_rounded,
-                        key: Key('login-instance-valid'),
-                      ),
+                    ),
+                    InstanceValidationStatus.valid => const Icon(Icons.check_circle_rounded, key: Key('login-instance-valid')),
                     _ => null,
                   },
                 ),
                 enableSuggestions: false,
                 onSubmitted: anonymous
                     ? state.status == InstanceValidationStatus.valid
-                        ? (_) => onSubmit()
-                        : null
+                          ? (_) => onSubmit()
+                          : null
                     : (_) => usernameFocusNode.requestFocus(),
               ),
               suggestionsCallback: (pattern) {

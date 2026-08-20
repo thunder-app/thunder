@@ -13,10 +13,7 @@ class FavoriteLocalDataSource {
     assert(favourite.id.isEmpty);
 
     try {
-      int id = await database.into(database.favorites).insert(FavoritesCompanion.insert(
-            accountId: int.parse(favourite.accountId),
-            communityId: favourite.communityId,
-          ));
+      int id = await database.into(database.favorites).insert(FavoritesCompanion.insert(accountId: int.parse(favourite.accountId), communityId: favourite.communityId));
       return favourite.copyWith(id: id.toString());
     } catch (e) {
       debugPrint(e.toString());
@@ -49,11 +46,9 @@ class FavoriteLocalDataSource {
 
   static Future<void> updateFavourite(Favorite favorite) async {
     try {
-      await database.update(database.favorites).replace(FavoritesCompanion(
-            id: Value(int.parse(favorite.id)),
-            accountId: Value(int.parse(favorite.accountId)),
-            communityId: Value(favorite.communityId),
-          ));
+      await database
+          .update(database.favorites)
+          .replace(FavoritesCompanion(id: Value(int.parse(favorite.id)), accountId: Value(int.parse(favorite.accountId)), communityId: Value(favorite.communityId)));
     } catch (e) {
       debugPrint(e.toString());
     }

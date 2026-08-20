@@ -33,14 +33,7 @@ class UserHeader extends StatefulWidget {
   /// Whether to show the condensed version of the header
   final bool condensed;
 
-  const UserHeader({
-    super.key,
-    required this.user,
-    required this.moderates,
-    this.feedType,
-    this.onChangeFeedType,
-    this.condensed = false,
-  });
+  const UserHeader({super.key, required this.user, required this.moderates, this.feedType, this.onChangeFeedType, this.condensed = false});
 
   @override
   State<UserHeader> createState() => _UserHeaderState();
@@ -66,15 +59,7 @@ class _UserHeaderState extends State<UserHeader> {
           enableDrag: true,
           useSafeArea: true,
           scrollControlDisabledMaxHeightRatio: 0.90,
-          builder: (_) => wrapWithCapturedAccountContext(
-            context,
-            UserInformation(
-              launchContext: context,
-              account: account,
-              user: widget.user,
-              moderates: widget.moderates,
-            ),
-          ),
+          builder: (_) => wrapWithCapturedAccountContext(context, UserInformation(launchContext: context, account: account, user: widget.user, moderates: widget.moderates)),
         );
       },
       child: _UserHeaderWithBanner(user: widget.user, child: content),
@@ -86,12 +71,7 @@ class _UserHeaderState extends State<UserHeader> {
       spacing: 8.0,
       children: [
         content,
-        UserHeaderActions(
-          user: widget.user,
-          moderates: widget.moderates,
-          feedType: widget.feedType,
-          onChangeFeedType: widget.onChangeFeedType,
-        ),
+        UserHeaderActions(user: widget.user, moderates: widget.moderates, feedType: widget.feedType, onChangeFeedType: widget.onChangeFeedType),
       ],
     );
   }
@@ -134,11 +114,7 @@ class _UserInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        AutoSizeText(
-          user.displayNameOrName,
-          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-          maxLines: 1,
-        ),
+        AutoSizeText(user.displayNameOrName, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600), maxLines: 1),
         UserFullNameWidget(
           name: user.name,
           displayName: user.displayName,
@@ -197,22 +173,14 @@ class _UserHeaderWithBanner extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        if (user.banner != null) ...[
-          _BannerImage(url: user.banner!),
-          _BannerGradient(),
-        ],
+        if (user.banner != null) ...[_BannerImage(url: user.banner!), _BannerGradient()],
         Positioned(
           right: 20.0,
           child: Icon(
             Icons.info_outline_rounded,
             size: 24.0,
             color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
-            shadows: [
-              Shadow(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
-                blurRadius: 16.0,
-              ),
-            ],
+            shadows: [Shadow(color: theme.colorScheme.onSurface.withValues(alpha: 0.1), blurRadius: 16.0)],
           ),
         ),
         child,
@@ -231,10 +199,7 @@ class _BannerImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: ImagePreview(
-        url: url,
-        fit: BoxFit.cover,
-      ),
+      child: ImagePreview(url: url, fit: BoxFit.cover),
     );
   }
 }
@@ -253,12 +218,7 @@ class _BannerGradient extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
-            colors: [
-              theme.colorScheme.surface,
-              theme.colorScheme.surface.withValues(alpha: 0.9),
-              theme.colorScheme.surface.withValues(alpha: 0.6),
-              theme.colorScheme.surface.withValues(alpha: 0.3),
-            ],
+            colors: [theme.colorScheme.surface, theme.colorScheme.surface.withValues(alpha: 0.9), theme.colorScheme.surface.withValues(alpha: 0.6), theme.colorScheme.surface.withValues(alpha: 0.3)],
             stops: [0.0, 0.4, 0.7, 1.0],
           ),
         ),

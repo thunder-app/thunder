@@ -121,11 +121,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   void _showExitWarning() {
-    showThunderSnackbar(
-      AppLocalizations.of(context)!.tapToExit,
-      duration: const Duration(milliseconds: 3500),
-      closable: false,
-    );
+    showThunderSnackbar(AppLocalizations.of(context)!.tapToExit, duration: const Duration(milliseconds: 3500), closable: false);
   }
 
   void _navigateToNotification(BuildContext context, NotificationsState state) {
@@ -369,7 +365,10 @@ class _ThunderState extends State<Thunder> {
                     opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 150),
                     curve: Curves.easeIn,
-                    child: IgnorePointer(ignoring: selectedPageIndex != 0, child: FeedFAB(actionController: _rootFeedActionController)),
+                    child: IgnorePointer(
+                      ignoring: selectedPageIndex != 0,
+                      child: FeedFAB(actionController: _rootFeedActionController),
+                    ),
                   )
                 : null,
             floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
@@ -438,14 +437,14 @@ class _ThunderState extends State<Thunder> {
                 if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
                   final feedCubit = context.read<FeedPreferencesCubit>();
                   context.read<FeedBloc>().add(
-                        FeedFetchedEvent(
-                          feedType: FeedType.general,
-                          feedListType: state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? feedCubit.state.defaultFeedListType,
-                          postSortType: state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType,
-                          reset: true,
-                          showHidden: feedCubit.state.showHiddenPosts,
-                        ),
-                      );
+                    FeedFetchedEvent(
+                      feedType: FeedType.general,
+                      feedListType: state.siteResponse?.myUser?.localUserView.localUser.defaultListingType ?? feedCubit.state.defaultFeedListType,
+                      postSortType: state.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType,
+                      reset: true,
+                      showHidden: feedCubit.state.showHiddenPosts,
+                    ),
+                  );
                 }
               },
               builder: (context, state) {
@@ -453,9 +452,7 @@ class _ThunderState extends State<Thunder> {
                   case ProfileStatus.initial:
                     return Scaffold(
                       appBar: AppBar(toolbarHeight: APP_BAR_HEIGHT),
-                      body: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      body: Center(child: CircularProgressIndicator()),
                     );
                   case ProfileStatus.contentWarning:
                   case ProfileStatus.success:
@@ -497,10 +494,7 @@ class _ThunderState extends State<Thunder> {
                                     children: [
                                       Align(
                                         alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          l10n.thunderHasBeenUpdated(currentVersion),
-                                          style: theme.textTheme.titleLarge,
-                                        ),
+                                        child: Text(l10n.thunderHasBeenUpdated(currentVersion), style: theme.textTheme.titleLarge),
                                       ),
                                       const SizedBox(height: 24.0),
                                       Expanded(
@@ -512,9 +506,7 @@ class _ThunderState extends State<Thunder> {
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                CommonMarkdownBody(body: changelog),
-                                              ],
+                                              children: [CommonMarkdownBody(body: changelog)],
                                             ),
                                           ),
                                         ),
@@ -531,10 +523,7 @@ class _ThunderState extends State<Thunder> {
                                             child: Text(l10n.doNotShowAgain),
                                           ),
                                           const SizedBox(width: 6.0),
-                                          FilledButton(
-                                            onPressed: () => Navigator.of(context).pop(),
-                                            child: Text(l10n.close),
-                                          ),
+                                          FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.close)),
                                         ],
                                       ),
                                       const SizedBox(height: 24.0),
@@ -581,10 +570,7 @@ class _ThunderState extends State<Thunder> {
                             loading: errorMessageLoading,
                             primary: true,
                           ),
-                          ThunderStateAction(
-                            label: AppLocalizations.of(context)!.accountSettings,
-                            onPressed: () => showProfileModalSheet(context),
-                          ),
+                          ThunderStateAction(label: AppLocalizations.of(context)!.accountSettings, onPressed: () => showProfileModalSheet(context)),
                         ],
                       ),
                     );

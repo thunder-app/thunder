@@ -37,18 +37,9 @@ class FeedFAB extends StatelessWidget {
     final feedFabLongPressAction = context.select<FabPreferencesCubit, FeedFabAction>((cubit) => cubit.state.feedFabLongPressAction);
     final isFabSummoned = context.select<ShellChromeCubit, bool>((cubit) => cubit.state.isFeedFabSummoned);
     final feedState = context.select<FeedBloc, ({FeedStatus status, FeedType? feedType, ThunderCommunity? community})>(
-      (bloc) => (
-        status: bloc.state.status,
-        feedType: bloc.state.feedType,
-        community: bloc.state.community,
-      ),
+      (bloc) => (status: bloc.state.status, feedType: bloc.state.feedType, community: bloc.state.community),
     );
-    final profileState = context.select<ProfileBloc, ({bool isLoggedIn, List<ThunderCommunity> moderates})>(
-      (bloc) => (
-        isLoggedIn: bloc.state.isLoggedIn,
-        moderates: bloc.state.moderates,
-      ),
-    );
+    final profileState = context.select<ProfileBloc, ({bool isLoggedIn, List<ThunderCommunity> moderates})>((bloc) => (isLoggedIn: bloc.state.isLoggedIn, moderates: bloc.state.moderates));
 
     final config = resolveFeedFabActionConfig(
       preferredSinglePressAction: feedFabSinglePressAction,

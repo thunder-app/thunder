@@ -58,11 +58,7 @@ class ProfileTrailingAction extends StatelessWidget {
       icon: pending
           ? Semantics(
               label: GlobalContext.l10n.profileOperationInProgress,
-              child: const SizedBox(
-                height: 20.0,
-                width: 20.0,
-                child: CircularProgressIndicator(),
-              ),
+              child: const SizedBox(height: 20.0, width: 20.0, child: CircularProgressIndicator()),
             )
           : Icon(active ? Icons.logout : Icons.delete),
       tooltip: active ? logOutLabel : removeLabel,

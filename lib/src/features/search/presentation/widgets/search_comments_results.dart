@@ -29,24 +29,13 @@ class SearchCommentsResults extends StatelessWidget {
             if (index == comments.length) {
               return status == SearchStatus.refreshing
                   ? const Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 10),
-                        child: CircularProgressIndicator(),
-                      ),
+                      child: Padding(padding: EdgeInsets.only(bottom: 10), child: CircularProgressIndicator()),
                     )
                   : const SizedBox.shrink();
             }
             return Column(
               children: [
-                Divider(
-                  height: 1.0,
-                  thickness: 1.0,
-                  color: ElevationOverlay.applySurfaceTint(
-                    theme.colorScheme.surface,
-                    theme.colorScheme.surfaceTint,
-                    10,
-                  ),
-                ),
+                Divider(height: 1.0, thickness: 1.0, color: ElevationOverlay.applySurfaceTint(theme.colorScheme.surface, theme.colorScheme.surfaceTint, 10)),
                 CommentListEntry(comment: comments[index]),
               ],
             );

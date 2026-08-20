@@ -14,21 +14,13 @@ Future<String?> exportDatabase() async {
   final file = File(join(directory.path, 'thunder.sqlite'));
 
   return await FlutterFileDialog.saveFile(
-    params: SaveFileDialogParams(
-      mimeTypesFilter: ['application/octet-stream'],
-      sourceFilePath: file.path,
-      fileName: 'thunder.sqlite',
-    ),
+    params: SaveFileDialogParams(mimeTypesFilter: ['application/octet-stream'], sourceFilePath: file.path, fileName: 'thunder.sqlite'),
   );
 }
 
 /// Imports the database from a file.
 Future<bool> importDatabase() async {
-  final path = await FlutterFileDialog.pickFile(
-    params: const OpenFileDialogParams(
-      fileExtensionsFilter: ['sqlite'],
-    ),
-  );
+  final path = await FlutterFileDialog.pickFile(params: const OpenFileDialogParams(fileExtensionsFilter: ['sqlite']));
 
   if (path != null) {
     final directory = await getApplicationDocumentsDirectory();

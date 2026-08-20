@@ -27,56 +27,43 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
     final l10n = AppLocalizations.of(context)!;
     final state = context.read<InboxBloc>().state;
 
-    return Builder(builder: (context) {
-      return CustomScrollView(
-        key: PageStorageKey<String>(l10n.reply(10)),
-        slivers: [
-          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
-          if (state.status == InboxStatus.loading)
-            const SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(child: CircularProgressIndicator()),
-            ),
-          if (state.status != InboxStatus.loading && widget.replies.isEmpty)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(child: Text(l10n.noReplies)),
-            ),
-          SliverList.builder(
-            itemCount: widget.replies.length,
-            itemBuilder: (context, index) {
-              ThunderComment reply = widget.replies[index];
-              assert(reply.notification != null, 'Reply should have notification metadata');
-              final notification = reply.notification!;
+    return Builder(
+      builder: (context) {
+        return CustomScrollView(
+          key: PageStorageKey<String>(l10n.reply(10)),
+          slivers: [
+            SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+            if (state.status == InboxStatus.loading) const SliverFillRemaining(hasScrollBody: false, child: Center(child: CircularProgressIndicator())),
+            if (state.status != InboxStatus.loading && widget.replies.isEmpty) SliverFillRemaining(hasScrollBody: false, child: Center(child: Text(l10n.noReplies))),
+            SliverList.builder(
+              itemCount: widget.replies.length,
+              itemBuilder: (context, index) {
+                ThunderComment reply = widget.replies[index];
+                assert(reply.notification != null, 'Reply should have notification metadata');
+                final notification = reply.notification!;
 
-              return Column(
-                key: ValueKey<int>(notification.id),
-                children: [
-                  CommentReference(
-                    comment: reply,
-                    child: IconButton(
-                      onPressed: () =>
-                          context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, commentReplyId: notification.id, actionInput: ReadInboxActionInput(!notification.read))),
-                      icon: Icon(
-                        Icons.check,
-                        semanticLabel: l10n.markAsRead,
-                        color: notification.read ? Colors.green : null,
+                return Column(
+                  key: ValueKey<int>(notification.id),
+                  children: [
+                    CommentReference(
+                      comment: reply,
+                      child: IconButton(
+                        onPressed: () =>
+                            context.read<InboxBloc>().add(InboxItemActionEvent(action: CommentAction.read, commentReplyId: notification.id, actionInput: ReadInboxActionInput(!notification.read))),
+                        icon: Icon(Icons.check, semanticLabel: l10n.markAsRead, color: notification.read ? Colors.green : null),
+                        visualDensity: VisualDensity.compact,
                       ),
-                      visualDensity: VisualDensity.compact,
                     ),
-                  ),
-                  if (index != widget.replies.length - 1) const ThunderDivider(sliver: false, padding: false),
-                ],
-              );
-            },
-          ),
-          if (state.hasReachedInboxReplyEnd && widget.replies.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
-          if (widget.replies.isNotEmpty)
-            SliverToBoxAdapter(
-              child: SizedBox(height: kBottomNavigationBarHeight),
-            )
-        ],
-      );
-    });
+                    if (index != widget.replies.length - 1) const ThunderDivider(sliver: false, padding: false),
+                  ],
+                );
+              },
+            ),
+            if (state.hasReachedInboxReplyEnd && widget.replies.isNotEmpty) const SliverToBoxAdapter(child: FeedReachedEnd()),
+            if (widget.replies.isNotEmpty) SliverToBoxAdapter(child: SizedBox(height: kBottomNavigationBarHeight)),
+          ],
+        );
+      },
+    );
   }
 }

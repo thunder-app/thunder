@@ -29,14 +29,7 @@ class CommentCardHeaderScore extends StatefulWidget {
   /// The user's vote on this comment: 1 for upvote, -1 for downvote, 0 or null for no vote
   final int? voteType;
 
-  const CommentCardHeaderScore({
-    super.key,
-    required this.account,
-    required this.score,
-    required this.upvotes,
-    required this.downvotes,
-    this.voteType,
-  });
+  const CommentCardHeaderScore({super.key, required this.account, required this.score, required this.upvotes, required this.downvotes, this.voteType});
 
   @override
   State<CommentCardHeaderScore> createState() => _CommentCardHeaderScoreState();
@@ -105,8 +98,8 @@ class _CommentCardHeaderScoreState extends State<CommentCardHeaderScore> {
             style: theme.textTheme.bodyMedium?.copyWith(
               color: (widget.voteType != null && widget.voteType != 0)
                   ? widget.voteType == 1
-                      ? upvoteColor
-                      : downvoteColor
+                        ? upvoteColor
+                        : downvoteColor
                   : theme.colorScheme.onSurface,
             ),
           ),
@@ -125,9 +118,7 @@ class _CommentCardHeaderScoreState extends State<CommentCardHeaderScore> {
           upvotesLabel,
           semanticsLabel: l10n.xUpvotes(upvotesLabel),
           textScaleFactor: metadataFontSizeScale.textScaleFactor,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: (widget.voteType == 1) ? upvoteColor : theme.colorScheme.onSurface,
-          ),
+          style: theme.textTheme.bodyMedium?.copyWith(color: (widget.voteType == 1) ? upvoteColor : theme.colorScheme.onSurface),
         ),
         const SizedBox(width: 10.0),
         if (widget.downvotes != 0) ...[
@@ -137,9 +128,7 @@ class _CommentCardHeaderScoreState extends State<CommentCardHeaderScore> {
             downvotesLabel,
             semanticsLabel: l10n.xDownvotes(downvotesLabel),
             textScaleFactor: metadataFontSizeScale.textScaleFactor,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: (widget.voteType == -1) ? downvoteColor : theme.colorScheme.onSurface,
-            ),
+            style: theme.textTheme.bodyMedium?.copyWith(color: (widget.voteType == -1) ? downvoteColor : theme.colorScheme.onSurface),
           ),
         ],
       ],
@@ -166,10 +155,6 @@ class VoteIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Icon(
-      type == 1 ? Icons.north_rounded : Icons.south_rounded,
-      size: 12.0 * fontScale.textScaleFactor,
-      color: voteType == type ? color : theme.colorScheme.onSurface,
-    );
+    return Icon(type == 1 ? Icons.north_rounded : Icons.south_rounded, size: 12.0 * fontScale.textScaleFactor, color: voteType == type ? color : theme.colorScheme.onSurface);
   }
 }

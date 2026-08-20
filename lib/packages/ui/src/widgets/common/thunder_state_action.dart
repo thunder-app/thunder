@@ -3,12 +3,7 @@ import 'package:flutter/foundation.dart';
 /// Action button configuration for [ThunderStateView].
 @immutable
 class ThunderStateAction {
-  const ThunderStateAction({
-    required this.label,
-    required this.onPressed,
-    this.loading = false,
-    this.primary = false,
-  });
+  const ThunderStateAction({required this.label, required this.onPressed, this.loading = false, this.primary = false});
 
   /// Button label text.
   final String label;

@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -18,18 +19,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get accessibility => 'Accessibilità';
 
   @override
-  String get accessibilityProfilesDescription =>
-      'I profili di accessibilità consentono di applicare più impostazioni contemporaneamente per soddisfare un requisito di accessibilità specifico.';
+  String get accessibilityProfilesDescription => 'I profili di accessibilità consentono di applicare più impostazioni contemporaneamente per soddisfare un requisito di accessibilità specifico.';
 
   @override
   String account(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Account',
-      one: 'Account',
-      zero: 'Account',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Account', one: 'Account', zero: 'Account');
     return '$_temp0 ';
   }
 
@@ -39,8 +33,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get accountSettingOverrideWarning =>
-      'Le impostazioni del tuo account sovrascrivono le seguenti impostazioni';
+  String get accountSettingOverrideWarning => 'Le impostazioni del tuo account sovrascrivono le seguenti impostazioni';
 
   @override
   String get accountSettings => 'Impostazioni Account';
@@ -51,8 +44,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get accountSettingsImportedSuccessfully =>
-      'Impostazioni dell\'account Lemmy esportate correttamente!';
+  String get accountSettingsImportedSuccessfully => 'Impostazioni dell\'account Lemmy esportate correttamente!';
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
@@ -110,8 +102,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get addUserLabel => 'Aggiungi Etichetta Utente';
 
   @override
-  String get addedCommunityToSubscriptions =>
-      'Comunità aggiunta alle iscrizioni';
+  String get addedCommunityToSubscriptions => 'Comunità aggiunta alle iscrizioni';
 
   @override
   String get addedInstanceMod => 'Aggiunto Mod Istanza';
@@ -142,8 +133,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get allPosts => 'Tutti i Post';
 
   @override
-  String get allowOpenSupportedLinks =>
-      'Permetti a questa app di aprire i link supportati.';
+  String get allowOpenSupportedLinks => 'Permetti a questa app di aprire i link supportati.';
 
   @override
   String get alreadyPostedTo => 'Già pubblicato su';
@@ -216,8 +206,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get backToTop => 'Ritorna all\'Inizio';
 
   @override
-  String get backgroundCheckWarning =>
-      'Nota che il controllo notifiche consuma batteria aggiuntiva';
+  String get backgroundCheckWarning => 'Nota che il controllo notifiche consuma batteria aggiuntiva';
 
   @override
   String get ban => 'Ban';
@@ -300,8 +289,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get cannotReportOwnComment => 'Non puoi segnalare il tuo commento.';
 
   @override
-  String get cantBlockAdmin =>
-      'Non è permesso bloccare un amministratore di un\'istanza.';
+  String get cantBlockAdmin => 'Non è permesso bloccare un amministratore di un\'istanza.';
 
   @override
   String get cantBlockYourself => 'Non puoi bloccare te stesso.';
@@ -328,8 +316,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get changePassword => 'Cambia Password';
 
   @override
-  String get changePasswordWarning =>
-      'Per cambiare password, si reindirizza al sito della tua istanza.\n\nContinuare?';
+  String get changePasswordWarning => 'Per cambiare password, si reindirizza al sito della tua istanza.\n\nContinuare?';
 
   @override
   String get changeSort => 'Cambia Ordine';
@@ -355,12 +342,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get clearedCache => 'Cache pulite correttamente.';
 
   @override
-  String get clearedDatabase =>
-      'Database locale svuotato. Riavvia Thunder per applicare i cambiamenti.';
+  String get clearedDatabase => 'Database locale svuotato. Riavvia Thunder per applicare i cambiamenti.';
 
   @override
-  String get clearedUserPreferences =>
-      'Rimosse tutte le preferenze dell\'utente';
+  String get clearedUserPreferences => 'Rimosse tutte le preferenze dell\'utente';
 
   @override
   String get close => 'Chiudi';
@@ -375,8 +360,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get collapseInformation => 'Collassa Informazione';
 
   @override
-  String get collapseParentCommentBodyOnGesture =>
-      'Nascondi Commento Genitore quando Ridotto';
+  String get collapseParentCommentBodyOnGesture => 'Nascondi Commento Genitore quando Ridotto';
 
   @override
   String get collapsePost => 'Riduci post';
@@ -409,12 +393,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get combineCommentScoresLabel => 'Combina Punteggi Commento';
 
   @override
-  String get combineNavAndFab =>
-      'Il pulsante flessibile delle azioni è disponibile tra i pulsanti di navigazione.';
+  String get combineNavAndFab => 'Il pulsante flessibile delle azioni è disponibile tra i pulsanti di navigazione.';
 
   @override
-  String get combineNavAndFabDescription =>
-      'Il Pulsante di Azione Galleggiante verrà mostrato tra i pulsanti di navigazione.';
+  String get combineNavAndFabDescription => 'Il Pulsante di Azione Galleggiante verrà mostrato tra i pulsanti di navigazione.';
 
   @override
   String get comfortable => 'Confortevole';
@@ -432,12 +414,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get commentFontScale => 'Dimensione Font Contenuto Commento';
 
   @override
-  String get commentPreview =>
-      'Mostra un\'anteprima dei commenti con le impostazioni date';
+  String get commentPreview => 'Mostra un\'anteprima dei commenti con le impostazioni date';
 
   @override
-  String get commentReported =>
-      'Il commento è stato segnalato per un controllo.';
+  String get commentReported => 'Il commento è stato segnalato per un controllo.';
 
   @override
   String get commentSavedAsDraft => 'Commento salvato come bozza';
@@ -455,8 +435,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get commentSwipeActions => 'Azione Swipe su Commento';
 
   @override
-  String get commentSwipeGesturesHint =>
-      'Preferisci usare i pulsanti? Abilitali nella sezione \'commenti\' delle impostazioni generali.';
+  String get commentSwipeGesturesHint => 'Preferisci usare i pulsanti? Abilitali nella sezione \'commenti\' delle impostazioni generali.';
 
   @override
   String get comments => 'Commenti';
@@ -521,12 +500,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get confirmMarkAllAsReadTitle => 'Segnare tutto come letto?';
 
   @override
-  String get confirmResetCommentPreferences =>
-      'Questo resetterà tutte le preferenze dei commenti. Confermare?';
+  String get confirmResetCommentPreferences => 'Questo resetterà tutte le preferenze dei commenti. Confermare?';
 
   @override
-  String get confirmResetPostPreferences =>
-      'Questo resetterà tutte le preferenze dei post. Confermare?';
+  String get confirmResetPostPreferences => 'Questo resetterà tutte le preferenze dei post. Confermare?';
 
   @override
   String get confirmUnsubscription => 'Ti vuoi disiscrivere?';
@@ -561,20 +538,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get copyText => 'Copia Testo';
 
   @override
-  String get couldNotDetermineCommentDelete =>
-      'È stato impossibile determinare il post da dove eliminare il commento.';
+  String get couldNotDetermineCommentDelete => 'È stato impossibile determinare il post da dove eliminare il commento.';
 
   @override
-  String get couldNotDeterminePostComment =>
-      'È stato impossibile determinare il post nel cui lasciare il commento.';
+  String get couldNotDeterminePostComment => 'È stato impossibile determinare il post nel cui lasciare il commento.';
 
   @override
-  String get couldntCreateReport =>
-      'Non è stato possibile inoltrare la tua segnalazione. Riprova più tardi per favore';
+  String get couldntCreateReport => 'Non è stato possibile inoltrare la tua segnalazione. Riprova più tardi per favore';
 
   @override
-  String get couldntFindPost =>
-      'Impossibile caricare il post richiesto. Potrebbe essere stato cancellato o rimosso.';
+  String get couldntFindPost => 'Impossibile caricare il post richiesto. Potrebbe essere stato cancellato o rimosso.';
 
   @override
   String countComments(Object count) {
@@ -664,8 +637,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get currentSinglePress => 'Attualmente impostata come premuta breve';
 
   @override
-  String get customizeSwipeActions =>
-      'Personalizza azioni di scorrimento sullo schermo (seleziona per modificare)';
+  String get customizeSwipeActions => 'Personalizza azioni di scorrimento sullo schermo (seleziona per modificare)';
 
   @override
   String get dangerZone => 'Zona Pericolosa';
@@ -674,8 +646,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dark => 'Scuro';
 
   @override
-  String get databaseExportWarning =>
-      'Il database può contenere informazioni sensibili sul tuo account Lemmy. Se lo esporti, non condividerlo con nessuno. Vuoi procedere?';
+  String get databaseExportWarning => 'Il database può contenere informazioni sensibili sul tuo account Lemmy. Se lo esporti, non condividerlo con nessuno. Vuoi procedere?';
 
   @override
   String databaseExportedSuccessfully(Object savedFilePath) {
@@ -683,16 +654,13 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get databaseImportedSuccessfully =>
-      'Database importato correttamente!';
+  String get databaseImportedSuccessfully => 'Database importato correttamente!';
 
   @override
-  String get databaseNotExportedSuccessfully =>
-      'Il database non è stato esportato correttamente o l\'operazione è stata cancellata.';
+  String get databaseNotExportedSuccessfully => 'Il database non è stato esportato correttamente o l\'operazione è stata cancellata.';
 
   @override
-  String get databaseNotImportedSuccessfully =>
-      'Il database non è stato importato correttamente o l\'operazione è stata cancellata.';
+  String get databaseNotImportedSuccessfully => 'Il database non è stato importato correttamente o l\'operazione è stata cancellata.';
 
   @override
   String get dateFormat => 'Formato Data';
@@ -701,12 +669,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get debug => 'Debug';
 
   @override
-  String get debugDescription =>
-      'Le seguenti impostazioni di debug devono essere utilizzate solo per la risoluzione dei problemi.';
+  String get debugDescription => 'Le seguenti impostazioni di debug devono essere utilizzate solo per la risoluzione dei problemi.';
 
   @override
-  String get debugNotificationsDescription =>
-      'Per risolvere i problemi relativi alle notifiche, utilizzare le seguenti opzioni.';
+  String get debugNotificationsDescription => 'Per risolvere i problemi relativi alle notifiche, utilizzare le seguenti opzioni.';
 
   @override
   String get decline => 'Declina';
@@ -730,15 +696,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get deleteAccount => 'Cancella Account';
 
   @override
-  String get deleteAccountDescription =>
-      'Per cancellare permanentemente il tuo account, si verrà reindirizzati al sito della tua istanza. \n\nContinuare?';
+  String get deleteAccountDescription => 'Per cancellare permanentemente il tuo account, si verrà reindirizzati al sito della tua istanza. \n\nContinuare?';
 
   @override
   String get deleteComment => 'Cancella Commento';
 
   @override
-  String get deleteDraftConfirmation =>
-      'Are you sure you want to delete this draft?';
+  String get deleteDraftConfirmation => 'Are you sure you want to delete this draft?';
 
   @override
   String get deleteImageConfirmMessage => 'Cancellare questa immagine?';
@@ -750,15 +714,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get deleteLocalDatabase => 'Cancella Database Locale';
 
   @override
-  String get deleteLocalDatabaseDescription =>
-      'Questa azione rimuoverà il database locale e disconnetterà i tuoi account.\n\nContinuare?';
+  String get deleteLocalDatabaseDescription => 'Questa azione rimuoverà il database locale e disconnetterà i tuoi account.\n\nContinuare?';
 
   @override
   String get deleteLocalPreferences => 'Cancella Preferenze Locali';
 
   @override
-  String get deleteLocalPreferencesDescription =>
-      'Questo cancellerà le tue impostazioni e preferenze di Thunder.\n\nContinuare?';
+  String get deleteLocalPreferencesDescription => 'Questo cancellerà le tue impostazioni e preferenze di Thunder.\n\nContinuare?';
 
   @override
   String get deletePost => 'Cancella Post';
@@ -782,8 +744,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get deletedPost => 'Deleted post';
 
   @override
-  String get deselectUndeterminedWarning =>
-      'Se deselezioni, non vedrai la maggior parte dei contenuti.';
+  String get deselectUndeterminedWarning => 'Se deselezioni, non vedrai la maggior parte dei contenuti.';
 
   @override
   String detailedReason(Object reason) {
@@ -809,8 +770,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get discussionLanguages => 'Lingua Discussione';
 
   @override
-  String get discussionLanguagesTooltip =>
-      'Contenuto filtrato nella lingua selezionata.';
+  String get discussionLanguagesTooltip => 'Contenuto filtrato nella lingua selezionata.';
 
   @override
   String get dismissRead => 'Rimuovi \'letti\'';
@@ -828,8 +788,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get doNotShowAgain => 'Non Mostrare Nuovamente';
 
   @override
-  String get doNotSupportMultipleUnifiedPushApps =>
-      'Trovate diverse app compatibili; si prega di installane solo una';
+  String get doNotSupportMultipleUnifiedPushApps => 'Trovate diverse app compatibili; si prega di installane solo una';
 
   @override
   String get downloadingMedia => 'Download in corso per la condivisione…';
@@ -844,8 +803,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get downvoted => 'Disprezzato';
 
   @override
-  String get downvotesDisabled =>
-      'I voti in giù sono disabilitati in questa istanza.';
+  String get downvotesDisabled => 'I voti in giù sono disabilitati in questa istanza.';
 
   @override
   String get drafts => 'Drafts';
@@ -869,8 +827,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get emptyInbox => 'Svuota Inbox';
 
   @override
-  String get emptyUri =>
-      'Il link è vuoto. Per favore inserisci un link in formato valido per procedere.';
+  String get emptyUri => 'Il link è vuoto. Per favore inserisci un link in formato valido per procedere.';
 
   @override
   String get enableCommentNavigation => 'Abilita Navigazione Commento';
@@ -882,12 +839,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get enableFeedFab => 'Abilita Pulsante Galleggiante su Feed';
 
   @override
-  String get enableFloatingButtonOnFeeds =>
-      'Abilita Pulsante Galleggiante Su Feed';
+  String get enableFloatingButtonOnFeeds => 'Abilita Pulsante Galleggiante Su Feed';
 
   @override
-  String get enableFloatingButtonOnPosts =>
-      'Abilita Pulsante Galleggiante Sui Post';
+  String get enableFloatingButtonOnPosts => 'Abilita Pulsante Galleggiante Sui Post';
 
   @override
   String get enableInboxNotifications => 'Abilita Notifiche Inbox';
@@ -912,42 +867,34 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get errorImportingAccountSettings =>
-      'Errore nell\'importare le impostazioni. Il file potrebbe essere in un formato errato.';
+  String get errorImportingAccountSettings => 'Errore nell\'importare le impostazioni. Il file potrebbe essere in un formato errato.';
 
   @override
   String get errorInitializingClient => 'Error initializing client';
 
   @override
-  String get errorLoadingAccountSettings =>
-      'Errore nel caricare il file impostazioni o l\'operazione è stata cancellata.';
+  String get errorLoadingAccountSettings => 'Errore nel caricare il file impostazioni o l\'operazione è stata cancellata.';
 
   @override
-  String get errorMarkingReplyRead =>
-      'Errore nel segnare la risposta come letta.';
+  String get errorMarkingReplyRead => 'Errore nel segnare la risposta come letta.';
 
   @override
-  String get errorMarkingReplyUnread =>
-      'Errore nel segnare la risposta come non letta.';
+  String get errorMarkingReplyUnread => 'Errore nel segnare la risposta come non letta.';
 
   @override
   String get errorNoActiveInstance => 'No active instance found';
 
   @override
-  String get errorParsingJson =>
-      'Errore nell\'analisi del file selezionato. Potrebbe non essere JSON valido.';
+  String get errorParsingJson => 'Errore nell\'analisi del file selezionato. Potrebbe non essere JSON valido.';
 
   @override
-  String get errorSavingAccountSettings =>
-      'Errore nel salvare il file impostazioni o l\'operazione è stata cancellata.';
+  String get errorSavingAccountSettings => 'Errore nel salvare il file impostazioni o l\'operazione è stata cancellata.';
 
   @override
-  String get exceptionProcessingUri =>
-      'Si è verificato un errore durante il trattamento del link. Potrebbe non essere disponibile nella tua istanza.';
+  String get exceptionProcessingUri => 'Si è verificato un errore durante il trattamento del link. Potrebbe non essere disponibile nella tua istanza.';
 
   @override
-  String get excessiveApiCallsWarning =>
-      'Potrebbe volerci un po\' a causa dei filtri.';
+  String get excessiveApiCallsWarning => 'Potrebbe volerci un po\' a causa dei filtri.';
 
   @override
   String get expand => 'Espandi';
@@ -977,8 +924,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get experimentalFeatures => 'Funzioni Sperimentali';
 
   @override
-  String get experimentalFeaturesDescription =>
-      'Queste funzioni sono in fase di sviluppo, usale a tuo rischio. Dovrai riavviare Thunder per applicarle.';
+  String get experimentalFeaturesDescription => 'Queste funzioni sono in fase di sviluppo, usale a tuo rischio. Dovrai riavviare Thunder per applicarle.';
 
   @override
   String get exploreInstance => 'Esplora Istanza';
@@ -987,16 +933,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get exportDatabase => 'Esporta Database';
 
   @override
-  String get exportDatabaseSubtitle =>
-      'Questo database contiene info sui tuoi account, preferiti, iscrizioni anonime, ed etichette utente.';
+  String get exportDatabaseSubtitle => 'Questo database contiene info sui tuoi account, preferiti, iscrizioni anonime, ed etichette utente.';
 
   @override
-  String get exportLemmyAccountSettingsDescription =>
-      'Esporta impostazioni account Lemmy';
+  String get exportLemmyAccountSettingsDescription => 'Esporta impostazioni account Lemmy';
 
   @override
-  String get exportSettingsSubtitle =>
-      'L\'impostazione include tutte le preferenze che hai configurato su Thunder.';
+  String get exportSettingsSubtitle => 'L\'impostazione include tutte le preferenze che hai configurato su Thunder.';
 
   @override
   String get extraLarge => 'Extra Largo';
@@ -1007,8 +950,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String failedToCommunicateWithThunderNotificationServer(
-      Object serverAddress) {
+  String failedToCommunicateWithThunderNotificationServer(Object serverAddress) {
     return 'Comunicazione fallita con il server notifica di Thunder a \'$serverAddress\'';
   }
 
@@ -1021,8 +963,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get failedToLoadVideo =>
-      'Caricamento video fallito. Aprire nel browser?';
+  String get failedToLoadVideo => 'Caricamento video fallito. Aprire nel browser?';
 
   @override
   String get failedToPerformAction => 'Operazione fallita';
@@ -1033,8 +974,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get failedToUpdateNotificationSettings =>
-      'Impossibile aggiornare le impostazioni di notifica';
+  String get failedToUpdateNotificationSettings => 'Impossibile aggiornare le impostazioni di notifica';
 
   @override
   String get favorite => 'Favorite';
@@ -1076,12 +1016,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Thunder permette diverse Azioni per il Pulsante Galleggiante.\n- Swipe per rivelare diverse Azioni\n- Swipe sotto/sopra per nascondere o rivelare il Pulsante\n\nPer personalizzare le Azioni principali o secondarie, premi a lungo sulle seguenti Azioni.';
 
   @override
-  String get floatingActionButtonLongPressDescription =>
-      'indica Azione di pressione prolungata.';
+  String get floatingActionButtonLongPressDescription => 'indica Azione di pressione prolungata.';
 
   @override
-  String get floatingActionButtonSinglePressDescription =>
-      'indica Azione di pressione singola.';
+  String get floatingActionButtonSinglePressDescription => 'indica Azione di pressione singola.';
 
   @override
   String get fonts => 'Font';
@@ -1090,12 +1028,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get forward => 'Inoltrati';
 
   @override
-  String get foundUnifiedPushDistribtorApp =>
-      'Trovata app compatibile; riavvia Thunder per connettere';
+  String get foundUnifiedPushDistribtorApp => 'Trovata app compatibile; riavvia Thunder per connettere';
 
   @override
-  String get fullScreenNavigationSwipeDescription =>
-      'Scorri ovunque per tornare indietro quando le azioni da sinistra-a-destra sono disabilitate';
+  String get fullScreenNavigationSwipeDescription => 'Scorri ovunque per tornare indietro quando le azioni da sinistra-a-destra sono disabilitate';
 
   @override
   String get fullscreen => 'Fullscreen';
@@ -1122,8 +1058,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get guestModeFeedSettings => 'Impostazioni Feed Ospite';
 
   @override
-  String get guestModeFeedSettingsLabel =>
-      'Le seguenti impostazioni si applicano al solo account ospite. Per regolare il tuo feed, vai su Impostazioni Account.';
+  String get guestModeFeedSettingsLabel => 'Le seguenti impostazioni si applicano al solo account ospite. Per regolare il tuo feed, vai su Impostazioni Account.';
 
   @override
   String get havingIssuesWithNotifications => 'Problemi con le notifiche?';
@@ -1174,8 +1109,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get imagePeekDuration => 'Image Peek Duration';
 
   @override
-  String get imagePeekDurationDescription =>
-      'Duration of long press before image peek is triggered';
+  String get imagePeekDurationDescription => 'Duration of long press before image peek is triggered';
 
   @override
   String get importDatabase => 'Importa Database';
@@ -1184,23 +1118,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String get importExportDatabase => 'Importa/Esporta Database Thunder';
 
   @override
-  String get importExportLemmyAccountSettings =>
-      'Importa/Esporta Impostazioni Account Lemmy';
+  String get importExportLemmyAccountSettings => 'Importa/Esporta Impostazioni Account Lemmy';
 
   @override
-  String get importExportLemmyAccountSettingsSubtitle =>
-      'Include comunità iscritte, bloccate, e preferenze account';
+  String get importExportLemmyAccountSettingsSubtitle => 'Include comunità iscritte, bloccate, e preferenze account';
 
   @override
   String get importExportSettings => 'Importa/Esporta Impostazioni';
 
   @override
-  String get importExportThunderSettings =>
-      'Importa/Esporta Impostazioni Thunder';
+  String get importExportThunderSettings => 'Importa/Esporta Impostazioni Thunder';
 
   @override
-  String get importLemmyAccountSettingsDescription =>
-      'Importa impostazioni account Lemmy';
+  String get importLemmyAccountSettingsDescription => 'Importa impostazioni account Lemmy';
 
   @override
   String get importSettings => 'Importa Impostazioni';
@@ -1274,8 +1204,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get instances => 'Istanze';
 
   @override
-  String get internetOrInstanceIssues =>
-      'Potresti non essere connesso all\'Internet oppure la tua istanza potrebbe non essere disponibile in questo momento.';
+  String get internetOrInstanceIssues => 'Potresti non essere connesso all\'Internet oppure la tua istanza potrebbe non essere disponibile in questo momento.';
 
   @override
   String get invalidUrl => 'Invalid URL format';
@@ -1286,8 +1215,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get keywordFilterDescription =>
-      'Filtra post contenenti parole-chiave nel titolo, corpo o URL';
+  String get keywordFilterDescription => 'Filtra post contenenti parole-chiave nel titolo, corpo o URL';
 
   @override
   String get keywordFilters => 'Filtri Parole-Chiave';
@@ -1302,8 +1230,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get languageFilters => 'Cerchi i filtri della lingua?';
 
   @override
-  String get languageNotAllowed =>
-      'Questa comunità non permette post nella lingua che hai selezionato. Prova un altra lingua.';
+  String get languageNotAllowed => 'Questa comunità non permette post nella lingua che hai selezionato. Prova un altra lingua.';
 
   @override
   String get large => 'Largo';
@@ -1319,13 +1246,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String link(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Links',
-      one: 'Link',
-      zero: 'Link',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Links', one: 'Link', zero: 'Link');
     return '$_temp0 ';
   }
 
@@ -1408,19 +1329,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get loginSucceeded => 'Log in effettuato.';
 
   @override
-  String get loginToPerformAction =>
-      'Devi aver effettuato l\'accesso per completare questa operazione.';
+  String get loginToPerformAction => 'Devi aver effettuato l\'accesso per completare questa operazione.';
 
   @override
   String get loginToSeeInbox => 'Effettua l\'accesso per vedere il tuo Inbox';
 
   @override
-  String get lookingForAccountSpecificFeedSettings =>
-      'Cerchi impostazioni del feed specifiche per l\'account?';
+  String get lookingForAccountSpecificFeedSettings => 'Cerchi impostazioni del feed specifiche per l\'account?';
 
   @override
-  String get malformedUri =>
-      'Il link che hai fornito era in un formato non supportato. Per favore assicurati che il link sia valido.';
+  String get malformedUri => 'Il link che hai fornito era in un formato non supportato. Per favore assicurati che il link sia valido.';
 
   @override
   String get manageAccounts => 'Gestisci Profili';
@@ -1457,13 +1375,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String mention(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Mentions',
-      one: 'Mention',
-      zero: 'Mention',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Mentions', one: 'Mention', zero: 'Mention');
     return '$_temp0';
   }
 
@@ -1472,13 +1384,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String message(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Messages',
-      one: 'Message',
-      zero: 'Message',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Messages', one: 'Message', zero: 'Message');
     return '$_temp0';
   }
 
@@ -1526,13 +1432,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String moderator(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Moderatori',
-      one: 'Moderatore',
-      zero: 'Moderatore',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Moderatori', one: 'Moderatore', zero: 'Moderatore');
     return '$_temp0';
   }
 
@@ -1549,12 +1449,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get mustBeLoggedIn => 'Devi effettuare l\'accesso';
 
   @override
-  String get mustBeLoggedInComment =>
-      'Devi avere effettuato il log in per poter commentare';
+  String get mustBeLoggedInComment => 'Devi avere effettuato il log in per poter commentare';
 
   @override
-  String get mustBeLoggedInPost =>
-      'Devi avere effettuato il log in per poter creare un post';
+  String get mustBeLoggedInPost => 'Devi avere effettuato il log in per poter creare un post';
 
   @override
   String get names => 'Nomi';
@@ -1575,16 +1473,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get navigation => 'Navigazione';
 
   @override
-  String get nestedCommentIndicatorColor =>
-      'Colore Indicatore Commento Nidificato';
+  String get nestedCommentIndicatorColor => 'Colore Indicatore Commento Nidificato';
 
   @override
-  String get nestedCommentIndicatorStyle =>
-      'Stile Indicatore Commento Nidificato';
+  String get nestedCommentIndicatorStyle => 'Stile Indicatore Commento Nidificato';
 
   @override
-  String get networkErrorMessage =>
-      'Unable to reach the server. Check your connection and try again.';
+  String get networkErrorMessage => 'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get never => 'Mai';
@@ -1623,8 +1518,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noCompatibleAppFound => 'Nessuna app compatibile trovata';
 
   @override
-  String get noDiscussionLanguages =>
-      'Nessun contenuto è nascosto in base alla lingua.';
+  String get noDiscussionLanguages => 'Nessun contenuto è nascosto in base alla lingua.';
 
   @override
   String get noDisplayNameSet => 'Nome da mostrare non impostato';
@@ -1669,8 +1563,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noProfileBioSet => 'Nessuna bio profilo impostata';
 
   @override
-  String get noReferencesToImage =>
-      'Nessun post o commento trovato contenente questa immagine. Tuttavia, potrebbe essere utilizzata altrove su internet.';
+  String get noReferencesToImage => 'Nessun post o commento trovato contenente questa immagine. Tuttavia, potrebbe essere utilizzata altrove su internet.';
 
   @override
   String get noReplies => 'Nessuna risposta';
@@ -1691,8 +1584,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noUsersFound => 'Nessun utente trovato';
 
   @override
-  String get noVisibleComments =>
-      'Comments may not be visible because the community is blocked.';
+  String get noVisibleComments => 'Comments may not be visible because the community is blocked.';
 
   @override
   String get none => 'Nessuna';
@@ -1716,13 +1608,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String notifications(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Notifications',
-      one: 'Notifications',
-      zero: 'Notification',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Notifications', one: 'Notifications', zero: 'Notification');
     return '$_temp0';
   }
 
@@ -1730,8 +1616,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get notificationsBehaviourSettings => 'Notifiche';
 
   @override
-  String get notificationsNotAllowed =>
-      'Le notifiche per Thunder non sono consentite nelle impostazioni del sistema';
+  String get notificationsNotAllowed => 'Le notifiche per Thunder non sono consentite nelle impostazioni del sistema';
 
   @override
   String get notificationsWarningDialog =>
@@ -1762,8 +1647,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get onWifi => 'Su Wifi';
 
   @override
-  String get onlyModsCanPostInCommunity =>
-      'Solo i moderatori posso postare in questa comunità';
+  String get onlyModsCanPostInCommunity => 'Solo i moderatori posso postare in questa comunità';
 
   @override
   String get open => 'Apri';
@@ -1810,16 +1694,13 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get permissionDenied =>
-      'Permesso di visualizzare notifiche non abilitato per Thunder. Si prega di attivare nelle impostazioni di sistema.';
+  String get permissionDenied => 'Permesso di visualizzare notifiche non abilitato per Thunder. Si prega di attivare nelle impostazioni di sistema.';
 
   @override
-  String get permissionDeniedMessage =>
-      'Thunder richiede alcune autorizzazioni per salvare questa immagine, che sono state negate.';
+  String get permissionDeniedMessage => 'Thunder richiede alcune autorizzazioni per salvare questa immagine, che sono state negate.';
 
   @override
-  String get piefedSupportBeta =>
-      'PieFed support is currently in beta.\nNot all features are supported yet.';
+  String get piefedSupportBeta => 'PieFed support is currently in beta.\nNot all features are supported yet.';
 
   @override
   String get pinPostToCommunity => 'Fissa Post a Comunità';
@@ -1856,8 +1737,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get postBodySettings => 'Impostazioni Corpo del Post';
 
   @override
-  String get postBodySettingsDescription =>
-      'Queste impostazioni influiscono sulla visualizzazione del corpo del post';
+  String get postBodySettingsDescription => 'Queste impostazioni influiscono sulla visualizzazione del corpo del post';
 
   @override
   String get postBodyShowCommunityInstance => 'Mostra Istanza Comunità';
@@ -1878,22 +1758,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String get postFlairs => 'Flairs';
 
   @override
-  String get postFlairsUnavailable =>
-      'No flair options available for this community';
+  String get postFlairsUnavailable => 'No flair options available for this community';
 
   @override
   String get postLocked => 'Il post è bloccato. Non è permesso rispondere.';
 
   @override
-  String get postMetadataInstructions =>
-      'Puoi personalizzare le info dei metadati trascinando e rilasciando quelle desiderate';
+  String get postMetadataInstructions => 'Puoi personalizzare le info dei metadati trascinando e rilasciando quelle desiderate';
 
   @override
   String get postNSFW => 'Segna come NSFW';
 
   @override
-  String get postPreview =>
-      'Mostra anteprima del post con le impostazioni indicate';
+  String get postPreview => 'Mostra anteprima del post con le impostazioni indicate';
 
   @override
   String get postSavedAsDraft => 'Post salvato come bozza';
@@ -1905,8 +1782,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get postSwipeActions => 'Azioni Swipe Post';
 
   @override
-  String get postSwipeGesturesHint =>
-      'Preferisci usare i pulsanti? Cambia quali pulsanti compaiono nelle schermate dei post nelle impostazioni generali.';
+  String get postSwipeGesturesHint => 'Preferisci usare i pulsanti? Cambia quali pulsanti compaiono nelle schermate dei post nelle impostazioni generali.';
 
   @override
   String get postTags => 'Tags';
@@ -1992,8 +1868,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pushNotification => 'Notifiche Push';
 
   @override
-  String get pushNotificationDescription =>
-      'Se abilitato, Thunder invierà token JWT al server al fine di inviare nuove notifiche.\n\n**NOTA:** Questo non avrà effetto fino al riavvio dell\'app.';
+  String get pushNotificationDescription => 'Se abilitato, Thunder invierà token JWT al server al fine di inviare nuove notifiche.\n\n**NOTA:** Questo non avrà effetto fino al riavvio dell\'app.';
 
   @override
   String get pushNotificationServer => 'Server Notifiche Push';
@@ -2003,8 +1878,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Configura il server di notifica push. Il server deve essere configurato correttamente per inviare notifiche push al dispositivo.\n\n** Inserisci solo server di cui ti fidi con le tue credenziali.**';
 
   @override
-  String get rateLimitErrorMessage =>
-      'Hai raggiunto il limite per effettuare questa richiesta. Attendere e riprovare più tardi.';
+  String get rateLimitErrorMessage => 'Hai raggiunto il limite per effettuare questa richiesta. Attendere e riprovare più tardi.';
 
   @override
   String get reachedTheBottom => 'Mmh. Sembra che hai raggiunto la fine.';
@@ -2102,13 +1976,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String reply(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Replies',
-      one: 'Reply',
-      zero: 'Reply',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Replies', one: 'Reply', zero: 'Reply');
     return '$_temp0';
   }
 
@@ -2116,8 +1984,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get replyColor => 'Colore Risposta';
 
   @override
-  String get replyNotSupported =>
-      'Rispondere da questa schermata non è ancora supportato';
+  String get replyNotSupported => 'Rispondere da questa schermata non è ancora supportato';
 
   @override
   String get replyToComment => 'Reply to Comment';
@@ -2223,8 +2090,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get screenReaderProfile => 'Profilo del Lettore di Schermo';
 
   @override
-  String get screenReaderProfileDescription =>
-      'Ottimizza Thunder per lettori di schermo tramite una riduzione generale degli elementi visualizzati e la rimozione di movimenti contrastanti.';
+  String get screenReaderProfileDescription => 'Ottimizza Thunder per lettori di schermo tramite una riduzione generale degli elementi visualizzati e la rimozione di movimenti contrastanti.';
 
   @override
   String get search => 'Cerca';
@@ -2305,27 +2171,22 @@ class AppLocalizationsIt extends AppLocalizations {
   String get send => 'Send';
 
   @override
-  String get sendBackgroundTestLocalNotification =>
-      'Invia notifica locale di test in background';
+  String get sendBackgroundTestLocalNotification => 'Invia notifica locale di test in background';
 
   @override
-  String get sendBackgroundTestUnifiedPushNotification =>
-      'Invia notifica UnifiedPush di test in background';
+  String get sendBackgroundTestUnifiedPushNotification => 'Invia notifica UnifiedPush di test in background';
 
   @override
   String get sendTestLocalNotification => 'Invia notifica locale di test';
 
   @override
-  String get sendTestUnifiedPushNotification =>
-      'Invia notifica UnifiedPush di test';
+  String get sendTestUnifiedPushNotification => 'Invia notifica UnifiedPush di test';
 
   @override
-  String get sensitiveContentWarning =>
-      'Può contenere contenuti sensibili. Tocca per rivelare.';
+  String get sensitiveContentWarning => 'Può contenere contenuti sensibili. Tocca per rivelare.';
 
   @override
-  String get sentRequestForTestNotification =>
-      'Richiesta test di notifica inviata.';
+  String get sentRequestForTestNotification => 'Richiesta test di notifica inviata.';
 
   @override
   String serverErrorComments(Object message) {
@@ -2342,8 +2203,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get setShortPress => 'Imposta come azione a premuta breve';
 
   @override
-  String get settingOverrideLabel =>
-      'Queste impostazioni sovrascrivono quelle predefinite di Thunder.';
+  String get settingOverrideLabel => 'Queste impostazioni sovrascrivono quelle predefinite di Thunder.';
 
   @override
   String settingTypeNotSupported(Object settingType) {
@@ -2359,20 +2219,16 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get settingsFeedCards =>
-      'Queste impostazioni sono applicabili alle tessere della feed principale, ulteriori azioni sono disponibili una volta aperto il post.';
+  String get settingsFeedCards => 'Queste impostazioni sono applicabili alle tessere della feed principale, ulteriori azioni sono disponibili una volta aperto il post.';
 
   @override
-  String get settingsImportedSuccessfully =>
-      'Impostazioni importate con successo!';
+  String get settingsImportedSuccessfully => 'Impostazioni importate con successo!';
 
   @override
-  String get settingsNotExportedSuccessfully =>
-      'Impostazioni non salvate correttamente o l\'operazione è stata cancellata.';
+  String get settingsNotExportedSuccessfully => 'Impostazioni non salvate correttamente o l\'operazione è stata cancellata.';
 
   @override
-  String get settingsNotImportedSuccessfully =>
-      'Impostazioni non importate correttamente o l\'operazione è stata cancellata.';
+  String get settingsNotImportedSuccessfully => 'Impostazioni non importate correttamente o l\'operazione è stata cancellata.';
 
   @override
   String get settingsPage => 'Settings Page';
@@ -2531,8 +2387,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get showNavigationLabels => 'Mostra Etichette Navigazione';
 
   @override
-  String get showNavigationLabelsDescription =>
-      'Visualizza etichette sotto i pulsanti di navigazione in basso';
+  String get showNavigationLabelsDescription => 'Visualizza etichette sotto i pulsanti di navigazione in basso';
 
   @override
   String get showNsfwContent => 'Mostra Contenuti NSFW';
@@ -2547,8 +2402,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get showPostAuthor => 'Mostra Autore Post';
 
   @override
-  String get showPostAuthorSubtitle =>
-      'L\'autore del post è sempre mostrato nei feed della comunità';
+  String get showPostAuthorSubtitle => 'L\'autore del post è sempre mostrato nei feed della comunità';
 
   @override
   String get showPostCommunityFirst => 'Show Community and Author First';
@@ -2593,8 +2447,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get showUpdateChangelogs => 'Mostra Aggiornamenti Changelog';
 
   @override
-  String get showUpdateChangelogsSubtitle =>
-      'Visualizza elenco modifiche dopo un aggiornamento';
+  String get showUpdateChangelogsSubtitle => 'Visualizza elenco modifiche dopo un aggiornamento';
 
   @override
   String get showUserAvatar => 'Mostra Avatar Utente';
@@ -2609,12 +2462,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sidebar => 'Barra Laterale';
 
   @override
-  String get sidebarBottomNavDoubleTapDescription =>
-      'Tocca 2 volte la barra inferiore per aprire la barra laterale';
+  String get sidebarBottomNavDoubleTapDescription => 'Tocca 2 volte la barra inferiore per aprire la barra laterale';
 
   @override
-  String get sidebarBottomNavSwipeDescription =>
-      'Scorri la barra inferiore per aprire la barra laterale';
+  String get sidebarBottomNavSwipeDescription => 'Scorri la barra inferiore per aprire la barra laterale';
 
   @override
   String get small => 'Piccolo';
@@ -2715,8 +2566,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get systemDarkMode => 'Modalità di Sistema Scura';
 
   @override
-  String get systemDarkModeDescription =>
-      'Abilita il tema nero in modalità sistema scura';
+  String get systemDarkModeDescription => 'Abilita il tema nero in modalità sistema scura';
 
   @override
   String get tabletMode => 'Modalità Tablet (vista 2-colonne)';
@@ -2731,12 +2581,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get teal => 'Turchese';
 
   @override
-  String get testBackgroundNotificationDescription =>
-      'Thunder si chiuderà e poi tenterà di generare una notifica in background. (Ci vorranno almeno 15 minuti.)';
+  String get testBackgroundNotificationDescription => 'Thunder si chiuderà e poi tenterà di generare una notifica in background. (Ci vorranno almeno 15 minuti.)';
 
   @override
-  String get testBackgroundUnifiedPushNotificationDescription =>
-      'Thunder chiederà al server di notifica di inviare una notifica ritardata e si chiuderà. (Ci vorranno pochi minuti.)';
+  String get testBackgroundUnifiedPushNotificationDescription => 'Thunder chiederà al server di notifica di inviare una notifica ritardata e si chiuderà. (Ci vorranno pochi minuti.)';
 
   @override
   String get text => 'Testo';
@@ -2782,28 +2630,22 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get timeoutComments =>
-      'Errore: si è verificato un time out durante il caricamento dei commenti';
+  String get timeoutComments => 'Errore: si è verificato un time out durante il caricamento dei commenti';
 
   @override
-  String get timeoutErrorMessage =>
-      'Si è verificato un time out attendendo una risposta.';
+  String get timeoutErrorMessage => 'Si è verificato un time out attendendo una risposta.';
 
   @override
-  String get timeoutSaveComment =>
-      'Errore: si è verificato un time out durante il salvataggio del commento';
+  String get timeoutSaveComment => 'Errore: si è verificato un time out durante il salvataggio del commento';
 
   @override
-  String get timeoutSavingPost =>
-      'Errore: si è verificato un time out durante il salvataggio del post.';
+  String get timeoutSavingPost => 'Errore: si è verificato un time out durante il salvataggio del post.';
 
   @override
-  String get timeoutUpvoteComment =>
-      'Errore: si è verificato un time out durante il voto del commento';
+  String get timeoutUpvoteComment => 'Errore: si è verificato un time out durante il voto del commento';
 
   @override
-  String get timeoutVotingPost =>
-      'Errore: si è verificato un time out durante il voto del post.';
+  String get timeoutVotingPost => 'Errore: si è verificato un time out durante il voto del post.';
 
   @override
   String get toggelRead => 'Interruttore Lettura';
@@ -2861,8 +2703,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get transferredModToCommunity => 'Comunità Trasferita';
 
   @override
-  String get translationsMayNotBeComplete =>
-      'Si prega di notare che le traduzioni potrebbero non essere complete';
+  String get translationsMayNotBeComplete => 'Si prega di notare che le traduzioni potrebbero non essere complete';
 
   @override
   String get trendingCommunities => 'Comunità di Tendenza';
@@ -2879,8 +2720,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get unableToFindCommunityOnInstance =>
-      'Impossibile trovare la comunità selezionata sull\'istanza dell\'utente selezionato.';
+  String get unableToFindCommunityOnInstance => 'Impossibile trovare la comunità selezionata sull\'istanza dell\'utente selezionato.';
 
   @override
   String get unableToFindInstance => 'Impossibile trovare l\'istanza';
@@ -3027,8 +2867,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get unsubscribeFromCommunity => 'Disiscriviti dalla Comunità';
 
   @override
-  String get unsubscribePending =>
-      'Cancellare iscrizione (iscrizione in corso)';
+  String get unsubscribePending => 'Cancellare iscrizione (iscrizione in corso)';
 
   @override
   String get unsubscribed => 'Iscrizione cancellata';
@@ -3062,8 +2901,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get upvoted => 'Apprezzato';
 
   @override
-  String get uriNotSupported =>
-      'Al momento questo tipo di link non è supportato.';
+  String get uriNotSupported => 'Al momento questo tipo di link non è supportato.';
 
   @override
   String get url => 'URL';
@@ -3075,33 +2913,28 @@ class AppLocalizationsIt extends AppLocalizations {
   String get useApplePushNotifications => 'Usa Notifiche APN';
 
   @override
-  String get useApplePushNotificationsDescription =>
-      'Usa servizio di notifica Push Apple';
+  String get useApplePushNotificationsDescription => 'Usa servizio di notifica Push Apple';
 
   @override
-  String get useCompactView =>
-      'Abilita per post piccoli, disabilita per post grandi.';
+  String get useCompactView => 'Abilita per post piccoli, disabilita per post grandi.';
 
   @override
   String get useLocalNotifications => 'Usa Notifiche Locali (Sperimentale)';
 
   @override
-  String get useLocalNotificationsDescription =>
-      'Controllo periodico delle notifiche in background';
+  String get useLocalNotificationsDescription => 'Controllo periodico delle notifiche in background';
 
   @override
   String get useMaterialYouTheme => 'Usa Tema Material You';
 
   @override
-  String get useMaterialYouThemeDescription =>
-      'Sovrascrive il tema personalizzato selezionato';
+  String get useMaterialYouThemeDescription => 'Sovrascrive il tema personalizzato selezionato';
 
   @override
   String get useProfilePictureForDrawer => 'Usa Immagine Profilo per il Drawer';
 
   @override
-  String get useProfilePictureForDrawerSubtitle =>
-      'Se l\'accesso è effettuato, mostra l\'immagine del profilo utente al posto dell\'icona del drawer';
+  String get useProfilePictureForDrawerSubtitle => 'Se l\'accesso è effettuato, mostra l\'immagine del profilo utente al posto dell\'icona del drawer';
 
   @override
   String useSuggestedTitle(Object title) {
@@ -3112,8 +2945,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get useUnifiedPushNotifications => 'Usa Notifiche UnifiedPush';
 
   @override
-  String get useUnifiedPushNotificationsDescription =>
-      'Richiede un\'app compatibile';
+  String get useUnifiedPushNotificationsDescription => 'Richiede un\'app compatibile';
 
   @override
   String get user => 'Utente';
@@ -3136,8 +2968,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get userLabels => 'Etichette Utente';
 
   @override
-  String get userLabelsSettingsPageDescription =>
-      'Puoi aggiungere, modificare o rimuovere le etichette associate agli utenti.';
+  String get userLabelsSettingsPageDescription => 'Puoi aggiungere, modificare o rimuovere le etichette associate agli utenti.';
 
   @override
   String get userNameColor => 'Colore Nome Utente';
@@ -3152,8 +2983,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get userProfiles => 'Profili dell\'Utente';
 
   @override
-  String get userSettingDescription =>
-      'Queste impostazioni si sincronizzano con il tuo account Lemmy e vengono applicate solo per ogni account.';
+  String get userSettingDescription => 'Queste impostazioni si sincronizzano con il tuo account Lemmy e vengono applicate solo per ogni account.';
 
   @override
   String get userStyle => 'Stile Utente';
@@ -3162,8 +2992,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get username => 'Nome utente';
 
   @override
-  String get usernameFormattingRedirect =>
-      'Cerchi la formattazione del nome utente?';
+  String get usernameFormattingRedirect => 'Cerchi la formattazione del nome utente?';
 
   @override
   String get users => 'Utenti';
@@ -3216,8 +3045,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get viewOriginal => 'Visualizza Originale';
 
   @override
-  String get viewPostAsDifferentAccount =>
-      'Visualizza post con account diverso';
+  String get viewPostAsDifferentAccount => 'Visualizza post con account diverso';
 
   @override
   String get viewPostSource => 'Visualizza fonte post';
@@ -3268,13 +3096,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String xYearsOld(num count, Object x) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$x anni',
-      one: '$x anno',
-      zero: '$x anno',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$x anni', one: '$x anno', zero: '$x anno');
     return '$_temp0';
   }
 

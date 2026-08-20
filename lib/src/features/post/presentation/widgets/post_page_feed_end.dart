@@ -60,12 +60,7 @@ class _PostPageFeedEndState extends State<PostPageFeedEnd> {
     final hasReachedCommentEnd = context.select<PostBloc, bool>((bloc) => bloc.state.hasReachedCommentEnd);
     final metadataFontSizeScale = context.select<ThemePreferencesCubit, FontScale>((cubit) => cubit.state.metadataFontSizeScale);
 
-    Widget child = Container(
-      height: 100.0,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: const CircularProgressIndicator(),
-    );
+    Widget child = Container(height: 100.0, alignment: Alignment.center, padding: const EdgeInsets.symmetric(vertical: 16.0), child: const CircularProgressIndicator());
 
     if (hasReachedCommentEnd) {
       _scheduleSpacerMeasurement();

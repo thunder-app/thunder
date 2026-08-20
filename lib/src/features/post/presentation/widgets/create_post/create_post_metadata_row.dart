@@ -4,12 +4,7 @@ import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/core/config/global_context.dart';
 
 class CreatePostMetadataRow extends StatelessWidget {
-  const CreatePostMetadataRow({
-    super.key,
-    required this.languageSelector,
-    required this.nsfw,
-    required this.onNsfwChanged,
-  });
+  const CreatePostMetadataRow({super.key, required this.languageSelector, required this.nsfw, required this.onNsfwChanged});
 
   /// The widget for selecting the post's language.
   final Widget languageSelector;

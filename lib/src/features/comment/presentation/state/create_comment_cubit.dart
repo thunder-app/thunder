@@ -28,19 +28,15 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
     required CommentRepository Function(Account) commentRepositoryFactory,
     required AccountRepository Function(Account) accountRepositoryFactory,
     required LocalizationService localizationService,
-  })  : _commentRepositoryFactory = commentRepositoryFactory,
-        _accountRepositoryFactory = accountRepositoryFactory,
-        _localizationService = localizationService,
-        super(const CreateCommentState(status: CreateCommentStatus.initial)) {
+  }) : _commentRepositoryFactory = commentRepositoryFactory,
+       _accountRepositoryFactory = accountRepositoryFactory,
+       _localizationService = localizationService,
+       super(const CreateCommentState(status: CreateCommentStatus.initial)) {
     repository = _commentRepositoryFactory(account);
   }
 
   Future<void> clearMessage() async {
-    emit(state.copyWith(
-      status: CreateCommentStatus.initial,
-      message: null,
-      errorReason: null,
-    ));
+    emit(state.copyWith(status: CreateCommentStatus.initial, message: null, errorReason: null));
   }
 
   Future<void> switchAccount(Account newAccount) async {
@@ -48,31 +44,25 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
     repository = _commentRepositoryFactory(account);
 
     debugPrint('Account switched to ${account.username}@${account.instance}');
-    emit(state.copyWith(
-      status: CreateCommentStatus.success,
-      message: null,
-      errorReason: null,
-    ));
+    emit(state.copyWith(status: CreateCommentStatus.success, message: null, errorReason: null));
   }
 
   Future<void> uploadImages(List<String> imageFiles) async {
     final l10n = _localizationService.l10n;
     if (account.anonymous) {
-      emit(state.copyWith(
-        status: CreateCommentStatus.imageUploadFailure,
-        message: l10n.userNotLoggedIn,
-        errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
-      ));
+      emit(
+        state.copyWith(
+          status: CreateCommentStatus.imageUploadFailure,
+          message: l10n.userNotLoggedIn,
+          errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
+        ),
+      );
       return;
     }
 
     List<String> urls = [];
 
-    emit(state.copyWith(
-      status: CreateCommentStatus.imageUploadInProgress,
-      message: null,
-      errorReason: null,
-    ));
+    emit(state.copyWith(status: CreateCommentStatus.imageUploadInProgress, message: null, errorReason: null));
 
     try {
       final accountRepository = _accountRepositoryFactory(account);
@@ -85,19 +75,16 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
         await Future.wait(urls.map((url) => Future.delayed(const Duration(milliseconds: 500))));
       }
 
-      emit(state.copyWith(
-        status: CreateCommentStatus.imageUploadSuccess,
-        imageUrls: urls,
-        message: null,
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: CreateCommentStatus.imageUploadSuccess, imageUrls: urls, message: null, errorReason: null));
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: CreateCommentStatus.imageUploadFailure,
-        message: message,
-        errorReason: AppErrorReason.actionFailed(message: message),
-      ));
+      emit(
+        state.copyWith(
+          status: CreateCommentStatus.imageUploadFailure,
+          message: message,
+          errorReason: AppErrorReason.actionFailed(message: message),
+        ),
+      );
     }
   }
 
@@ -107,11 +94,7 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
     assert(!(postId == null && commentIdBeingEdited == null));
 
     try {
-      emit(state.copyWith(
-        status: CreateCommentStatus.submitting,
-        message: null,
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: CreateCommentStatus.submitting, message: null, errorReason: null));
 
       ThunderComment comment;
 
@@ -121,20 +104,17 @@ class CreateCommentCubit extends Cubit<CreateCommentState> {
         comment = await repository.create(postId: postId!, content: content, parentId: parentCommentId, languageId: languageId);
       }
 
-      emit(state.copyWith(
-        status: CreateCommentStatus.success,
-        comment: comment,
-        message: null,
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: CreateCommentStatus.success, comment: comment, message: null, errorReason: null));
       return comment.id;
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: CreateCommentStatus.error,
-        message: message,
-        errorReason: AppErrorReason.actionFailed(message: message),
-      ));
+      emit(
+        state.copyWith(
+          status: CreateCommentStatus.error,
+          message: message,
+          errorReason: AppErrorReason.actionFailed(message: message),
+        ),
+      );
     }
 
     return null;

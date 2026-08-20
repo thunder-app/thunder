@@ -1,4 +1,1 @@
-enum PostBodyViewType {
-  condensed,
-  expanded,
-}
+enum PostBodyViewType { condensed, expanded }

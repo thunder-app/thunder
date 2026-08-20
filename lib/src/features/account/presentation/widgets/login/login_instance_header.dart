@@ -13,14 +13,7 @@ typedef LoginInstanceIconProviderBuilder = ImageProvider<Object> Function(String
 /// Displays the app or instance icon and contextual instance links.
 class LoginInstanceHeader extends StatelessWidget {
   /// Creates an instance-aware login header.
-  const LoginInstanceHeader({
-    super.key,
-    required this.anonymous,
-    required this.onOpenGettingStarted,
-    required this.onOpenInstance,
-    required this.onCreateAccount,
-    this.iconProviderBuilder,
-  });
+  const LoginInstanceHeader({super.key, required this.anonymous, required this.onOpenGettingStarted, required this.onOpenInstance, required this.onCreateAccount, this.iconProviderBuilder});
 
   /// Whether account-registration actions should be hidden.
   final bool anonymous;
@@ -40,12 +33,7 @@ class LoginInstanceHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<InstanceValidationCubit, InstanceValidationState, _LoginInstanceHeaderState>(
-      selector: (state) => _LoginInstanceHeaderState(
-        iconUrl: state.instanceInfo?.icon,
-        isValid: state.isValid,
-        host: state.normalizedHost,
-        platform: state.instanceInfo?.platform ?? state.platform,
-      ),
+      selector: (state) => _LoginInstanceHeaderState(iconUrl: state.instanceInfo?.icon, isValid: state.isValid, host: state.normalizedHost, platform: state.instanceInfo?.platform ?? state.platform),
       builder: (context, state) {
         final theme = Theme.of(context);
         final l10n = AppLocalizations.of(context)!;
@@ -70,10 +58,7 @@ class LoginInstanceHeader extends StatelessWidget {
             AnimatedCrossFade(
               duration: const Duration(milliseconds: 250),
               crossFadeState: state.isValid ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-              firstChild: _InstanceLinkButton(
-                label: l10n.gettingStarted,
-                onPressed: onOpenGettingStarted,
-              ),
+              firstChild: _InstanceLinkButton(label: l10n.gettingStarted, onPressed: onOpenGettingStarted),
               secondChild: Column(
                 spacing: 8,
                 children: [
@@ -86,17 +71,8 @@ class LoginInstanceHeader extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _InstanceLinkButton(
-                        label: l10n.openInstance,
-                        onPressed: state.host == null ? null : () => onOpenInstance(state.host!),
-                      ),
-                      if (!anonymous) ...[
-                        const SizedBox(width: 12),
-                        _InstanceLinkButton(
-                          label: l10n.createAccount,
-                          onPressed: state.host == null ? null : () => onCreateAccount(state.host!),
-                        ),
-                      ],
+                      _InstanceLinkButton(label: l10n.openInstance, onPressed: state.host == null ? null : () => onOpenInstance(state.host!)),
+                      if (!anonymous) ...[const SizedBox(width: 12), _InstanceLinkButton(label: l10n.createAccount, onPressed: state.host == null ? null : () => onCreateAccount(state.host!))],
                     ],
                   ),
                 ],

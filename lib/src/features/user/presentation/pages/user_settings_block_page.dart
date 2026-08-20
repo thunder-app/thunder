@@ -47,12 +47,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
 
     return persons.map((person) {
       return Tooltip(
-        message: generateUserFullName(
-          context,
-          person.name,
-          person.displayName,
-          fetchInstanceNameFromUrl(person.actorId),
-        ),
+        message: generateUserFullName(context, person.name, person.displayName, fetchInstanceNameFromUrl(person.actorId)),
         preferBelow: false,
         child: ListTile(
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
@@ -61,18 +56,14 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             name: person.name,
             displayName: person.displayName,
             instance: fetchInstanceNameFromUrl(person.actorId) ?? '-',
-// Override because we're showing display name above
+            // Override because we're showing display name above
             useDisplayName: false,
           ),
           leading: UserAvatar(user: person),
           trailing: state.status == UserBlocksStatus.blocking && state.personBeingBlocked == person.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
-                  child: SizedBox(
-                    width: 25,
-                    height: 25,
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: SizedBox(width: 25, height: 25, child: CircularProgressIndicator()),
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
@@ -91,12 +82,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
 
     return communities.map((community) {
       return Tooltip(
-        message: generateCommunityFullName(
-          context,
-          community.name,
-          community.title,
-          fetchInstanceNameFromUrl(community.actorId),
-        ),
+        message: generateCommunityFullName(context, community.name, community.title, fetchInstanceNameFromUrl(community.actorId)),
         preferBelow: false,
         child: ListTile(
           contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
@@ -112,11 +98,7 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
           trailing: state.status == UserBlocksStatus.blocking && state.communityBeingBlocked == community.id
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
-                  child: SizedBox(
-                    width: 25,
-                    height: 25,
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: SizedBox(width: 25, height: 25, child: CircularProgressIndicator()),
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
@@ -148,20 +130,13 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             child: Text(
               instance['domain'][0].toUpperCase(),
               semanticsLabel: "",
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
             ),
           ),
           trailing: state.status == UserBlocksStatus.blocking && state.instanceBeingBlocked == instance['id']
               ? const Padding(
                   padding: EdgeInsets.only(right: 12),
-                  child: SizedBox(
-                    width: 25,
-                    height: 25,
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: SizedBox(width: 25, height: 25, child: CircularProgressIndicator()),
                 )
               : IconButton(
                   icon: Icon(Icons.clear, semanticLabel: l10n.remove),
@@ -278,21 +253,9 @@ class _UserSettingsBlockPageState extends State<UserSettingsBlockPage> with Sing
             body: TabBarView(
               controller: tabController,
               children: [
-                UserSettingBlockList(
-                  status: state.status,
-                  emptyText: l10n.noUserBlocks,
-                  items: blockedUsers,
-                ),
-                UserSettingBlockList(
-                  status: state.status,
-                  emptyText: l10n.noCommunityBlocks,
-                  items: blockedCommunities,
-                ),
-                UserSettingBlockList(
-                  status: state.status,
-                  emptyText: l10n.noInstanceBlocks,
-                  items: blockedInstances,
-                ),
+                UserSettingBlockList(status: state.status, emptyText: l10n.noUserBlocks, items: blockedUsers),
+                UserSettingBlockList(status: state.status, emptyText: l10n.noCommunityBlocks, items: blockedCommunities),
+                UserSettingBlockList(status: state.status, emptyText: l10n.noInstanceBlocks, items: blockedInstances),
               ],
             ),
           );
@@ -313,12 +276,7 @@ class UserSettingBlockList extends StatelessWidget {
   /// The widgets to display in the list
   final List<Widget> items;
 
-  const UserSettingBlockList({
-    super.key,
-    required this.status,
-    this.emptyText,
-    this.items = const [],
-  });
+  const UserSettingBlockList({super.key, required this.status, this.emptyText, this.items = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -332,7 +290,9 @@ class UserSettingBlockList extends StatelessWidget {
     }
 
     if (items.isEmpty) {
-      return Center(child: Text(emptyText ?? "", style: TextStyle(color: theme.hintColor)));
+      return Center(
+        child: Text(emptyText ?? "", style: TextStyle(color: theme.hintColor)),
+      );
     }
 
     return CustomScrollView(slivers: [SliverList.list(children: items)]);

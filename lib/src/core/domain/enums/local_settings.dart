@@ -100,13 +100,19 @@ enum LocalSettings {
   settingsPageGestures(name: 'settings_page_gestures', key: 'settingsPageGestures', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.general, isPage: true),
   settingsPageVideo(name: 'settings_page_video', key: 'settingsPageVideo', category: LocalSettingsCategories.videoPlayer, subCategory: LocalSettingsSubCategories.general, isPage: true),
   settingsPageFloatingActionButton(
-      name: 'settings_page_floating_action_button',
-      key: 'settingsPageFloatingActionButton',
-      category: LocalSettingsCategories.floatingActionButton,
-      subCategory: LocalSettingsSubCategories.general,
-      isPage: true),
+    name: 'settings_page_floating_action_button',
+    key: 'settingsPageFloatingActionButton',
+    category: LocalSettingsCategories.floatingActionButton,
+    subCategory: LocalSettingsSubCategories.general,
+    isPage: true,
+  ),
   settingsPageAccessibility(
-      name: 'settings_page_accessibility', key: 'settingsPageAccessibility', category: LocalSettingsCategories.accessibility, subCategory: LocalSettingsSubCategories.general, isPage: true),
+    name: 'settings_page_accessibility',
+    key: 'settingsPageAccessibility',
+    category: LocalSettingsCategories.accessibility,
+    subCategory: LocalSettingsSubCategories.general,
+    isPage: true,
+  ),
   settingsPageAccount(name: 'settings_page_account', key: 'settingsPageAccount', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.general, isPage: true),
   settingsPageAccountLanguages(
     name: 'settings_page_account_languages',
@@ -155,28 +161,49 @@ enum LocalSettings {
 
   // Deprecated, use browserMode
   openLinksInExternalBrowser(
-      name: 'setting_links_open_in_external_browser',
-      key: 'openLinksInExternalBrowser',
-      category: LocalSettingsCategories.general,
-      subCategory: LocalSettingsSubCategories.linksBehaviourSettings,
-      searchable: false),
+    name: 'setting_links_open_in_external_browser',
+    key: 'openLinksInExternalBrowser',
+    category: LocalSettingsCategories.general,
+    subCategory: LocalSettingsSubCategories.linksBehaviourSettings,
+    searchable: false,
+  ),
   browserMode(name: 'setting_browser_mode', key: 'browserMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   openByDefault(name: 'setting_links_open_by_default', key: 'openByDefault', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
   openLinksInReaderMode(
-      name: 'setting_links_open_in_reader_mode', key: 'openLinksInReaderMode', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.linksBehaviourSettings),
+    name: 'setting_links_open_in_reader_mode',
+    key: 'openLinksInReaderMode',
+    category: LocalSettingsCategories.general,
+    subCategory: LocalSettingsSubCategories.linksBehaviourSettings,
+  ),
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', key: 'showUserDisplayNames', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
   useDisplayNamesForCommunities(
-      name: 'setting_use_display_names_for_communities', key: 'showCommunityDisplayNames', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.theme),
+    name: 'setting_use_display_names_for_communities',
+    key: 'showCommunityDisplayNames',
+    category: LocalSettingsCategories.theming,
+    subCategory: LocalSettingsSubCategories.theme,
+  ),
   markPostAsReadOnMediaView(
-      name: 'setting_general_mark_post_read_on_media_view', key: 'markPostAsReadOnMediaView', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
+    name: 'setting_general_mark_post_read_on_media_view',
+    key: 'markPostAsReadOnMediaView',
+    category: LocalSettingsCategories.general,
+    subCategory: LocalSettingsSubCategories.feed,
+  ),
   markPostAsReadOnScroll(name: 'setting_general_mark_post_read_on_scroll', key: 'markPostAsReadOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   showInAppUpdateNotification(
-      name: 'setting_notifications_show_inapp_update', key: 'showInAppUpdateNotifications', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
+    name: 'setting_notifications_show_inapp_update',
+    key: 'showInAppUpdateNotifications',
+    category: LocalSettingsCategories.general,
+    subCategory: LocalSettingsSubCategories.notifications,
+  ),
   showUpdateChangelogs(name: 'setting_show_update_changelogs', key: 'showUpdateChangelogs', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   scoreCounters(name: 'setting_score_counters', key: "showScoreCounters", category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   appLanguageCode(name: 'setting_app_language_code', key: 'appLanguage', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
   useProfilePictureForDrawer(
-      name: 'setting_use_profile_picture_for_drawer', key: 'useProfilePictureForDrawer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
+    name: 'setting_use_profile_picture_for_drawer',
+    key: 'useProfilePictureForDrawer',
+    category: LocalSettingsCategories.general,
+    subCategory: LocalSettingsSubCategories.feedTypeAndSorts,
+  ),
   inboxNotificationType(name: 'setting_inbox_notification_type', key: 'inboxNotificationType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   pushNotificationServer(name: 'setting_push_notification_server', key: 'pushNotificationServer', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.notifications),
   showExpandedTaglines(name: 'setting_feed_show_expanded_taglines', key: 'showExpandedTaglines', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
@@ -188,7 +215,11 @@ enum LocalSettings {
   showPostTitleFirst(name: 'setting_general_show_title_first', key: 'showPostTitleFirst', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   hideThumbnails(name: 'setting_general_hide_thumbnails', key: 'hideThumbnails', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.feed),
   showThumbnailPreviewOnRight(
-      name: 'setting_compact_show_thumbnail_on_right', key: 'showThumbnailPreviewOnRight', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+    name: 'setting_compact_show_thumbnail_on_right',
+    key: 'showThumbnailPreviewOnRight',
+    category: LocalSettingsCategories.posts,
+    subCategory: LocalSettingsSubCategories.posts,
+  ),
   linkPostsUseCompactView(name: 'setting_general_links_use_compact_view', key: 'linkPostsUseCompactView', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   pinnedPostsUseCompactView(name: 'setting_general_pins_use_compact_view', key: 'pinnedPostsUseCompactView', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showTextPostIndicator(name: 'setting_compact_show_text_post_indicator', key: 'showTextPostIndicator', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
@@ -209,25 +240,46 @@ enum LocalSettings {
   hideBottomBarOnScroll(name: 'setting_general_hide_bottombar_on_scroll', key: 'hideBottomBarOnScroll', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   showHiddenPosts(name: 'setting_general_show_hidden_posts', key: 'showHiddenPosts', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feed),
   compactPostCardMetadataItems(
-      name: 'setting_compact_post_card_metadata_items', key: 'compactPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
+    name: 'setting_compact_post_card_metadata_items',
+    key: 'compactPostCardMetadataItems',
+    category: LocalSettingsCategories.posts,
+    subCategory: LocalSettingsSubCategories.posts,
+  ),
   cardPostCardMetadataItems(name: 'setting_card_post_card_metadata_items', key: 'cardPostCardMetadataItems', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   showFullPostDate(name: 'setting_general_show_full_post_date', key: 'showFullPostDate', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   dateFormat(name: 'setting_general_date_format', key: 'dateFormat', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   // This setting exists purely for the searching function
   dividerAppearance(name: '', key: 'dividerAppearance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts),
   feedCardDividerThickness(
-      name: 'setting_feed_card_divider_thickness', key: 'feedCardDividerThickness', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts, searchable: false),
+    name: 'setting_feed_card_divider_thickness',
+    key: 'feedCardDividerThickness',
+    category: LocalSettingsCategories.posts,
+    subCategory: LocalSettingsSubCategories.posts,
+    searchable: false,
+  ),
   feedCardDividerColor(name: 'setting_feed_card_divider_color', key: 'feedCardDividerColor', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.posts, searchable: false),
 
   // Post body settings
   showCrossPosts(name: 'setting_show_cross_posts', key: 'showCrossPosts', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   postBodyViewType(name: 'setting_general_post_body_view_type', key: 'postBodyViewType', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
   postBodyShowUserInstance(
-      name: 'setting_general_post_body_show_user_instance', key: 'postBodyShowUserInstance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+    name: 'setting_general_post_body_show_user_instance',
+    key: 'postBodyShowUserInstance',
+    category: LocalSettingsCategories.posts,
+    subCategory: LocalSettingsSubCategories.general,
+  ),
   postBodyShowCommunityInstance(
-      name: 'setting_general_post_body_show_community_instance', key: 'postBodyShowCommunityInstance', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+    name: 'setting_general_post_body_show_community_instance',
+    key: 'postBodyShowCommunityInstance',
+    category: LocalSettingsCategories.posts,
+    subCategory: LocalSettingsSubCategories.general,
+  ),
   postBodyShowCommunityAvatar(
-      name: 'setting_general_post_body_show_community_avatar', key: 'postBodyShowCommunityAvatar', category: LocalSettingsCategories.posts, subCategory: LocalSettingsSubCategories.general),
+    name: 'setting_general_post_body_show_community_avatar',
+    key: 'postBodyShowCommunityAvatar',
+    category: LocalSettingsCategories.posts,
+    subCategory: LocalSettingsSubCategories.general,
+  ),
 
   // Advanced Settings
   showNavigationLabels(name: 'setting_advanced_show_navigation_labels', key: 'showNavigationLabels', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.advanced),
@@ -235,21 +287,38 @@ enum LocalSettings {
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
   defaultCommentSortType(
-      name: 'setting_post_default_comment_sort_type', key: 'defaultCommentSortType', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.feedTypeAndSorts),
+    name: 'setting_post_default_comment_sort_type',
+    key: 'defaultCommentSortType',
+    category: LocalSettingsCategories.general,
+    subCategory: LocalSettingsSubCategories.feedTypeAndSorts,
+  ),
   collapseParentCommentBodyOnGesture(
-      name: 'setting_comments_collapse_parent_comment_on_gesture',
-      key: 'collapseParentCommentBodyOnGesture',
-      category: LocalSettingsCategories.general,
-      subCategory: LocalSettingsSubCategories.comments),
+    name: 'setting_comments_collapse_parent_comment_on_gesture',
+    key: 'collapseParentCommentBodyOnGesture',
+    category: LocalSettingsCategories.general,
+    subCategory: LocalSettingsSubCategories.comments,
+  ),
   showCommentActionButtons(
-      name: 'setting_general_show_comment_button_actions', key: 'showCommentActionButtons', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.general),
+    name: 'setting_general_show_comment_button_actions',
+    key: 'showCommentActionButtons',
+    category: LocalSettingsCategories.comments,
+    subCategory: LocalSettingsSubCategories.general,
+  ),
   commentShowUserInstance(name: 'settings_comment_show_user_instance', key: 'showUserInstance', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   commentShowUserAvatar(name: 'settings_comment_show_user_avatar', key: 'showUserAvatar', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   combineCommentScores(name: 'setting_general_combine_comment_scores', key: 'combineCommentScores', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
   nestedCommentIndicatorStyle(
-      name: 'setting_general_nested_comment_indicator_style', key: 'nestedCommentIndicatorStyle', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+    name: 'setting_general_nested_comment_indicator_style',
+    key: 'nestedCommentIndicatorStyle',
+    category: LocalSettingsCategories.comments,
+    subCategory: LocalSettingsSubCategories.comments,
+  ),
   nestedCommentIndicatorColor(
-      name: 'setting_general_nested_comment_indicator_color', key: 'nestedCommentIndicatorColor', category: LocalSettingsCategories.comments, subCategory: LocalSettingsSubCategories.comments),
+    name: 'setting_general_nested_comment_indicator_color',
+    key: 'nestedCommentIndicatorColor',
+    category: LocalSettingsCategories.comments,
+    subCategory: LocalSettingsSubCategories.comments,
+  ),
   // Deprecated, use userFullNameColorizeUserName
   commentUseColorizedUsername(
     name: 'settings_general_comments_colorized_usernames',
@@ -291,54 +360,82 @@ enum LocalSettings {
   // This setting exists purely for the searching function
   userStyle(name: '', key: 'userStyle', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
   userFullNameUserNameThickness(
-      name: 'user_full_name_user_name_thickness', key: 'userFullNameUserNameThickness', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names, searchable: false),
+    name: 'user_full_name_user_name_thickness',
+    key: 'userFullNameUserNameThickness',
+    category: LocalSettingsCategories.theming,
+    subCategory: LocalSettingsSubCategories.names,
+    searchable: false,
+  ),
   userFullNameUserNameColor(
-      name: 'user_full_name_user_name_color', key: 'userFullNameUserNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names, searchable: false),
+    name: 'user_full_name_user_name_color',
+    key: 'userFullNameUserNameColor',
+    category: LocalSettingsCategories.theming,
+    subCategory: LocalSettingsSubCategories.names,
+    searchable: false,
+  ),
   userFullNameInstanceNameThickness(
-      name: 'user_full_name_instance_name_thickness',
-      key: 'userFullNameInstanceNameThickness',
-      category: LocalSettingsCategories.theming,
-      subCategory: LocalSettingsSubCategories.names,
-      searchable: false),
+    name: 'user_full_name_instance_name_thickness',
+    key: 'userFullNameInstanceNameThickness',
+    category: LocalSettingsCategories.theming,
+    subCategory: LocalSettingsSubCategories.names,
+    searchable: false,
+  ),
   userFullNameInstanceNameColor(
-      name: 'usr_full_name_instance_name_color', key: 'userFullNameInstanceNameColor', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names, searchable: false),
+    name: 'usr_full_name_instance_name_color',
+    key: 'userFullNameInstanceNameColor',
+    category: LocalSettingsCategories.theming,
+    subCategory: LocalSettingsSubCategories.names,
+    searchable: false,
+  ),
 
   // This setting exists purely for the searching function
   communityStyle(name: '', key: 'communityStyle', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
   communityFormat(name: 'community_format', key: 'communityFormat', category: LocalSettingsCategories.theming, subCategory: LocalSettingsSubCategories.names),
   communityFullNameCommunityNameThickness(
-      name: 'community_full_name_community_name_thickness',
-      key: 'communityFullNameCommunityNameThickness',
-      category: LocalSettingsCategories.theming,
-      subCategory: LocalSettingsSubCategories.names,
-      searchable: false),
+    name: 'community_full_name_community_name_thickness',
+    key: 'communityFullNameCommunityNameThickness',
+    category: LocalSettingsCategories.theming,
+    subCategory: LocalSettingsSubCategories.names,
+    searchable: false,
+  ),
   communityFullNameCommunityNameColor(
-      name: 'community_full_name_community_name_color',
-      key: 'communityFullNameCommunityNameColor',
-      category: LocalSettingsCategories.theming,
-      subCategory: LocalSettingsSubCategories.names,
-      searchable: false),
+    name: 'community_full_name_community_name_color',
+    key: 'communityFullNameCommunityNameColor',
+    category: LocalSettingsCategories.theming,
+    subCategory: LocalSettingsSubCategories.names,
+    searchable: false,
+  ),
   communityFullNameInstanceNameThickness(
-      name: 'community_full_name_instance_name_thickness',
-      key: 'communityFullNameInstanceNameThickness',
-      category: LocalSettingsCategories.theming,
-      subCategory: LocalSettingsSubCategories.names,
-      searchable: false),
+    name: 'community_full_name_instance_name_thickness',
+    key: 'communityFullNameInstanceNameThickness',
+    category: LocalSettingsCategories.theming,
+    subCategory: LocalSettingsSubCategories.names,
+    searchable: false,
+  ),
   communityFullNameInstanceNameColor(
-      name: 'community_full_name_instance_name_color',
-      key: 'communityFullNameInstanceNameColor',
-      category: LocalSettingsCategories.theming,
-      subCategory: LocalSettingsSubCategories.names,
-      searchable: false),
+    name: 'community_full_name_instance_name_color',
+    key: 'communityFullNameInstanceNameColor',
+    category: LocalSettingsCategories.theming,
+    subCategory: LocalSettingsSubCategories.names,
+    searchable: false,
+  ),
 
   userLabels(name: 'setting_user_labels', key: 'userLabels', category: LocalSettingsCategories.userLabels, subCategory: LocalSettingsSubCategories.userLabels),
 
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings
   sidebarBottomNavBarSwipeGesture(
-      name: 'setting_general_enable_swipe_gestures', key: 'navbarSwipeGestures', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.sidebar),
+    name: 'setting_general_enable_swipe_gestures',
+    key: 'navbarSwipeGestures',
+    category: LocalSettingsCategories.gestures,
+    subCategory: LocalSettingsSubCategories.sidebar,
+  ),
   sidebarBottomNavBarDoubleTapGesture(
-      name: 'setting_general_enable_doubletap_gestures', key: 'navbarDoubleTapGestures', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.sidebar),
+    name: 'setting_general_enable_doubletap_gestures',
+    key: 'navbarDoubleTapGestures',
+    category: LocalSettingsCategories.gestures,
+    subCategory: LocalSettingsSubCategories.sidebar,
+  ),
 
   // Post Gesture Settings
   enablePostGestures(name: 'setting_gesture_enable_post_gestures', key: 'postSwipeActions', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.posts),
@@ -351,14 +448,30 @@ enum LocalSettings {
   enableCommentGestures(name: 'setting_gesture_enable_comment_gestures', key: 'commentSwipeActions', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.comments),
   commentGestureLeftPrimary(name: 'setting_gesture_comment_left_primary_gesture', key: 'leftShortSwipe', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.comments),
   commentGestureLeftSecondary(
-      name: 'setting_gesture_comment_left_secondary_gesture', key: 'leftLongSwipe', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.comments),
+    name: 'setting_gesture_comment_left_secondary_gesture',
+    key: 'leftLongSwipe',
+    category: LocalSettingsCategories.gestures,
+    subCategory: LocalSettingsSubCategories.comments,
+  ),
   commentGestureRightPrimary(
-      name: 'setting_gesture_comment_right_primary_gesture', key: 'rightShortSwipe', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.comments),
+    name: 'setting_gesture_comment_right_primary_gesture',
+    key: 'rightShortSwipe',
+    category: LocalSettingsCategories.gestures,
+    subCategory: LocalSettingsSubCategories.comments,
+  ),
   commentGestureRightSecondary(
-      name: 'setting_gesture_comment_right_secondary_gesture', key: 'rightLongSwipe', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.comments),
+    name: 'setting_gesture_comment_right_secondary_gesture',
+    key: 'rightLongSwipe',
+    category: LocalSettingsCategories.gestures,
+    subCategory: LocalSettingsSubCategories.comments,
+  ),
 
   enableFullScreenSwipeNavigationGesture(
-      name: 'setting_gesture_enable_fullscreen_navigation_gesture', key: 'fullscreenSwipeGestures', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.navigation),
+    name: 'setting_gesture_enable_fullscreen_navigation_gesture',
+    key: 'fullscreenSwipeGestures',
+    category: LocalSettingsCategories.gestures,
+    subCategory: LocalSettingsSubCategories.navigation,
+  ),
 
   // Image Peek Settings
   imagePeekDuration(name: 'setting_gesture_image_peek_duration', key: 'imagePeekDuration', category: LocalSettingsCategories.gestures, subCategory: LocalSettingsSubCategories.posts),
@@ -385,7 +498,11 @@ enum LocalSettings {
   combineNavAndFab(name: 'setting_combine_nav_and_fab', key: 'combineNavAndFab', category: LocalSettingsCategories.general, subCategory: LocalSettingsSubCategories.comments),
 
   enableExperimentalFeatures(
-      name: 'setting_enable_experimental_features', key: 'enableExperimentalFeatures', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.experimental),
+    name: 'setting_enable_experimental_features',
+    key: 'enableExperimentalFeatures',
+    category: LocalSettingsCategories.debug,
+    subCategory: LocalSettingsSubCategories.experimental,
+  ),
   imageDimensionTimeout(name: 'setting_image_dimension_timeout', key: 'imageDimensionTimeout', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.feed),
 
   // This setting exists purely to save/load the user's selected advanced share options
@@ -418,37 +535,48 @@ enum LocalSettings {
   accountBlocks(name: 'account_blocks', key: 'accountBlocks', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.contentManagement),
   accountChangePassword(name: 'account_change_password', key: 'accountChangePassword', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
   accountImportSettings(
-      name: 'account_import_settings', key: 'accountImportSettings', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.importExportLemmyAccountSettings),
+    name: 'account_import_settings',
+    key: 'accountImportSettings',
+    category: LocalSettingsCategories.account,
+    subCategory: LocalSettingsSubCategories.importExportLemmyAccountSettings,
+  ),
   accountExportSettings(
-      name: 'account_export_settings', key: 'accountExportSettings', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.importExportLemmyAccountSettings),
+    name: 'account_export_settings',
+    key: 'accountExportSettings',
+    category: LocalSettingsCategories.account,
+    subCategory: LocalSettingsSubCategories.importExportLemmyAccountSettings,
+  ),
   accountDeleteAccount(name: 'account_delete_account', key: 'accountDeleteAccount', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
   accountManageMedia(name: 'account_manage_media', key: 'accountManageMedia', category: LocalSettingsCategories.account, subCategory: LocalSettingsSubCategories.dangerZone),
   debugDeleteLocalPreferences(name: 'debug_delete_local_preferences', key: 'debugDeleteLocalPreferences', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
   debugDeleteLocalDatabase(name: 'debug_delete_local_database', key: 'debugDeleteLocalDatabase', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
   debugClearCache(name: 'debug_clear_cache', key: 'debugClearCache', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.reset),
   debugSendTestLocalNotification(
-      name: 'debug_send_test_local_notification', key: 'debugSendTestLocalNotification', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.notifications),
+    name: 'debug_send_test_local_notification',
+    key: 'debugSendTestLocalNotification',
+    category: LocalSettingsCategories.debug,
+    subCategory: LocalSettingsSubCategories.notifications,
+  ),
   debugSendBackgroundTestLocalNotification(
-      name: 'debug_send_background_test_local_notification',
-      key: 'debugSendBackgroundTestLocalNotification',
-      category: LocalSettingsCategories.debug,
-      subCategory: LocalSettingsSubCategories.notifications),
+    name: 'debug_send_background_test_local_notification',
+    key: 'debugSendBackgroundTestLocalNotification',
+    category: LocalSettingsCategories.debug,
+    subCategory: LocalSettingsSubCategories.notifications,
+  ),
   debugSendTestUnifiedPushNotification(
-      name: 'debug_send_test_unifiedpush_notification', key: 'debugSendTestUnifiedPushNotification', category: LocalSettingsCategories.debug, subCategory: LocalSettingsSubCategories.notifications),
+    name: 'debug_send_test_unifiedpush_notification',
+    key: 'debugSendTestUnifiedPushNotification',
+    category: LocalSettingsCategories.debug,
+    subCategory: LocalSettingsSubCategories.notifications,
+  ),
   debugSendBackgroundTestUnifiedPushNotification(
-      name: 'debug_send_background_test_unifiedpush_notification',
-      key: 'debugSendBackgroundTestUnifiedPushNotification',
-      category: LocalSettingsCategories.debug,
-      subCategory: LocalSettingsSubCategories.notifications);
+    name: 'debug_send_background_test_unifiedpush_notification',
+    key: 'debugSendBackgroundTestUnifiedPushNotification',
+    category: LocalSettingsCategories.debug,
+    subCategory: LocalSettingsSubCategories.notifications,
+  );
 
-  const LocalSettings({
-    required this.name,
-    required this.category,
-    required this.subCategory,
-    required this.key,
-    this.searchable = true,
-    this.isPage = false,
-  });
+  const LocalSettings({required this.name, required this.category, required this.subCategory, required this.key, this.searchable = true, this.isPage = false});
 
   /// The name of the setting as stored in local preferences
   final String name;
@@ -471,7 +599,5 @@ enum LocalSettings {
   final bool isPage;
 
   /// Defines the settings that are excluded from import/export
-  static List<LocalSettings> importExportExcludedSettings = [
-    LocalSettings.advancedShareOptions,
-  ];
+  static List<LocalSettings> importExportExcludedSettings = [LocalSettings.advancedShareOptions];
 }

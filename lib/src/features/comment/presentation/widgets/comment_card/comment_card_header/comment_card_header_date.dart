@@ -24,8 +24,8 @@ class CommentCardHeaderDate extends StatelessWidget {
   final bool recent;
 
   CommentCardHeaderDate({super.key, required this.created, this.updated})
-      : date = formatTimeToString(dateTime: (updated ?? created).toIso8601String()),
-        recent = DateTime.now().toUtc().difference(created).inMinutes < 15;
+    : date = formatTimeToString(dateTime: (updated ?? created).toIso8601String()),
+      recent = DateTime.now().toUtc().difference(created).inMinutes < 15;
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +41,7 @@ class CommentCardHeaderDate extends StatelessWidget {
     if (!recent) return formattedDate;
 
     return Container(
-      decoration: BoxDecoration(
-        color: theme.splashColor,
-        borderRadius: const BorderRadius.all(Radius.elliptical(5.0, 5.0)),
-      ),
+      decoration: BoxDecoration(color: theme.splashColor, borderRadius: const BorderRadius.all(Radius.elliptical(5.0, 5.0))),
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Row(
         spacing: 5.0,

@@ -3,16 +3,7 @@ import 'package:flutter/material.dart';
 /// A custom action chip that wraps Material [ActionChip].
 @immutable
 class ThunderActionChip extends StatelessWidget {
-  const ThunderActionChip({
-    super.key,
-    this.icon,
-    this.trailingIcon,
-    this.trailingIconSize,
-    required this.label,
-    this.labelWidget,
-    this.onPressed,
-    this.backgroundColor,
-  });
+  const ThunderActionChip({super.key, this.icon, this.trailingIcon, this.trailingIconSize, required this.label, this.labelWidget, this.onPressed, this.backgroundColor});
 
   /// The icon to display in the action chip.
   final IconData? icon;
@@ -51,12 +42,7 @@ class ThunderActionChip extends StatelessWidget {
 }
 
 class _ThunderActionChipLabel extends StatelessWidget {
-  const _ThunderActionChipLabel({
-    this.icon,
-    this.trailingIcon,
-    this.trailingIconSize,
-    required this.label,
-  });
+  const _ThunderActionChipLabel({this.icon, this.trailingIcon, this.trailingIconSize, required this.label});
 
   /// The icon to display in the action chip.
   final IconData? icon;

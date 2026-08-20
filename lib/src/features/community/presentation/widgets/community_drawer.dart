@@ -79,46 +79,41 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                   child: Text(l10n.subscriptions, style: theme.textTheme.titleSmall),
                 ),
                 if (subscriptions.isNotEmpty)
-                  ...subscriptions.map<Widget>(
-                    (ThunderCommunity community) {
-                      final bool isCommunitySelected = feedState.communityId == community.id;
+                  ...subscriptions.map<Widget>((ThunderCommunity community) {
+                    final bool isCommunitySelected = feedState.communityId == community.id;
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            alignment: Alignment.centerLeft,
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
-                          ),
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-
-                            final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType;
-
-                            context.read<FeedBloc>().add(
-                                  FeedFetchedEvent(
-                                    feedType: FeedType.community,
-                                    postSortType: postSortType,
-                                    communityId: isLoggedIn ? community.id : null,
-                                    communityName: !isLoggedIn ? await getLemmyCommunity(community.actorId) : null,
-                                    reset: true,
-                                    showHidden: feedCubit.state.showHiddenPosts,
-                                  ),
-                                );
-                          },
-                          child: CommunityItem(community: community, showFavoriteAction: isLoggedIn, isFavorite: false),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          alignment: Alignment.centerLeft,
+                          minimumSize: const Size.fromHeight(50),
+                          backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.25) : Colors.transparent,
                         ),
-                      );
-                    },
-                  ),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+
+                          final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType;
+
+                          context.read<FeedBloc>().add(
+                            FeedFetchedEvent(
+                              feedType: FeedType.community,
+                              postSortType: postSortType,
+                              communityId: isLoggedIn ? community.id : null,
+                              communityName: !isLoggedIn ? await getLemmyCommunity(community.actorId) : null,
+                              reset: true,
+                              showHidden: feedCubit.state.showHiddenPosts,
+                            ),
+                          );
+                        },
+                        child: CommunityItem(community: community, showFavoriteAction: isLoggedIn, isFavorite: false),
+                      ),
+                    );
+                  }),
                 if (subscriptions.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
-                    child: Text(
-                      l10n.noSubscriptions,
-                      style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
-                    ),
+                    child: Text(l10n.noSubscriptions, style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor)),
                   ),
               ],
             ),
@@ -147,10 +142,7 @@ class UserDrawerItem extends StatelessWidget {
       color: theme.colorScheme.surfaceContainerLow,
       padding: const EdgeInsets.fromLTRB(13.0, 16.0, 4.0, 0),
       child: TextButton(
-        style: TextButton.styleFrom(
-          alignment: Alignment.centerLeft,
-          minimumSize: const Size.fromHeight(50),
-        ),
+        style: TextButton.styleFrom(alignment: Alignment.centerLeft, minimumSize: const Size.fromHeight(50)),
         onPressed: () => navigateToAccount?.call(),
         child: Row(
           children: [
@@ -161,14 +153,7 @@ class UserDrawerItem extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    if (!isLoggedIn) ...[
-                      Icon(
-                        Icons.person_off_rounded,
-                        color: theme.textTheme.bodyMedium?.color,
-                        size: 15,
-                      ),
-                      const SizedBox(width: 5),
-                    ],
+                    if (!isLoggedIn) ...[Icon(Icons.person_off_rounded, color: theme.textTheme.bodyMedium?.color, size: 15), const SizedBox(width: 5)],
                     Text(
                       isLoggedIn ? profileState.user?.name ?? '' : l10n.anonymous,
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
@@ -177,21 +162,12 @@ class UserDrawerItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text(
-                  profileState.account.instance,
-                  style: theme.textTheme.bodyMedium,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                Text(profileState.account.instance, style: theme.textTheme.bodyMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
               ],
             ),
             const Expanded(child: SizedBox()),
             IconButton(
-              icon: Icon(
-                Icons.more_vert_outlined,
-                color: theme.textTheme.bodyMedium?.color,
-                semanticLabel: l10n.openAccountSwitcher,
-              ),
+              icon: Icon(Icons.more_vert_outlined, color: theme.textTheme.bodyMedium?.color, semanticLabel: l10n.openAccountSwitcher),
               onPressed: () => showProfileModalSheet(context),
             ),
           ],
@@ -223,20 +199,18 @@ class FeedDrawerItems extends StatelessWidget {
           child: Text(l10n.feed, style: theme.textTheme.titleSmall),
         ),
         Column(
-          children: destinations.map(
-            (Destination destination) {
-              return DrawerItem(
-                disabled: destination.listingType == FeedListType.subscribed && isLoggedIn == false,
-                isSelected: destination.listingType == feedState.feedListType,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  navigateToFeedPage(context, feedType: FeedType.general, feedListType: destination.listingType);
-                },
-                label: destination.label,
-                icon: destination.icon,
-              );
-            },
-          ).toList(),
+          children: destinations.map((Destination destination) {
+            return DrawerItem(
+              disabled: destination.listingType == FeedListType.subscribed && isLoggedIn == false,
+              isSelected: destination.listingType == feedState.feedListType,
+              onTap: () {
+                Navigator.of(context).pop();
+                navigateToFeedPage(context, feedType: FeedType.general, feedListType: destination.listingType);
+              },
+              label: destination.label,
+              icon: destination.icon,
+            );
+          }).toList(),
         ),
         if (profileState.moderates.isNotEmpty || profileState.user?.context.isAdmin == true)
           DrawerItem(
@@ -300,14 +274,8 @@ class FavoriteCommunities extends StatelessWidget {
                   final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType;
 
                   context.read<FeedBloc>().add(
-                        FeedFetchedEvent(
-                          feedType: FeedType.community,
-                          postSortType: postSortType,
-                          communityId: community.id,
-                          reset: true,
-                          showHidden: feedCubit.state.showHiddenPosts,
-                        ),
-                      );
+                    FeedFetchedEvent(feedType: FeedType.community, postSortType: postSortType, communityId: community.id, reset: true, showHidden: feedCubit.state.showHiddenPosts),
+                  );
                 },
                 child: CommunityItem(community: community, isFavorite: true),
               );
@@ -363,14 +331,8 @@ class ModeratedCommunities extends StatelessWidget {
                     final postSortType = profileState.siteResponse?.myUser?.localUserView.localUser.defaultSortType ?? feedCubit.state.defaultPostSortType;
 
                     context.read<FeedBloc>().add(
-                          FeedFetchedEvent(
-                            feedType: FeedType.community,
-                            postSortType: postSortType,
-                            communityId: community.id,
-                            reset: true,
-                            showHidden: feedCubit.state.showHiddenPosts,
-                          ),
-                        );
+                      FeedFetchedEvent(feedType: FeedType.community, postSortType: postSortType, communityId: community.id, reset: true, showHidden: feedCubit.state.showHiddenPosts),
+                    );
                   },
                   child: CommunityItem(community: community, showFavoriteAction: false, isFavorite: false),
                 );
@@ -406,15 +368,7 @@ class DrawerItem extends StatelessWidget {
   final bool disabled;
   final bool isSelected;
 
-  const DrawerItem({
-    super.key,
-    required this.onTap,
-    required this.label,
-    required this.icon,
-    this.trailing,
-    this.disabled = false,
-    required this.isSelected,
-  });
+  const DrawerItem({super.key, required this.onTap, required this.label, required this.icon, this.trailing, this.disabled = false, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -440,15 +394,8 @@ class DrawerItem extends StatelessWidget {
                     const SizedBox(width: 16),
                     Icon(icon, color: disabled ? theme.dividerColor : null),
                     const SizedBox(width: 12),
-                    Text(
-                      label,
-                      style: disabled ? theme.textTheme.bodyMedium?.copyWith(color: theme.dividerColor) : null,
-                    ),
-                    if (trailing != null) ...[
-                      const Spacer(),
-                      trailing!,
-                      const SizedBox(width: 16),
-                    ]
+                    Text(label, style: disabled ? theme.textTheme.bodyMedium?.copyWith(color: theme.dividerColor) : null),
+                    if (trailing != null) ...[const Spacer(), trailing!, const SizedBox(width: 16)],
                   ],
                 ),
               ],
@@ -474,37 +421,19 @@ class CommunityItem extends StatelessWidget {
 
     return Row(
       children: [
-        CommunityAvatar(
-          community: community,
-          radius: 16,
-          thumbnailSize: 100,
-          format: 'png',
-        ),
+        CommunityAvatar(community: community, radius: 16, thumbnailSize: 100, format: 'png'),
         const SizedBox(width: 16.0),
         Expanded(
           child: Tooltip(
             excludeFromSemantics: true,
-            message: '${community.title}\n${generateCommunityFullName(
-              context,
-              community.name,
-              community.title,
-              fetchInstanceNameFromUrl(community.actorId),
-            )}',
+            message: '${community.title}\n${generateCommunityFullName(context, community.name, community.title, fetchInstanceNameFromUrl(community.actorId))}',
             preferBelow: false,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  community.title,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                Text(
-                  fetchInstanceNameFromUrl(community.actorId) ?? '',
-                  style: theme.textTheme.bodyMedium,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                Text(community.title, overflow: TextOverflow.ellipsis, maxLines: 1),
+                Text(fetchInstanceNameFromUrl(community.actorId) ?? '', style: theme.textTheme.bodyMedium, overflow: TextOverflow.ellipsis),
               ],
             ),
           ),
@@ -512,11 +441,7 @@ class CommunityItem extends StatelessWidget {
         showFavoriteAction
             ? IconButton(
                 onPressed: () async => await toggleFavoriteCommunity(context, community, isFavorite),
-                icon: Icon(
-                  isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
-                  size: 24,
-                  semanticLabel: isFavorite ? l10n.removeFromFavorites : l10n.addToFavorites,
-                ),
+                icon: Icon(isFavorite ? Icons.star_rounded : Icons.star_border_rounded, size: 24, semanticLabel: isFavorite ? l10n.removeFromFavorites : l10n.addToFavorites),
               )
             : Container(),
       ],

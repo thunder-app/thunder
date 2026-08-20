@@ -165,16 +165,14 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
     FocusManager.instance.primaryFocus?.unfocus();
 
     final cubit = _createPostCubit;
-    unawaited(
-      () async {
-        final result = await cubit.persistDraftNow();
-        await cubit.clearActiveDraft();
+    unawaited(() async {
+      final result = await cubit.persistDraftNow();
+      await cubit.clearActiveDraft();
 
-        if (result == DraftPersistenceResult.saved && GlobalContext.scaffoldMessengerKey.currentState != null) {
-          showThunderSnackbar(GlobalContext.l10n.postSavedAsDraft);
-        }
-      }(),
-    );
+      if (result == DraftPersistenceResult.saved && GlobalContext.scaffoldMessengerKey.currentState != null) {
+        showThunderSnackbar(GlobalContext.l10n.postSavedAsDraft);
+      }
+    }());
 
     _bodyTextController.dispose();
     _titleTextController.dispose();
@@ -340,9 +338,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
               context.read<CreatePostCubit>().switchAccount(featureAccountState.effectiveAccount);
             },
           ),
-          BlocListener<CreatePostCubit, CreatePostState>(
-            listener: _handleCreatePostStateChange,
-          ),
+          BlocListener<CreatePostCubit, CreatePostState>(listener: _handleCreatePostStateChange),
         ],
         child: BlocBuilder<FeatureAccountCubit, FeatureAccountState>(
           builder: (context, featureAccountState) {
@@ -382,11 +378,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      CommunitySelector(
-                                        account: account,
-                                        community: state.community,
-                                        onCommunitySelected: (community) => context.read<CreatePostCubit>().updateCommunity(community),
-                                      ),
+                                      CommunitySelector(account: account, community: state.community, onCommunitySelected: (community) => context.read<CreatePostCubit>().updateCommunity(community)),
                                       const SizedBox(height: 4.0),
                                       UserSelector(
                                         account: account,
@@ -396,10 +388,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
                                         enableAccountSwitching: widget.post == null,
                                       ),
                                       const SizedBox(height: 12.0),
-                                      CreatePostTitleField(
-                                        controller: _titleTextController,
-                                        suggestedLinkTitle: state.suggestedLinkTitle,
-                                      ),
+                                      CreatePostTitleField(controller: _titleTextController, suggestedLinkTitle: state.suggestedLinkTitle),
                                       const SizedBox(height: 10),
                                       CreatePostUrlField(
                                         controller: _urlTextController,
@@ -420,12 +409,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
                                         TextFormField(
                                           key: const Key('create-post-alt-text-field'),
                                           controller: _altTextTextController,
-                                          decoration: InputDecoration(
-                                            labelText: l10n.altText,
-                                            isDense: true,
-                                            border: const OutlineInputBorder(),
-                                            contentPadding: const EdgeInsets.all(13),
-                                          ),
+                                          decoration: InputDecoration(labelText: l10n.altText, isDense: true, border: const OutlineInputBorder(), contentPadding: const EdgeInsets.all(13)),
                                         ),
                                       ],
                                       SizedBox(height: state.url.isNotEmpty ? 10 : 5),
@@ -441,18 +425,14 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
                                             mediaUrl: isImageUrl(state.url)
                                                 ? state.url
                                                 : state.customThumbnail.isNotEmpty && isImageUrl(state.customThumbnail)
-                                                    ? state.customThumbnail
-                                                    : null,
+                                                ? state.customThumbnail
+                                                : null,
                                             nsfw: state.isNsfw,
                                             mediaType: MediaType.link,
                                           ),
                                         ),
                                       if (state.crossPosts.isNotEmpty && widget.post == null) const SizedBox(height: 6),
-                                      if (state.url.isNotEmpty && state.crossPosts.isNotEmpty && widget.post == null)
-                                        CrossPosts(
-                                          crossPosts: state.crossPosts,
-                                          isNewPost: true,
-                                        ),
+                                      if (state.url.isNotEmpty && state.crossPosts.isNotEmpty && widget.post == null) CrossPosts(crossPosts: state.crossPosts, isNewPost: true),
                                       const SizedBox(height: 10),
                                       CreatePostMetadataRow(
                                         languageSelector: LanguageSelector(
@@ -464,13 +444,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
                                         onNsfwChanged: (value) => context.read<CreatePostCubit>().updateNsfw(value),
                                       ),
                                       const SizedBox(height: 10),
-                                      CreatePostEditorSection(
-                                        body: state.body,
-                                        controller: _bodyTextController,
-                                        focusNode: _bodyFocusNode,
-                                        showPreview: _showPreview,
-                                        nsfw: state.isNsfw,
-                                      ),
+                                      CreatePostEditorSection(body: state.body, controller: _bodyTextController, focusNode: _bodyFocusNode, showPreview: _showPreview, nsfw: state.isNsfw),
                                     ],
                                   ),
                                 ),
@@ -496,10 +470,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
                                 }
                               },
                             ),
-                            Container(
-                              height: MediaQuery.of(context).padding.bottom,
-                              color: theme.cardColor,
-                            ),
+                            Container(height: MediaQuery.of(context).padding.bottom, color: theme.cardColor),
                           ],
                         ),
                       ),
@@ -531,10 +502,7 @@ class _CreatePostPageState extends State<CreatePostPage> with WidgetsBindingObse
       MaterialPageRoute<void>(
         builder: (context) => BlocProvider<CreatePostCubit>.value(
           value: _createPostCubit,
-          child: CreatePostAdditionalSettingsPage(
-            customThumbnailController: _customThumbnailTextController,
-            tagsController: _tagsTextController,
-          ),
+          child: CreatePostAdditionalSettingsPage(customThumbnailController: _customThumbnailTextController, tagsController: _tagsTextController),
         ),
       ),
     );

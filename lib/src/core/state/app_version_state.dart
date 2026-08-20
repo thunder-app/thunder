@@ -5,24 +5,14 @@ enum AppVersionStatus { initial, checking, success, failure }
 const _appVersionStateUnset = Object();
 
 class AppVersionState extends Equatable {
-  const AppVersionState({
-    this.status = AppVersionStatus.initial,
-    this.version,
-    this.errorMessage,
-    this.errorReason,
-  });
+  const AppVersionState({this.status = AppVersionStatus.initial, this.version, this.errorMessage, this.errorReason});
 
   final AppVersionStatus status;
   final Version? version;
   final String? errorMessage;
   final AppErrorReason? errorReason;
 
-  AppVersionState copyWith({
-    AppVersionStatus? status,
-    Object? version = _appVersionStateUnset,
-    Object? errorMessage = _appVersionStateUnset,
-    Object? errorReason = _appVersionStateUnset,
-  }) {
+  AppVersionState copyWith({AppVersionStatus? status, Object? version = _appVersionStateUnset, Object? errorMessage = _appVersionStateUnset, Object? errorReason = _appVersionStateUnset}) {
     return AppVersionState(
       status: status ?? this.status,
       version: identical(version, _appVersionStateUnset) ? this.version : version as Version?,

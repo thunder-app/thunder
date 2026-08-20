@@ -17,10 +17,7 @@ class FeatureAccount extends Equatable {
   FeatureAccountOverrideStatus get overrideStatus => hasOverride ? FeatureAccountOverrideStatus.active : FeatureAccountOverrideStatus.inactive;
 
   FeatureAccount copyWith({Account? baseAccount, Object? overrideAccount = _sentinel}) {
-    return FeatureAccount(
-      baseAccount: baseAccount ?? this.baseAccount,
-      overrideAccount: identical(overrideAccount, _sentinel) ? this.overrideAccount : overrideAccount as Account?,
-    );
+    return FeatureAccount(baseAccount: baseAccount ?? this.baseAccount, overrideAccount: identical(overrideAccount, _sentinel) ? this.overrideAccount : overrideAccount as Account?);
   }
 
   @override

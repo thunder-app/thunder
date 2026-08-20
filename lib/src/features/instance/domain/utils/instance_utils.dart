@@ -1,23 +1,14 @@
 import 'dart:async';
 
-bool shouldSkipFetch({
-  required bool currentlyLoading,
-  required int page,
-}) {
+bool shouldSkipFetch({required bool currentlyLoading, required int page}) {
   return currentlyLoading && page != 1;
 }
 
-List<T> previousItemsForPage<T>({
-  required int page,
-  required List<T> currentItems,
-}) {
+List<T> previousItemsForPage<T>({required int page, required List<T> currentItems}) {
   return page == 1 ? <T>[] : List<T>.from(currentItems);
 }
 
-bool hasReachedEnd({
-  required int fetchedCount,
-  required int pageLimit,
-}) {
+bool hasReachedEnd({required int fetchedCount, required int pageLimit}) {
   return fetchedCount == 0 || fetchedCount < pageLimit;
 }
 

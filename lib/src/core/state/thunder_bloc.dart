@@ -8,10 +8,7 @@ import 'package:thunder/src/core/services/services.dart';
 part 'thunder_state.dart';
 
 class ThunderCubit extends Cubit<ThunderState> {
-  ThunderCubit({
-    required PreferencesStore preferencesStore,
-  })  : _preferencesStore = preferencesStore,
-        super(const ThunderState());
+  ThunderCubit({required PreferencesStore preferencesStore}) : _preferencesStore = preferencesStore, super(const ThunderState());
 
   final PreferencesStore _preferencesStore;
 
@@ -34,21 +31,23 @@ class ThunderCubit extends Cubit<ThunderState> {
       bool hideBottomBarOnScroll = _preferencesStore.getLocalSetting(LocalSettings.hideBottomBarOnScroll) ?? false;
       bool scoreCounters = _preferencesStore.getLocalSetting(LocalSettings.scoreCounters) ?? false;
 
-      emit(state.copyWith(
-        tabletMode: tabletMode,
-        browserMode: browserMode,
-        openInReaderMode: openInReaderMode,
-        showInAppUpdateNotification: showInAppUpdateNotification,
-        showUpdateChangelogs: showUpdateChangelogs,
-        inboxNotificationType: inboxNotificationType,
-        appLanguageCode: appLanguageCode,
-        useProfilePictureForDrawer: useProfilePictureForDrawer,
-        enableExperimentalFeatures: enableExperimentalFeatures,
-        showNavigationLabels: showNavigationLabels,
-        hideTopBarOnScroll: hideTopBarOnScroll,
-        hideBottomBarOnScroll: hideBottomBarOnScroll,
-        scoreCounters: scoreCounters,
-      ));
+      emit(
+        state.copyWith(
+          tabletMode: tabletMode,
+          browserMode: browserMode,
+          openInReaderMode: openInReaderMode,
+          showInAppUpdateNotification: showInAppUpdateNotification,
+          showUpdateChangelogs: showUpdateChangelogs,
+          inboxNotificationType: inboxNotificationType,
+          appLanguageCode: appLanguageCode,
+          useProfilePictureForDrawer: useProfilePictureForDrawer,
+          enableExperimentalFeatures: enableExperimentalFeatures,
+          showNavigationLabels: showNavigationLabels,
+          hideTopBarOnScroll: hideTopBarOnScroll,
+          hideBottomBarOnScroll: hideBottomBarOnScroll,
+          scoreCounters: scoreCounters,
+        ),
+      );
     } catch (_) {
       rethrow;
     }

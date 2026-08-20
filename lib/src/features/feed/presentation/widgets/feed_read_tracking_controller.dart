@@ -33,11 +33,7 @@ class FeedReadTrackingController {
   }
 
   /// Queues unread ids between the hidden row and the previous processed row.
-  void queueReadBatch({
-    required int index,
-    required List<ThunderPost> posts,
-    required void Function(List<int> postIds) onBatchReady,
-  }) {
+  void queueReadBatch({required int index, required List<ThunderPost> posts, required void Function(List<int> postIds) onBatchReady}) {
     if (!isScrollingDown || index > lastTappedIndex || index < 0 || index >= posts.length) {
       return;
     }

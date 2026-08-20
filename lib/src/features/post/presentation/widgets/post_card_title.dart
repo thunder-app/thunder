@@ -84,11 +84,7 @@ class PostCardTitle extends StatelessWidget {
               WidgetSpan(child: statuses),
               TextSpan(
                 text: title,
-                style: textStyle?.copyWith(
-                  fontWeight: titleFontWeight.toWeight(),
-                  fontSize: fontSize,
-                  color: _getTitleColor(theme),
-                ),
+                style: textStyle?.copyWith(fontWeight: titleFontWeight.toWeight(), fontSize: fontSize, color: _getTitleColor(theme)),
               ),
             ],
           ),

@@ -5,15 +5,7 @@ import 'package:thunder/src/features/modlog/data/models/modlog_event_item.dart';
 
 /// Repository contract for modlog event reads.
 abstract class ModlogRepository {
-  Future<ModlogFeed> getModlogEvents({
-    int limit = 20,
-    int page = 1,
-    ModlogActionType? modlogActionType,
-    int? communityId,
-    int? userId,
-    int? moderatorId,
-    int? commentId,
-  });
+  Future<ModlogFeed> getModlogEvents({int limit = 20, int page = 1, ModlogActionType? modlogActionType, int? communityId, int? userId, int? moderatorId, int? commentId});
 }
 
 /// Implementation of [ModlogRepository] using the unified API client
@@ -31,41 +23,18 @@ class ModlogRepositoryImpl implements ModlogRepository {
   /// Creates a new ModlogRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  ModlogRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  ModlogRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
-  Future<ModlogFeed> getModlogEvents({
-    int limit = 20,
-    int page = 1,
-    ModlogActionType? modlogActionType,
-    int? communityId,
-    int? userId,
-    int? moderatorId,
-    int? commentId,
-  }) async {
+  Future<ModlogFeed> getModlogEvents({int limit = 20, int page = 1, ModlogActionType? modlogActionType, int? communityId, int? userId, int? moderatorId, int? commentId}) async {
     final api = await _api.get();
-    final items = await api.getModlog(
-      page: page,
-      limit: limit,
-      modlogActionType: modlogActionType,
-      communityId: communityId,
-      userId: userId,
-      moderatorId: moderatorId,
-      commentId: commentId,
-    );
+    final items = await api.getModlog(page: page, limit: limit, modlogActionType: modlogActionType, communityId: communityId, userId: userId, moderatorId: moderatorId, commentId: commentId);
 
     final modLogEventItems = items.map((event) => ModlogEventItem.fromModlogEvent(event)).toList();
     final hasReachedEnd = items.isEmpty || items.length < limit;
 
-    return ModlogFeed(
-      items: modLogEventItems,
-      hasReachedEnd: hasReachedEnd,
-      currentPage: page + 1,
-    );
+    return ModlogFeed(items: modLogEventItems, hasReachedEnd: hasReachedEnd, currentPage: page + 1);
   }
 }

@@ -60,13 +60,13 @@ class CommentPreferencesState extends Equatable {
 
   @override
   List<Object?> get props => [
-        defaultCommentSortType,
-        collapseParentCommentOnGesture,
-        showCommentButtonActions,
-        commentShowUserInstance,
-        commentShowUserAvatar,
-        combineCommentScores,
-        nestedCommentIndicatorStyle,
-        nestedCommentIndicatorColor,
-      ];
+    defaultCommentSortType,
+    collapseParentCommentOnGesture,
+    showCommentButtonActions,
+    commentShowUserInstance,
+    commentShowUserAvatar,
+    combineCommentScores,
+    nestedCommentIndicatorStyle,
+    nestedCommentIndicatorColor,
+  ];
 }

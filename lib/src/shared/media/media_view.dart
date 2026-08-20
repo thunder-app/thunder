@@ -80,10 +80,7 @@ class MediaView extends StatefulWidget {
 }
 
 class _MediaViewText extends StatelessWidget {
-  const _MediaViewText({
-    this.text,
-    this.read,
-  });
+  const _MediaViewText({this.text, this.read});
 
   final String? text;
   final bool? read;
@@ -91,17 +88,13 @@ class _MediaViewText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final foreground = theme.colorScheme.onSurface.withValues(
-      alpha: read == true ? 0.55 : 1.0,
-    );
+    final foreground = theme.colorScheme.onSurface.withValues(alpha: read == true ? 0.55 : 1.0);
 
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.0),
-        color: theme.colorScheme.surfaceContainerHighest.withValues(
-          alpha: read == true ? 0.55 : 1.0,
-        ),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: read == true ? 0.55 : 1.0),
       ),
       height: ViewMode.compact.height,
       width: ViewMode.compact.height,
@@ -131,10 +124,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _overlayAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 100),
-      vsync: this,
-    );
+    _overlayAnimationController = AnimationController(duration: const Duration(milliseconds: 100), vsync: this);
   }
 
   @override
@@ -157,13 +147,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
     try {
       final feedBloc = BlocProvider.of<FeedBloc>(context);
-      feedBloc.add(
-        FeedItemActionedEvent(
-          postAction: PostAction.read,
-          postId: widget.postId,
-          actionInput: const ReadPostInput(true),
-        ),
-      );
+      feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: widget.postId, actionInput: const ReadPostInput(true)));
     } catch (e) {
       debugPrint('Error marking post as read: $e');
     }
@@ -180,14 +164,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
   }
 
   void _openImage({String? url, Uint8List? bytes}) {
-    showImageViewer(
-      context,
-      url: url,
-      bytes: bytes,
-      postId: widget.postId,
-      navigateToPost: widget.navigateToPost,
-      altText: widget.media.altText,
-    );
+    showImageViewer(context, url: url, bytes: bytes, postId: widget.postId, navigateToPost: widget.navigateToPost, altText: widget.media.altText);
   }
 
   void _openVideo(String url) {
@@ -278,10 +255,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
     }
 
     if (widget.viewMode == ViewMode.compact && widget.media.mediaType == MediaType.text) {
-      return _MediaViewText(
-        text: widget.media.altText,
-        read: widget.read,
-      );
+      return _MediaViewText(text: widget.media.altText, read: widget.read);
     }
 
     // At this point, all other media types should contain images.
@@ -329,12 +303,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                 height: 70.0,
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: LinkInformation(
-                    viewMode: widget.viewMode,
-                    mediaType: widget.media.mediaType,
-                    url: widget.media.originalUrl,
-                    showEdgeToEdgeImages: widget.edgeToEdgeImages,
-                  ),
+                  child: LinkInformation(viewMode: widget.viewMode, mediaType: widget.media.mediaType, url: widget.media.originalUrl, showEdgeToEdgeImages: widget.edgeToEdgeImages),
                 ),
               )
             : const SizedBox.shrink(),
@@ -353,35 +322,28 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
         },
         child: RawGestureDetector(
           gestures: <Type, GestureRecognizerFactory>{
-            LongPressGestureRecognizer: GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
-              () => LongPressGestureRecognizer(duration: imagePeekDuration),
-              (LongPressGestureRecognizer instance) {
-                instance
-                  ..onLongPressStart = (_) {
-                    _overlayEntry = OverlayEntry(
-                      builder: (context) {
-                        return FadeTransition(
-                          opacity: _overlayAnimationController,
-                          child: buildImageViewerWidget(
-                            context,
-                            url: previewUrl,
-                            postId: widget.postId,
-                            navigateToPost: widget.navigateToPost,
-                            isPeek: true,
-                          ),
-                        );
-                      },
-                    );
-                    Overlay.of(context).insert(_overlayEntry!);
-                    _overlayAnimationController.forward();
-                  }
-                  ..onLongPressEnd = (_) async {
-                    await _overlayAnimationController.reverse();
-                    _overlayEntry?.remove();
-                    _overlayEntry = null;
-                  };
-              },
-            ),
+            LongPressGestureRecognizer: GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(() => LongPressGestureRecognizer(duration: imagePeekDuration), (
+              LongPressGestureRecognizer instance,
+            ) {
+              instance
+                ..onLongPressStart = (_) {
+                  _overlayEntry = OverlayEntry(
+                    builder: (context) {
+                      return FadeTransition(
+                        opacity: _overlayAnimationController,
+                        child: buildImageViewerWidget(context, url: previewUrl, postId: widget.postId, navigateToPost: widget.navigateToPost, isPeek: true),
+                      );
+                    },
+                  );
+                  Overlay.of(context).insert(_overlayEntry!);
+                  _overlayAnimationController.forward();
+                }
+                ..onLongPressEnd = (_) async {
+                  await _overlayAnimationController.reverse();
+                  _overlayEntry?.remove();
+                  _overlayEntry = null;
+                };
+            }),
           },
         ),
       );
@@ -389,12 +351,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
 
     if (widget.media.mediaType == MediaType.image && previewUrl == null) {
       if (widget.media.originalUrl != null) {
-        return LinkInformation(
-          viewMode: widget.viewMode,
-          url: widget.media.originalUrl,
-          mediaType: widget.media.mediaType,
-          showEdgeToEdgeImages: widget.edgeToEdgeImages,
-        );
+        return LinkInformation(viewMode: widget.viewMode, url: widget.media.originalUrl, mediaType: widget.media.mediaType, showEdgeToEdgeImages: widget.edgeToEdgeImages);
       }
 
       return const SizedBox.shrink();
@@ -417,12 +374,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                     height: 70.0,
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: LinkInformation(
-                        viewMode: widget.viewMode,
-                        mediaType: widget.media.mediaType,
-                        url: widget.media.originalUrl,
-                        showEdgeToEdgeImages: widget.edgeToEdgeImages,
-                      ),
+                      child: LinkInformation(viewMode: widget.viewMode, mediaType: widget.media.mediaType, url: widget.media.originalUrl, showEdgeToEdgeImages: widget.edgeToEdgeImages),
                     ),
                   ),
                 ],
@@ -435,10 +387,7 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
       children: [
         Container(
           clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)), color: Theme.of(context).colorScheme.surfaceContainerHighest),
           constraints: BoxConstraints(
             maxHeight: switch (widget.viewMode) {
               ViewMode.comment => getMaxHeight(),
@@ -473,8 +422,8 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                 fit: widget.viewMode == ViewMode.compact
                     ? BoxFit.cover
                     : shouldContainTallFullHeightImage
-                        ? BoxFit.contain
-                        : BoxFit.fitWidth,
+                    ? BoxFit.contain
+                    : BoxFit.fitWidth,
                 mediaType: widget.media.mediaType,
                 viewed: widget.read,
                 blur: blurNSFWPreviews,
@@ -490,19 +439,13 @@ class _MediaViewState extends State<MediaView> with TickerProviderStateMixin {
                   children: [
                     widget.media.mediaType == MediaType.image
                         ? Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30)
-                        : Icon(
-                            widget.viewMode != ViewMode.compact ? Icons.play_arrow_rounded : Icons.warning_rounded,
-                            size: widget.viewMode != ViewMode.compact ? 55 : 30,
-                          ),
+                        : Icon(widget.viewMode != ViewMode.compact ? Icons.play_arrow_rounded : Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
                     if (widget.viewMode == ViewMode.comfortable) Text(l10n.nsfwWarning, textScaler: const TextScaler.linear(1.5)),
                   ],
                 ),
               if (child != null)
                 Positioned.fill(
-                  child: Material(
-                    color: Colors.transparent,
-                    child: child,
-                  ),
+                  child: Material(color: Colors.transparent, child: child),
                 ),
             ],
           ),

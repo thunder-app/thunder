@@ -80,16 +80,5 @@ final class ReportState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        reportFeedType,
-        showResolved,
-        communityId,
-        reports,
-        hasReachedReportsEnd,
-        currentPage,
-        nextPage,
-        message,
-        errorReason,
-      ];
+  List<Object?> get props => [status, reportFeedType, showResolved, communityId, reports, hasReachedReportsEnd, currentPage, nextPage, message, errorReason];
 }

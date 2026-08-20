@@ -17,13 +17,7 @@ class ThunderFlair extends Equatable {
   /// Hex color code for the flair background.
   final String backgroundColor;
 
-  const ThunderFlair({
-    required this.id,
-    required this.communityId,
-    required this.title,
-    required this.textColor,
-    required this.backgroundColor,
-  });
+  const ThunderFlair({required this.id, required this.communityId, required this.title, required this.textColor, required this.backgroundColor});
 
   /// Parsed text color for display, if the hex value is valid.
   Color? get parsedTextColor => _parseHexColor(textColor);
@@ -35,13 +29,7 @@ class ThunderFlair extends Equatable {
   List<Object?> get props => [id, communityId, title, textColor, backgroundColor];
 
   factory ThunderFlair.fromPiefedFlair(Map<String, dynamic> flair) {
-    return ThunderFlair(
-      id: flair['id'],
-      communityId: flair['community_id'],
-      title: flair['flair_title'],
-      textColor: flair['text_color'],
-      backgroundColor: flair['background_color'],
-    );
+    return ThunderFlair(id: flair['id'], communityId: flair['community_id'], title: flair['flair_title'], textColor: flair['text_color'], backgroundColor: flair['background_color']);
   }
 
   static List<ThunderFlair> parsePiefedList(dynamic flairs) {

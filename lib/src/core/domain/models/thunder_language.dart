@@ -11,18 +11,10 @@ class ThunderLanguage {
   ThunderLanguage({required this.id, required this.code, required this.name});
 
   factory ThunderLanguage.fromLemmyLanguage(Map<String, dynamic> language) {
-    return ThunderLanguage(
-      id: language['id'],
-      code: language['code'],
-      name: language['name'],
-    );
+    return ThunderLanguage(id: language['id'], code: language['code'], name: language['name']);
   }
 
   factory ThunderLanguage.fromPiefedLanguage(Map<String, dynamic> language) {
-    return ThunderLanguage(
-      id: language['id'],
-      code: language['code'],
-      name: language['name'],
-    );
+    return ThunderLanguage(id: language['id'], code: language['code'], name: language['name']);
   }
 }

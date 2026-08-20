@@ -12,12 +12,14 @@ List<String> parsePiefedTags(dynamic value) {
   return switch (value) {
     String() => decodePiefedComposerTags(value),
     Iterable() => _normalizePiefedTags(
-        value.map((tag) => switch (tag) {
-              String() => tag,
-              Map() => (tag['name'] ?? tag['tag'] ?? tag['title'] ?? '').toString(),
-              _ => '',
-            }),
+      value.map(
+        (tag) => switch (tag) {
+          String() => tag,
+          Map() => (tag['name'] ?? tag['tag'] ?? tag['title'] ?? '').toString(),
+          _ => '',
+        },
       ),
+    ),
     _ => const [],
   };
 }
@@ -40,10 +42,7 @@ List<int> normalizePiefedFlairIds(Iterable<int>? flairIds) {
   return flairIds.toSet().toList();
 }
 
-List<String>? resolveSubmittedPiefedTags(
-  String? composerText, {
-  Iterable<String>? originalTags,
-}) {
+List<String>? resolveSubmittedPiefedTags(String? composerText, {Iterable<String>? originalTags}) {
   final normalizedTags = decodePiefedComposerTags(composerText);
   if (originalTags == null) {
     return normalizedTags.isEmpty ? null : normalizedTags;
@@ -52,10 +51,7 @@ List<String>? resolveSubmittedPiefedTags(
   return const ListEquality<String>().equals(normalizedTags, normalizePiefedTags(originalTags)) ? null : normalizedTags;
 }
 
-List<int>? resolveSubmittedPiefedFlairIds(
-  Iterable<int>? selectedFlairIds, {
-  Iterable<int>? originalFlairIds,
-}) {
+List<int>? resolveSubmittedPiefedFlairIds(Iterable<int>? selectedFlairIds, {Iterable<int>? originalFlairIds}) {
   final normalizedFlairIds = normalizePiefedFlairIds(selectedFlairIds);
   if (originalFlairIds == null) {
     return normalizedFlairIds.isEmpty ? null : normalizedFlairIds;
@@ -64,11 +60,7 @@ List<int>? resolveSubmittedPiefedFlairIds(
   return const SetEquality<int>().equals(normalizedFlairIds.toSet(), normalizePiefedFlairIds(originalFlairIds).toSet()) ? null : normalizedFlairIds;
 }
 
-List<int> retainValidPiefedFlairSelection({
-  required List<int> selectedFlairIds,
-  required Iterable<int> availableFlairIds,
-  required bool clearWhenUnavailable,
-}) {
+List<int> retainValidPiefedFlairSelection({required List<int> selectedFlairIds, required Iterable<int> availableFlairIds, required bool clearWhenUnavailable}) {
   final normalizedSelection = normalizePiefedFlairIds(selectedFlairIds);
   final validFlairIds = availableFlairIds.toSet();
 

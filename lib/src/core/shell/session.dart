@@ -21,19 +21,11 @@ class Session extends StatelessWidget {
           case SessionStatus.loading:
             return const _SessionStatusView();
           case SessionStatus.failure:
-            return _SessionStatusView(
-              message: sessionState.error,
-              actionLabel: l10n.retry,
-              onAction: () => context.read<SessionBloc>().add(const SessionInitialized()),
-            );
+            return _SessionStatusView(message: sessionState.error, actionLabel: l10n.retry, onAction: () => context.read<SessionBloc>().add(const SessionInitialized()));
           case SessionStatus.success:
             final account = sessionState.activeAccount;
             if (account == null) {
-              return _SessionStatusView(
-                message: l10n.unexpectedError,
-                actionLabel: l10n.retry,
-                onAction: () => context.read<SessionBloc>().add(const SessionInitialized()),
-              );
+              return _SessionStatusView(message: l10n.unexpectedError, actionLabel: l10n.retry, onAction: () => context.read<SessionBloc>().add(const SessionInitialized()));
             }
 
             return builder(context, sessionState);
@@ -64,10 +56,7 @@ class _SessionStatusView extends StatelessWidget {
               const CircularProgressIndicator(),
               const SizedBox(height: 16),
               Text(message ?? l10n.loading, textAlign: TextAlign.center),
-              if (actionLabel != null && onAction != null) ...[
-                const SizedBox(height: 16),
-                FilledButton(onPressed: onAction, child: Text(actionLabel!)),
-              ],
+              if (actionLabel != null && onAction != null) ...[const SizedBox(height: 16), FilledButton(onPressed: onAction, child: Text(actionLabel!))],
             ],
           ),
         ),

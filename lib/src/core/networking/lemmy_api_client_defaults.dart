@@ -17,16 +17,7 @@ mixin LemmyApiClientDefaults on BaseApiClient implements ThunderApiClient {
     List<String>? tags,
     List<int>? flairIds,
   }) {
-    return createPost(
-      title: title,
-      communityId: communityId,
-      url: url,
-      contents: contents,
-      nsfw: nsfw,
-      languageId: languageId,
-      customThumbnail: customThumbnail,
-      altText: altText,
-    );
+    return createPost(title: title, communityId: communityId, url: url, contents: contents, nsfw: nsfw, languageId: languageId, customThumbnail: customThumbnail, altText: altText);
   }
 
   @override
@@ -42,16 +33,7 @@ mixin LemmyApiClientDefaults on BaseApiClient implements ThunderApiClient {
     List<String>? tags,
     List<int>? flairIds,
   }) {
-    return editPost(
-      postId: postId,
-      title: title,
-      url: url,
-      contents: contents,
-      altText: altText,
-      nsfw: nsfw,
-      languageId: languageId,
-      customThumbnail: customThumbnail,
-    );
+    return editPost(postId: postId, title: title, url: url, contents: contents, altText: altText, nsfw: nsfw, languageId: languageId, customThumbnail: customThumbnail);
   }
 
   @override

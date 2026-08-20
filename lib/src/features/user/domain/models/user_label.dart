@@ -12,17 +12,9 @@ class UserLabel {
   /// The label which is being applied to the user.
   final String label;
 
-  const UserLabel({
-    required this.id,
-    required this.username,
-    required this.label,
-  });
+  const UserLabel({required this.id, required this.username, required this.label});
 
-  UserLabel copyWith({String? id}) => UserLabel(
-        id: id ?? this.id,
-        username: username,
-        label: label,
-      );
+  UserLabel copyWith({String? id}) => UserLabel(id: id ?? this.id, username: username, label: label);
 
   /// Generates a username string that can be used to uniquely identify entries in the UserLabels table
   static String usernameFromParts(String username, String actorId) {

@@ -5,13 +5,7 @@ import 'package:thunder/src/core/domain/domain.dart';
 /// Summary of direct messages grouped by the other participant.
 class PrivateMessageThread extends Equatable {
   /// Creates a grouped direct-message thread.
-  const PrivateMessageThread({
-    required this.participant,
-    required this.messages,
-    required this.latestMessage,
-    required this.unreadCount,
-    this.conversationId,
-  });
+  const PrivateMessageThread({required this.participant, required this.messages, required this.latestMessage, required this.unreadCount, this.conversationId});
 
   /// User on the other side of the thread.
   final ThunderUser participant;
@@ -29,13 +23,7 @@ class PrivateMessageThread extends Equatable {
   final int? conversationId;
 
   /// Creates a copy with updated fields.
-  PrivateMessageThread copyWith({
-    ThunderUser? participant,
-    List<ThunderPrivateMessage>? messages,
-    ThunderPrivateMessage? latestMessage,
-    int? unreadCount,
-    int? conversationId,
-  }) {
+  PrivateMessageThread copyWith({ThunderUser? participant, List<ThunderPrivateMessage>? messages, ThunderPrivateMessage? latestMessage, int? unreadCount, int? conversationId}) {
     return PrivateMessageThread(
       participant: participant ?? this.participant,
       messages: messages ?? this.messages,

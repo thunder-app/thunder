@@ -9,10 +9,5 @@ class SearchResolveResult {
   final ThunderComment? comment;
   final ThunderUser? user;
 
-  const SearchResolveResult({
-    this.community,
-    this.post,
-    this.comment,
-    this.user,
-  });
+  const SearchResolveResult({this.community, this.post, this.comment, this.user});
 }

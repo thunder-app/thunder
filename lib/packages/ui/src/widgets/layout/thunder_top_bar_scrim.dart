@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 /// Status-bar fill shown when the top app bar is hidden during scroll.
 @immutable
 class ThunderTopBarScrim extends StatelessWidget {
-  const ThunderTopBarScrim({
-    super.key,
-    required this.visible,
-    this.color,
-  });
+  const ThunderTopBarScrim({super.key, required this.visible, this.color});
 
   /// Whether the scrim is shown.
   final bool visible;
@@ -22,10 +18,7 @@ class ThunderTopBarScrim extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Positioned(
-      child: Container(
-        height: MediaQuery.paddingOf(context).top,
-        color: color ?? theme.colorScheme.surface,
-      ),
+      child: Container(height: MediaQuery.paddingOf(context).top, color: color ?? theme.colorScheme.surface),
     );
   }
 }

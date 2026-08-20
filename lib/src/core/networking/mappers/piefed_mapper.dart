@@ -91,12 +91,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
       apId: json['ap_id'],
       path: json['path'],
       languageId: json['language_id'],
-      status: CommentStatus(
-        deleted: json['deleted'] ?? false,
-        removed: json['removed'] ?? false,
-        local: json['local'] ?? false,
-        distinguished: json['distinguished'] ?? false,
-      ),
+      status: CommentStatus(deleted: json['deleted'] ?? false, removed: json['removed'] ?? false, local: json['local'] ?? false, distinguished: json['distinguished'] ?? false),
     );
   }
 
@@ -109,12 +104,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
       community: json['community'] is Map<String, dynamic> ? community(json['community']) : null,
       recipient: json['recipient'] is Map<String, dynamic> ? user(json['recipient']) : null,
       notification: notification,
-      counts: CommentCounts(
-        score: counts?['score'],
-        upvotes: counts?['upvotes'],
-        downvotes: counts?['downvotes'],
-        childCount: counts?['child_count'],
-      ),
+      counts: CommentCounts(score: counts?['score'], upvotes: counts?['upvotes'], downvotes: counts?['downvotes'], childCount: counts?['child_count']),
       context: CommentContext(
         subscribed: mapperSubscriptionStatus(json['subscribed']),
         saved: json['saved'],
@@ -140,12 +130,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
       bio: json['about'],
       banner: json['banner'],
       instanceId: json['instance_id'],
-      status: UserStatus(
-        banned: json['banned'] ?? false,
-        local: json['local'] ?? false,
-        deleted: json['deleted'] ?? false,
-        botAccount: json['bot'] ?? false,
-      ),
+      status: UserStatus(banned: json['banned'] ?? false, local: json['local'] ?? false, deleted: json['deleted'] ?? false, botAccount: json['bot'] ?? false),
     );
   }
 
@@ -265,12 +250,7 @@ class PiefedPrimitiveMapper implements PrimitiveMapper {
 
   ThunderReport commentReportView(Map<String, dynamic> json) {
     final report = json['comment_report'];
-    final mappedComment = json['comment'] is Map<String, dynamic>
-        ? commentView({
-            ...json,
-            'creator': json['comment_creator'],
-          })
-        : null;
+    final mappedComment = json['comment'] is Map<String, dynamic> ? commentView({...json, 'creator': json['comment_creator']}) : null;
 
     return ThunderReport(
       id: report['id'],

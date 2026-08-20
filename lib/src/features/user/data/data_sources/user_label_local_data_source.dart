@@ -15,22 +15,11 @@ class UserLabelLocalDataSource {
 
       if (existingUserLabel == null) {
         // Insert new userLabel if it doesn't exist
-        int id = await database.into(database.userLabels).insert(
-              UserLabelsCompanion.insert(
-                username: userLabel.username,
-                label: userLabel.label,
-              ),
-            );
+        int id = await database.into(database.userLabels).insert(UserLabelsCompanion.insert(username: userLabel.username, label: userLabel.label));
         return userLabel.copyWith(id: id.toString());
       } else {
         // Update existing userLabel if it exists
-        await database.update(database.userLabels).replace(
-              UserLabelsCompanion(
-                id: Value(existingUserLabel.id),
-                username: Value(userLabel.username),
-                label: Value(userLabel.label),
-              ),
-            );
+        await database.update(database.userLabels).replace(UserLabelsCompanion(id: Value(existingUserLabel.id), username: Value(userLabel.username), label: Value(userLabel.label)));
         return userLabel.copyWith(id: existingUserLabel.id.toString());
       }
     } catch (e) {
@@ -45,11 +34,7 @@ class UserLabelLocalDataSource {
     try {
       return await (database.select(database.userLabels)..where((t) => t.username.equals(username))).getSingleOrNull().then((userLabel) {
         if (userLabel == null) return null;
-        return UserLabel(
-          id: userLabel.id.toString(),
-          username: userLabel.username,
-          label: userLabel.label,
-        );
+        return UserLabel(id: userLabel.id.toString(), username: userLabel.username, label: userLabel.label);
       });
     } catch (e) {
       debugPrint(e.toString());
@@ -68,13 +53,7 @@ class UserLabelLocalDataSource {
   static Future<List<UserLabel>> fetchAllUserLabels() async {
     try {
       final userLabelRows = await database.select(database.userLabels).get();
-      return userLabelRows
-          .map((userLabel) => UserLabel(
-                id: userLabel.id.toString(),
-                username: userLabel.username,
-                label: userLabel.label,
-              ))
-          .toList();
+      return userLabelRows.map((userLabel) => UserLabel(id: userLabel.id.toString(), username: userLabel.username, label: userLabel.label)).toList();
     } catch (e) {
       debugPrint(e.toString());
       return [];

@@ -99,17 +99,8 @@ class AccountAppBarTitle extends StatelessWidget {
       duration: const Duration(milliseconds: 200),
       opacity: visible ? 1.0 : 0.0,
       child: ListTile(
-        title: Text(
-          person?.displayName ?? person?.name ?? '',
-          style: theme.textTheme.titleLarge,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Text(
-          generateUserFullName(context, person?.name, person?.displayName, fetchInstanceNameFromUrl(person?.actorId)),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        title: Text(person?.displayName ?? person?.name ?? '', style: theme.textTheme.titleLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: Text(generateUserFullName(context, person?.name, person?.displayName, fetchInstanceNameFromUrl(person?.actorId)), maxLines: 1, overflow: TextOverflow.ellipsis),
         contentPadding: EdgeInsets.zero,
       ),
     );

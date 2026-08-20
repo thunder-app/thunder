@@ -28,14 +28,7 @@ import 'package:thunder/src/features/settings/settings.dart';
 ///
 /// One of [post] or [postId] must be provided. If [post] is provided, the post page will use that data to display the post.
 /// Otherwise, the post page will fetch the post with the given [postId].
-Future<void> navigateToPost(
-  BuildContext context, {
-  Account? account,
-  int? postId,
-  ThunderPost? post,
-  int? highlightedCommentId,
-  Function(ThunderPost post)? onPostUpdated,
-}) async {
+Future<void> navigateToPost(BuildContext context, {Account? account, int? postId, ThunderPost? post, int? highlightedCommentId, Function(ThunderPost post)? onPostUpdated}) async {
   assert((postId != null || post != null), 'One of the parameters must be provided');
 
   final routeScope = resolveAccountAwareRouteScope(context, account: account, includeThunderCubit: true);
@@ -64,19 +57,14 @@ Future<void> navigateToPost(
 
   final post_bloc.PostBloc postBloc = _cachedPostBloc?.accountId == effectiveAccount.id && _cachedPostBloc?.postApId == pvm!.apId
       ? _cachedPostBloc!.postBloc
-      : (_cachedPostBloc = (
-          accountId: effectiveAccount.id,
-          postApId: pvm!.apId,
-          postBloc: createPostBloc(effectiveAccount),
-        ))
-          .postBloc;
+      : (_cachedPostBloc = (accountId: effectiveAccount.id, postApId: pvm!.apId, postBloc: createPostBloc(effectiveAccount))).postBloc;
 
   final route = SwipeablePageRoute(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
         : reduceAnimations
-            ? const Duration(milliseconds: 100)
-            : null,
+        ? const Duration(milliseconds: 100)
+        : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
     backGestureDetectionWidth: 45,
@@ -132,8 +120,8 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
     transitionDuration: isLoadingPageShown
         ? Duration.zero
         : reduceAnimations
-            ? const Duration(milliseconds: 100)
-            : null,
+        ? const Duration(milliseconds: 100)
+        : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     backGestureDetectionWidth: 45,
     canSwipe: !kIsWeb && Platform.isIOS || gestureCubit.state.enableFullScreenSwipeNavigationGesture,
@@ -154,12 +142,7 @@ Future<void> navigateToComment(BuildContext context, ThunderComment comment) asy
           future: getPostFromComment(comment, effectiveAccount),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return PostPage(
-                initialPost: snapshot.data!,
-                highlightedCommentId: comment.id,
-                commentPath: comment.path,
-                onPostUpdated: (ThunderPost post) {},
-              );
+              return PostPage(initialPost: snapshot.data!, highlightedCommentId: comment.id, commentPath: comment.path, onPostUpdated: (ThunderPost post) {});
             }
 
             return LoadingPage();
@@ -196,25 +179,14 @@ Future<ThunderComment?> navigateToCreateCommentPage(
     transitionDuration: isLoadingPageShown
         ? Duration.zero
         : reduceAnimations
-            ? const Duration(milliseconds: 100)
-            : null,
+        ? const Duration(milliseconds: 100)
+        : null,
     reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
     canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
     canOnlySwipeFromEdge: true,
     builder: (context) => MultiBlocProvider(
-      providers: routeScope.providers(
-        provideThunderCubit: true,
-        extraProviders: [
-          BlocProvider<CreateCommentCubit>.value(value: createCommentCubit),
-        ],
-      ),
-      child: CreateCommentPage(
-        account: effectiveAccount,
-        post: post,
-        comment: comment,
-        parentComment: parentComment,
-        onCommentSuccess: onCommentSuccess,
-      ),
+      providers: routeScope.providers(provideThunderCubit: true, extraProviders: [BlocProvider<CreateCommentCubit>.value(value: createCommentCubit)]),
+      child: CreateCommentPage(account: effectiveAccount, post: post, comment: comment, parentComment: parentComment, onCommentSuccess: onCommentSuccess),
     ),
   );
 
@@ -269,64 +241,66 @@ Future<void> navigateToCreatePostPage(
       pvmCommunity = post.community;
     }
 
-    await Navigator.of(context).push(SwipeablePageRoute(
-      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-      canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
-      canOnlySwipeFromEdge: true,
-      backGestureDetectionWidth: 45,
-      builder: (navigatorContext) {
-        return MultiBlocProvider(
-          providers: [
-            feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider<FeedBloc>(create: (context) => createFeedBloc(effectiveAccount)),
-            if (postBloc != null) BlocProvider<PostBloc>.value(value: postBloc),
-            ...routeScope.providers(provideThunderCubit: true),
-            BlocProvider<CreatePostCubit>.value(value: createPostCubit),
-          ],
-          child: CreatePostPage(
-            account: effectiveAccount,
-            title: title,
-            text: text,
-            image: image,
-            url: url,
-            prePopulated: prePopulated,
-            communityId: communityId ?? post?.community!.id,
-            community: community ?? (post != null ? pvmCommunity : null),
-            post: post,
-            isCrossPost: isCrossPost,
-            onPostSuccess: (ThunderPost updatedPost, bool userChanged) {
-              // Update the existing post view media if it exists
-              if (feedBloc != null) {
-                feedBloc.add(FeedItemUpdatedEvent(post: updatedPost));
-              }
-              if (postBloc != null) {
-                postBloc.add(PostUpdatedEvent(post: updatedPost));
-              }
+    await Navigator.of(context).push(
+      SwipeablePageRoute(
+        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+        canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
+        canOnlySwipeFromEdge: true,
+        backGestureDetectionWidth: 45,
+        builder: (navigatorContext) {
+          return MultiBlocProvider(
+            providers: [
+              feedBloc != null ? BlocProvider<FeedBloc>.value(value: feedBloc) : BlocProvider<FeedBloc>(create: (context) => createFeedBloc(effectiveAccount)),
+              if (postBloc != null) BlocProvider<PostBloc>.value(value: postBloc),
+              ...routeScope.providers(provideThunderCubit: true),
+              BlocProvider<CreatePostCubit>.value(value: createPostCubit),
+            ],
+            child: CreatePostPage(
+              account: effectiveAccount,
+              title: title,
+              text: text,
+              image: image,
+              url: url,
+              prePopulated: prePopulated,
+              communityId: communityId ?? post?.community!.id,
+              community: community ?? (post != null ? pvmCommunity : null),
+              post: post,
+              isCrossPost: isCrossPost,
+              onPostSuccess: (ThunderPost updatedPost, bool userChanged) {
+                // Update the existing post view media if it exists
+                if (feedBloc != null) {
+                  feedBloc.add(FeedItemUpdatedEvent(post: updatedPost));
+                }
+                if (postBloc != null) {
+                  postBloc.add(PostUpdatedEvent(post: updatedPost));
+                }
 
-              // Show snackbar message if the post was just created
-              if (!userChanged && post == null) {
-                try {
-                  showThunderSnackbar(
-                    l10n.postCreatedSuccessfully,
-                    trailingIcon: Icons.remove_red_eye_rounded,
-                    trailingAction: () {
-                      navigateToPost(context, account: effectiveAccount, post: updatedPost);
-                    },
-                  );
-                } catch (e) {
-                  if (context.mounted) {
-                    showThunderSnackbar("${AppLocalizations.of(context)!.unexpectedError}: $e");
+                // Show snackbar message if the post was just created
+                if (!userChanged && post == null) {
+                  try {
+                    showThunderSnackbar(
+                      l10n.postCreatedSuccessfully,
+                      trailingIcon: Icons.remove_red_eye_rounded,
+                      trailingAction: () {
+                        navigateToPost(context, account: effectiveAccount, post: updatedPost);
+                      },
+                    );
+                  } catch (e) {
+                    if (context.mounted) {
+                      showThunderSnackbar("${AppLocalizations.of(context)!.unexpectedError}: $e");
+                    }
                   }
                 }
-              }
 
-              if (onPostSuccess != null) {
-                onPostSuccess(updatedPost, userChanged);
-              }
-            },
-          ),
-        );
-      },
-    ));
+                if (onPostSuccess != null) {
+                  onPostSuccess(updatedPost, userChanged);
+                }
+              },
+            ),
+          );
+        },
+      ),
+    );
   } catch (e) {
     if (context.mounted) {
       showThunderSnackbar(AppLocalizations.of(context)!.unexpectedError);

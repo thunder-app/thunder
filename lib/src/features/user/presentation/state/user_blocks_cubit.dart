@@ -12,17 +12,7 @@ import 'package:thunder/src/core/services/localization_service.dart';
 
 const _userBlocksUnset = Object();
 
-enum UserBlocksStatus {
-  initial,
-  loading,
-  success,
-  blocking,
-  successBlock,
-  failure,
-  revert,
-  failedRevert,
-  notLoggedIn,
-}
+enum UserBlocksStatus { initial, loading, success, blocking, successBlock, failure, revert, failedRevert, notLoggedIn }
 
 class UserBlocksState extends Equatable {
   const UserBlocksState({
@@ -76,14 +66,9 @@ class UserBlocksState extends Equatable {
 }
 
 class UserBlocksCubit extends Cubit<UserBlocksState> {
-  UserBlocksCubit({
-    required this.account,
-    required this.instanceRepository,
-    required this.communityRepository,
-    required this.userRepository,
-    required LocalizationService localizationService,
-  })  : _localizationService = localizationService,
-        super(const UserBlocksState());
+  UserBlocksCubit({required this.account, required this.instanceRepository, required this.communityRepository, required this.userRepository, required LocalizationService localizationService})
+    : _localizationService = localizationService,
+      super(const UserBlocksState());
 
   final Account account;
   final InstanceRepository instanceRepository;
@@ -96,11 +81,13 @@ class UserBlocksCubit extends Cubit<UserBlocksState> {
       final l10n = _localizationService.l10n;
 
       if (account.anonymous) {
-        return emit(state.copyWith(
-          status: UserBlocksStatus.notLoggedIn,
-          errorMessage: l10n.userNotLoggedIn,
-          errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
-        ));
+        return emit(
+          state.copyWith(
+            status: UserBlocksStatus.notLoggedIn,
+            errorMessage: l10n.userNotLoggedIn,
+            errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
+          ),
+        );
       }
 
       emit(state.copyWith(status: UserBlocksStatus.loading, errorMessage: '', errorReason: null));
@@ -110,21 +97,25 @@ class UserBlocksCubit extends Cubit<UserBlocksState> {
       final communityBlocks = getSiteResponse.myUser!.communityBlocks..sort((a, b) => a.name.compareTo(b.name));
       final instanceBlocks = getSiteResponse.myUser!.instanceBlocks.map((instanceBlockView) => instanceBlockView.instance).toList()..sort((a, b) => a['domain'].compareTo(b['domain']));
 
-      emit(state.copyWith(
-        status: state.instanceBeingBlocked != 0 && instanceBlocks.any((instance) => instance['id'] == state.instanceBeingBlocked) ? UserBlocksStatus.revert : UserBlocksStatus.success,
-        personBlocks: personBlocks,
-        communityBlocks: communityBlocks,
-        instanceBlocks: instanceBlocks,
-        errorMessage: '',
-        errorReason: null,
-      ));
+      emit(
+        state.copyWith(
+          status: state.instanceBeingBlocked != 0 && instanceBlocks.any((instance) => instance['id'] == state.instanceBeingBlocked) ? UserBlocksStatus.revert : UserBlocksStatus.success,
+          personBlocks: personBlocks,
+          communityBlocks: communityBlocks,
+          instanceBlocks: instanceBlocks,
+          errorMessage: '',
+          errorReason: null,
+        ),
+      );
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: UserBlocksStatus.failure,
-        errorMessage: message,
-        errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
-      ));
+      emit(
+        state.copyWith(
+          status: UserBlocksStatus.failure,
+          errorMessage: message,
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
+        ),
+      );
     }
   }
 
@@ -137,11 +128,13 @@ class UserBlocksCubit extends Cubit<UserBlocksState> {
       await loadBlocks();
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: unblock ? UserBlocksStatus.failure : UserBlocksStatus.failedRevert,
-        errorMessage: message,
-        errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
-      ));
+      emit(
+        state.copyWith(
+          status: unblock ? UserBlocksStatus.failure : UserBlocksStatus.failedRevert,
+          errorMessage: message,
+          errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
+        ),
+      );
     }
   }
 
@@ -150,11 +143,13 @@ class UserBlocksCubit extends Cubit<UserBlocksState> {
       final l10n = _localizationService.l10n;
 
       if (account.anonymous) {
-        return emit(state.copyWith(
-          status: UserBlocksStatus.notLoggedIn,
-          errorMessage: l10n.userNotLoggedIn,
-          errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
-        ));
+        return emit(
+          state.copyWith(
+            status: UserBlocksStatus.notLoggedIn,
+            errorMessage: l10n.userNotLoggedIn,
+            errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
+          ),
+        );
       }
 
       emit(state.copyWith(status: UserBlocksStatus.blocking, communityBeingBlocked: communityId, personBeingBlocked: 0, instanceBeingBlocked: 0));
@@ -163,21 +158,25 @@ class UserBlocksCubit extends Cubit<UserBlocksState> {
       final updatedCommunityBlocks = unblock ? state.communityBlocks.where((community) => community.id != communityId).toList() : [...state.communityBlocks, community];
       updatedCommunityBlocks.sort((a, b) => a.name.compareTo(b.name));
 
-      emit(state.copyWith(
-        status: unblock ? UserBlocksStatus.successBlock : UserBlocksStatus.revert,
-        communityBlocks: updatedCommunityBlocks,
-        communityBeingBlocked: communityId,
-        personBeingBlocked: 0,
-        errorMessage: '',
-        errorReason: null,
-      ));
+      emit(
+        state.copyWith(
+          status: unblock ? UserBlocksStatus.successBlock : UserBlocksStatus.revert,
+          communityBlocks: updatedCommunityBlocks,
+          communityBeingBlocked: communityId,
+          personBeingBlocked: 0,
+          errorMessage: '',
+          errorReason: null,
+        ),
+      );
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: unblock ? UserBlocksStatus.failure : UserBlocksStatus.failedRevert,
-        errorMessage: message,
-        errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
-      ));
+      emit(
+        state.copyWith(
+          status: unblock ? UserBlocksStatus.failure : UserBlocksStatus.failedRevert,
+          errorMessage: message,
+          errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
+        ),
+      );
     }
   }
 
@@ -189,21 +188,25 @@ class UserBlocksCubit extends Cubit<UserBlocksState> {
       final updatedPersonBlocks = unblock ? state.personBlocks.where((person) => person.id != personId).toList() : [...state.personBlocks, user];
       updatedPersonBlocks.sort((a, b) => a.name.compareTo(b.name));
 
-      emit(state.copyWith(
-        status: unblock ? UserBlocksStatus.successBlock : UserBlocksStatus.revert,
-        personBlocks: updatedPersonBlocks,
-        personBeingBlocked: personId,
-        communityBeingBlocked: 0,
-        errorMessage: '',
-        errorReason: null,
-      ));
+      emit(
+        state.copyWith(
+          status: unblock ? UserBlocksStatus.successBlock : UserBlocksStatus.revert,
+          personBlocks: updatedPersonBlocks,
+          personBeingBlocked: personId,
+          communityBeingBlocked: 0,
+          errorMessage: '',
+          errorReason: null,
+        ),
+      );
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: unblock ? UserBlocksStatus.failure : UserBlocksStatus.failedRevert,
-        errorMessage: message,
-        errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
-      ));
+      emit(
+        state.copyWith(
+          status: unblock ? UserBlocksStatus.failure : UserBlocksStatus.failedRevert,
+          errorMessage: message,
+          errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
+        ),
+      );
     }
   }
 }

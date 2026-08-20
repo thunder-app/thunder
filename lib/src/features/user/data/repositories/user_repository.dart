@@ -6,16 +6,7 @@ import 'package:thunder/src/features/user/domain/models/user_detail.dart';
 /// Repository contract for user profile reads and blocks.
 abstract class UserRepository {
   /// Fetches a user by their id or username
-  Future<UserDetail?> getUser({
-    int? userId,
-    String? username,
-    PostSortType? sort,
-    int? page,
-    String? cursor,
-    int? limit,
-    bool? saved,
-    bool? includeContent,
-  });
+  Future<UserDetail?> getUser({int? userId, String? username, PostSortType? sort, int? page, String? cursor, int? limit, bool? saved, bool? includeContent});
 
   /// Blocks or unblocks a user
   Future<ThunderUser> blockUser(int userId, bool block);
@@ -35,44 +26,16 @@ class UserRepositoryImpl implements UserRepository {
   /// Creates a new UserRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  UserRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  UserRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
-  Future<UserDetail?> getUser({
-    int? userId,
-    String? username,
-    PostSortType? sort,
-    int? page,
-    String? cursor,
-    int? limit,
-    bool? saved,
-    bool? includeContent,
-  }) async {
+  Future<UserDetail?> getUser({int? userId, String? username, PostSortType? sort, int? page, String? cursor, int? limit, bool? saved, bool? includeContent}) async {
     final api = await _api.get();
-    final response = await api.getUser(
-      userId: userId,
-      username: username,
-      sort: sort,
-      page: page,
-      cursor: cursor,
-      limit: limit,
-      saved: saved,
-      includeContent: includeContent,
-    );
+    final response = await api.getUser(userId: userId, username: username, sort: sort, page: page, cursor: cursor, limit: limit, saved: saved, includeContent: includeContent);
 
-    return UserDetail(
-      user: response.user,
-      site: response.site,
-      posts: await parsePosts(response.posts),
-      comments: response.comments,
-      moderates: response.moderates,
-      nextPage: response.nextPage,
-    );
+    return UserDetail(user: response.user, site: response.site, posts: await parsePosts(response.posts), comments: response.comments, moderates: response.moderates, nextPage: response.nextPage);
   }
 
   @override

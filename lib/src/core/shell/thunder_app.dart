@@ -107,38 +107,24 @@ class _ThunderAppState extends State<ThunderApp> {
               );
 
               if (state.useMaterialYouTheme == true) {
-                theme = ThemeData(
-                  colorScheme: lightColorScheme,
-                );
+                theme = ThemeData(colorScheme: lightColorScheme);
 
-                darkTheme = FlexThemeData.dark(
-                  colorScheme: darkColorScheme,
-                  darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
-                );
+                darkTheme = FlexThemeData.dark(colorScheme: darkColorScheme, darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
               }
 
-              const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(builders: {
-                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-              });
+              const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
+                builders: {TargetPlatform.android: CupertinoPageTransitionsBuilder(), TargetPlatform.iOS: CupertinoPageTransitionsBuilder()},
+              );
 
               theme = theme.copyWith(
                 pageTransitionsTheme: pageTransitionsTheme,
                 extensions: const [ThunderTheme()],
-                inputDecorationTheme: InputDecorationTheme(
-                  hintStyle: TextStyle(
-                    color: lightColorScheme?.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
+                inputDecorationTheme: InputDecorationTheme(hintStyle: TextStyle(color: lightColorScheme?.onSurface.withValues(alpha: 0.6))),
               );
               darkTheme = darkTheme.copyWith(
                 pageTransitionsTheme: pageTransitionsTheme,
                 extensions: const [ThunderTheme()],
-                inputDecorationTheme: InputDecorationTheme(
-                  hintStyle: TextStyle(
-                    color: darkColorScheme?.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
+                inputDecorationTheme: InputDecorationTheme(hintStyle: TextStyle(color: darkColorScheme?.onSurface.withValues(alpha: 0.6))),
               );
 
               final Locale? locale = LanguageLocal.parseLanguageTag(appLanguageCode ?? 'en');
@@ -149,15 +135,8 @@ class _ThunderAppState extends State<ThunderApp> {
                   child: MaterialApp(
                     title: 'Thunder',
                     locale: locale,
-                    localizationsDelegates: const [
-                      ...AppLocalizations.localizationsDelegates,
-                      MaterialLocalizationsEo.delegate,
-                      CupertinoLocalizationsEo.delegate,
-                    ],
-                    supportedLocales: const [
-                      ...AppLocalizations.supportedLocales,
-                      Locale('eo'),
-                    ],
+                    localizationsDelegates: const [...AppLocalizations.localizationsDelegates, MaterialLocalizationsEo.delegate, CupertinoLocalizationsEo.delegate],
+                    supportedLocales: const [...AppLocalizations.supportedLocales, Locale('eo')],
                     themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
                     theme: theme,
                     darkTheme: darkTheme,

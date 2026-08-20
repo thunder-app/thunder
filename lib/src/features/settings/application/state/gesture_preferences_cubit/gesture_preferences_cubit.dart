@@ -9,9 +9,7 @@ part 'gesture_preferences_state.dart';
 
 /// Cubit for managing gesture-related preferences
 class GesturePreferencesCubit extends Cubit<GesturePreferencesState> {
-  GesturePreferencesCubit({required PreferencesStore preferencesStore})
-      : _preferencesStore = preferencesStore,
-        super(const GesturePreferencesState()) {
+  GesturePreferencesCubit({required PreferencesStore preferencesStore}) : _preferencesStore = preferencesStore, super(const GesturePreferencesState()) {
     load();
   }
 

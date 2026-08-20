@@ -6,18 +6,7 @@ import 'package:thunder/src/core/domain/models/thunder_user.dart';
 
 /// Pure foundation DTO used by networking boundaries for modlog entries.
 class ModlogEvent {
-  const ModlogEvent({
-    required this.type,
-    required this.dateTime,
-    this.moderator,
-    this.admin,
-    this.reason,
-    this.user,
-    this.post,
-    this.comment,
-    this.community,
-    required this.actioned,
-  });
+  const ModlogEvent({required this.type, required this.dateTime, this.moderator, this.admin, this.reason, this.user, this.post, this.comment, this.community, required this.actioned});
 
   final ModlogActionType type;
   final String dateTime;

@@ -8,11 +8,7 @@ import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/src/core/domain/domain.dart';
 
 class CreatePostAdditionalSettingsPage extends StatelessWidget {
-  const CreatePostAdditionalSettingsPage({
-    super.key,
-    required this.customThumbnailController,
-    required this.tagsController,
-  });
+  const CreatePostAdditionalSettingsPage({super.key, required this.customThumbnailController, required this.tagsController});
 
   /// The controller for the custom thumbnail field.
   final TextEditingController customThumbnailController;
@@ -34,10 +30,7 @@ class CreatePostAdditionalSettingsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(l10n.createPost),
-                Text(
-                  'Additional Settings',
-                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-                ),
+                Text('Additional Settings', style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor)),
               ],
             ),
           ),
@@ -48,18 +41,11 @@ class CreatePostAdditionalSettingsPage extends StatelessWidget {
                 TextFormField(
                   key: const Key('create-post-thumbnail-field'),
                   controller: customThumbnailController,
-                  decoration: InputDecoration(
-                    labelText: l10n.thumbnailUrl,
-                    errorText: state.customThumbnailError,
-                    border: const OutlineInputBorder(),
-                  ),
+                  decoration: InputDecoration(labelText: l10n.thumbnailUrl, errorText: state.customThumbnailError, border: const OutlineInputBorder()),
                 ),
                 if (state.isPiefedComposer) ...[
                   const SizedBox(height: 16.0),
-                  _CreatePostTagEditor(
-                    key: const Key('create-post-tags-field'),
-                    controller: tagsController,
-                  ),
+                  _CreatePostTagEditor(key: const Key('create-post-tags-field'), controller: tagsController),
                   const SizedBox(height: 16.0),
                   _CreatePostFlairSection(state: state),
                 ],
@@ -73,10 +59,7 @@ class CreatePostAdditionalSettingsPage extends StatelessWidget {
 }
 
 class _CreatePostTagEditor extends StatefulWidget {
-  const _CreatePostTagEditor({
-    super.key,
-    required this.controller,
-  });
+  const _CreatePostTagEditor({super.key, required this.controller});
 
   /// The controller for the tags input field.
   final TextEditingController controller;
@@ -134,25 +117,13 @@ class _CreatePostTagEditorState extends State<_CreatePostTagEditor> {
       child: InputDecorator(
         isFocused: _focusNode.hasFocus,
         isEmpty: isEmpty,
-        decoration: InputDecoration(
-          labelText: l10n.postTags,
-          helperText: l10n.postTagsHelperText,
-          border: const OutlineInputBorder(),
-        ),
+        decoration: InputDecoration(labelText: l10n.postTags, helperText: l10n.postTagsHelperText, border: const OutlineInputBorder()),
         child: Wrap(
           spacing: 8.0,
           runSpacing: 8.0,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            for (final tag in tags)
-              _TagChip(
-                tag: tag,
-                onDeleted: () => _updateTags(
-                  normalizePiefedTags(
-                    tags.where((existingTag) => existingTag != tag),
-                  ),
-                ),
-              ),
+            for (final tag in tags) _TagChip(tag: tag, onDeleted: () => _updateTags(normalizePiefedTags(tags.where((existingTag) => existingTag != tag)))),
             SizedBox(
               width: 120,
               child: Focus(
@@ -171,11 +142,7 @@ class _CreatePostTagEditorState extends State<_CreatePostTagEditor> {
                 child: TextField(
                   controller: _pendingController,
                   focusNode: _focusNode,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
-                  ),
+                  decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
                   minLines: 1,
                   maxLines: 1,
                   onChanged: _handlePendingChanged,
@@ -241,10 +208,7 @@ class _CreatePostTagEditorState extends State<_CreatePostTagEditor> {
 }
 
 class _TagChip extends StatelessWidget {
-  const _TagChip({
-    required this.tag,
-    required this.onDeleted,
-  });
+  const _TagChip({required this.tag, required this.onDeleted});
 
   /// The tag to display.
   final String tag;
@@ -261,11 +225,7 @@ class _TagChip extends StatelessWidget {
       onDeleted: onDeleted,
       labelPadding: EdgeInsets.only(left: 4.0),
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
-      labelStyle: theme.textTheme.labelSmall?.copyWith(
-        color: theme.colorScheme.onSurfaceVariant,
-        fontWeight: FontWeight.w500,
-        height: 1.1,
-      ),
+      labelStyle: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500, height: 1.1),
       shape: const StadiumBorder(),
       side: BorderSide.none,
       backgroundColor: theme.colorScheme.surfaceContainerHighest,
@@ -278,9 +238,7 @@ class _TagChip extends StatelessWidget {
 }
 
 class _CreatePostFlairSection extends StatelessWidget {
-  const _CreatePostFlairSection({
-    required this.state,
-  });
+  const _CreatePostFlairSection({required this.state});
 
   /// The current state of the post creation process, used to display errors and loading states.
   final CreatePostState state;
@@ -293,48 +251,38 @@ class _CreatePostFlairSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.postFlairs,
-          style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
-        ),
+        Text(l10n.postFlairs, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
         const SizedBox(height: 12.0),
         switch (state.piefedMetadataStatus) {
           CreatePostPiefedMetadataStatus.loading => const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.0),
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
             ),
-          CreatePostPiefedMetadataStatus.empty || CreatePostPiefedMetadataStatus.error => Text(
-              l10n.postFlairsUnavailable,
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
-            ),
+          ),
+          CreatePostPiefedMetadataStatus.empty || CreatePostPiefedMetadataStatus.error => Text(l10n.postFlairsUnavailable, style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor)),
           _ => Wrap(
-              key: const Key('create-post-flairs-field'),
-              spacing: 8.0,
-              runSpacing: 8.0,
-              children: [
-                for (final flair in state.availablePiefedFlairs)
-                  _SelectableFlairChip(
-                    flair: flair,
-                    selected: state.selectedPiefedFlairIds.contains(flair.id),
-                    onTap: () {
-                      final selectedIds = state.selectedPiefedFlairIds.toSet();
-                      if (selectedIds.contains(flair.id)) {
-                        selectedIds.remove(flair.id);
-                      } else {
-                        selectedIds.add(flair.id);
-                      }
+            key: const Key('create-post-flairs-field'),
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: [
+              for (final flair in state.availablePiefedFlairs)
+                _SelectableFlairChip(
+                  flair: flair,
+                  selected: state.selectedPiefedFlairIds.contains(flair.id),
+                  onTap: () {
+                    final selectedIds = state.selectedPiefedFlairIds.toSet();
+                    if (selectedIds.contains(flair.id)) {
+                      selectedIds.remove(flair.id);
+                    } else {
+                      selectedIds.add(flair.id);
+                    }
 
-                      context.read<CreatePostCubit>().updateFlairs(selectedIds.toList());
-                    },
-                  ),
-              ],
-            ),
+                    context.read<CreatePostCubit>().updateFlairs(selectedIds.toList());
+                  },
+                ),
+            ],
+          ),
         },
       ],
     );
@@ -342,11 +290,7 @@ class _CreatePostFlairSection extends StatelessWidget {
 }
 
 class _SelectableFlairChip extends StatelessWidget {
-  const _SelectableFlairChip({
-    required this.flair,
-    required this.selected,
-    required this.onTap,
-  });
+  const _SelectableFlairChip({required this.flair, required this.selected, required this.onTap});
 
   /// The flair to display.
   final ThunderFlair flair;
@@ -379,11 +323,7 @@ class _SelectableFlairChip extends StatelessWidget {
           flair.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: resolvedForeground,
-            fontWeight: FontWeight.w600,
-            height: 1.1,
-          ),
+          style: theme.textTheme.labelSmall?.copyWith(color: resolvedForeground, fontWeight: FontWeight.w600, height: 1.1),
         ),
       ),
     );

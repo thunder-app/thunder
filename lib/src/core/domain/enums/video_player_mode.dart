@@ -1,5 +1,1 @@
-enum VideoPlayerMode {
-  inApp,
-  customTabs,
-  externalPlayer,
-}
+enum VideoPlayerMode { inApp, customTabs, externalPlayer }

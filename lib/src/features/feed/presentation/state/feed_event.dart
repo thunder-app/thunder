@@ -89,10 +89,7 @@ final class PinCommunityPostInput extends FeedActionInput {
 }
 
 final class RemovePostInput extends FeedActionInput {
-  const RemovePostInput({
-    required this.remove,
-    required this.reason,
-  });
+  const RemovePostInput({required this.remove, required this.reason});
 
   final bool remove;
   final String reason;
@@ -228,13 +225,7 @@ final class FeedItemActionedEvent extends FeedEvent {
   /// Typed payload for the selected [postAction].
   final FeedActionInput? actionInput;
 
-  const FeedItemActionedEvent({
-    this.post,
-    this.postId,
-    this.postIds,
-    required this.postAction,
-    this.actionInput,
-  });
+  const FeedItemActionedEvent({this.post, this.postId, this.postIds, required this.postAction, this.actionInput});
 
   @override
   List<Object?> get props => [post, postId, postIds, postAction, actionInput];

@@ -23,10 +23,7 @@ void showAdvancedShareSheet(BuildContext context, ThunderPost post) {
       isScrollControlled: true,
       builder: (context) => BlocProvider(
         create: (context) => ThemePreferencesCubit(preferencesStore: const UserPreferencesStore()),
-        child: AdvancedShareSheetContent(
-          post: post,
-          initialOptions: options,
-        ),
+        child: AdvancedShareSheetContent(post: post, initialOptions: options),
       ),
     );
   }

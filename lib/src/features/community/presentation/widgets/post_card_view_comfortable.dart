@@ -215,13 +215,7 @@ class PostCardViewComfortable extends StatelessWidget {
       );
     }
 
-    final postCardAuthor = PostCommunityAndAuthor(
-      user: post.creator!,
-      community: post.community!,
-      dim: dim,
-      feedType: feedType,
-      feedListType: feedListType,
-    );
+    final postCardAuthor = PostCommunityAndAuthor(user: post.creator!, community: post.community!, dim: dim, feedType: feedType, feedListType: feedListType);
 
     final edgesPadding = const EdgeInsets.symmetric(horizontal: 12.0);
 
@@ -251,10 +245,7 @@ class PostCardViewComfortable extends StatelessWidget {
           if (showCommunityFirst) Padding(padding: edgesPadding, child: postCardAuthor),
           if (showTitleFirst) postCardTitle,
           if (media != null && media.mediaType != MediaType.text)
-            Padding(
-              padding: edgeToEdgeImages ? const EdgeInsets.symmetric(vertical: 8.0) : edgesPadding + const EdgeInsets.symmetric(vertical: 8.0),
-              child: mediaView,
-            ),
+            Padding(padding: edgeToEdgeImages ? const EdgeInsets.symmetric(vertical: 8.0) : edgesPadding + const EdgeInsets.symmetric(vertical: 8.0), child: mediaView),
           if (!showTitleFirst) postCardTitle,
           if (showTextContent && textContent.isNotEmpty)
             Padding(
@@ -264,9 +255,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 textScaleFactor: contentFontSizeScale.textScaleFactor,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: post.context.read == true ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70),
-                ),
+                style: theme.textTheme.bodyMedium?.copyWith(color: post.context.read == true ? readColor : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.70)),
               ),
             ),
           Padding(
@@ -305,7 +294,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 if (isUserLoggedIn) PostCardActions(voteType: post.context.vote.score, saved: post.context.saved ?? false, onVoteAction: onVoteAction, onSaveAction: onSaveAction),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

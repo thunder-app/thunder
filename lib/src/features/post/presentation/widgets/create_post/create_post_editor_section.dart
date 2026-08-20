@@ -10,14 +10,7 @@ import 'package:thunder/src/shared/markdown/common_markdown_body.dart';
 import 'package:thunder/src/shared/theme/color_utils.dart';
 
 class CreatePostEditorSection extends StatelessWidget {
-  const CreatePostEditorSection({
-    super.key,
-    required this.body,
-    required this.controller,
-    required this.focusNode,
-    required this.showPreview,
-    required this.nsfw,
-  });
+  const CreatePostEditorSection({super.key, required this.body, required this.controller, required this.focusNode, required this.showPreview, required this.nsfw});
 
   /// The current content of the post body.
   final String body;
@@ -46,15 +39,8 @@ class CreatePostEditorSection extends StatelessWidget {
         margin: const EdgeInsets.only(top: 8.0),
         width: double.infinity,
         padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: getBackgroundColor(context),
-          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        ),
-        child: CommonMarkdownBody(
-          body: body,
-          isComment: true,
-          nsfw: nsfw && hideNsfwPreviews,
-        ),
+        decoration: BoxDecoration(color: getBackgroundColor(context), borderRadius: const BorderRadius.all(Radius.circular(8.0))),
+        child: CommonMarkdownBody(body: body, isComment: true, nsfw: nsfw && hideNsfwPreviews),
       ),
       secondChild: MarkdownTextInputField(
         controller: controller,

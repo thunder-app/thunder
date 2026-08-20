@@ -4,10 +4,7 @@ import 'package:thunder/src/features/feed/feed.dart';
 
 /// Sliver that shows the feed footer, either an end marker or pagination spinner.
 class FeedBottomSliver extends StatelessWidget {
-  const FeedBottomSliver({
-    super.key,
-    required this.hasReachedEnd,
-  });
+  const FeedBottomSliver({super.key, required this.hasReachedEnd});
 
   final bool hasReachedEnd;
 

@@ -3,13 +3,7 @@ import 'package:flutter/material.dart';
 /// Compact composer row with leading action, text field, and trailing action slots.
 @immutable
 class ThunderComposerBar extends StatelessWidget {
-  const ThunderComposerBar({
-    super.key,
-    this.leading,
-    required this.textField,
-    required this.trailing,
-    this.padding,
-  });
+  const ThunderComposerBar({super.key, this.leading, required this.textField, required this.trailing, this.padding});
 
   /// Optional widget before the text field.
   final Widget? leading;
@@ -35,14 +29,11 @@ class ThunderComposerBar extends StatelessWidget {
         children: [
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(32.0),
-              ),
+              decoration: BoxDecoration(color: theme.colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(32.0)),
               padding: const EdgeInsets.only(left: 0.0, right: 12.0, top: 4.0, bottom: 4.0),
               child: Row(
                 children: [
-                  if (leading != null) leading!,
+                  ?leading,
                   Expanded(child: textField),
                 ],
               ),

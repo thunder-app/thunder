@@ -102,14 +102,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
   }
 
   /// Builds an individual post card with the given [post] and [index].
-  Widget _buildPostCard({
-    required ThunderPost post,
-    required int index,
-    FeedType? feedType,
-    bool dim = false,
-    FeedListType? feedListType,
-    bool isUserLoggedIn = false,
-  }) {
+  Widget _buildPostCard({required ThunderPost post, required int index, FeedType? feedType, bool dim = false, FeedListType? feedListType, bool isUserLoggedIn = false}) {
     return FeedPostCardListItem(
       post: post,
       index: index,
@@ -126,11 +119,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
       onPostTapped: () {
         if (lastTappedPost != post.id) setState(() => lastTappedPost = post.id);
       },
-      onPostNoLongerVisible: () => _readTrackingController.queueReadBatch(
-        index: index,
-        posts: widget.posts,
-        onBatchReady: _markPostsRead,
-      ),
+      onPostNoLongerVisible: () => _readTrackingController.queueReadBatch(index: index, posts: widget.posts, onBatchReady: _markPostsRead),
       onVoteAction: widget.onVoteAction,
       onSaveAction: widget.onSaveAction,
       onReadAction: widget.onReadAction,
@@ -167,14 +156,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
         crossAxisSpacing: 40,
         mainAxisSpacing: 0,
         itemBuilder: (BuildContext context, int index) {
-          return _buildPostCard(
-            post: widget.posts[index],
-            index: index,
-            dim: widget.indicateRead ?? dimReadPosts,
-            feedType: feedType,
-            feedListType: feedListType,
-            isUserLoggedIn: isUserLoggedIn,
-          );
+          return _buildPostCard(post: widget.posts[index], index: index, dim: widget.indicateRead ?? dimReadPosts, feedType: feedType, feedListType: feedListType, isUserLoggedIn: isUserLoggedIn);
         },
         childCount: widget.posts.length,
       );
@@ -182,14 +164,7 @@ class _FeedPostCardListState extends State<FeedPostCardList> {
 
     return SliverList.builder(
       itemBuilder: (context, index) {
-        return _buildPostCard(
-          post: widget.posts[index],
-          index: index,
-          dim: widget.indicateRead ?? dimReadPosts,
-          feedType: feedType,
-          feedListType: feedListType,
-          isUserLoggedIn: isUserLoggedIn,
-        );
+        return _buildPostCard(post: widget.posts[index], index: index, dim: widget.indicateRead ?? dimReadPosts, feedType: feedType, feedListType: feedListType, isUserLoggedIn: isUserLoggedIn);
       },
       itemCount: widget.posts.length,
     );

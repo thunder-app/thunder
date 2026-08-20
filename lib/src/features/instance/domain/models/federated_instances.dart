@@ -17,13 +17,7 @@ class FederatedInstanceEntry extends Equatable {
   /// The last successful federation publish time, when available.
   final DateTime? lastSuccessfulPublishedTime;
 
-  const FederatedInstanceEntry({
-    required this.id,
-    required this.domain,
-    this.software,
-    this.version,
-    this.lastSuccessfulPublishedTime,
-  });
+  const FederatedInstanceEntry({required this.id, required this.domain, this.software, this.version, this.lastSuccessfulPublishedTime});
 
   factory FederatedInstanceEntry.fromJson(Map<String, dynamic> json) {
     DateTime? lastSuccessfulPublishedTime;
@@ -53,9 +47,7 @@ class FederatedInstances extends Equatable {
   /// Instances linked to the current instance.
   final List<FederatedInstanceEntry> linked;
 
-  const FederatedInstances({
-    this.linked = const [],
-  });
+  const FederatedInstances({this.linked = const []});
 
   factory FederatedInstances.fromJson(Map<String, dynamic> json) {
     final federatedInstances = json['federated_instances'];
@@ -68,9 +60,7 @@ class FederatedInstances extends Equatable {
       return const FederatedInstances();
     }
 
-    return FederatedInstances(
-      linked: linked.whereType<Map<String, dynamic>>().map(FederatedInstanceEntry.fromJson).toList(),
-    );
+    return FederatedInstances(linked: linked.whereType<Map<String, dynamic>>().map(FederatedInstanceEntry.fromJson).toList());
   }
 
   @override

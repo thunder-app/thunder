@@ -28,13 +28,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 /// Helper to count results for the current search type.
-int _resultsCount(
-  MetaSearchType searchType,
-  List<ThunderCommunity>? communities,
-  List<ThunderUser>? users,
-  List<ThunderComment>? comments,
-  List<ThunderPost>? posts,
-) {
+int _resultsCount(MetaSearchType searchType, List<ThunderCommunity>? communities, List<ThunderUser>? users, List<ThunderComment>? comments, List<ThunderPost>? posts) {
   return switch (searchType) {
     MetaSearchType.communities => communities?.length ?? 0,
     MetaSearchType.users => users?.length ?? 0,
@@ -63,54 +57,38 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   /// The instance repository to use for instance operations
   final InstanceRepository instanceRepository;
 
-  SearchBloc({
-    required this.account,
-    required this.commentRepository,
-    required this.searchService,
-    required this.communityRepository,
-    required this.userRepository,
-    required this.instanceRepository,
-  }) : super(SearchState()) {
-    on<SearchReset>(
-      _onSearchReset,
-      transformer: restartable(),
-    );
+  SearchBloc({required this.account, required this.commentRepository, required this.searchService, required this.communityRepository, required this.userRepository, required this.instanceRepository})
+    : super(SearchState()) {
+    on<SearchReset>(_onSearchReset, transformer: restartable());
     on<SearchStarted>(
       _onSearchStarted,
       // Use restartable here so that a long search can essentially be "canceled" by a new one.
       // Note that we don't also need throttling because the search page text box has a debounce.
       transformer: restartable(),
     );
-    on<SearchContinued>(
-      _onSearchContinued,
-      transformer: droppable(),
-    );
-    on<SearchFocusRequested>(
-      _onSearchFocusRequested,
-      transformer: droppable(),
-    );
-    on<TrendingCommunitiesRequested>(
-      _onTrendingCommunitiesRequested,
-      transformer: droppable(),
-    );
+    on<SearchContinued>(_onSearchContinued, transformer: droppable());
+    on<SearchFocusRequested>(_onSearchFocusRequested, transformer: droppable());
+    on<TrendingCommunitiesRequested>(_onTrendingCommunitiesRequested, transformer: droppable());
     on<SearchFiltersUpdated>(_onFiltersUpdated);
   }
 
   Future<void> _onSearchReset(SearchReset event, Emitter<SearchState> emit) async {
-    emit(state.copyWith(
-      status: SearchStatus.initial,
-      communities: null,
-      trendingCommunities: const <ThunderCommunity>[],
-      users: null,
-      comments: null,
-      posts: null,
-      instances: null,
-      message: null,
-      errorReason: null,
-      page: 1,
-      hasReachedMax: false,
-      viewingAll: false,
-    ));
+    emit(
+      state.copyWith(
+        status: SearchStatus.initial,
+        communities: null,
+        trendingCommunities: const <ThunderCommunity>[],
+        users: null,
+        comments: null,
+        posts: null,
+        instances: null,
+        message: null,
+        errorReason: null,
+        page: 1,
+        hasReachedMax: false,
+        viewingAll: false,
+      ),
+    );
     await _onTrendingCommunitiesRequested(const TrendingCommunitiesRequested(), emit);
   }
 
@@ -141,15 +119,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           final lastSuccessfulPublishedTime = instance.lastSuccessfulPublishedTime;
 
           if (lastSuccessfulPublishedTime != null && lastSuccessfulPublishedTime.isAfter(DateTime.now().subtract(const Duration(days: 1)))) {
-            instances.add(
-              ThunderInstanceInfo(
-                id: instance.id,
-                domain: instance.domain,
-                name: fetchInstanceNameFromUrl(instance.domain)!,
-                version: instance.version,
-                success: true,
-              ),
-            );
+            instances.add(ThunderInstanceInfo(id: instance.id, domain: instance.domain, name: fetchInstanceNameFromUrl(instance.domain)!, version: instance.version, success: true));
           }
         }
 
@@ -201,27 +171,28 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         }
       }
 
-      return emit(state.copyWith(
-        status: SearchStatus.success,
-        communities: prioritizeFavorites(communities, event.favoriteCommunities),
-        users: users,
-        comments: comments,
-        posts: posts ?? [],
-        instances: instances,
-        page: 2,
-        viewingAll: event.query.isEmpty,
-        errorReason: null,
-      ));
+      return emit(
+        state.copyWith(
+          status: SearchStatus.success,
+          communities: prioritizeFavorites(communities, event.favoriteCommunities),
+          users: users,
+          comments: comments,
+          posts: posts ?? [],
+          instances: instances,
+          page: 2,
+          viewingAll: event.query.isEmpty,
+          errorReason: null,
+        ),
+      );
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      return emit(state.copyWith(
-        status: SearchStatus.failure,
-        message: message,
-        errorReason: AppErrorReason.unexpected(
+      return emit(
+        state.copyWith(
+          status: SearchStatus.failure,
           message: message,
-          details: e.toString(),
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
         ),
-      ));
+      );
     }
   }
 
@@ -236,9 +207,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(
-            status: SearchStatus.refreshing,
-          ));
+          emit(state.copyWith(status: SearchStatus.refreshing));
 
           List<ThunderUser>? users;
           List<ThunderCommunity>? communities;
@@ -269,13 +238,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
           if (searchIsEmpty(
             effectiveSearchType,
-            searchResponse: SearchResults(
-              type: effectiveSearchType,
-              users: users ?? const [],
-              communities: communities ?? const [],
-              comments: comments ?? const [],
-              posts: posts ?? const [],
-            ),
+            searchResponse: SearchResults(type: effectiveSearchType, users: users ?? const [], communities: communities ?? const [], comments: comments ?? const [], posts: posts ?? const []),
           )) {
             return emit(state.copyWith(status: SearchStatus.success, hasReachedMax: true));
           }
@@ -286,29 +249,30 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           final List<ThunderComment> allComments = [...(state.comments ?? []), ...(comments ?? [])];
           final List<ThunderPost> allPosts = [...(state.posts ?? []), ...(posts ?? [])];
 
-          return emit(state.copyWith(
-            status: SearchStatus.success,
-            communities: allCommunities,
-            users: allUsers,
-            comments: allComments,
-            posts: allPosts,
-            page: state.page + 1,
-            hasReachedMax: _resultsCount(effectiveSearchType, communities, users, comments, posts) < searchResultsPerPage,
-            errorReason: null,
-          ));
+          return emit(
+            state.copyWith(
+              status: SearchStatus.success,
+              communities: allCommunities,
+              users: allUsers,
+              comments: allComments,
+              posts: allPosts,
+              page: state.page + 1,
+              hasReachedMax: _resultsCount(effectiveSearchType, communities, users, comments, posts) < searchResultsPerPage,
+              errorReason: null,
+            ),
+          );
         } catch (e) {
           attemptCount++;
           debugPrint('SearchBloc: Continue search attempt $attemptCount failed: $e');
           if (attemptCount >= 2) {
             final message = getExceptionErrorMessage(e);
-            return emit(state.copyWith(
-              status: SearchStatus.failure,
-              message: message,
-              errorReason: AppErrorReason.unexpected(
+            return emit(
+              state.copyWith(
+                status: SearchStatus.failure,
                 message: message,
-                details: e.toString(),
+                errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
               ),
-            ));
+            );
           }
           await Future.delayed(const Duration(milliseconds: 500));
         }
@@ -316,14 +280,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     } catch (e) {
       debugPrint('SearchBloc: Continue search failed: $e');
       final message = getExceptionErrorMessage(e);
-      return emit(state.copyWith(
-        status: SearchStatus.failure,
-        message: message,
-        errorReason: AppErrorReason.unexpected(
+      return emit(
+        state.copyWith(
+          status: SearchStatus.failure,
           message: message,
-          details: e.toString(),
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
         ),
-      ));
+      );
     }
   }
 
@@ -334,23 +297,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Future<void> _onTrendingCommunitiesRequested(TrendingCommunitiesRequested event, Emitter<SearchState> emit) async {
     try {
       final communities = await communityRepository.trending();
-      return emit(state.copyWith(
-        status: SearchStatus.trending,
-        trendingCommunities: communities,
-        errorReason: null,
-      ));
+      return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: communities, errorReason: null));
     } catch (e) {
       debugPrint('SearchBloc: Failed to load trending communities: $e');
       final message = getExceptionErrorMessage(e);
-      return emit(state.copyWith(
-        status: SearchStatus.trending,
-        trendingCommunities: const <ThunderCommunity>[],
-        message: message,
-        errorReason: AppErrorReason.unexpected(
+      return emit(
+        state.copyWith(
+          status: SearchStatus.trending,
+          trendingCommunities: const <ThunderCommunity>[],
           message: message,
-          details: e.toString(),
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
         ),
-      ));
+      );
     }
   }
 

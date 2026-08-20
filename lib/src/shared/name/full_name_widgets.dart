@@ -157,12 +157,7 @@ class CoreUserFullNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prefix = formatUserFullNamePrefix(
-      name,
-      displayName,
-      separator: separator,
-      useDisplayName: useDisplayName,
-    );
+    final prefix = formatUserFullNamePrefix(name, displayName, separator: separator, useDisplayName: useDisplayName);
     final suffix = formatUserFullNameSuffix(instance, separator: separator);
 
     final resolvedTextStyle = textStyle ?? Theme.of(context).textTheme.bodyMedium!;
@@ -175,39 +170,19 @@ class CoreUserFullNameWidget extends StatelessWidget {
       children: [
         TextSpan(
           text: prefix,
-          style: resolvedTextStyle.copyWith(
-            fontWeight: userNameThickness.toWeight(),
-            color: applyColor(userNameColor.toColor(context)),
-            fontSize: scaledFontSize,
-          ),
+          style: resolvedTextStyle.copyWith(fontWeight: userNameThickness.toWeight(), color: applyColor(userNameColor.toColor(context)), fontSize: scaledFontSize),
         ),
         if (includeInstance)
           TextSpan(
             text: suffix,
-            style: resolvedTextStyle.copyWith(
-              fontWeight: instanceNameThickness.toWeight(),
-              color: applyColor(instanceNameColor.toColor(context)),
-              fontSize: scaledFontSize,
-            ),
+            style: resolvedTextStyle.copyWith(fontWeight: instanceNameThickness.toWeight(), color: applyColor(instanceNameColor.toColor(context)), fontSize: scaledFontSize),
           ),
       ],
     );
 
     return autoSize
-        ? AutoSizeText.rich(
-            softWrap: false,
-            maxLines: 1,
-            overflow: TextOverflow.fade,
-            style: resolvedTextStyle,
-            textSpan,
-          )
-        : Text.rich(
-            softWrap: false,
-            overflow: TextOverflow.fade,
-            style: resolvedTextStyle,
-            textScaler: TextScaler.noScaling,
-            textSpan,
-          );
+        ? AutoSizeText.rich(softWrap: false, maxLines: 1, overflow: TextOverflow.fade, style: resolvedTextStyle, textSpan)
+        : Text.rich(softWrap: false, overflow: TextOverflow.fade, style: resolvedTextStyle, textScaler: TextScaler.noScaling, textSpan);
   }
 }
 
@@ -247,12 +222,7 @@ class CoreCommunityFullNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prefix = formatCommunityFullNamePrefix(
-      name,
-      displayName,
-      separator: separator,
-      useDisplayName: useDisplayName,
-    );
+    final prefix = formatCommunityFullNamePrefix(name, displayName, separator: separator, useDisplayName: useDisplayName);
     final suffix = formatCommunityFullNameSuffix(instance, separator: separator);
 
     final resolvedTextStyle = textStyle ?? Theme.of(context).textTheme.bodyMedium!;
@@ -265,38 +235,18 @@ class CoreCommunityFullNameWidget extends StatelessWidget {
       children: [
         TextSpan(
           text: prefix,
-          style: resolvedTextStyle.copyWith(
-            fontWeight: communityNameThickness.toWeight(),
-            color: applyColor(communityNameColor.toColor(context)),
-            fontSize: scaledFontSize,
-          ),
+          style: resolvedTextStyle.copyWith(fontWeight: communityNameThickness.toWeight(), color: applyColor(communityNameColor.toColor(context)), fontSize: scaledFontSize),
         ),
         if (includeInstance)
           TextSpan(
             text: suffix,
-            style: resolvedTextStyle.copyWith(
-              fontWeight: instanceNameThickness.toWeight(),
-              color: applyColor(instanceNameColor.toColor(context)),
-              fontSize: scaledFontSize,
-            ),
+            style: resolvedTextStyle.copyWith(fontWeight: instanceNameThickness.toWeight(), color: applyColor(instanceNameColor.toColor(context)), fontSize: scaledFontSize),
           ),
       ],
     );
 
     return autoSize
-        ? AutoSizeText.rich(
-            softWrap: false,
-            maxLines: 1,
-            overflow: TextOverflow.fade,
-            style: resolvedTextStyle,
-            textSpan,
-          )
-        : Text.rich(
-            softWrap: false,
-            overflow: TextOverflow.fade,
-            style: resolvedTextStyle,
-            textScaler: TextScaler.noScaling,
-            textSpan,
-          );
+        ? AutoSizeText.rich(softWrap: false, maxLines: 1, overflow: TextOverflow.fade, style: resolvedTextStyle, textSpan)
+        : Text.rich(softWrap: false, overflow: TextOverflow.fade, style: resolvedTextStyle, textScaler: TextScaler.noScaling, textSpan);
   }
 }

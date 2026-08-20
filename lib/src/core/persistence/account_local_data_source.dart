@@ -20,7 +20,9 @@ class AccountLocalDataSource {
       // Assign the next index
       final int newIndex = maxIndex + 1;
 
-      int id = await database.into(database.accounts).insert(
+      int id = await database
+          .into(database.accounts)
+          .insert(
             AccountsCompanion.insert(
               username: Value(account.username),
               jwt: Value(account.jwt),
@@ -50,7 +52,9 @@ class AccountLocalDataSource {
       // Assign the next index
       final int newIndex = maxIndex + 1;
 
-      int id = await database.into(database.accounts).insert(
+      int id = await database
+          .into(database.accounts)
+          .insert(
             AccountsCompanion.insert(
               username: Value(anonymousInstance.username),
               jwt: Value(anonymousInstance.jwt),
@@ -73,16 +77,18 @@ class AccountLocalDataSource {
   static Future<List<Account>> accounts() async {
     try {
       return (await (database.select(database.accounts)..where((t) => t.anonymous.equals(false))).get())
-          .map((account) => Account(
-                id: account.id.toString(),
-                username: account.username,
-                jwt: account.jwt,
-                instance: account.instance ?? '',
-                anonymous: account.anonymous,
-                userId: account.userId,
-                index: account.listIndex,
-                platform: account.platform,
-              ))
+          .map(
+            (account) => Account(
+              id: account.id.toString(),
+              username: account.username,
+              jwt: account.jwt,
+              instance: account.instance ?? '',
+              anonymous: account.anonymous,
+              userId: account.userId,
+              index: account.listIndex,
+              platform: account.platform,
+            ),
+          )
           .toList();
     } catch (e) {
       debugPrint(e.toString());
@@ -94,16 +100,18 @@ class AccountLocalDataSource {
   static Future<List<Account>> anonymousInstances() async {
     try {
       return (await (database.select(database.accounts)..where((t) => t.anonymous.equals(true))).get())
-          .map((account) => Account(
-                id: account.id.toString(),
-                username: account.username,
-                jwt: account.jwt,
-                instance: account.instance ?? '',
-                anonymous: account.anonymous,
-                userId: account.userId,
-                index: account.listIndex,
-                platform: account.platform,
-              ))
+          .map(
+            (account) => Account(
+              id: account.id.toString(),
+              username: account.username,
+              jwt: account.jwt,
+              instance: account.instance ?? '',
+              anonymous: account.anonymous,
+              userId: account.userId,
+              index: account.listIndex,
+              platform: account.platform,
+            ),
+          )
           .toList();
     } catch (e) {
       debugPrint(e.toString());
@@ -136,16 +144,20 @@ class AccountLocalDataSource {
 
   static Future<void> updateAccount(Account account) async {
     try {
-      await database.update(database.accounts).replace(AccountsCompanion(
-            id: Value(int.parse(account.id)),
-            username: Value(account.username),
-            jwt: Value(account.jwt),
-            instance: Value(account.instance),
-            anonymous: Value(account.anonymous),
-            userId: Value(account.userId),
-            listIndex: Value(account.index),
-            platform: Value(account.platform),
-          ));
+      await database
+          .update(database.accounts)
+          .replace(
+            AccountsCompanion(
+              id: Value(int.parse(account.id)),
+              username: Value(account.username),
+              jwt: Value(account.jwt),
+              instance: Value(account.instance),
+              anonymous: Value(account.anonymous),
+              userId: Value(account.userId),
+              listIndex: Value(account.index),
+              platform: Value(account.platform),
+            ),
+          );
     } catch (e) {
       debugPrint(e.toString());
     }

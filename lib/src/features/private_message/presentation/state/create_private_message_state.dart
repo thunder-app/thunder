@@ -3,13 +3,7 @@ part of 'create_private_message_cubit.dart';
 const _createPrivateMessageStateUnset = Object();
 
 /// Lifecycle status for the direct-message composer.
-enum CreatePrivateMessageStatus {
-  initial,
-  searching,
-  submitting,
-  success,
-  error,
-}
+enum CreatePrivateMessageStatus { initial, searching, submitting, success, error }
 
 /// State for composing and sending a direct message.
 class CreatePrivateMessageState extends Equatable {

@@ -20,8 +20,8 @@ class PrivateMessageThreadCubit extends Cubit<PrivateMessageThreadState> {
     required PrivateMessageRepository repository,
     List<ThunderPrivateMessage> initialMessages = const <ThunderPrivateMessage>[],
     this.conversationId,
-  })  : _repository = repository,
-        super(PrivateMessageThreadState(messages: markIncomingPrivateMessagesRead(initialMessages, account))) {
+  }) : _repository = repository,
+       super(PrivateMessageThreadState(messages: markIncomingPrivateMessagesRead(initialMessages, account))) {
     if (initialMessages.isNotEmpty) {
       unawaited(_markIncomingMessagesRead(initialMessages));
     }
@@ -42,34 +42,21 @@ class PrivateMessageThreadCubit extends Cubit<PrivateMessageThreadState> {
     try {
       emit(state.copyWith(status: reset ? PrivateMessageThreadStatus.loading : PrivateMessageThreadStatus.refreshing, message: null, errorReason: null));
 
-      final response = await _repository.conversation(
-        personId: participant.id,
-        conversationId: conversationId,
-        page: reset ? 1 : state.page,
-        limit: 50,
-      );
+      final response = await _repository.conversation(personId: participant.id, conversationId: conversationId, page: reset ? 1 : state.page, limit: 50);
 
-      final messages = markIncomingPrivateMessagesRead(
-        mergePrivateMessages(state.messages, response.isEmpty ? state.messages : response),
-        account,
-      );
+      final messages = markIncomingPrivateMessagesRead(mergePrivateMessages(state.messages, response.isEmpty ? state.messages : response), account);
       unawaited(_markIncomingMessagesRead(response));
 
-      emit(state.copyWith(
-        status: PrivateMessageThreadStatus.success,
-        messages: messages,
-        page: reset ? 2 : state.page + 1,
-        hasReachedEnd: response.length < 50,
-        message: null,
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: PrivateMessageThreadStatus.success, messages: messages, page: reset ? 2 : state.page + 1, hasReachedEnd: response.length < 50, message: null, errorReason: null));
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: PrivateMessageThreadStatus.error,
-        message: message,
-        errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
-      ));
+      emit(
+        state.copyWith(
+          status: PrivateMessageThreadStatus.error,
+          message: message,
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
+        ),
+      );
     }
   }
 
@@ -86,13 +73,7 @@ class PrivateMessageThreadCubit extends Cubit<PrivateMessageThreadState> {
 
   /// Adds a newly sent message to the thread.
   void appendMessage(ThunderPrivateMessage message) {
-    emit(state.copyWith(
-      status: PrivateMessageThreadStatus.success,
-      messages: mergePrivateMessages(state.messages, [message]),
-      quickReply: '',
-      message: null,
-      errorReason: null,
-    ));
+    emit(state.copyWith(status: PrivateMessageThreadStatus.success, messages: mergePrivateMessages(state.messages, [message]), quickReply: '', message: null, errorReason: null));
   }
 
   /// Sends the current quick reply.
@@ -104,22 +85,18 @@ class PrivateMessageThreadCubit extends Cubit<PrivateMessageThreadState> {
       emit(state.copyWith(status: PrivateMessageThreadStatus.sending, message: null, errorReason: null));
       final privateMessage = await _repository.create(recipientId: participant.id, content: content);
 
-      emit(state.copyWith(
-        status: PrivateMessageThreadStatus.success,
-        messages: mergePrivateMessages(state.messages, [privateMessage]),
-        quickReply: '',
-        message: null,
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: PrivateMessageThreadStatus.success, messages: mergePrivateMessages(state.messages, [privateMessage]), quickReply: '', message: null, errorReason: null));
 
       return privateMessage;
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: PrivateMessageThreadStatus.error,
-        message: message,
-        errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
-      ));
+      emit(
+        state.copyWith(
+          status: PrivateMessageThreadStatus.error,
+          message: message,
+          errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
+        ),
+      );
       return null;
     }
   }

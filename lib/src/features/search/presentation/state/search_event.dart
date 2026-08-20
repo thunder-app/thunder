@@ -18,11 +18,7 @@ final class SearchStarted extends SearchEvent {
   /// The favorite communities
   final List<ThunderCommunity>? favoriteCommunities;
 
-  const SearchStarted({
-    required this.query,
-    this.force = false,
-    this.favoriteCommunities,
-  });
+  const SearchStarted({required this.query, this.force = false, this.favoriteCommunities});
 
   @override
   List<Object?> get props => [query, force, favoriteCommunities];
@@ -41,10 +37,7 @@ final class SearchContinued extends SearchEvent {
   /// The favorite communities
   final List<ThunderCommunity>? favoriteCommunities;
 
-  const SearchContinued({
-    required this.query,
-    this.favoriteCommunities,
-  });
+  const SearchContinued({required this.query, this.favoriteCommunities});
 
   @override
   List<Object?> get props => [query, favoriteCommunities];
@@ -92,17 +85,17 @@ class SearchFiltersUpdated extends SearchEvent {
 
   @override
   List<Object?> get props => [
-        sortType,
-        sortTypeIcon,
-        sortTypeLabel,
-        searchType,
-        feedListType,
-        searchByUrl,
-        communityFilter,
-        communityFilterName,
-        clearCommunityFilter,
-        creatorFilter,
-        creatorFilterName,
-        clearCreatorFilter,
-      ];
+    sortType,
+    sortTypeIcon,
+    sortTypeLabel,
+    searchType,
+    feedListType,
+    searchByUrl,
+    communityFilter,
+    communityFilterName,
+    clearCommunityFilter,
+    creatorFilter,
+    creatorFilterName,
+    clearCreatorFilter,
+  ];
 }

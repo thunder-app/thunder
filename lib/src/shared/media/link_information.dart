@@ -4,15 +4,7 @@ import 'package:thunder/src/core/domain/domain.dart';
 
 /// A generic widget that displays information about a media/link URL.
 class LinkInformation extends StatelessWidget {
-  const LinkInformation({
-    super.key,
-    this.url,
-    this.mediaType,
-    required this.viewMode,
-    this.showEdgeToEdgeImages = false,
-    this.onTap,
-    this.onLongPress,
-  });
+  const LinkInformation({super.key, this.url, this.mediaType, required this.viewMode, this.showEdgeToEdgeImages = false, this.onTap, this.onLongPress});
 
   final String? url;
   final MediaType? mediaType;
@@ -43,14 +35,7 @@ class LinkInformation extends StatelessWidget {
         onTap: onTap,
         onLongPress: onLongPress,
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: borderRadius,
-            color: ElevationOverlay.applySurfaceTint(
-              theme.colorScheme.surface.withValues(alpha: 0.8),
-              theme.colorScheme.surfaceTint,
-              10,
-            ),
-          ),
+          decoration: BoxDecoration(borderRadius: borderRadius, color: ElevationOverlay.applySurfaceTint(theme.colorScheme.surface.withValues(alpha: 0.8), theme.colorScheme.surfaceTint, 10)),
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Row(
             children: [
@@ -60,11 +45,7 @@ class LinkInformation extends StatelessWidget {
               ),
               if (viewMode != ViewMode.compact)
                 Expanded(
-                  child: Text(
-                    url ?? '',
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  child: Text(url ?? '', overflow: TextOverflow.ellipsis, style: theme.textTheme.bodyMedium),
                 ),
             ],
           ),

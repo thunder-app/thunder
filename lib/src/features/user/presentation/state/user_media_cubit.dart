@@ -12,26 +12,10 @@ import 'package:thunder/src/core/services/localization_service.dart';
 
 const _userMediaUnset = Object();
 
-enum UserMediaStatus {
-  initial,
-  loading,
-  loadSuccess,
-  loadFailure,
-  deleting,
-  searching,
-  searchSuccess,
-  notLoggedIn,
-}
+enum UserMediaStatus { initial, loading, loadSuccess, loadFailure, deleting, searching, searchSuccess, notLoggedIn }
 
 class UserMediaState extends Equatable {
-  const UserMediaState({
-    this.status = UserMediaStatus.initial,
-    this.errorMessage = '',
-    this.errorReason,
-    this.images,
-    this.imageSearchPosts,
-    this.imageSearchComments,
-  });
+  const UserMediaState({this.status = UserMediaStatus.initial, this.errorMessage = '', this.errorReason, this.images, this.imageSearchPosts, this.imageSearchComments});
 
   final UserMediaStatus status;
   final String? errorMessage;
@@ -64,8 +48,8 @@ class UserMediaState extends Equatable {
 
 class UserMediaCubit extends Cubit<UserMediaState> {
   UserMediaCubit({required this.account, required this.accountRepository, required this.searchRepository, required LocalizationService localizationService})
-      : _localizationService = localizationService,
-        super(const UserMediaState());
+    : _localizationService = localizationService,
+      super(const UserMediaState());
 
   final Account account;
   final AccountRepository accountRepository;
@@ -90,7 +74,13 @@ class UserMediaCubit extends Cubit<UserMediaState> {
       emit(state.copyWith(status: UserMediaStatus.loadSuccess, images: images, errorMessage: '', errorReason: null));
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(status: UserMediaStatus.loadFailure, errorMessage: message, errorReason: AppErrorReason.unexpected(message: message, details: e.toString())));
+      emit(
+        state.copyWith(
+          status: UserMediaStatus.loadFailure,
+          errorMessage: message,
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
+        ),
+      );
     }
   }
 
@@ -102,18 +92,26 @@ class UserMediaCubit extends Cubit<UserMediaState> {
       final l10n = _localizationService.l10n;
 
       if (account.anonymous) {
-        return emit(state.copyWith(
-          status: UserMediaStatus.notLoggedIn,
-          errorMessage: l10n.userNotLoggedIn,
-          errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
-        ));
+        return emit(
+          state.copyWith(
+            status: UserMediaStatus.notLoggedIn,
+            errorMessage: l10n.userNotLoggedIn,
+            errorReason: AppErrorReason.notLoggedIn(message: l10n.userNotLoggedIn),
+          ),
+        );
       }
 
       await accountRepository.deleteImage(file: id, token: deleteToken);
       emit(state.copyWith(status: UserMediaStatus.loadSuccess, images: images, errorMessage: '', errorReason: null));
     } catch (e) {
       final message = _localizationService.l10n.errorDeletingImage(getExceptionErrorMessage(e));
-      emit(state.copyWith(status: UserMediaStatus.loadFailure, errorMessage: message, errorReason: AppErrorReason.actionFailed(message: message, details: e.toString())));
+      emit(
+        state.copyWith(
+          status: UserMediaStatus.loadFailure,
+          errorMessage: message,
+          errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
+        ),
+      );
     }
   }
 
@@ -129,16 +127,16 @@ class UserMediaCubit extends Cubit<UserMediaState> {
 
       final posts = mergeUniquePosts(primary: postsResponse.posts, secondary: postsByUrlResponse.posts);
 
-      emit(state.copyWith(
-        status: UserMediaStatus.searchSuccess,
-        imageSearchPosts: await parsePosts(posts),
-        imageSearchComments: response.comments,
-        errorMessage: '',
-        errorReason: null,
-      ));
+      emit(state.copyWith(status: UserMediaStatus.searchSuccess, imageSearchPosts: await parsePosts(posts), imageSearchComments: response.comments, errorMessage: '', errorReason: null));
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(status: UserMediaStatus.loadFailure, errorMessage: message, errorReason: AppErrorReason.unexpected(message: message, details: e.toString())));
+      emit(
+        state.copyWith(
+          status: UserMediaStatus.loadFailure,
+          errorMessage: message,
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
+        ),
+      );
     }
   }
 }

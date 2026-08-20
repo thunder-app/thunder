@@ -186,7 +186,7 @@ class LanguageLocal {
       "xh": {"name": "Xhosa", "nativeName": "isiXhosa"},
       "yi": {"name": "Yiddish", "nativeName": "ייִדיש"},
       "yo": {"name": "Yoruba", "nativeName": "Yorùbá"},
-      "za": {"name": "Zhuang, Chuang", "nativeName": "Saɯ cueŋƅ, Saw cuengh"}
+      "za": {"name": "Zhuang, Chuang", "nativeName": "Saɯ cueŋƅ, Saw cuengh"},
     };
 
     if (languageLabels.containsKey(key)) {

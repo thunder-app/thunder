@@ -85,13 +85,7 @@ class InboxItemActionEvent extends InboxEvent {
   /// Typed payload to apply for the selected [action].
   final InboxActionInput? actionInput;
 
-  const InboxItemActionEvent({
-    required this.action,
-    this.commentReplyId,
-    this.personMentionId,
-    this.privateMessageId,
-    this.actionInput,
-  });
+  const InboxItemActionEvent({required this.action, this.commentReplyId, this.personMentionId, this.privateMessageId, this.actionInput});
 
   @override
   List<Object?> get props => [action, commentReplyId, personMentionId, privateMessageId, actionInput];

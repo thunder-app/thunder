@@ -17,13 +17,7 @@ class FeedAppBarTitle extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocSelector<FeedBloc, FeedState, ({FeedListType? feedListType, PostSortType? postSortType, FeedType? feedType, ThunderCommunity? community, ThunderUser? user})>(
-      selector: (state) => (
-        feedListType: state.feedListType,
-        postSortType: state.postSortType,
-        feedType: state.feedType,
-        community: state.community,
-        user: state.user,
-      ),
+      selector: (state) => (feedListType: state.feedListType, postSortType: state.postSortType, feedType: state.feedType, community: state.community, user: state.user),
       builder: (context, _) {
         final state = context.read<FeedBloc>().state;
 
@@ -31,19 +25,8 @@ class FeedAppBarTitle extends StatelessWidget {
           duration: const Duration(milliseconds: 200),
           opacity: visible ? 1.0 : 0.0,
           child: ListTile(
-            title: Text(
-              getAppBarTitle(state),
-              style: theme.textTheme.titleLarge,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Row(
-              children: [
-                Icon(getSortIcon(state), size: 13.0),
-                const SizedBox(width: 4.0),
-                Text(getSortName(state)),
-              ],
-            ),
+            title: Text(getAppBarTitle(state), style: theme.textTheme.titleLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
+            subtitle: Row(children: [Icon(getSortIcon(state), size: 13.0), const SizedBox(width: 4.0), Text(getSortName(state))]),
             contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
           ),
         );

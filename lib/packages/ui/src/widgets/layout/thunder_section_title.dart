@@ -5,14 +5,7 @@ import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
 /// Section title with optional description for Thunder section headers.
 @immutable
 class ThunderSectionTitle extends StatelessWidget {
-  const ThunderSectionTitle({
-    super.key,
-    required this.title,
-    this.description,
-    this.titleStyle,
-    this.descriptionStyle,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-  });
+  const ThunderSectionTitle({super.key, required this.title, this.description, this.titleStyle, this.descriptionStyle, this.padding = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0)});
 
   /// Section title text.
   final String title;
@@ -45,7 +38,8 @@ class ThunderSectionTitle extends StatelessWidget {
               padding: const EdgeInsets.only(top: 4.0),
               child: Text(
                 description!,
-                style: descriptionStyle ??
+                style:
+                    descriptionStyle ??
                     theme.textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w400,
                       color: theme.colorScheme.onSurface.withValues(alpha: thunderTheme.sectionDescriptionAlpha),

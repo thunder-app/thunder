@@ -44,20 +44,14 @@ class ThunderStateView extends StatelessWidget {
   ///
   /// Omits error/empty-specific fields such as [title], [message], [actions],
   /// [icon], [compact], and [child].
-  const ThunderStateView.loading({
-    super.key,
-    this.sliver = false,
-    this.fillRemaining = true,
-    this.hasScrollBody = false,
-    this.padding = const EdgeInsets.all(12.0),
-    this.semanticsLabel,
-  })  : mode = ThunderStateViewMode.loading,
-        title = null,
-        message = null,
-        actions = const [],
-        icon = null,
-        compact = false,
-        child = null;
+  const ThunderStateView.loading({super.key, this.sliver = false, this.fillRemaining = true, this.hasScrollBody = false, this.padding = const EdgeInsets.all(12.0), this.semanticsLabel})
+    : mode = ThunderStateViewMode.loading,
+      title = null,
+      message = null,
+      actions = const [],
+      icon = null,
+      compact = false,
+      child = null;
 
   /// Presentation mode for this state view.
   final ThunderStateViewMode mode;
@@ -100,40 +94,17 @@ class ThunderStateView extends StatelessWidget {
     final content = Padding(
       padding: padding,
       child: Center(
-        child: _ThunderStateViewBody(
-          mode: mode,
-          title: title,
-          message: message,
-          actions: actions,
-          icon: icon,
-          compact: compact,
-          semanticsLabel: semanticsLabel,
-          child: child,
-        ),
+        child: _ThunderStateViewBody(mode: mode, title: title, message: message, actions: actions, icon: icon, compact: compact, semanticsLabel: semanticsLabel, child: child),
       ),
     );
 
-    return ThunderSliverAdapter(
-      sliver: sliver,
-      fillRemaining: fillRemaining,
-      hasScrollBody: hasScrollBody,
-      child: content,
-    );
+    return ThunderSliverAdapter(sliver: sliver, fillRemaining: fillRemaining, hasScrollBody: hasScrollBody, child: content);
   }
 }
 
 /// Inner content builder for [ThunderStateView] modes.
 class _ThunderStateViewBody extends StatelessWidget {
-  const _ThunderStateViewBody({
-    required this.mode,
-    this.title,
-    this.message,
-    required this.actions,
-    this.icon,
-    required this.compact,
-    this.child,
-    this.semanticsLabel,
-  });
+  const _ThunderStateViewBody({required this.mode, this.title, this.message, required this.actions, this.icon, required this.compact, this.child, this.semanticsLabel});
 
   /// The presentation mode for this state view.
   final ThunderStateViewMode mode;
@@ -163,36 +134,20 @@ class _ThunderStateViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (mode) {
       case ThunderStateViewMode.loading:
-        return Semantics(
-          label: semanticsLabel,
-          child: const CircularProgressIndicator(),
-        );
+        return Semantics(label: semanticsLabel, child: const CircularProgressIndicator());
       case ThunderStateViewMode.custom:
         return child ?? const SizedBox.shrink();
       case ThunderStateViewMode.empty:
-        return ThunderStateText(
-          title: title,
-          message: message,
-          italic: true,
-        );
+        return ThunderStateText(title: title, message: message, italic: true);
       case ThunderStateViewMode.error:
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ThunderStateIcon(
-              icon: icon ?? Icons.warning_rounded,
-              compact: compact,
-            ),
+            ThunderStateIcon(icon: icon ?? Icons.warning_rounded, compact: compact),
             SizedBox(height: compact ? 16.0 : 32.0),
-            ThunderStateText(
-              title: title,
-              message: message,
-            ),
-            if (actions.isNotEmpty) ...[
-              SizedBox(height: compact ? 16.0 : 32.0),
-              ThunderStateActions(actions: actions),
-            ],
+            ThunderStateText(title: title, message: message),
+            if (actions.isNotEmpty) ...[SizedBox(height: compact ? 16.0 : 32.0), ThunderStateActions(actions: actions)],
           ],
         );
     }

@@ -5,13 +5,7 @@ import 'package:thunder/src/features/post/presentation/widgets/post_view_all_com
 
 /// Sliver that displays the post body and optional highlighted-thread controls.
 class PostBodySliver extends StatelessWidget {
-  const PostBodySliver({
-    super.key,
-    required this.post,
-    required this.crossPosts,
-    required this.viewSource,
-    required this.showCompactPostBody,
-  });
+  const PostBodySliver({super.key, required this.post, required this.crossPosts, required this.viewSource, required this.showCompactPostBody});
 
   /// Post rendered at the top of the page.
   final ThunderPost post;
@@ -29,12 +23,7 @@ class PostBodySliver extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverList.list(
       children: [
-        PostBody(
-          post: post,
-          crossPosts: crossPosts,
-          viewSource: viewSource,
-          showCompactPostBody: showCompactPostBody,
-        ),
+        PostBody(post: post, crossPosts: crossPosts, viewSource: viewSource, showCompactPostBody: showCompactPostBody),
         const PostViewAllCommentsBanner(),
       ],
     );

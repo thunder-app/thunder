@@ -51,11 +51,7 @@ class UserPreferences {
       await file.writeAsString(jsonData);
 
       return await FlutterFileDialog.saveFile(
-        params: SaveFileDialogParams(
-          mimeTypesFilter: ['application/json'],
-          sourceFilePath: filePath,
-          fileName: 'thunder_prefs.json',
-        ),
+        params: SaveFileDialogParams(mimeTypesFilter: ['application/json'], sourceFilePath: filePath, fileName: 'thunder_prefs.json'),
       );
     } catch (e) {
       debugPrint('Error exporting preferences: $e');
@@ -68,11 +64,7 @@ class UserPreferences {
   /// Returns true if the import is successful, false otherwise.
   static Future<bool> importFromJson() async {
     try {
-      final filePath = await FlutterFileDialog.pickFile(
-        params: const OpenFileDialogParams(
-          fileExtensionsFilter: ['json'],
-        ),
-      );
+      final filePath = await FlutterFileDialog.pickFile(params: const OpenFileDialogParams(fileExtensionsFilter: ['json']));
 
       if (filePath != null) {
         final file = File(filePath);
@@ -94,8 +86,10 @@ class UserPreferences {
   /// Returns the user-facing preference values that are safe to export.
   static Map<String, dynamic> exportableValues() {
     final prefs = instance.preferences;
-    return prefs.getKeys().where((key) => !key.startsWith(internalPreferencesPrefix) && !LocalSettings.importExportExcludedSettings.any((excluded) => key.startsWith(excluded.name))).fold({},
-        (values, key) {
+    return prefs.getKeys().where((key) => !key.startsWith(internalPreferencesPrefix) && !LocalSettings.importExportExcludedSettings.any((excluded) => key.startsWith(excluded.name))).fold({}, (
+      values,
+      key,
+    ) {
       values[key] = prefs.get(key);
       return values;
     });

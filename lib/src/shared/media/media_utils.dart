@@ -60,10 +60,7 @@ bool _isAvifImage(String path) {
 /// Fetches the image dimensions from the given URL using partial content fetch.
 Future<List<int>> processImageDimensions(String imageUrl) async {
   try {
-    final response = await http.get(
-      Uri.parse(imageUrl),
-      headers: {'Range': 'bytes=0-10240'},
-    );
+    final response = await http.get(Uri.parse(imageUrl), headers: {'Range': 'bytes=0-10240'});
 
     if (response.statusCode == 206 || response.statusCode == 200) {
       final sizeResult = ImageDimensionParser().parse(response.bodyBytes);
@@ -131,9 +128,7 @@ Future<Size> retrieveImageDimensions({String? imageUrl, Uint8List? imageBytes}) 
 
         if (dimensions.isNotEmpty) {
           size = Size(dimensions[0].toDouble(), dimensions[1].toDouble());
-          debugPrint(
-            'Retrieved image dimensions using partial content fetch: ${dimensions[0]}x${dimensions[1]}',
-          );
+          debugPrint('Retrieved image dimensions using partial content fetch: ${dimensions[0]}x${dimensions[1]}');
         }
       } catch (e) {
         debugPrint('Failed to retrieve image dimensions using partial content fetch: $e');
@@ -188,22 +183,8 @@ Future<List<String>> selectImagesToUpload({bool allowMultiple = false}) async {
   return [file.path];
 }
 
-Widget buildImageViewerWidget(
-  BuildContext context, {
-  String? altText,
-  Uint8List? bytes,
-  bool isPeek = false,
-  void Function()? navigateToPost,
-  int? postId,
-  String? url,
-}) {
-  return ImageViewer(
-    altText: altText,
-    bytes: bytes,
-    isPeek: isPeek,
-    navigateToPost: navigateToPost,
-    url: url,
-  );
+Widget buildImageViewerWidget(BuildContext context, {String? altText, Uint8List? bytes, bool isPeek = false, void Function()? navigateToPost, int? postId, String? url}) {
+  return ImageViewer(altText: altText, bytes: bytes, isPeek: isPeek, navigateToPost: navigateToPost, url: url);
 }
 
 void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost, String? altText}) {
@@ -213,21 +194,11 @@ void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? 
       transitionDuration: const Duration(milliseconds: 100),
       reverseTransitionDuration: const Duration(milliseconds: 50),
       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-        return buildImageViewerWidget(
-          context,
-          url: url,
-          bytes: bytes,
-          postId: postId,
-          navigateToPost: navigateToPost,
-          altText: altText,
-        );
+        return buildImageViewerWidget(context, url: url, bytes: bytes, postId: postId, navigateToPost: navigateToPost, altText: altText);
       },
       transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
         return Align(
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          child: FadeTransition(opacity: animation, child: child),
         );
       },
     ),
@@ -235,23 +206,7 @@ void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? 
 }
 
 bool isVideoUrl(String url) {
-  const videoExtensions = [
-    'mp4',
-    'avi',
-    'mkv',
-    'mov',
-    'wmv',
-    'flv',
-    'webm',
-    'ogg',
-    'ogv',
-    '3gp',
-    'mpeg',
-    'mpg',
-    'm4v',
-    'ts',
-    'vob',
-  ];
+  const videoExtensions = ['mp4', 'avi', 'mkv', 'mov', 'wmv', 'flv', 'webm', 'ogg', 'ogv', '3gp', 'mpeg', 'mpg', 'm4v', 'ts', 'vob'];
 
   final youtubeVideoId = YoutubePlayerController.convertUrlToId(url);
   final fileExtension = url.split('.').last.toLowerCase();
@@ -260,12 +215,7 @@ bool isVideoUrl(String url) {
 }
 
 /// Generic video launcher for package consumers.
-void showVideoPlayer(
-  BuildContext context, {
-  String? url,
-  int? postId,
-  void Function(BuildContext context, String url)? onOpenVideo,
-}) {
+void showVideoPlayer(BuildContext context, {String? url, int? postId, void Function(BuildContext context, String url)? onOpenVideo}) {
   if (url == null) return;
   HapticFeedback.selectionClick();
   onOpenVideo?.call(context, url);

@@ -5,10 +5,7 @@ class PostListActionController {
 
   final PostRepository _postRepository;
 
-  List<ThunderPost> reconcile({
-    required List<ThunderPost> sourcePosts,
-    required List<ThunderPost> currentPosts,
-  }) {
+  List<ThunderPost> reconcile({required List<ThunderPost> sourcePosts, required List<ThunderPost> currentPosts}) {
     if (currentPosts.isEmpty) return sourcePosts;
 
     final currentById = {for (final post in currentPosts) post.id: post};
@@ -16,11 +13,13 @@ class PostListActionController {
   }
 
   List<ThunderPost> updatePost(List<ThunderPost> posts, ThunderPost updatedPost) {
-    return posts.map((post) {
-      if (post.id != updatedPost.id) return post;
-      final preserveMedia = updatedPost.media.isEmpty && post.media.isNotEmpty;
-      return preserveMedia ? updatedPost.copyWith(media: post.media) : updatedPost;
-    }).toList(growable: false);
+    return posts
+        .map((post) {
+          if (post.id != updatedPost.id) return post;
+          final preserveMedia = updatedPost.media.isEmpty && post.media.isNotEmpty;
+          return preserveMedia ? updatedPost.copyWith(media: post.media) : updatedPost;
+        })
+        .toList(growable: false);
   }
 
   List<ThunderPost> dismissHiddenPost(List<ThunderPost> posts, int postId) {
@@ -28,11 +27,13 @@ class PostListActionController {
   }
 
   List<ThunderPost> dismissBlocked(List<ThunderPost> posts, {int? userId, int? communityId}) {
-    return posts.where((post) {
-      if (userId != null && post.creator?.id == userId) return false;
-      if (communityId != null && post.community?.id == communityId) return false;
-      return true;
-    }).toList(growable: false);
+    return posts
+        .where((post) {
+          if (userId != null && post.creator?.id == userId) return false;
+          if (communityId != null && post.community?.id == communityId) return false;
+          return true;
+        })
+        .toList(growable: false);
   }
 
   Future<List<ThunderPost>> vote(List<ThunderPost> posts, ThunderPost post, int value) async {

@@ -2,26 +2,10 @@ part of 'create_comment_cubit.dart';
 
 const _createCommentStateUnset = Object();
 
-enum CreateCommentStatus {
-  initial,
-  loading,
-  submitting,
-  error,
-  success,
-  imageUploadInProgress,
-  imageUploadSuccess,
-  imageUploadFailure,
-  unknown,
-}
+enum CreateCommentStatus { initial, loading, submitting, error, success, imageUploadInProgress, imageUploadSuccess, imageUploadFailure, unknown }
 
 class CreateCommentState extends Equatable {
-  const CreateCommentState({
-    this.status = CreateCommentStatus.initial,
-    this.comment,
-    this.imageUrls,
-    this.message,
-    this.errorReason,
-  });
+  const CreateCommentState({this.status = CreateCommentStatus.initial, this.comment, this.imageUrls, this.message, this.errorReason});
 
   /// The status of the current cubit
   final CreateCommentStatus status;

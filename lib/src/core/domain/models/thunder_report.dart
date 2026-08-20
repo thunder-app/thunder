@@ -49,17 +49,7 @@ class ThunderReport extends Equatable {
   /// Reported private message for [ReportKind.privateMessage].
   final ThunderPrivateMessage? privateMessage;
 
-  const ThunderReport({
-    required this.id,
-    required this.kind,
-    required this.reason,
-    required this.resolved,
-    this.creator,
-    this.post,
-    this.comment,
-    this.community,
-    this.privateMessage,
-  });
+  const ThunderReport({required this.id, required this.kind, required this.reason, required this.resolved, this.creator, this.post, this.comment, this.community, this.privateMessage});
 
   @override
   List<Object?> get props => [id, kind, reason, resolved, creator, post, comment, community, privateMessage];

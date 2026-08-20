@@ -105,30 +105,30 @@ class ThunderPost extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        url,
-        body,
-        creatorId,
-        communityId,
-        published,
-        updated,
-        thumbnailUrl,
-        apId,
-        embedVideoUrl,
-        languageId,
-        altText,
-        textPreview,
-        creator,
-        community,
-        imageDetails,
-        status,
-        counts,
-        context,
-        media,
-        tags,
-        flairs,
-      ];
+    id,
+    name,
+    url,
+    body,
+    creatorId,
+    communityId,
+    published,
+    updated,
+    thumbnailUrl,
+    apId,
+    embedVideoUrl,
+    languageId,
+    altText,
+    textPreview,
+    creator,
+    community,
+    imageDetails,
+    status,
+    counts,
+    context,
+    media,
+    tags,
+    flairs,
+  ];
 
   ThunderPost copyWith({
     int? id,
@@ -205,28 +205,12 @@ class PostStatus extends Equatable {
   /// Whether it is featured on the local instance.
   final bool featuredLocal;
 
-  const PostStatus({
-    required this.deleted,
-    required this.removed,
-    required this.locked,
-    required this.nsfw,
-    required this.local,
-    required this.featuredCommunity,
-    required this.featuredLocal,
-  });
+  const PostStatus({required this.deleted, required this.removed, required this.locked, required this.nsfw, required this.local, required this.featuredCommunity, required this.featuredLocal});
 
   @override
   List<Object?> get props => [deleted, removed, locked, nsfw, local, featuredCommunity, featuredLocal];
 
-  PostStatus copyWith({
-    bool? deleted,
-    bool? removed,
-    bool? locked,
-    bool? nsfw,
-    bool? local,
-    bool? featuredCommunity,
-    bool? featuredLocal,
-  }) {
+  PostStatus copyWith({bool? deleted, bool? removed, bool? locked, bool? nsfw, bool? local, bool? featuredCommunity, bool? featuredLocal}) {
     return PostStatus(
       deleted: deleted ?? this.deleted,
       removed: removed ?? this.removed,
@@ -258,26 +242,12 @@ class PostCounts extends Equatable {
   /// Time of the newest comment, when available.
   final DateTime? newestCommentAt;
 
-  const PostCounts({
-    this.score,
-    this.upvotes,
-    this.downvotes,
-    this.comments,
-    this.unreadComments,
-    this.newestCommentAt,
-  });
+  const PostCounts({this.score, this.upvotes, this.downvotes, this.comments, this.unreadComments, this.newestCommentAt});
 
   @override
   List<Object?> get props => [score, upvotes, downvotes, comments, unreadComments, newestCommentAt];
 
-  PostCounts copyWith({
-    int? score,
-    int? upvotes,
-    int? downvotes,
-    int? comments,
-    int? unreadComments,
-    DateTime? newestCommentAt,
-  }) {
+  PostCounts copyWith({int? score, int? upvotes, int? downvotes, int? comments, int? unreadComments, DateTime? newestCommentAt}) {
     return PostCounts(
       score: score ?? this.score,
       upvotes: upvotes ?? this.upvotes,
@@ -334,18 +304,7 @@ class PostContext extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-        saved,
-        read,
-        hidden,
-        vote,
-        subscribed,
-        creatorBlocked,
-        creatorBannedFromCommunity,
-        creatorIsModerator,
-        creatorIsAdmin,
-        canModerate,
-      ];
+  List<Object?> get props => [saved, read, hidden, vote, subscribed, creatorBlocked, creatorBannedFromCommunity, creatorIsModerator, creatorIsAdmin, canModerate];
 
   PostContext copyWith({
     bool? saved,

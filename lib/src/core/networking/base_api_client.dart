@@ -34,12 +34,7 @@ abstract class BaseApiClient {
   /// Creates a new API client.
   ///
   /// An optional [httpClient] can be provided for testing purposes.
-  BaseApiClient({
-    required this.account,
-    this.debug = false,
-    required this.version,
-    http.Client? httpClient,
-  }) : httpClient = httpClient ?? http.Client();
+  BaseApiClient({required this.account, this.debug = false, required this.version, http.Client? httpClient}) : httpClient = httpClient ?? http.Client();
 
   /// The base path for API endpoints (e.g., '/api/v3', '/api/alpha').
   String get basePath;
@@ -52,12 +47,7 @@ abstract class BaseApiClient {
   Map<String, String> buildHeaders() {
     final appVersion = getCurrentVersion(removeInternalBuildNumber: true, trimV: true);
 
-    return {
-      'User-Agent': 'Thunder/$appVersion',
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}',
-    };
+    return {'User-Agent': 'Thunder/$appVersion', 'Content-Type': 'application/json', 'Accept': 'application/json', if (account.jwt != null) 'Authorization': 'Bearer ${account.jwt}'};
   }
 
   /// Handle response from the request.
@@ -69,11 +59,7 @@ abstract class BaseApiClient {
   Future<dynamic> handleResponse(Uri uri, http.Response response) async {
     // Check for rate limiting
     if (response.statusCode == 429) {
-      throw RateLimitException(
-        'Rate limit exceeded',
-        platformName: platformName,
-        retryAfter: _parseRetryAfter(response.headers['retry-after']),
-      );
+      throw RateLimitException('Rate limit exceeded', platformName: platformName, retryAfter: _parseRetryAfter(response.headers['retry-after']));
     }
 
     // Check for error responses
@@ -90,12 +76,7 @@ abstract class BaseApiClient {
         // Body is not JSON or doesn't contain error field
       }
 
-      throw ApiErrorException(
-        response.body,
-        statusCode: response.statusCode,
-        errorCode: errorCode ?? response.statusCode.toString(),
-        platformName: platformName,
-      );
+      throw ApiErrorException(response.body, statusCode: response.statusCode, errorCode: errorCode ?? response.statusCode.toString(), platformName: platformName);
     }
 
     return compute(jsonDecode, response.body);
@@ -115,11 +96,7 @@ abstract class BaseApiClient {
   /// [data] - Request parameters/body data.
   ///
   /// Returns the parsed JSON response body. Throws [ApiException] subclasses on errors.
-  Future<Map<String, dynamic>> request(
-    HttpMethod method,
-    String endpoint,
-    Map<String, dynamic> data,
-  ) async {
+  Future<Map<String, dynamic>> request(HttpMethod method, String endpoint, Map<String, dynamic> data) async {
     try {
       final headers = buildHeaders();
       data.removeWhere((key, value) => value == null);
@@ -153,15 +130,9 @@ abstract class BaseApiClient {
 
       return await handleResponse(uri, response) as Map<String, dynamic>;
     } on SocketException {
-      throw NetworkException(
-        'network_error',
-        platformName: platformName,
-      );
+      throw NetworkException('network_error', platformName: platformName);
     } on http.ClientException {
-      throw NetworkException(
-        'network_error',
-        platformName: platformName,
-      );
+      throw NetworkException('network_error', platformName: platformName);
     } catch (e) {
       if (debug) debugPrint('$platformName API: Error: $e');
       rethrow;

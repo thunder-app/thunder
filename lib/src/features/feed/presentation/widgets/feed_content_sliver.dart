@@ -8,14 +8,7 @@ import 'package:thunder/src/features/feed/feed.dart';
 
 /// Sliver that displays either feed posts or user-profile comments.
 class FeedContentSliver extends StatelessWidget {
-  const FeedContentSliver({
-    super.key,
-    required this.posts,
-    required this.comments,
-    required this.feedType,
-    required this.selectedSubview,
-    required this.queuedForRemoval,
-  });
+  const FeedContentSliver({super.key, required this.posts, required this.comments, required this.feedType, required this.selectedSubview, required this.queuedForRemoval});
 
   final List<ThunderPost> posts;
   final List<ThunderComment> comments;
@@ -33,10 +26,7 @@ class FeedContentSliver extends StatelessWidget {
     final markPostReadOnScroll = context.select<FeedPreferencesCubit, bool>((cubit) => cubit.state.markPostReadOnScroll);
 
     if (selectedSubview == FeedTypeSubview.comment) {
-      return FeedCommentCardList(
-        comments: comments,
-        tabletMode: tabletMode,
-      );
+      return FeedCommentCardList(comments: comments, tabletMode: tabletMode);
     }
 
     return FeedPostCardList(

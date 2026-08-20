@@ -15,12 +15,7 @@ class CrossPosts extends StatefulWidget {
   final ThunderPost? originalPost;
   final bool? isNewPost;
 
-  const CrossPosts({
-    super.key,
-    required this.crossPosts,
-    this.originalPost,
-    this.isNewPost,
-  }) : assert(originalPost != null || isNewPost == true);
+  const CrossPosts({super.key, required this.crossPosts, this.originalPost, this.isNewPost}) : assert(originalPost != null || isNewPost == true);
 
   @override
   State<CrossPosts> createState() => _CrossPostsState();
@@ -64,18 +59,15 @@ class _CrossPostsState extends State<CrossPosts> {
                                 Expanded(
                                   child: Row(
                                     children: [
-                                      Icon(
-                                        Icons.repeat_rounded,
-                                        size: 14.0,
-                                        color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
-                                      ),
+                                      Icon(Icons.repeat_rounded, size: 14.0, color: theme.colorScheme.onSurface.withValues(alpha: 0.9)),
                                       SizedBox(width: 4.0),
                                       Flexible(
                                         child: CommunityFullNameWidget(
-                                            name: widget.crossPosts[index].community?.name,
-                                            displayName: widget.crossPosts[index].community?.title,
-                                            instance: fetchInstanceNameFromUrl(widget.crossPosts[index].community?.actorId),
-                                            textStyle: crossPostLinkTextStyle),
+                                          name: widget.crossPosts[index].community?.name,
+                                          displayName: widget.crossPosts[index].community?.title,
+                                          instance: fetchInstanceNameFromUrl(widget.crossPosts[index].community?.actorId),
+                                          textStyle: crossPostLinkTextStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -109,17 +101,18 @@ class _CrossPostsState extends State<CrossPosts> {
                           text: _areCrossPostsExpanded
                               ? l10n.collapse
                               : widget.isNewPost == true
-                                  ? '${l10n.alreadyPostedTo} '
-                                  : '${l10n.crossPostedTo} ',
+                              ? '${l10n.alreadyPostedTo} '
+                              : '${l10n.crossPostedTo} ',
                           style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
                         ),
                         if (!_areCrossPostsExpanded)
                           WidgetSpan(
                             child: CommunityFullNameWidget(
-                                name: widget.crossPosts[0].community?.name,
-                                displayName: widget.crossPosts[0].community?.title,
-                                instance: fetchInstanceNameFromUrl(widget.crossPosts[0].community?.actorId),
-                                textStyle: theme.textTheme.bodySmall?.copyWith(color: crossPostLinkTextStyle?.color)),
+                              name: widget.crossPosts[0].community?.name,
+                              displayName: widget.crossPosts[0].community?.title,
+                              instance: fetchInstanceNameFromUrl(widget.crossPosts[0].community?.actorId),
+                              textStyle: theme.textTheme.bodySmall?.copyWith(color: crossPostLinkTextStyle?.color),
+                            ),
                           ),
                         TextSpan(
                           text: _areCrossPostsExpanded || widget.crossPosts.length == 1 ? '' : ' ${l10n.andXMore(widget.crossPosts.length - 1)}',
@@ -140,24 +133,11 @@ class _CrossPostsState extends State<CrossPosts> {
   }
 }
 
-void createCrossPost(
-  BuildContext context, {
-  required String title,
-  String? url,
-  String? text,
-  String? postUrl,
-}) async {
+void createCrossPost(BuildContext context, {required String title, String? url, String? text, String? postUrl}) async {
   final l10n = AppLocalizations.of(context)!;
 
   final quotedText = text?.split('\n').map((value) => '> $value\n').join();
   text = "${l10n.crossPostedFrom(postUrl ?? '')}\n\n$quotedText";
 
-  await navigateToCreatePostPage(
-    context,
-    title: title,
-    url: url,
-    text: text,
-    prePopulated: true,
-    isCrossPost: true,
-  );
+  await navigateToCreatePostPage(context, title: title, url: url, text: text, prePopulated: true, isCrossPost: true);
 }

@@ -25,12 +25,6 @@ class FeedCardDivider extends StatelessWidget {
       color = Color.alphaBlend(theme.colorScheme.primaryContainer.withValues(alpha: 0.6), dividerColor).withValues(alpha: 0.2);
     }
 
-    return ThunderDivider(
-      sliver: false,
-      padding: false,
-      thickness: thickness,
-      height: thickness,
-      color: color,
-    );
+    return ThunderDivider(sliver: false, padding: false, thickness: thickness, height: thickness, color: color);
   }
 }

@@ -35,12 +35,7 @@ class CommentDepthIndicatorDecoration extends Decoration {
   /// - [scheme] defines the color scheme of the lines, either monochrome or colorful.
   ///
   /// This widget is useful for visually organizing nested comments in a discussion thread or similar UI.
-  const CommentDepthIndicatorDecoration(
-    this.context, {
-    this.level = 0,
-    this.style = NestedCommentIndicatorStyle.thin,
-    this.scheme = NestedCommentIndicatorColor.colorful,
-  });
+  const CommentDepthIndicatorDecoration(this.context, {this.level = 0, this.style = NestedCommentIndicatorStyle.thin, this.scheme = NestedCommentIndicatorColor.colorful});
 
   @override
   Path getClipPath(Rect rect, TextDirection textDirection) {
@@ -90,11 +85,7 @@ class _BoxDecorationPainter extends BoxPainter {
           paint.color = _getCommentLevelColor(_decoration.context, i % 6);
         }
 
-        canvas.drawLine(
-          rect.translate((i + 1) * _spacing, 0).topLeft,
-          rect.translate((i + 1) * _spacing, 0).bottomLeft,
-          paint,
-        );
+        canvas.drawLine(rect.translate((i + 1) * _spacing, 0).topLeft, rect.translate((i + 1) * _spacing, 0).bottomLeft, paint);
       }
     } else {
       paint.strokeWidth = 4.0;
@@ -106,24 +97,13 @@ class _BoxDecorationPainter extends BoxPainter {
       }
 
       // Draw only the current level of the comment indicator
-      canvas.drawLine(
-        rect.translate(_decoration.level * _spacing + _offset, 0).topLeft,
-        rect.translate(_decoration.level * _spacing + _offset, 0).bottomLeft,
-        paint,
-      );
+      canvas.drawLine(rect.translate(_decoration.level * _spacing + _offset, 0).topLeft, rect.translate(_decoration.level * _spacing + _offset, 0).bottomLeft, paint);
     }
   }
 }
 
 Color _getCommentLevelColor(BuildContext context, int level) {
-  final colors = [
-    Colors.red.shade300,
-    Colors.orange.shade300,
-    Colors.yellow.shade300,
-    Colors.green.shade300,
-    Colors.blue.shade300,
-    Colors.indigo.shade300,
-  ];
+  final colors = [Colors.red.shade300, Colors.orange.shade300, Colors.yellow.shade300, Colors.green.shade300, Colors.blue.shade300, Colors.indigo.shade300];
 
   final theme = Theme.of(context);
 

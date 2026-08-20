@@ -105,10 +105,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   List<ThunderListPickerItem<SearchSortType>> _searchSortItems() {
-    return [
-      ...getDefaultSearchSortTypeItems(account: widget.account),
-      ...getTopSearchSortTypeItems(account: widget.account),
-    ];
+    return [...getDefaultSearchSortTypeItems(account: widget.account), ...getTopSearchSortTypeItems(account: widget.account)];
   }
 
   ThunderListPickerItem<SearchSortType> _resolveSearchSortItem(SearchSortType sortType) {
@@ -116,17 +113,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
     final defaultItem = items.firstWhere(
       (item) => item.payload == DEFAULT_SEARCH_SORT_TYPE,
-      orElse: () => ThunderListPickerItem(
-        payload: DEFAULT_SEARCH_SORT_TYPE,
-        icon: Icons.military_tech,
-        label: GlobalContext.l10n.topYear,
-      ),
+      orElse: () => ThunderListPickerItem(payload: DEFAULT_SEARCH_SORT_TYPE, icon: Icons.military_tech, label: GlobalContext.l10n.topYear),
     );
 
-    return items.firstWhere(
-      (item) => item.payload == sortType,
-      orElse: () => defaultItem,
-    );
+    return items.firstWhere((item) => item.payload == sortType, orElse: () => defaultItem);
   }
 
   FutureOr<bool> onBackButtonPress(bool stopDefaultButtonEvent, RouteInfo info) async {
@@ -279,13 +269,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         ),
         body: Stack(
           children: [
-            SearchFiltersRow(
-              searchOptions: getSearchOptions(account),
-              community: widget.community,
-              account: account,
-              onSearch: search,
-              onShowSortPicker: showSortPicker,
-            ),
+            SearchFiltersRow(searchOptions: getSearchOptions(account), community: widget.community, account: account, onSearch: search, onShowSortPicker: showSortPicker),
             SearchBody(
               account: account,
               favorites: favorites,

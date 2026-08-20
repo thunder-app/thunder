@@ -167,17 +167,13 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     context.read<SessionBloc>().add(
-          AuthenticatedLoginRequested(
-            username: _usernameController.text,
-            password: _passwordController.text,
-            discovery: InstanceDiscoveryResult(
-              host: instanceHost,
-              platform: platform,
-              version: validationState.detectedVersion,
-            ),
-            totp: _totpController.text,
-          ),
-        );
+      AuthenticatedLoginRequested(
+        username: _usernameController.text,
+        password: _passwordController.text,
+        discovery: InstanceDiscoveryResult(host: instanceHost, platform: platform, version: validationState.detectedVersion),
+        totp: _totpController.text,
+      ),
+    );
   }
 
   /// Accepts the content warning for the instance.
@@ -212,16 +208,10 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     context.read<SessionBloc>().add(
-          AnonymousSessionAdded(
-            account: Account(
-              id: '',
-              instance: instanceHost,
-              index: -1,
-              anonymous: true,
-              platform: validationState.platform,
-            ),
-            activate: true,
-          ),
-        );
+      AnonymousSessionAdded(
+        account: Account(id: '', instance: instanceHost, index: -1, anonymous: true, platform: validationState.platform),
+        activate: true,
+      ),
+    );
   }
 }

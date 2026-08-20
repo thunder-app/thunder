@@ -38,24 +38,14 @@ Future<ThunderPrivateMessage?> navigateToCreatePrivateMessagePage(
       transitionDuration: isLoadingPageShown
           ? Duration.zero
           : reduceAnimations
-              ? const Duration(milliseconds: 100)
-              : null,
+          ? const Duration(milliseconds: 100)
+          : null,
       reverseTransitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : const Duration(milliseconds: 500),
       canSwipe: !kIsWeb && Platform.isIOS || enableFullScreenSwipeNavigationGesture,
       canOnlySwipeFromEdge: true,
       builder: (context) => MultiBlocProvider(
-        providers: routeScope.providers(
-          provideThunderCubit: true,
-          extraProviders: [
-            BlocProvider<CreatePrivateMessageCubit>.value(value: createPrivateMessageCubit),
-          ],
-        ),
-        child: CreatePrivateMessagePage(
-          account: effectiveAccount,
-          recipient: recipient,
-          initialContent: initialContent,
-          onMessageSent: onMessageSent,
-        ),
+        providers: routeScope.providers(provideThunderCubit: true, extraProviders: [BlocProvider<CreatePrivateMessageCubit>.value(value: createPrivateMessageCubit)]),
+        child: CreatePrivateMessagePage(account: effectiveAccount, recipient: recipient, initialContent: initialContent, onMessageSent: onMessageSent),
       ),
     );
 
@@ -79,12 +69,7 @@ Future<void> navigateToPrivateMessageThreadPage(
 }) async {
   final routeScope = resolveAccountAwareRouteScope(context, account: account, includeThunderCubit: true);
   final effectiveAccount = routeScope.account;
-  final threadCubit = createPrivateMessageThreadCubit(
-    effectiveAccount,
-    participant: participant,
-    initialMessages: initialMessages,
-    conversationId: conversationId,
-  );
+  final threadCubit = createPrivateMessageThreadCubit(effectiveAccount, participant: participant, initialMessages: initialMessages, conversationId: conversationId);
   final themeCubit = context.read<ThemePreferencesCubit>();
   final gestureCubit = context.read<GesturePreferencesCubit>();
   final reduceAnimations = themeCubit.state.reduceAnimations;
@@ -97,17 +82,8 @@ Future<void> navigateToPrivateMessageThreadPage(
       canOnlySwipeFromEdge: true,
       backGestureDetectionWidth: 45,
       builder: (context) => MultiBlocProvider(
-        providers: routeScope.providers(
-          provideThunderCubit: true,
-          extraProviders: [
-            BlocProvider<PrivateMessageThreadCubit>.value(value: threadCubit),
-          ],
-        ),
-        child: PrivateMessageThreadPage(
-          account: effectiveAccount,
-          participant: participant,
-          onThreadUpdated: onThreadUpdated,
-        ),
+        providers: routeScope.providers(provideThunderCubit: true, extraProviders: [BlocProvider<PrivateMessageThreadCubit>.value(value: threadCubit)]),
+        child: PrivateMessageThreadPage(account: effectiveAccount, participant: participant, onThreadUpdated: onThreadUpdated),
       ),
     ),
   );

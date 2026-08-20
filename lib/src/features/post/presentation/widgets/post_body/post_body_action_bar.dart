@@ -138,12 +138,7 @@ class _PostBodyActionsBarState extends State<PostBodyActionsBar> {
                     size: 24.0,
                   ),
                   if (showScores)
-                    Text(
-                      formatNumberToK(widget.upvotes ?? 0),
-                      style: TextStyle(
-                        color: isUserLoggedIn ? (widget.vote == 1 ? upvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
-                      ),
-                    ),
+                    Text(formatNumberToK(widget.upvotes ?? 0), style: TextStyle(color: isUserLoggedIn ? (widget.vote == 1 ? upvoteColor.color : theme.textTheme.bodyMedium?.color) : null)),
                 ],
               ),
             ),
@@ -168,12 +163,7 @@ class _PostBodyActionsBarState extends State<PostBodyActionsBar> {
                       size: 24.0,
                     ),
                     if (showScores)
-                      Text(
-                        formatNumberToK(widget.downvotes ?? 0),
-                        style: TextStyle(
-                          color: isUserLoggedIn ? (widget.vote == -1 ? downvoteColor.color : theme.textTheme.bodyMedium?.color) : null,
-                        ),
-                      ),
+                      Text(formatNumberToK(widget.downvotes ?? 0), style: TextStyle(color: isUserLoggedIn ? (widget.vote == -1 ? downvoteColor.color : theme.textTheme.bodyMedium?.color) : null)),
                   ],
                 ),
               ),

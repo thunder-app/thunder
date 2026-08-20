@@ -19,12 +19,7 @@ class AdditionalCommentCard extends StatefulWidget {
   /// The number of replies for the comment
   final int replies;
 
-  const AdditionalCommentCard({
-    super.key,
-    this.onTap,
-    this.depth = 0,
-    this.replies = 0,
-  });
+  const AdditionalCommentCard({super.key, this.onTap, this.depth = 0, this.replies = 0});
 
   @override
   State<AdditionalCommentCard> createState() => _AdditionalCommentCardState();
@@ -66,18 +61,16 @@ class _AdditionalCommentCardState extends State<AdditionalCommentCard> {
                     child: ThunderScalableText(
                       reply,
                       textScaleFactor: commentFontSizeScale.textScaleFactor,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
-                      ),
+                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
                     ),
                   ),
                   if (isLoading)
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: SizedBox(width: 20.0, height: 20.0, child: CircularProgressIndicator()),
-                    )
+                    ),
                 ],
-              )
+              ),
             ],
           ),
         ),

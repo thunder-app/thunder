@@ -150,12 +150,9 @@ class _SettingsPageState extends State<SettingsPage> {
             hasScrollBody: false,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Text('Thunder ${getCurrentVersion(removeInternalBuildNumber: true)}'),
-              ),
+              child: Align(alignment: Alignment.bottomCenter, child: Text('Thunder ${getCurrentVersion(removeInternalBuildNumber: true)}')),
             ),
-          )
+          ),
         ],
       ),
     );

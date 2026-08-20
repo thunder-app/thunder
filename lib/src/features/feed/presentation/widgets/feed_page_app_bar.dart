@@ -69,11 +69,7 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
         leadingWidth: widget.scaffoldStateKey != null && useProfilePictureForDrawer && isLoggedIn ? 50 : null,
         leading: feedChrome.status == FeedStatus.initial
             ? null
-            : FeedDrawerButton(
-                isRoot: widget.scaffoldStateKey != null,
-                showProfilePicture: useProfilePictureForDrawer && isLoggedIn,
-                onTap: () => _openDrawerOrGoBack(context, feedBloc),
-              ),
+            : FeedDrawerButton(isRoot: widget.scaffoldStateKey != null, showProfilePicture: useProfilePictureForDrawer && isLoggedIn, onTap: () => _openDrawerOrGoBack(context, feedBloc)),
         actions: (feedChrome.status != FeedStatus.initial && feedChrome.status != FeedStatus.failureLoadingCommunity && feedChrome.status != FeedStatus.failureLoadingUser)
             ? [
                 if (feedChrome.feedType == FeedType.general) const FeedAppBarGeneralActions(),

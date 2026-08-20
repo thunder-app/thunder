@@ -6,11 +6,7 @@ import 'package:thunder/src/core/errors/errors.dart';
 import 'package:thunder/src/core/networking/instance_uri.dart';
 
 /// Parses an image upload API response into a public image URL.
-String parseUploadImageUrl(
-  Map<String, dynamic> response, {
-  required String instance,
-  required String platformName,
-}) {
+String parseUploadImageUrl(Map<String, dynamic> response, {required String instance, required String platformName}) {
   if (response['url'] is String && (response['url'] as String).isNotEmpty) {
     return response['url'] as String;
   }
@@ -24,10 +20,7 @@ String parseUploadImageUrl(
     return buildInstanceUrl(instance, '/pictrs/image/$filename');
   }
 
-  throw ApiErrorException(
-    'Failed to upload image: Invalid response $response',
-    platformName: platformName,
-  );
+  throw ApiErrorException('Failed to upload image: Invalid response $response', platformName: platformName);
 }
 
 /// Uploads a file via multipart POST and returns the decoded JSON body.
@@ -54,18 +47,11 @@ Future<Map<String, dynamic>> uploadMultipartImage({
     final response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode == 429) {
-      throw RateLimitException(
-        'Rate limit exceeded',
-        platformName: platformName,
-      );
+      throw RateLimitException('Rate limit exceeded', platformName: platformName);
     }
 
     if (response.statusCode != successStatusCode && response.statusCode != 201) {
-      throw ApiErrorException(
-        'Failed to upload image: ${response.statusCode} ${response.reasonPhrase}',
-        statusCode: response.statusCode,
-        platformName: platformName,
-      );
+      throw ApiErrorException('Failed to upload image: ${response.statusCode} ${response.reasonPhrase}', statusCode: response.statusCode, platformName: platformName);
     }
 
     final decoded = jsonDecode(response.body);
@@ -73,10 +59,7 @@ Future<Map<String, dynamic>> uploadMultipartImage({
       return decoded;
     }
 
-    throw ApiErrorException(
-      'Failed to upload image: Invalid response ${response.body}',
-      platformName: platformName,
-    );
+    throw ApiErrorException('Failed to upload image: Invalid response ${response.body}', platformName: platformName);
   } catch (e) {
     if (e is ApiException) rethrow;
     throw ApiErrorException('Failed to upload image: $e', platformName: platformName);

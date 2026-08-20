@@ -6,9 +6,5 @@ class ModlogFeed {
   final bool hasReachedEnd;
   final int currentPage;
 
-  ModlogFeed({
-    required this.items,
-    required this.hasReachedEnd,
-    required this.currentPage,
-  });
+  ModlogFeed({required this.items, required this.hasReachedEnd, required this.currentPage});
 }

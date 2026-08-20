@@ -15,12 +15,7 @@ import 'package:thunder/src/core/navigation/link_navigation_utils.dart';
 import 'package:thunder/packages/ui/ui.dart';
 
 class ThunderVideoPlayer extends StatefulWidget {
-  const ThunderVideoPlayer({
-    super.key,
-    required this.videoUrl,
-    required this.postId,
-    this.navigateToPost,
-  });
+  const ThunderVideoPlayer({super.key, required this.videoUrl, required this.postId, this.navigateToPost});
 
   final void Function()? navigateToPost;
   final int? postId;
@@ -74,10 +69,7 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
   Future<void> _initializePlayer() async {
     final videoState = context.read<VideoPreferencesCubit>().state;
 
-    _videoPlayerController = VideoPlayerController.networkUrl(
-      Uri.parse(widget.videoUrl),
-      videoPlayerOptions: VideoPlayerOptions(),
-    );
+    _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl), videoPlayerOptions: VideoPlayerOptions());
 
     _videoPlayerController
       ..setVolume(videoState.videoAutoMute ? 0 : 1)
@@ -110,20 +102,18 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
       }
     });
 
-    _videoPlayerController.initialize().then(
-      (value) {
-        setState(() {
-          isFullScreen = videoState.videoAutoFullscreen;
-          if (isFullScreen) {
-            SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-          }
-        });
-
-        if (autoPlayVideo(videoState)) {
-          _videoPlayerController.play();
+    _videoPlayerController.initialize().then((value) {
+      setState(() {
+        isFullScreen = videoState.videoAutoFullscreen;
+        if (isFullScreen) {
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
         }
-      },
-    );
+      });
+
+      if (autoPlayVideo(videoState)) {
+        _videoPlayerController.play();
+      }
+    });
   }
 
   @override
@@ -145,22 +135,14 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                       padding: const EdgeInsets.all(4.0),
                       child: IconButton(
                         onPressed: () => Navigator.pop(context),
-                        icon: Icon(
-                          Icons.arrow_back,
-                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                          color: Colors.white.withValues(alpha: 0.90),
-                        ),
+                        icon: Icon(Icons.arrow_back, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip, color: Colors.white.withValues(alpha: 0.90)),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: IconButton(
                         onPressed: () => handleLink(context, url: widget.videoUrl, forceOpenInBrowser: true),
-                        icon: Icon(
-                          Icons.open_in_browser_rounded,
-                          semanticLabel: GlobalContext.l10n.openInBrowser,
-                          color: Colors.white.withValues(alpha: 0.90),
-                        ),
+                        icon: Icon(Icons.open_in_browser_rounded, semanticLabel: GlobalContext.l10n.openInBrowser, color: Colors.white.withValues(alpha: 0.90)),
                       ),
                     ),
                   ],
@@ -181,20 +163,22 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
               Center(
                 child: AspectRatio(
                   aspectRatio: _videoPlayerController.value.aspectRatio,
-                  child: Stack(children: [
-                    VideoPlayer(_videoPlayerController),
-                    GestureDetector(
-                      onTap: () {
-                        if (_videoPlayerController.value.isPlaying) {
-                          _videoPlayerController.pause();
-                        } else {
-                          _videoPlayerController.play();
-                        }
+                  child: Stack(
+                    children: [
+                      VideoPlayer(_videoPlayerController),
+                      GestureDetector(
+                        onTap: () {
+                          if (_videoPlayerController.value.isPlaying) {
+                            _videoPlayerController.pause();
+                          } else {
+                            _videoPlayerController.play();
+                          }
 
-                        setState(() {});
-                      },
-                    ),
-                  ]),
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
               AnimatedOpacity(
@@ -202,16 +186,14 @@ class _ThunderVideoPlayerState extends State<ThunderVideoPlayer> {
                 opacity: isVideoControlsVisible ? 1.0 : 0.0,
                 child: VideoPlayerControls(
                   controller: _videoPlayerController,
-                  onToggleFullScreen: () => setState(
-                    () {
-                      isFullScreen = !isFullScreen;
-                      if (isFullScreen) {
-                        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-                      } else {
-                        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-                      }
-                    },
-                  ),
+                  onToggleFullScreen: () => setState(() {
+                    isFullScreen = !isFullScreen;
+                    if (isFullScreen) {
+                      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+                    } else {
+                      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+                    }
+                  }),
                 ),
               ),
             ],
@@ -292,15 +274,9 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                       widget.controller.value.isPlaying ? widget.controller.pause() : widget.controller.play();
                       setState(() {});
                     },
-                    icon: Icon(
-                      widget.controller.value.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                      color: Colors.white.withValues(alpha: 0.90),
-                    ),
+                    icon: Icon(widget.controller.value.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded, color: Colors.white.withValues(alpha: 0.90)),
                   ),
-                  Text(
-                    '${formatTime(widget.controller.value.position)} / ${formatTime(widget.controller.value.duration)}',
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.90)),
-                  ),
+                  Text('${formatTime(widget.controller.value.position)} / ${formatTime(widget.controller.value.duration)}', style: TextStyle(color: Colors.white.withValues(alpha: 0.90))),
                 ],
               ),
               Wrap(
@@ -312,10 +288,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                       widget.controller.value.volume == 0 ? widget.controller.setVolume(1) : widget.controller.setVolume(0);
                       setState(() {});
                     },
-                    icon: Icon(
-                      widget.controller.value.volume == 0 ? Icons.volume_mute_rounded : Icons.volume_up_rounded,
-                      color: Colors.white.withValues(alpha: 0.90),
-                    ),
+                    icon: Icon(widget.controller.value.volume == 0 ? Icons.volume_mute_rounded : Icons.volume_up_rounded, color: Colors.white.withValues(alpha: 0.90)),
                   ),
                   Semantics(
                     label: l10n.menu,
@@ -332,10 +305,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                             ),
                           )
                           .toList(),
-                      icon: Icon(
-                        Icons.speed_rounded,
-                        color: Colors.white.withValues(alpha: 0.90),
-                      ),
+                      icon: Icon(Icons.speed_rounded, color: Colors.white.withValues(alpha: 0.90)),
                     ),
                   ),
                   IconButton(
@@ -343,10 +313,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
                       widget.onToggleFullScreen();
                       setState(() {});
                     },
-                    icon: Icon(
-                      Icons.fullscreen_rounded,
-                      color: Colors.white.withValues(alpha: 0.90),
-                    ),
+                    icon: Icon(Icons.fullscreen_rounded, color: Colors.white.withValues(alpha: 0.90)),
                   ),
                 ],
               ),
@@ -361,11 +328,7 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
               widget.controller,
               allowScrubbing: true,
               padding: EdgeInsets.zero,
-              colors: const VideoProgressColors(
-                playedColor: Colors.white70,
-                bufferedColor: Colors.white12,
-                backgroundColor: Colors.white10,
-              ),
+              colors: const VideoProgressColors(playedColor: Colors.white70, bufferedColor: Colors.white12, backgroundColor: Colors.white10),
             ),
           ),
         ],

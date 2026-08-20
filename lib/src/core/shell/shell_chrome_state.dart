@@ -1,13 +1,7 @@
 part of 'shell_chrome_cubit.dart';
 
 class ShellChromeState extends Equatable {
-  const ShellChromeState({
-    this.isBottomNavBarVisible = true,
-    this.isFeedFabOpen = false,
-    this.isFeedFabSummoned = true,
-    this.isPostFabOpen = false,
-    this.isPostFabSummoned = true,
-  });
+  const ShellChromeState({this.isBottomNavBarVisible = true, this.isFeedFabOpen = false, this.isFeedFabSummoned = true, this.isPostFabOpen = false, this.isPostFabSummoned = true});
 
   final bool isBottomNavBarVisible;
   final bool isFeedFabOpen;
@@ -15,13 +9,7 @@ class ShellChromeState extends Equatable {
   final bool isPostFabOpen;
   final bool isPostFabSummoned;
 
-  ShellChromeState copyWith({
-    bool? isBottomNavBarVisible,
-    bool? isFeedFabOpen,
-    bool? isFeedFabSummoned,
-    bool? isPostFabOpen,
-    bool? isPostFabSummoned,
-  }) {
+  ShellChromeState copyWith({bool? isBottomNavBarVisible, bool? isFeedFabOpen, bool? isFeedFabSummoned, bool? isPostFabOpen, bool? isPostFabSummoned}) {
     return ShellChromeState(
       isBottomNavBarVisible: isBottomNavBarVisible ?? this.isBottomNavBarVisible,
       isFeedFabOpen: isFeedFabOpen ?? this.isFeedFabOpen,

@@ -35,14 +35,7 @@ class PostBodyMediaSection extends StatelessWidget {
       collapsed: const SizedBox.shrink(),
       expanded: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-        child: MediaView(
-          viewMode: ViewMode.comfortable,
-          media: media,
-          postId: post.id,
-          showFullHeightImages: true,
-          allowUnconstrainedImageHeight: true,
-          hideNsfwPreviews: hideNsfwPreviews,
-        ),
+        child: MediaView(viewMode: ViewMode.comfortable, media: media, postId: post.id, showFullHeightImages: true, allowUnconstrainedImageHeight: true, hideNsfwPreviews: hideNsfwPreviews),
       ),
     );
   }

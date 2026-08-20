@@ -34,15 +34,10 @@ class AboutSettingsPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: Text(l10n.versionNumber(getCurrentVersion(removeInternalBuildNumber: true))),
-                ),
+                child: Center(child: Text(l10n.versionNumber(getCurrentVersion(removeInternalBuildNumber: true)))),
               ),
               ListTile(
-                title: Text(
-                  'GitHub',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-                ),
+                title: Text('GitHub', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
                 subtitle: const Text('github.com/thunder-app/thunder'),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () {
@@ -50,10 +45,7 @@ class AboutSettingsPage extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: Text(
-                  'Lemmy Community',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-                ),
+                title: Text('Lemmy Community', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
                 subtitle: const Text('lemmy.world/c/thunder_app'),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () {
@@ -61,10 +53,7 @@ class AboutSettingsPage extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: Text(
-                  'Matrix Space',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-                ),
+                title: Text('Matrix Space', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
                 subtitle: const Text('matrix.to/#/#thunderapp:matrix.org'),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () {
@@ -72,10 +61,7 @@ class AboutSettingsPage extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: Text(
-                  'Support',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-                ),
+                title: Text('Support', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
                 subtitle: const Text('thunderapp@proton.me'),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () {
@@ -83,13 +69,10 @@ class AboutSettingsPage extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: Text(
-                  'Licenses',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-                ),
+                title: Text('Licenses', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () => showLicensePage(context: context),
-              )
+              ),
             ],
           ),
         ],

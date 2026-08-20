@@ -32,21 +32,13 @@ class ModlogFeedPageAppBar extends StatelessWidget {
       toolbarHeight: APP_BAR_HEIGHT,
       surfaceTintColor: hideTopBarOnScroll ? Colors.transparent : null,
       title: ListTile(
-        title: Text(
-          l10n.modlog,
-          style: theme.textTheme.titleLarge,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        title: Text(l10n.modlog, style: theme.textTheme.titleLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: subtitle,
         contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
       ),
       leading: IconButton(
         icon: (!kIsWeb && Platform.isIOS
-            ? Icon(
-                Icons.arrow_back_ios_new_rounded,
-                semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-              )
+            ? Icon(Icons.arrow_back_ios_new_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip)
             : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip)),
         onPressed: () {
           HapticFeedback.mediumImpact();

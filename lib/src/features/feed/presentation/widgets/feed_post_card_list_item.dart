@@ -146,10 +146,7 @@ class FeedPostCardListItem extends StatelessWidget {
             heightFactor: value,
             child: Opacity(
               opacity: value,
-              child: Transform.translate(
-                offset: Offset((1 - value) * 100, 0),
-                child: child,
-              ),
+              child: Transform.translate(offset: Offset((1 - value) * 100, 0), child: child),
             ),
           ),
         );

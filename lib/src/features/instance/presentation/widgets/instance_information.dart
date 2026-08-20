@@ -25,10 +25,7 @@ class InstanceInformation extends StatelessWidget {
         Row(
           spacing: 16.0,
           children: [
-            InstanceAvatar(
-              radius: 24.0,
-              instance: instance,
-            ),
+            InstanceAvatar(radius: 24.0, instance: instance),
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -40,12 +37,7 @@ class InstanceInformation extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  Flexible(
-                    child: Text(
-                      instance.description ?? '-',
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  ),
+                  Flexible(child: Text(instance.description ?? '-', style: theme.textTheme.bodyMedium)),
                 ],
               ),
             ),
@@ -57,16 +49,8 @@ class InstanceInformation extends StatelessWidget {
           Row(
             spacing: 6.0,
             children: [
-              Badge(
-                label: Text(instance.platform?.displayName ?? '-'),
-                backgroundColor: theme.colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              ),
-              Badge(
-                label: Text('v${instance.version ?? '-'}'),
-                backgroundColor: theme.colorScheme.secondary,
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              ),
+              Badge(label: Text(instance.platform?.displayName ?? '-'), backgroundColor: theme.colorScheme.primary, padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0)),
+              Badge(label: Text('v${instance.version ?? '-'}'), backgroundColor: theme.colorScheme.secondary, padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0)),
               Badge(
                 label: Text(l10n.countUsers(NumberFormat.decimalPattern(l10n.localeName).format(instance.users ?? 0))),
                 backgroundColor: theme.colorScheme.tertiary,

@@ -24,15 +24,7 @@ class PostBodyMetadata extends StatelessWidget {
   /// The URL to the post-related content.
   final String? url;
 
-  const PostBodyMetadata({
-    super.key,
-    this.languageId,
-    this.commentCount,
-    this.unreadCommentCount,
-    this.dateTime,
-    this.hasBeenEdited = false,
-    this.url,
-  });
+  const PostBodyMetadata({super.key, this.languageId, this.commentCount, this.unreadCommentCount, this.dateTime, this.hasBeenEdited = false, this.url});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +40,7 @@ class PostBodyMetadata extends StatelessWidget {
               CommentCountPostCardMetaData(commentCount: commentCount, unreadCommentCount: unreadCommentCount ?? 0, dim: false),
               DateTimePostCardMetaData(dateTime: dateTime!, dim: false, edited: hasBeenEdited ?? false),
             ],
-          )
+          ),
         ],
       ),
     );

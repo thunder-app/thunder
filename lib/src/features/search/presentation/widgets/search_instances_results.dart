@@ -29,12 +29,7 @@ class SearchInstancesResults extends StatelessWidget {
             return AnimatedCrossFade(
               duration: const Duration(milliseconds: 250),
               firstChild: InstanceListEntry(
-                instance: ThunderInstanceInfo(
-                  id: instanceInfo.id,
-                  domain: instanceInfo.domain,
-                  name: fetchInstanceNameFromUrl(instanceInfo.domain)!,
-                  success: instanceInfo.success,
-                ),
+                instance: ThunderInstanceInfo(id: instanceInfo.id, domain: instanceInfo.domain, name: fetchInstanceNameFromUrl(instanceInfo.domain)!, success: instanceInfo.success),
               ),
               secondChild: InstanceListEntry(instance: instanceInfo),
               crossFadeState: instanceInfo.isMetadataPopulated() ? CrossFadeState.showSecond : CrossFadeState.showFirst,

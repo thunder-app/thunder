@@ -72,11 +72,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
         Timer(const Duration(milliseconds: 500), () {
           if (settingToHighlightKey.currentContext != null) {
             // Ensure that the selected setting is visible on the screen
-            Scrollable.ensureVisible(
-              settingToHighlightKey.currentContext!,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-            );
+            Scrollable.ensureVisible(settingToHighlightKey.currentContext!, duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
           }
 
           // Give time for the highlighting to appear, then turn it off
@@ -102,12 +98,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                child: Text(
-                  l10n.keywordFilterDescription,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                  ),
-                ),
+                child: Text(l10n.keywordFilterDescription, style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8))),
               ),
               SmoothHighlight(
                 key: settingToHighlight == LocalSettings.keywordFilters ? settingToHighlightKey : null,
@@ -122,10 +113,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                       Text(l10n.keywordFilters, style: theme.textTheme.titleMedium),
                       IconButton(
                         visualDensity: VisualDensity.compact,
-                        icon: Icon(
-                          Icons.add_rounded,
-                          semanticLabel: l10n.add,
-                        ),
+                        icon: Icon(Icons.add_rounded, semanticLabel: l10n.add),
                         onPressed: () => showKeywordInputDialog(
                           context,
                           title: l10n.addKeywordFilter,
@@ -143,12 +131,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                 child: keywordFilters.isEmpty
                     ? Padding(
                         padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                        child: Text(
-                          l10n.noKeywordFilters,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                          ),
-                        ),
+                        child: Text(l10n.noKeywordFilters, style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8))),
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.only(bottom: 20),
@@ -157,48 +140,50 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                         itemCount: keywordFilters.length,
                         itemBuilder: (context, index) {
                           return ThunderSettingsTile(
-                              title: keywordFilters[index],
-                              trailing: const ThunderSettingsChevronTrailing(),
-                              onTap: () async {
-                                showThunderDialog(
-                                  context: context,
-                                  title: l10n.removeKeywordFilter,
-                                  contentText: l10n.removeKeyword(keywordFilters[index]),
-                                  primaryButtonText: l10n.remove,
-                                  onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
-                                    setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  secondaryButtonText: l10n.cancel,
-                                  onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
-                                );
-                              },
-                              highlightKey: settingToHighlightKey,
-                              highlighted: false);
+                            title: keywordFilters[index],
+                            trailing: const ThunderSettingsChevronTrailing(),
+                            onTap: () async {
+                              showThunderDialog(
+                                context: context,
+                                title: l10n.removeKeywordFilter,
+                                contentText: l10n.removeKeyword(keywordFilters[index]),
+                                primaryButtonText: l10n.remove,
+                                onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
+                                  setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
+                                  Navigator.of(dialogContext).pop();
+                                },
+                                secondaryButtonText: l10n.cancel,
+                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                              );
+                            },
+                            highlightKey: settingToHighlightKey,
+                            highlighted: false,
+                          );
                         },
                       ),
               ),
               SizedBox(height: 16.0),
               ThunderSettingsTile(
-                  leading: Icon(Icons.language),
-                  title: l10n.languageFilters,
-                  trailing: const ThunderSettingsChevronTrailing(),
-                  onTap: () {
-                    // Can only set discussion language if user is logged in
-                    if (profileState.isLoggedIn && profileState.status == ProfileStatus.success && profileState.user != null) {
-                      navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages);
-                    } else {
-                      showThunderDialog(
-                        context: context,
-                        title: l10n.userNotLoggedIn,
-                        contentText: l10n.mustBeLoggedIn,
-                        primaryButtonText: l10n.ok,
-                        onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) => Navigator.of(dialogContext).pop(),
-                      );
-                    }
-                  },
-                  highlightKey: settingToHighlightKey,
-                  highlighted: false),
+                leading: Icon(Icons.language),
+                title: l10n.languageFilters,
+                trailing: const ThunderSettingsChevronTrailing(),
+                onTap: () {
+                  // Can only set discussion language if user is logged in
+                  if (profileState.isLoggedIn && profileState.status == ProfileStatus.success && profileState.user != null) {
+                    navigateToSettingPage(context, LocalSettings.settingsPageAccountLanguages);
+                  } else {
+                    showThunderDialog(
+                      context: context,
+                      title: l10n.userNotLoggedIn,
+                      contentText: l10n.mustBeLoggedIn,
+                      primaryButtonText: l10n.ok,
+                      onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) => Navigator.of(dialogContext).pop(),
+                    );
+                  }
+                },
+                highlightKey: settingToHighlightKey,
+                highlighted: false,
+              ),
               SizedBox(height: 128.0),
             ],
           ),

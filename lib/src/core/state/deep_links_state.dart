@@ -5,26 +5,14 @@ enum DeepLinkStatus { empty, loading, error, success, unknown }
 const _deepLinksUnset = Object();
 
 class DeepLinksState extends Equatable {
-  const DeepLinksState({
-    this.deepLinkStatus = DeepLinkStatus.empty,
-    this.linkType = LinkType.unknown,
-    this.link,
-    this.error,
-    this.errorReason,
-  });
+  const DeepLinksState({this.deepLinkStatus = DeepLinkStatus.empty, this.linkType = LinkType.unknown, this.link, this.error, this.errorReason});
   final String? error;
   final AppErrorReason? errorReason;
   final LinkType linkType;
   final String? link;
   final DeepLinkStatus deepLinkStatus;
 
-  DeepLinksState copyWith({
-    DeepLinkStatus? deepLinkStatus,
-    Object? error = _deepLinksUnset,
-    Object? errorReason = _deepLinksUnset,
-    Object? link = _deepLinksUnset,
-    LinkType? linkType,
-  }) {
+  DeepLinksState copyWith({DeepLinkStatus? deepLinkStatus, Object? error = _deepLinksUnset, Object? errorReason = _deepLinksUnset, Object? link = _deepLinksUnset, LinkType? linkType}) {
     return DeepLinksState(
       deepLinkStatus: deepLinkStatus ?? this.deepLinkStatus,
       error: identical(error, _deepLinksUnset) ? this.error : error as String?,
@@ -35,11 +23,5 @@ class DeepLinksState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        error,
-        errorReason,
-        linkType,
-        link,
-        deepLinkStatus,
-      ];
+  List<Object?> get props => [error, errorReason, linkType, link, deepLinkStatus];
 }

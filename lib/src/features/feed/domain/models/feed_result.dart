@@ -18,11 +18,5 @@ class FeedResult {
   /// The cursor for the next page of the feed.
   final String? cursor;
 
-  const FeedResult({
-    required this.posts,
-    required this.comments,
-    required this.hasReachedPostsEnd,
-    required this.hasReachedCommentsEnd,
-    required this.cursor,
-  });
+  const FeedResult({required this.posts, required this.comments, required this.hasReachedPostsEnd, required this.hasReachedCommentsEnd, required this.cursor});
 }

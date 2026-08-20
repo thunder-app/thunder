@@ -2,18 +2,11 @@ import 'package:thunder/src/features/comment/comment.dart';
 
 /// Creates a deep copy of a comment tree while preserving comment values.
 CommentNode clone(CommentNode root) {
-  return CommentNode(
-    comment: root.comment,
-    replies: root.replies.map(clone).toList(),
-  );
+  return CommentNode(comment: root.comment, replies: root.replies.map(clone).toList());
 }
 
 /// Returns a new collapsed-comment set after applying a single collapse toggle.
-Set<int> update({
-  required Set<int> current,
-  required int commentId,
-  required bool collapsed,
-}) {
+Set<int> update({required Set<int> current, required int commentId, required bool collapsed}) {
   if (collapsed == current.contains(commentId)) return current;
 
   final updated = current.toSet();
@@ -27,17 +20,11 @@ Set<int> update({
 
 /// Returns a copy of [root] with the node matching [comment] replaced.
 CommentNode replaceComment(CommentNode root, ThunderComment comment) {
-  return CommentNode(
-    comment: root.comment?.id == comment.id ? comment : root.comment,
-    replies: root.replies.map((reply) => replaceComment(reply, comment)).toList(),
-  );
+  return CommentNode(comment: root.comment?.id == comment.id ? comment : root.comment, replies: root.replies.map((reply) => replaceComment(reply, comment)).toList());
 }
 
 /// Computes comments hidden by collapsed ancestors.
-Set<int> hiddenCommentIds({
-  required Iterable<CommentNode> comments,
-  required Set<int> collapsedCommentIds,
-}) {
+Set<int> hiddenCommentIds({required Iterable<CommentNode> comments, required Set<int> collapsedCommentIds}) {
   if (collapsedCommentIds.isEmpty) return const <int>{};
 
   final hiddenIds = <int>{};

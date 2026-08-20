@@ -5,11 +5,7 @@ import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
 /// Primary label with optional animated secondary metadata segment.
 @immutable
 class ThunderMetadataRow extends StatelessWidget {
-  const ThunderMetadataRow({
-    super.key,
-    required this.primary,
-    this.secondary,
-  });
+  const ThunderMetadataRow({super.key, required this.primary, this.secondary});
 
   /// Primary metadata label.
   final String primary;

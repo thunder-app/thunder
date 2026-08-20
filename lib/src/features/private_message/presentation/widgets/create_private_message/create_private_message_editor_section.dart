@@ -9,12 +9,7 @@ import 'package:thunder/src/shared/theme/color_utils.dart';
 /// Displays the direct-message markdown editor or its rendered preview.
 class CreatePrivateMessageEditorSection extends StatelessWidget {
   /// Creates an editor section with the same layout as post/comment compose pages.
-  const CreatePrivateMessageEditorSection({
-    super.key,
-    required this.controller,
-    required this.focusNode,
-    required this.showPreview,
-  });
+  const CreatePrivateMessageEditorSection({super.key, required this.controller, required this.focusNode, required this.showPreview});
 
   /// Controls the message body input.
   final TextEditingController controller;
@@ -36,10 +31,7 @@ class CreatePrivateMessageEditorSection extends StatelessWidget {
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: getBackgroundColor(context),
-            borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-          ),
+          decoration: BoxDecoration(color: getBackgroundColor(context), borderRadius: const BorderRadius.all(Radius.circular(8.0))),
           child: CommonMarkdownBody(body: controller.text, isComment: true),
         ),
       ),

@@ -7,11 +7,7 @@ import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/core/state/app_startup_cubit.dart';
 
 class AppStartupGate extends StatefulWidget {
-  const AppStartupGate({
-    super.key,
-    required this.builder,
-    this.onReady,
-  });
+  const AppStartupGate({super.key, required this.builder, this.onReady});
 
   /// The builder that will be used to build the app when the app is ready
   final WidgetBuilder builder;
@@ -56,18 +52,12 @@ class _AppStartupGateState extends State<AppStartupGate> {
           home: Scaffold(
             body: switch (state.status) {
               AppStartupStatus.failure => Builder(
-                  builder: (context) => ThunderStateView(
-                    title: AppLocalizations.of(context)!.somethingWentWrong,
-                    message: state.error,
-                    actions: [
-                      ThunderStateAction(
-                        label: AppLocalizations.of(context)!.retry,
-                        onPressed: () => context.read<AppStartupCubit>().initialize(),
-                        primary: true,
-                      ),
-                    ],
-                  ),
+                builder: (context) => ThunderStateView(
+                  title: AppLocalizations.of(context)!.somethingWentWrong,
+                  message: state.error,
+                  actions: [ThunderStateAction(label: AppLocalizations.of(context)!.retry, onPressed: () => context.read<AppStartupCubit>().initialize(), primary: true)],
                 ),
+              ),
               AppStartupStatus.initial || AppStartupStatus.running => const Center(child: CircularProgressIndicator()),
               AppStartupStatus.ready => const SizedBox.shrink(),
             },

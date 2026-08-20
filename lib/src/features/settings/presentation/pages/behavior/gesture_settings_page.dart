@@ -180,19 +180,10 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
     });
   }
 
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 100),
-    vsync: this,
-  );
+  late final AnimationController _controller = AnimationController(duration: const Duration(milliseconds: 100), vsync: this);
 
   // Animation for comment collapse
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  ));
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(1.5, 0.0)).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
 
   @override
   void initState() {
@@ -206,11 +197,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
         Timer(const Duration(milliseconds: 500), () {
           if (settingToHighlightKey.currentContext != null) {
             // Ensure that the selected setting is visible on the screen
-            Scrollable.ensureVisible(
-              settingToHighlightKey.currentContext!,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-            );
+            Scrollable.ensureVisible(settingToHighlightKey.currentContext!, duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
           }
 
           // Give time for the highlighting to appear, then turn it off
@@ -242,21 +229,19 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                      child: Text(
-                        l10n.navigation,
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      child: Text(l10n.navigation, style: theme.textTheme.titleMedium),
                     ),
                     ThunderToggleOption(
-                        title: l10n.fullscreenSwipeGestures,
-                        subtitle: l10n.fullScreenNavigationSwipeDescription,
-                        value: enableFullScreenSwipeNavigationGesture,
-                        iconEnabled: Icons.swipe_left_rounded,
-                        iconDisabled: Icons.swipe_left_outlined,
-                        onChanged: (bool value) => setPreferences(LocalSettings.enableFullScreenSwipeNavigationGesture, value),
-                        highlightKey: settingToHighlightKey,
-                        onLongPress: () => shareLocalSetting(context, LocalSettings.enableFullScreenSwipeNavigationGesture),
-                        highlighted: settingToHighlight == LocalSettings.enableFullScreenSwipeNavigationGesture),
+                      title: l10n.fullscreenSwipeGestures,
+                      subtitle: l10n.fullScreenNavigationSwipeDescription,
+                      value: enableFullScreenSwipeNavigationGesture,
+                      iconEnabled: Icons.swipe_left_rounded,
+                      iconDisabled: Icons.swipe_left_outlined,
+                      onChanged: (bool value) => setPreferences(LocalSettings.enableFullScreenSwipeNavigationGesture, value),
+                      highlightKey: settingToHighlightKey,
+                      onLongPress: () => shareLocalSetting(context, LocalSettings.enableFullScreenSwipeNavigationGesture),
+                      highlighted: settingToHighlight == LocalSettings.enableFullScreenSwipeNavigationGesture,
+                    ),
                   ],
                 ),
               ),
@@ -268,31 +253,30 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                      child: Text(
-                        l10n.sidebar,
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      child: Text(l10n.sidebar, style: theme.textTheme.titleMedium),
                     ),
                     ThunderToggleOption(
-                        title: l10n.navbarSwipeGestures,
-                        subtitle: l10n.sidebarBottomNavSwipeDescription,
-                        value: bottomNavBarSwipeGestures,
-                        iconEnabled: Icons.swipe_right_rounded,
-                        iconDisabled: Icons.swipe_right_outlined,
-                        onChanged: (bool value) => setPreferences(LocalSettings.sidebarBottomNavBarSwipeGesture, value),
-                        highlightKey: settingToHighlightKey,
-                        onLongPress: () => shareLocalSetting(context, LocalSettings.sidebarBottomNavBarSwipeGesture),
-                        highlighted: settingToHighlight == LocalSettings.sidebarBottomNavBarSwipeGesture),
+                      title: l10n.navbarSwipeGestures,
+                      subtitle: l10n.sidebarBottomNavSwipeDescription,
+                      value: bottomNavBarSwipeGestures,
+                      iconEnabled: Icons.swipe_right_rounded,
+                      iconDisabled: Icons.swipe_right_outlined,
+                      onChanged: (bool value) => setPreferences(LocalSettings.sidebarBottomNavBarSwipeGesture, value),
+                      highlightKey: settingToHighlightKey,
+                      onLongPress: () => shareLocalSetting(context, LocalSettings.sidebarBottomNavBarSwipeGesture),
+                      highlighted: settingToHighlight == LocalSettings.sidebarBottomNavBarSwipeGesture,
+                    ),
                     ThunderToggleOption(
-                        title: l10n.navbarDoubleTapGestures,
-                        subtitle: l10n.sidebarBottomNavDoubleTapDescription,
-                        value: bottomNavBarDoubleTapGestures,
-                        iconEnabled: Icons.touch_app_rounded,
-                        iconDisabled: Icons.touch_app_outlined,
-                        onChanged: (bool value) => setPreferences(LocalSettings.sidebarBottomNavBarDoubleTapGesture, value),
-                        highlightKey: settingToHighlightKey,
-                        onLongPress: () => shareLocalSetting(context, LocalSettings.sidebarBottomNavBarDoubleTapGesture),
-                        highlighted: settingToHighlight == LocalSettings.sidebarBottomNavBarDoubleTapGesture),
+                      title: l10n.navbarDoubleTapGestures,
+                      subtitle: l10n.sidebarBottomNavDoubleTapDescription,
+                      value: bottomNavBarDoubleTapGestures,
+                      iconEnabled: Icons.touch_app_rounded,
+                      iconDisabled: Icons.touch_app_outlined,
+                      onChanged: (bool value) => setPreferences(LocalSettings.sidebarBottomNavBarDoubleTapGesture, value),
+                      highlightKey: settingToHighlightKey,
+                      onLongPress: () => shareLocalSetting(context, LocalSettings.sidebarBottomNavBarDoubleTapGesture),
+                      highlighted: settingToHighlight == LocalSettings.sidebarBottomNavBarDoubleTapGesture,
+                    ),
                   ],
                 ),
               ),
@@ -304,27 +288,25 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                      child: Text(
-                        l10n.media,
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      child: Text(l10n.media, style: theme.textTheme.titleMedium),
                     ),
                     ThunderListOption(
-                        title: l10n.imagePeekDuration,
-                        subtitle: l10n.imagePeekDurationDescription,
-                        value: ThunderListPickerItem(label: '${imagePeekDuration}ms', icon: Icons.touch_app_rounded, payload: imagePeekDuration),
-                        options: [
-                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '100ms', payload: 100),
-                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '200ms', payload: 200),
-                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '300ms', payload: 300),
-                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '400ms', payload: 400),
-                          ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '500ms', payload: 500),
-                        ],
-                        leading: Icon(Icons.touch_app_rounded),
-                        onChanged: (value) async => setPreferences(LocalSettings.imagePeekDuration, value.payload),
-                        highlightKey: settingToHighlightKey,
-                        onLongPress: () => shareLocalSetting(context, LocalSettings.imagePeekDuration),
-                        highlighted: settingToHighlight == LocalSettings.imagePeekDuration),
+                      title: l10n.imagePeekDuration,
+                      subtitle: l10n.imagePeekDurationDescription,
+                      value: ThunderListPickerItem(label: '${imagePeekDuration}ms', icon: Icons.touch_app_rounded, payload: imagePeekDuration),
+                      options: [
+                        ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '100ms', payload: 100),
+                        ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '200ms', payload: 200),
+                        ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '300ms', payload: 300),
+                        ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '400ms', payload: 400),
+                        ThunderListPickerItem(icon: Icons.touch_app_rounded, label: '500ms', payload: 500),
+                      ],
+                      leading: Icon(Icons.touch_app_rounded),
+                      onChanged: (value) async => setPreferences(LocalSettings.imagePeekDuration, value.payload),
+                      highlightKey: settingToHighlightKey,
+                      onLongPress: () => shareLocalSetting(context, LocalSettings.imagePeekDuration),
+                      highlighted: settingToHighlight == LocalSettings.imagePeekDuration,
+                    ),
                   ],
                 ),
               ),
@@ -336,29 +318,22 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                      child: Text(
-                        l10n.posts,
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      child: Text(l10n.posts, style: theme.textTheme.titleMedium),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(18.0, 6.0, 22.0, 6.0),
-                      child: Text(
-                        l10n.postSwipeGesturesHint,
-                        style: TextStyle(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-                        ),
-                      ),
+                      child: Text(l10n.postSwipeGesturesHint, style: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.75))),
                     ),
                     ThunderToggleOption(
-                        title: l10n.postSwipeActions,
-                        value: enablePostGestures,
-                        iconEnabled: Icons.swipe_rounded,
-                        iconDisabled: Icons.swipe_outlined,
-                        onChanged: (bool value) => setPreferences(LocalSettings.enablePostGestures, value),
-                        highlightKey: settingToHighlightKey,
-                        onLongPress: () => shareLocalSetting(context, LocalSettings.enablePostGestures),
-                        highlighted: settingToHighlight == LocalSettings.enablePostGestures),
+                      title: l10n.postSwipeActions,
+                      value: enablePostGestures,
+                      iconEnabled: Icons.swipe_rounded,
+                      iconDisabled: Icons.swipe_outlined,
+                      onChanged: (bool value) => setPreferences(LocalSettings.enablePostGestures, value),
+                      highlightKey: settingToHighlightKey,
+                      onLongPress: () => shareLocalSetting(context, LocalSettings.enablePostGestures),
+                      highlighted: settingToHighlight == LocalSettings.enablePostGestures,
+                    ),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
                       switchInCurve: Curves.easeInOut,
@@ -376,12 +351,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                   padding: const EdgeInsets.fromLTRB(18.0, 6.0, 22.0, 6.0),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      AppLocalizations.of(context)!.customizeSwipeActions,
-                                      style: TextStyle(
-                                        color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-                                      ),
-                                    ),
+                                    child: Text(AppLocalizations.of(context)!.customizeSwipeActions, style: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.75))),
                                   ),
                                 ),
                                 Padding(
@@ -404,9 +374,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                     ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
+                                const SizedBox(height: 5),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
                                   child: SwipePicker(
@@ -442,29 +410,22 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-                      child: Text(
-                        l10n.comments,
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      child: Text(l10n.comments, style: theme.textTheme.titleMedium),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(18.0, 6.0, 22.0, 6.0),
-                      child: Text(
-                        l10n.commentSwipeGesturesHint,
-                        style: TextStyle(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-                        ),
-                      ),
+                      child: Text(l10n.commentSwipeGesturesHint, style: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.75))),
                     ),
                     ThunderToggleOption(
-                        title: l10n.commentSwipeActions,
-                        value: enableCommentGestures,
-                        iconEnabled: Icons.swipe_rounded,
-                        iconDisabled: Icons.swipe_outlined,
-                        onChanged: (bool value) => setPreferences(LocalSettings.enableCommentGestures, value),
-                        highlightKey: settingToHighlightKey,
-                        onLongPress: () => shareLocalSetting(context, LocalSettings.enableCommentGestures),
-                        highlighted: settingToHighlight == LocalSettings.enableCommentGestures),
+                      title: l10n.commentSwipeActions,
+                      value: enableCommentGestures,
+                      iconEnabled: Icons.swipe_rounded,
+                      iconDisabled: Icons.swipe_outlined,
+                      onChanged: (bool value) => setPreferences(LocalSettings.enableCommentGestures, value),
+                      highlightKey: settingToHighlightKey,
+                      onLongPress: () => shareLocalSetting(context, LocalSettings.enableCommentGestures),
+                      highlighted: settingToHighlight == LocalSettings.enableCommentGestures,
+                    ),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
                       switchInCurve: Curves.easeInOut,
@@ -482,12 +443,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                   padding: const EdgeInsets.fromLTRB(18.0, 6.0, 22.0, 6.0),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      AppLocalizations.of(context)!.customizeSwipeActions,
-                                      style: TextStyle(
-                                        color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-                                      ),
-                                    ),
+                                    child: Text(AppLocalizations.of(context)!.customizeSwipeActions, style: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.75))),
                                   ),
                                 ),
                                 Padding(
@@ -510,9 +466,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                                     ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
+                                const SizedBox(height: 5),
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(12.0, 0.0, 16.0, 0.0),
                                   child: SwipePicker(
@@ -539,12 +493,13 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                     ),
                     const SizedBox(height: 10),
                     ThunderSettingsTile(
-                        leading: Icon(Icons.color_lens_rounded),
-                        title: l10n.actionColorsRedirect,
-                        trailing: const ThunderSettingsChevronTrailing(),
-                        onTap: () => navigateToSettingPage(context, LocalSettings.actionColors),
-                        highlightKey: settingToHighlightKey,
-                        highlighted: false),
+                      leading: Icon(Icons.color_lens_rounded),
+                      title: l10n.actionColorsRedirect,
+                      trailing: const ThunderSettingsChevronTrailing(),
+                      onTap: () => navigateToSettingPage(context, LocalSettings.actionColors),
+                      highlightKey: settingToHighlightKey,
+                      highlighted: false,
+                    ),
                   ],
                 ),
               ),

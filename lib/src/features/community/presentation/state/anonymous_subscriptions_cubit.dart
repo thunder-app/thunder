@@ -59,11 +59,13 @@ class AnonymousSubscriptionsCubit extends Cubit<AnonymousSubscriptionsState> {
       );
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: AnonymousSubscriptionsStatus.failure,
-        message: message,
-        errorReason: AppErrorReason.unexpected(message: message),
-      ));
+      emit(
+        state.copyWith(
+          status: AnonymousSubscriptionsStatus.failure,
+          message: message,
+          errorReason: AppErrorReason.unexpected(message: message),
+        ),
+      );
     }
   }
 
@@ -82,20 +84,18 @@ class AnonymousSubscriptionsCubit extends Cubit<AnonymousSubscriptionsState> {
       );
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: AnonymousSubscriptionsStatus.failure,
-        message: message,
-        errorReason: AppErrorReason.unexpected(message: message),
-      ));
+      emit(
+        state.copyWith(
+          status: AnonymousSubscriptionsStatus.failure,
+          message: message,
+          errorReason: AppErrorReason.unexpected(message: message),
+        ),
+      );
     }
   }
 
   Future<void> _loadSubscribedCommunities() async {
-    emit(state.copyWith(
-      status: AnonymousSubscriptionsStatus.loading,
-      message: null,
-      errorReason: null,
-    ));
+    emit(state.copyWith(status: AnonymousSubscriptionsStatus.loading, message: null, errorReason: null));
 
     try {
       final subscribedCommunities = await createAnonymousSubscriptionsRepository().getSubscriptions();
@@ -107,22 +107,16 @@ class AnonymousSubscriptionsCubit extends Cubit<AnonymousSubscriptionsState> {
 
       _lastLoadAt = DateTime.now();
 
-      emit(
-        state.copyWith(
-          status: AnonymousSubscriptionsStatus.success,
-          subscriptions: communities.values.toList(),
-          urls: communities.keys.toSet(),
-          message: null,
-          errorReason: null,
-        ),
-      );
+      emit(state.copyWith(status: AnonymousSubscriptionsStatus.success, subscriptions: communities.values.toList(), urls: communities.keys.toSet(), message: null, errorReason: null));
     } catch (e) {
       final message = getExceptionErrorMessage(e);
-      emit(state.copyWith(
-        status: AnonymousSubscriptionsStatus.failure,
-        message: message,
-        errorReason: AppErrorReason.unexpected(message: message),
-      ));
+      emit(
+        state.copyWith(
+          status: AnonymousSubscriptionsStatus.failure,
+          message: message,
+          errorReason: AppErrorReason.unexpected(message: message),
+        ),
+      );
     }
   }
 }

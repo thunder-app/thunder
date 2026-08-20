@@ -64,18 +64,9 @@ class CommentContent extends StatefulWidget {
 }
 
 class _CommentContentState extends State<CommentContent> with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(
-    duration: const Duration(milliseconds: 100),
-    vsync: this,
-  );
+  late final _controller = AnimationController(duration: const Duration(milliseconds: 100), vsync: this);
 
-  late final _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  ));
+  late final _offsetAnimation = Tween<Offset>(begin: Offset.zero, end: const Offset(1.5, 0.0)).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
 
   final _selectableRegionFocusNode = FocusNode();
 
@@ -113,7 +104,10 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                 duration: const Duration(milliseconds: 130),
                 switchInCurve: Curves.easeInOut,
                 switchOutCurve: Curves.easeInOut,
-                transitionBuilder: (Widget child, Animation<double> animation) => SizeTransition(sizeFactor: animation, child: SlideTransition(position: _offsetAnimation, child: child)),
+                transitionBuilder: (Widget child, Animation<double> animation) => SizeTransition(
+                  sizeFactor: animation,
+                  child: SlideTransition(position: _offsetAnimation, child: child),
+                ),
                 child: (widget.hidden && collapseParentCommentOnGesture)
                     ? Container()
                     : Column(
@@ -129,10 +123,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                                   // See comments on [SelectableTextModal] regarding the next two properties
                                   selectionControls: Platform.isIOS ? cupertinoTextSelectionHandleControls : materialTextSelectionHandleControls,
                                   contextMenuBuilder: (context, selectableRegionState) {
-                                    return AdaptiveTextSelectionToolbar.buttonItems(
-                                      buttonItems: selectableRegionState.contextMenuButtonItems,
-                                      anchors: selectableRegionState.contextMenuAnchors,
-                                    );
+                                    return AdaptiveTextSelectionToolbar.buttonItems(buttonItems: selectableRegionState.contextMenuButtonItems, anchors: selectableRegionState.contextMenuAnchors);
                                   },
                                   onSelectionChanged: (value) => widget.onSelectionChanged?.call(value?.plainText),
                                   child: child,

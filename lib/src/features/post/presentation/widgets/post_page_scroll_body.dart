@@ -68,21 +68,11 @@ class PostPageScrollBody extends StatelessWidget {
           onReset: onReset,
           onCreateCrossPost: () {
             final post = context.read<PostBloc>().state.post ?? initialPost;
-            createCrossPost(
-              context,
-              title: post.name,
-              url: post.url,
-              text: post.body,
-              postUrl: post.apId,
-            );
+            createCrossPost(context, title: post.name, url: post.url, text: post.body, postUrl: post.apId);
           },
           onSelectText: () {
             final post = context.read<PostBloc>().state.post ?? initialPost;
-            showSelectableTextModal(
-              context,
-              title: post.name,
-              text: post.body ?? '',
-            );
+            showSelectableTextModal(context, title: post.name, text: post.body ?? '');
           },
           onPostChanged: (post) => context.read<PostBloc>().add(GetPostEvent(post: post)),
           highlightedCommentId: highlightedCommentId,

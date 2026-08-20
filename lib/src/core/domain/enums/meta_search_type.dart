@@ -9,8 +9,7 @@ enum MetaSearchType {
   communities(searchType: 'Communities'),
   users(searchType: 'Users'),
   url(searchType: 'Url'),
-  instances(),
-  ;
+  instances();
 
   /// The type of search to perform.
   final String? searchType;

@@ -13,10 +13,7 @@ class CommentList {
   /// The tree of comments in the UI.
   final CommentNode tree;
 
-  const CommentList._({
-    required this.api,
-    required this.tree,
-  });
+  const CommentList._({required this.api, required this.tree});
 
   factory CommentList.empty() {
     return CommentList._(
@@ -27,20 +24,14 @@ class CommentList {
 
   factory CommentList.fromApi(List<ThunderComment> comments) {
     final mergedComments = mergeComments(const [], comments);
-    return CommentList._(
-      api: mergedComments,
-      tree: buildCommentTree(mergedComments),
-    );
+    return CommentList._(api: mergedComments, tree: buildCommentTree(mergedComments));
   }
 
   CommentList merge(List<ThunderComment> incomingComments) {
     if (incomingComments.isEmpty) return this;
 
     final mergedComments = mergeComments(api, incomingComments);
-    return CommentList._(
-      api: mergedComments,
-      tree: buildCommentTree(mergedComments),
-    );
+    return CommentList._(api: mergedComments, tree: buildCommentTree(mergedComments));
   }
 
   List<CommentNode> get comments => tree.flatten();

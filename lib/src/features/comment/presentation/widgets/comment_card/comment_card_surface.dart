@@ -81,24 +81,11 @@ class CommentCardSurface extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CommentContent(
-                account: account,
-                level: level,
-                comment: comment,
-                hidden: collapsed,
-                viewSource: viewSource,
-                onViewSourceToggled: onViewSourceToggled,
-              ),
+              CommentContent(account: account, level: level, comment: comment, hidden: collapsed, viewSource: viewSource, onViewSourceToggled: onViewSourceToggled),
               if (showActions)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0, top: 6.0, right: 4.0),
-                  child: CommentCardButtonActions(
-                    account: account,
-                    comment: comment,
-                    isOwnComment: isOwnComment,
-                    onAction: onAction,
-                    onBottomSheetOpen: onLongPress,
-                  ),
+                  child: CommentCardButtonActions(account: account, comment: comment, isOwnComment: isOwnComment, onAction: onAction, onBottomSheetOpen: onLongPress),
                 ),
             ],
           ),

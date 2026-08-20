@@ -39,20 +39,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     required this.notificationRepository,
     required this.privateMessageRepository,
     required LocalizationService localizationService,
-  })  : _localizationService = localizationService,
-        super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
+  }) : _localizationService = localizationService,
+       super(InboxState(replies: replies, showUnreadOnly: showUnreadOnly)) {
     _init();
   }
 
   /// Unnamed constructor with default state
-  InboxBloc({
-    required this.account,
-    required this.commentRepository,
-    required this.notificationRepository,
-    required this.privateMessageRepository,
-    required LocalizationService localizationService,
-  })  : _localizationService = localizationService,
-        super(const InboxState()) {
+  InboxBloc({required this.account, required this.commentRepository, required this.notificationRepository, required this.privateMessageRepository, required LocalizationService localizationService})
+    : _localizationService = localizationService,
+      super(const InboxState()) {
     _init();
   }
 
@@ -79,19 +74,19 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     final previousThreadUnreadCount = _privateMessageUnreadCount(state.privateMessages.where((privateMessage) => updatedIds.contains(privateMessage.id)));
     final nextThreadUnreadCount = _privateMessageUnreadCount(privateMessages);
     final unreadDelta = nextThreadUnreadCount - previousThreadUnreadCount;
-    final updatedPrivateMessages = [
-      ...privateMessages,
-      ...state.privateMessages.where((privateMessage) => !updatedIds.contains(privateMessage.id)),
-    ]..sort((a, b) => b.published.compareTo(a.published));
+    final updatedPrivateMessages = [...privateMessages, ...state.privateMessages.where((privateMessage) => !updatedIds.contains(privateMessage.id))]
+      ..sort((a, b) => b.published.compareTo(a.published));
 
-    emit(state.copyWith(
-      status: InboxStatus.success,
-      privateMessages: cleanDeletedMessages(updatedPrivateMessages),
-      totalUnreadCount: (state.totalUnreadCount + unreadDelta).clamp(0, 1 << 31),
-      messagesUnreadCount: (state.messagesUnreadCount + unreadDelta).clamp(0, 1 << 31),
-      errorMessage: null,
-      errorReason: null,
-    ));
+    emit(
+      state.copyWith(
+        status: InboxStatus.success,
+        privateMessages: cleanDeletedMessages(updatedPrivateMessages),
+        totalUnreadCount: (state.totalUnreadCount + unreadDelta).clamp(0, 1 << 31),
+        messagesUnreadCount: (state.messagesUnreadCount + unreadDelta).clamp(0, 1 << 31),
+        errorMessage: null,
+        errorReason: null,
+      ),
+    );
   }
 
   int _privateMessageUnreadCount(Iterable<ThunderPrivateMessage> privateMessages) {
@@ -100,24 +95,26 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
     if (account.anonymous) {
-      return emit(state.copyWith(
-        status: InboxStatus.empty,
-        privateMessages: [],
-        mentions: [],
-        replies: [],
-        showUnreadOnly: !event.showAll,
-        inboxMentionPage: 1,
-        inboxReplyPage: 1,
-        inboxPrivateMessagePage: 1,
-        totalUnreadCount: 0,
-        repliesUnreadCount: 0,
-        mentionsUnreadCount: 0,
-        messagesUnreadCount: 0,
-        hasReachedInboxReplyEnd: true,
-        hasReachedInboxMentionEnd: true,
-        hasReachedInboxPrivateMessageEnd: true,
-        errorReason: null,
-      ));
+      return emit(
+        state.copyWith(
+          status: InboxStatus.empty,
+          privateMessages: [],
+          mentions: [],
+          replies: [],
+          showUnreadOnly: !event.showAll,
+          inboxMentionPage: 1,
+          inboxReplyPage: 1,
+          inboxPrivateMessagePage: 1,
+          totalUnreadCount: 0,
+          repliesUnreadCount: 0,
+          mentionsUnreadCount: 0,
+          messagesUnreadCount: 0,
+          hasReachedInboxReplyEnd: true,
+          hasReachedInboxMentionEnd: true,
+          hasReachedInboxPrivateMessageEnd: true,
+          errorReason: null,
+        ),
+      );
     }
 
     int limit = 20;
@@ -132,48 +129,20 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
         switch (event.inboxType) {
           case InboxType.replies:
-            repliesResponse = await notificationRepository.replies(
-              unread: !event.showAll,
-              limit: limit,
-              sort: event.commentSortType,
-              page: 1,
-            );
+            repliesResponse = await notificationRepository.replies(unread: !event.showAll, limit: limit, sort: event.commentSortType, page: 1);
             break;
           case InboxType.mentions:
-            mentionsResponse = await notificationRepository.mentions(
-              unread: !event.showAll,
-              limit: limit,
-              sort: event.commentSortType,
-              page: 1,
-            );
+            mentionsResponse = await notificationRepository.mentions(unread: !event.showAll, limit: limit, sort: event.commentSortType, page: 1);
             break;
           case InboxType.messages:
-            privateMessagesResponse = await privateMessageRepository.messages(
-              unread: false,
-              limit: limit,
-              page: 1,
-            );
+            privateMessagesResponse = await privateMessageRepository.messages(unread: false, limit: limit, page: 1);
             break;
           case InboxType.all:
-            repliesResponse = await notificationRepository.replies(
-              unread: !event.showAll,
-              limit: limit,
-              sort: event.commentSortType,
-              page: 1,
-            );
+            repliesResponse = await notificationRepository.replies(unread: !event.showAll, limit: limit, sort: event.commentSortType, page: 1);
 
-            mentionsResponse = await notificationRepository.mentions(
-              unread: !event.showAll,
-              limit: limit,
-              sort: event.commentSortType,
-              page: 1,
-            );
+            mentionsResponse = await notificationRepository.mentions(unread: !event.showAll, limit: limit, sort: event.commentSortType, page: 1);
 
-            privateMessagesResponse = await privateMessageRepository.messages(
-              unread: false,
-              limit: limit,
-              page: 1,
-            );
+            privateMessagesResponse = await privateMessageRepository.messages(unread: false, limit: limit, page: 1);
             break;
           default:
             break;
@@ -216,29 +185,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       switch (event.inboxType) {
         case InboxType.replies:
           if (state.hasReachedInboxReplyEnd) return;
-          repliesResponse = await notificationRepository.replies(
-            unread: state.showUnreadOnly,
-            limit: limit,
-            sort: event.commentSortType,
-            page: state.inboxReplyPage,
-          );
+          repliesResponse = await notificationRepository.replies(unread: state.showUnreadOnly, limit: limit, sort: event.commentSortType, page: state.inboxReplyPage);
           break;
         case InboxType.mentions:
           if (state.hasReachedInboxMentionEnd) return;
-          mentionsResponse = await notificationRepository.mentions(
-            unread: state.showUnreadOnly,
-            limit: limit,
-            sort: event.commentSortType,
-            page: state.inboxMentionPage,
-          );
+          mentionsResponse = await notificationRepository.mentions(unread: state.showUnreadOnly, limit: limit, sort: event.commentSortType, page: state.inboxMentionPage);
           break;
         case InboxType.messages:
           if (state.hasReachedInboxPrivateMessageEnd) return;
-          privateMessagesResponse = await privateMessageRepository.messages(
-            unread: false,
-            limit: limit,
-            page: state.inboxPrivateMessagePage,
-          );
+          privateMessagesResponse = await privateMessageRepository.messages(unread: false, limit: limit, page: state.inboxPrivateMessagePage);
           break;
         default:
           break;
@@ -248,12 +203,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       List<ThunderComment> mentions = List.from(state.mentions)..addAll(mentionsResponse);
       List<ThunderPrivateMessage> privateMessages = List.from(state.privateMessages)..addAll(privateMessagesResponse);
 
-      final pages = incrementFetchedPage(
-        type: event.inboxType,
-        currentMentionPage: state.inboxMentionPage,
-        currentReplyPage: state.inboxReplyPage,
-        currentMessagePage: state.inboxPrivateMessagePage,
-      );
+      final pages = incrementFetchedPage(type: event.inboxType, currentMentionPage: state.inboxMentionPage, currentReplyPage: state.inboxReplyPage, currentMessagePage: state.inboxPrivateMessagePage);
 
       return emit(
         state.copyWith(
@@ -267,25 +217,25 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           inboxPrivateMessagePage: pages.messagePage,
           hasReachedInboxReplyEnd: event.inboxType == InboxType.replies ? (repliesResponse.isEmpty || repliesResponse.length < limit) : state.hasReachedInboxReplyEnd,
           hasReachedInboxMentionEnd: event.inboxType == InboxType.mentions ? (mentionsResponse.isEmpty || mentionsResponse.length < limit) : state.hasReachedInboxMentionEnd,
-          hasReachedInboxPrivateMessageEnd:
-              event.inboxType == InboxType.messages ? (privateMessagesResponse.isEmpty || privateMessagesResponse.length < limit) : state.hasReachedInboxPrivateMessageEnd,
+          hasReachedInboxPrivateMessageEnd: event.inboxType == InboxType.messages
+              ? (privateMessagesResponse.isEmpty || privateMessagesResponse.length < limit)
+              : state.hasReachedInboxPrivateMessageEnd,
           errorReason: null,
         ),
       );
     } catch (e) {
       final message = e.toString();
-      emit(state.copyWith(
-        status: InboxStatus.failure,
-        errorMessage: message,
-        totalUnreadCount: 0,
-        repliesUnreadCount: 0,
-        mentionsUnreadCount: 0,
-        messagesUnreadCount: 0,
-        errorReason: AppErrorReason.unexpected(
-          message: message,
-          details: e.toString(),
+      emit(
+        state.copyWith(
+          status: InboxStatus.failure,
+          errorMessage: message,
+          totalUnreadCount: 0,
+          repliesUnreadCount: 0,
+          mentionsUnreadCount: 0,
+          messagesUnreadCount: 0,
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
         ),
-      ));
+      );
     }
   }
 
@@ -334,12 +284,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
 
     if (existingCommentReplyView == null && existingPersonMentionView == null && existingPrivateMessageView == null) {
-      return emit(state.copyWith(
-        status: InboxStatus.failure,
-        errorReason: const AppErrorReason.actionFailed(
-          message: 'Inbox item not found.',
+      return emit(
+        state.copyWith(
+          status: InboxStatus.failure,
+          errorReason: const AppErrorReason.actionFailed(message: 'Inbox item not found.'),
         ),
-      ));
+      );
     }
 
     /// Convert the reply or mention to a comment
@@ -355,12 +305,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       case CommentAction.read:
         final input = event.actionInput;
         if (input is! ReadInboxActionInput) {
-          return emit(state.copyWith(
-            status: InboxStatus.failure,
-            errorReason: const AppErrorReason.validation(
-              message: 'Invalid payload for read action.',
+          return emit(
+            state.copyWith(
+              status: InboxStatus.failure,
+              errorReason: const AppErrorReason.validation(message: 'Invalid payload for read action.'),
             ),
-          ));
+          );
         }
         final value = input.read;
         try {
@@ -386,59 +336,51 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           }
 
           if (existingCommentReplyView != null) {
-            await notificationRepository.markReplyAsRead(
-              replyId: event.commentReplyId!,
-              read: value,
-            );
+            await notificationRepository.markReplyAsRead(replyId: event.commentReplyId!, read: value);
           } else if (existingPersonMentionView != null) {
-            await notificationRepository.markMentionAsRead(
-              mentionId: event.personMentionId!,
-              read: value,
-            );
+            await notificationRepository.markMentionAsRead(mentionId: event.personMentionId!, read: value);
           } else if (existingPrivateMessageView != null) {
-            await privateMessageRepository.markAsRead(
-              notificationId: event.privateMessageId!,
-              read: value,
-            );
+            await privateMessageRepository.markAsRead(notificationId: event.privateMessageId!, read: value);
           }
 
           final unread = await notificationRepository.unreadNotificationsCount();
           int totalUnreadCount = unread.total;
 
-          return emit(state.copyWith(
-            status: InboxStatus.success,
-            replies: updatedReplies,
-            mentions: updatedMentions,
-            privateMessages: updatedPrivateMessages,
-            totalUnreadCount: totalUnreadCount,
-            repliesUnreadCount: unread.replies,
-            mentionsUnreadCount: unread.mentions,
-            messagesUnreadCount: unread.privateMessages,
-            inboxReplyMarkedAsRead: event.commentReplyId,
-            errorReason: null,
-          ));
+          return emit(
+            state.copyWith(
+              status: InboxStatus.success,
+              replies: updatedReplies,
+              mentions: updatedMentions,
+              privateMessages: updatedPrivateMessages,
+              totalUnreadCount: totalUnreadCount,
+              repliesUnreadCount: unread.replies,
+              mentionsUnreadCount: unread.mentions,
+              messagesUnreadCount: unread.privateMessages,
+              inboxReplyMarkedAsRead: event.commentReplyId,
+              errorReason: null,
+            ),
+          );
         } catch (e) {
           final message = e.toString();
-          return emit(state.copyWith(
-            status: InboxStatus.failure,
-            errorMessage: message,
-            errorReason: AppErrorReason.actionFailed(
-              message: message,
-              details: e.toString(),
+          return emit(
+            state.copyWith(
+              status: InboxStatus.failure,
+              errorMessage: message,
+              errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
             ),
-          ));
+          );
         }
       case CommentAction.vote:
         final originalReplies = List<ThunderComment>.from(state.replies);
         final originalMentions = List<ThunderComment>.from(state.mentions);
         final input = event.actionInput;
         if (input is! VoteInboxActionInput) {
-          return emit(state.copyWith(
-            status: InboxStatus.failure,
-            errorReason: const AppErrorReason.validation(
-              message: 'Invalid payload for vote action.',
+          return emit(
+            state.copyWith(
+              status: InboxStatus.failure,
+              errorReason: const AppErrorReason.validation(message: 'Invalid payload for vote action.'),
             ),
-          ));
+          );
         }
         final value = input.vote;
         try {
@@ -449,20 +391,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
           if (existingCommentReplyView != null && existingReplyIndex != -1) {
             updatedReplies[existingReplyIndex] = existingCommentReplyView.copyWith(
-              counts: existingCommentReplyView.counts.copyWith(
-                score: updatedComment.counts.score,
-                upvotes: updatedComment.counts.upvotes,
-                downvotes: updatedComment.counts.downvotes,
-              ),
+              counts: existingCommentReplyView.counts.copyWith(score: updatedComment.counts.score, upvotes: updatedComment.counts.upvotes, downvotes: updatedComment.counts.downvotes),
               context: existingCommentReplyView.context.copyWith(vote: updatedComment.context.vote),
             );
           } else if (existingPersonMentionView != null && existingMentionIndex != -1) {
             updatedMentions[existingMentionIndex] = existingPersonMentionView.copyWith(
-              counts: existingPersonMentionView.counts.copyWith(
-                score: updatedComment.counts.score,
-                upvotes: updatedComment.counts.upvotes,
-                downvotes: updatedComment.counts.downvotes,
-              ),
+              counts: existingPersonMentionView.counts.copyWith(score: updatedComment.counts.score, upvotes: updatedComment.counts.upvotes, downvotes: updatedComment.counts.downvotes),
               context: existingPersonMentionView.context.copyWith(vote: updatedComment.context.vote),
             );
           }
@@ -471,35 +405,39 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           emit(state.copyWith(status: InboxStatus.success, replies: updatedReplies, mentions: updatedMentions));
           emit(state.copyWith(status: InboxStatus.refreshing, replies: updatedReplies, mentions: updatedMentions));
 
-          await commentRepository.vote(comment, value).timeout(timeout, onTimeout: () {
-            throw Exception(_localizationService.l10n.timeoutUpvoteComment);
-          });
+          await commentRepository
+              .vote(comment, value)
+              .timeout(
+                timeout,
+                onTimeout: () {
+                  throw Exception(_localizationService.l10n.timeoutUpvoteComment);
+                },
+              );
 
           return emit(state.copyWith(status: InboxStatus.success, replies: updatedReplies, mentions: updatedMentions, errorReason: null));
         } catch (e) {
           final message = e.toString();
-          return emit(state.copyWith(
-            status: InboxStatus.failure,
-            errorMessage: message,
-            replies: originalReplies,
-            mentions: originalMentions,
-            errorReason: AppErrorReason.actionFailed(
-              message: message,
-              details: e.toString(),
+          return emit(
+            state.copyWith(
+              status: InboxStatus.failure,
+              errorMessage: message,
+              replies: originalReplies,
+              mentions: originalMentions,
+              errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
             ),
-          ));
+          );
         }
       case CommentAction.save:
         final originalReplies = List<ThunderComment>.from(state.replies);
         final originalMentions = List<ThunderComment>.from(state.mentions);
         final input = event.actionInput;
         if (input is! SaveInboxActionInput) {
-          return emit(state.copyWith(
-            status: InboxStatus.failure,
-            errorReason: const AppErrorReason.validation(
-              message: 'Invalid payload for save action.',
+          return emit(
+            state.copyWith(
+              status: InboxStatus.failure,
+              errorReason: const AppErrorReason.validation(message: 'Invalid payload for save action.'),
             ),
-          ));
+          );
         }
         final value = input.save;
         try {
@@ -518,35 +456,39 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           emit(state.copyWith(status: InboxStatus.success, replies: updatedReplies, mentions: updatedMentions));
           emit(state.copyWith(status: InboxStatus.refreshing, replies: updatedReplies, mentions: updatedMentions));
 
-          await commentRepository.save(comment, value).timeout(timeout, onTimeout: () {
-            throw Exception(_localizationService.l10n.timeoutSaveComment);
-          });
+          await commentRepository
+              .save(comment, value)
+              .timeout(
+                timeout,
+                onTimeout: () {
+                  throw Exception(_localizationService.l10n.timeoutSaveComment);
+                },
+              );
 
           return emit(state.copyWith(status: InboxStatus.success, replies: updatedReplies, mentions: updatedMentions, errorReason: null));
         } catch (e) {
           final message = e.toString();
-          return emit(state.copyWith(
-            status: InboxStatus.failure,
-            errorMessage: message,
-            replies: originalReplies,
-            mentions: originalMentions,
-            errorReason: AppErrorReason.actionFailed(
-              message: message,
-              details: e.toString(),
+          return emit(
+            state.copyWith(
+              status: InboxStatus.failure,
+              errorMessage: message,
+              replies: originalReplies,
+              mentions: originalMentions,
+              errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
             ),
-          ));
+          );
         }
       case CommentAction.delete:
         final originalReplies = List<ThunderComment>.from(state.replies);
         final originalMentions = List<ThunderComment>.from(state.mentions);
         final input = event.actionInput;
         if (input is! DeleteInboxActionInput) {
-          return emit(state.copyWith(
-            status: InboxStatus.failure,
-            errorReason: const AppErrorReason.validation(
-              message: 'Invalid payload for delete action.',
+          return emit(
+            state.copyWith(
+              status: InboxStatus.failure,
+              errorReason: const AppErrorReason.validation(message: 'Invalid payload for delete action.'),
             ),
-          ));
+          );
         }
         final value = input.delete;
         try {
@@ -556,45 +498,45 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           ThunderComment updatedComment = optimisticallyDeleteComment(comment!, value);
 
           if (existingCommentReplyView != null && existingReplyIndex != -1) {
-            updatedReplies[existingReplyIndex] = existingCommentReplyView.copyWith(
-              status: existingCommentReplyView.status.copyWith(deleted: updatedComment.status.deleted),
-            );
+            updatedReplies[existingReplyIndex] = existingCommentReplyView.copyWith(status: existingCommentReplyView.status.copyWith(deleted: updatedComment.status.deleted));
           } else if (existingPersonMentionView != null && existingMentionIndex != -1) {
-            updatedMentions[existingMentionIndex] = existingPersonMentionView.copyWith(
-              status: existingPersonMentionView.status.copyWith(deleted: updatedComment.status.deleted),
-            );
+            updatedMentions[existingMentionIndex] = existingPersonMentionView.copyWith(status: existingPersonMentionView.status.copyWith(deleted: updatedComment.status.deleted));
           }
 
           // Immediately set the status, and continue
           emit(state.copyWith(status: InboxStatus.success, replies: updatedReplies, mentions: updatedMentions));
           emit(state.copyWith(status: InboxStatus.refreshing, replies: updatedReplies, mentions: updatedMentions));
 
-          await commentRepository.delete(comment, value).timeout(timeout, onTimeout: () {
-            throw Exception(_localizationService.l10n.timeoutErrorMessage);
-          });
+          await commentRepository
+              .delete(comment, value)
+              .timeout(
+                timeout,
+                onTimeout: () {
+                  throw Exception(_localizationService.l10n.timeoutErrorMessage);
+                },
+              );
 
           return emit(state.copyWith(status: InboxStatus.success, replies: updatedReplies, mentions: updatedMentions, errorReason: null));
         } catch (e) {
           final message = e.toString();
-          return emit(state.copyWith(
-            status: InboxStatus.failure,
-            errorMessage: message,
-            replies: originalReplies,
-            mentions: originalMentions,
-            errorReason: AppErrorReason.actionFailed(
-              message: message,
-              details: e.toString(),
+          return emit(
+            state.copyWith(
+              status: InboxStatus.failure,
+              errorMessage: message,
+              replies: originalReplies,
+              mentions: originalMentions,
+              errorReason: AppErrorReason.actionFailed(message: message, details: e.toString()),
             ),
-          ));
+          );
         }
       default:
-        return emit(state.copyWith(
-          status: InboxStatus.failure,
-          errorMessage: _localizationService.l10n.unexpectedError,
-          errorReason: AppErrorReason.unexpected(
-            message: _localizationService.l10n.unexpectedError,
+        return emit(
+          state.copyWith(
+            status: InboxStatus.failure,
+            errorMessage: _localizationService.l10n.unexpectedError,
+            errorReason: AppErrorReason.unexpected(message: _localizationService.l10n.unexpectedError),
           ),
-        ));
+        );
     }
   }
 
@@ -606,30 +548,32 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       // Update all the replies, mentions, and messages to be read locally
       List<ThunderComment> updatedReplies = state.replies.map((comment) => comment.copyWith(notification: comment.notification?.copyWith(read: true))).toList();
       List<ThunderComment> updatedMentions = state.mentions.map((comment) => comment.copyWith(notification: comment.notification?.copyWith(read: true))).toList();
-      List<ThunderPrivateMessage> updatedPrivateMessages =
-          state.privateMessages.map((privateMessage) => privateMessage.copyWith(notification: privateMessage.notification?.copyWith(read: true))).toList();
+      List<ThunderPrivateMessage> updatedPrivateMessages = state.privateMessages
+          .map((privateMessage) => privateMessage.copyWith(notification: privateMessage.notification?.copyWith(read: true)))
+          .toList();
 
-      return emit(state.copyWith(
-        status: InboxStatus.success,
-        replies: state.showUnreadOnly ? [] : updatedReplies,
-        mentions: state.showUnreadOnly ? [] : updatedMentions,
-        privateMessages: updatedPrivateMessages,
-        totalUnreadCount: 0,
-        repliesUnreadCount: 0,
-        mentionsUnreadCount: 0,
-        messagesUnreadCount: 0,
-        errorReason: null,
-      ));
+      return emit(
+        state.copyWith(
+          status: InboxStatus.success,
+          replies: state.showUnreadOnly ? [] : updatedReplies,
+          mentions: state.showUnreadOnly ? [] : updatedMentions,
+          privateMessages: updatedPrivateMessages,
+          totalUnreadCount: 0,
+          repliesUnreadCount: 0,
+          mentionsUnreadCount: 0,
+          messagesUnreadCount: 0,
+          errorReason: null,
+        ),
+      );
     } catch (e) {
       final message = e.toString();
-      emit(state.copyWith(
-        status: InboxStatus.failure,
-        errorMessage: message,
-        errorReason: AppErrorReason.unexpected(
-          message: message,
-          details: e.toString(),
+      emit(
+        state.copyWith(
+          status: InboxStatus.failure,
+          errorMessage: message,
+          errorReason: AppErrorReason.unexpected(message: message, details: e.toString()),
         ),
-      ));
+      );
     }
   }
 }

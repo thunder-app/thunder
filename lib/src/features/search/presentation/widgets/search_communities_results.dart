@@ -27,10 +27,7 @@ class SearchCommunitiesResults extends StatelessWidget {
             if (index == communities.length) {
               return status == SearchStatus.refreshing
                   ? const Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 10),
-                        child: CircularProgressIndicator(),
-                      ),
+                      child: Padding(padding: EdgeInsets.only(bottom: 10), child: CircularProgressIndicator()),
                     )
                   : const SizedBox.shrink();
             }

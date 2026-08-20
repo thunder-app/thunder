@@ -168,46 +168,44 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final gesturePreferences = context.select<
-        GesturePreferencesCubit,
-        ({
-          bool enabled,
-          SwipeAction leftPrimary,
-          SwipeAction leftSecondary,
-          SwipeAction rightPrimary,
-          SwipeAction rightSecondary,
-        })>((cubit) => (
-          enabled: cubit.state.enablePostGestures,
-          leftPrimary: cubit.state.leftPrimaryPostGesture,
-          leftSecondary: cubit.state.leftSecondaryPostGesture,
-          rightPrimary: cubit.state.rightPrimaryPostGesture,
-          rightSecondary: cubit.state.rightSecondaryPostGesture,
-        ));
-    final renderPreferences = context.select<
-        FeedPreferencesCubit,
-        ({
-          bool useCompactView,
-          bool hideThumbnails,
-          bool hideNsfwPreviews,
-          bool markPostReadOnMediaView,
-          bool showFullHeightImages,
-          bool showEdgeToEdgeImages,
-          bool showTitleFirst,
-          bool showTextContent,
-          bool linkPostsUseCompactView,
-          bool pinnedPostsUseCompactView,
-        })>((cubit) => (
-          useCompactView: cubit.state.useCompactView,
-          hideThumbnails: cubit.state.hideThumbnails,
-          hideNsfwPreviews: cubit.state.hideNsfwPreviews,
-          markPostReadOnMediaView: cubit.state.markPostReadOnMediaView,
-          showFullHeightImages: cubit.state.showFullHeightImages,
-          showEdgeToEdgeImages: cubit.state.showEdgeToEdgeImages,
-          showTitleFirst: cubit.state.showTitleFirst,
-          showTextContent: cubit.state.showTextContent,
-          linkPostsUseCompactView: cubit.state.linkPostsUseCompactView,
-          pinnedPostsUseCompactView: cubit.state.pinnedPostsUseCompactView,
-        ));
+    final gesturePreferences = context.select<GesturePreferencesCubit, ({bool enabled, SwipeAction leftPrimary, SwipeAction leftSecondary, SwipeAction rightPrimary, SwipeAction rightSecondary})>(
+      (cubit) => (
+        enabled: cubit.state.enablePostGestures,
+        leftPrimary: cubit.state.leftPrimaryPostGesture,
+        leftSecondary: cubit.state.leftSecondaryPostGesture,
+        rightPrimary: cubit.state.rightPrimaryPostGesture,
+        rightSecondary: cubit.state.rightSecondaryPostGesture,
+      ),
+    );
+    final renderPreferences = context
+        .select<
+          FeedPreferencesCubit,
+          ({
+            bool useCompactView,
+            bool hideThumbnails,
+            bool hideNsfwPreviews,
+            bool markPostReadOnMediaView,
+            bool showFullHeightImages,
+            bool showEdgeToEdgeImages,
+            bool showTitleFirst,
+            bool showTextContent,
+            bool linkPostsUseCompactView,
+            bool pinnedPostsUseCompactView,
+          })
+        >(
+          (cubit) => (
+            useCompactView: cubit.state.useCompactView,
+            hideThumbnails: cubit.state.hideThumbnails,
+            hideNsfwPreviews: cubit.state.hideNsfwPreviews,
+            markPostReadOnMediaView: cubit.state.markPostReadOnMediaView,
+            showFullHeightImages: cubit.state.showFullHeightImages,
+            showEdgeToEdgeImages: cubit.state.showEdgeToEdgeImages,
+            showTitleFirst: cubit.state.showTitleFirst,
+            showTextContent: cubit.state.showTextContent,
+            linkPostsUseCompactView: cubit.state.linkPostsUseCompactView,
+            pinnedPostsUseCompactView: cubit.state.pinnedPostsUseCompactView,
+          ),
+        );
 
     final currentSwipeDirection = determinePostSwipeDirection(
       isUserLoggedIn: isUserLoggedIn,
@@ -221,7 +219,8 @@ class _PostCardState extends State<PostCard> {
     final hasFeedBloc = context.findAncestorWidgetOfExactType<BlocProvider<FeedBloc>>() != null;
     final feedType = widget.feedType ?? (hasFeedBloc ? context.select<FeedBloc, FeedType?>((bloc) => bloc.state.feedType) : null);
     final flairs = feedType == FeedType.community ? widget.post.flairs : const <ThunderFlair>[];
-    final postIsCompact = renderPreferences.useCompactView ||
+    final postIsCompact =
+        renderPreferences.useCompactView ||
         (renderPreferences.pinnedPostsUseCompactView && (widget.post.status.featuredLocal || (feedType == FeedType.community && widget.post.status.featuredCommunity))) ||
         (renderPreferences.linkPostsUseCompactView && widget.post.media.isNotEmpty && widget.post.media.first.mediaType == MediaType.link);
 
@@ -328,26 +327,33 @@ class _PostCardState extends State<PostCard> {
       child = ThunderMultiActionDismissible<SwipeAction>(
         key: ObjectKey(widget.post.id),
         direction: widget.disableSwiping ? DismissDirection.none : currentSwipeDirection,
-        leftActions: leftActions.map((action) => ThunderSwipeAction(value: action, icon: action.getIcon(read: read, hidden: hidden), color: (context) => action.getColor(context))).toList(),
-        rightActions: rightActions.map((action) => ThunderSwipeAction(value: action, icon: action.getIcon(read: read, hidden: hidden), color: (context) => action.getColor(context))).toList(),
+        leftActions: leftActions
+            .map(
+              (action) => ThunderSwipeAction(
+                value: action,
+                icon: action.getIcon(read: read, hidden: hidden),
+                color: (context) => action.getColor(context),
+              ),
+            )
+            .toList(),
+        rightActions: rightActions
+            .map(
+              (action) => ThunderSwipeAction(
+                value: action,
+                icon: action.getIcon(read: read, hidden: hidden),
+                color: (context) => action.getColor(context),
+              ),
+            )
+            .toList(),
         actionThresholds: actionThresholds,
         onAction: (action) => _onAction(action.value),
         onPointerDown: widget.onDownAction,
         onDragEnd: (dy) => widget.onUpAction(dy),
-        backgroundBuilder: (context, dir, progress, action) => PostCardActionBackground(
-          swipeAction: action?.value,
-          dismissThreshold: progress,
-          firstActionThreshold: actionThresholds.first,
-          dismissDirection: dir,
-          read: read,
-          hidden: hidden,
-        ),
+        backgroundBuilder: (context, dir, progress, action) =>
+            PostCardActionBackground(swipeAction: action?.value, dismissThreshold: progress, firstActionThreshold: actionThresholds.first, dismissDirection: dir, read: read, hidden: hidden),
         child: child,
       );
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [child, const FeedCardDivider()],
-      );
+      return Column(mainAxisSize: MainAxisSize.min, children: [child, const FeedCardDivider()]);
     }
 
     return Listener(
@@ -355,10 +361,7 @@ class _PostCardState extends State<PostCard> {
       onPointerDown: (_) => widget.onDownAction(),
       onPointerMove: (event) => _lastVerticalDy = event.delta.dy,
       onPointerUp: (_) => widget.onUpAction(_lastVerticalDy),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [child, const FeedCardDivider()],
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [child, const FeedCardDivider()]),
     );
   }
 }

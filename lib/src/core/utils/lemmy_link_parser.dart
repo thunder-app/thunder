@@ -69,19 +69,13 @@ ParsedLink? parseLemmyCommunity(String text) {
   // Try full community URL: /c/community@federatedInstance
   final fullMatch = _lemmyFullCommunityUrl.firstMatch(text);
   if (fullMatch != null && fullMatch.groupCount >= 4) {
-    return ParsedLink(
-      value: fullMatch.group(3)!,
-      instance: fullMatch.group(4)!,
-    );
+    return ParsedLink(value: fullMatch.group(3)!, instance: fullMatch.group(4)!);
   }
 
   // Try short community URL: /c/community
   final shortMatch = _lemmyShortCommunityUrl.firstMatch(text);
   if (shortMatch != null && shortMatch.groupCount >= 3) {
-    return ParsedLink(
-      value: shortMatch.group(3)!,
-      instance: shortMatch.group(2)!,
-    );
+    return ParsedLink(value: shortMatch.group(3)!, instance: shortMatch.group(2)!);
   }
 
   // Try mention format: !community@instance or community@instance
@@ -91,10 +85,7 @@ ParsedLink? parseLemmyCommunity(String text) {
   }
   final mentionMatch = _lemmyCommunityMention.firstMatch(text);
   if (mentionMatch != null && mentionMatch.groupCount >= 3) {
-    return ParsedLink(
-      value: mentionMatch.group(2)!,
-      instance: mentionMatch.group(3)!,
-    );
+    return ParsedLink(value: mentionMatch.group(2)!, instance: mentionMatch.group(3)!);
   }
 
   return null;
@@ -116,19 +107,13 @@ ParsedLink? parseLemmyUser(String text) {
   // Try full user URL: /u/username@federatedInstance
   final fullMatch = _lemmyFullUserUrl.firstMatch(text);
   if (fullMatch != null && fullMatch.groupCount >= 4) {
-    return ParsedLink(
-      value: fullMatch.group(3)!,
-      instance: fullMatch.group(4)!,
-    );
+    return ParsedLink(value: fullMatch.group(3)!, instance: fullMatch.group(4)!);
   }
 
   // Try short user URL: /u/username
   final shortMatch = _lemmyShortUserUrl.firstMatch(text);
   if (shortMatch != null && shortMatch.groupCount >= 3) {
-    return ParsedLink(
-      value: shortMatch.group(3)!,
-      instance: shortMatch.group(2)!,
-    );
+    return ParsedLink(value: shortMatch.group(3)!, instance: shortMatch.group(2)!);
   }
 
   // Try mention format: @username@instance or username@instance
@@ -138,10 +123,7 @@ ParsedLink? parseLemmyUser(String text) {
   }
   final mentionMatch = _lemmyUserMention.firstMatch(text);
   if (mentionMatch != null && mentionMatch.groupCount >= 3) {
-    return ParsedLink(
-      value: mentionMatch.group(2)!,
-      instance: mentionMatch.group(3)!,
-    );
+    return ParsedLink(value: mentionMatch.group(2)!, instance: mentionMatch.group(3)!);
   }
 
   return null;
@@ -159,10 +141,7 @@ ParsedLink? parseLemmyPostId(String text) {
 
   final match = _lemmyPostUrl.firstMatch(text);
   if (match != null && match.groupCount >= 3) {
-    return ParsedLink(
-      value: match.group(3)!,
-      instance: match.group(2)!,
-    );
+    return ParsedLink(value: match.group(3)!, instance: match.group(2)!);
   }
 
   return null;
@@ -177,19 +156,13 @@ ParsedLink? parseLemmyCommentId(String text) {
   // Try legacy comment URL: /comment/123
   final commentMatch = _lemmyCommentUrl.firstMatch(text);
   if (commentMatch != null && commentMatch.groupCount >= 3) {
-    return ParsedLink(
-      value: commentMatch.group(3)!,
-      instance: commentMatch.group(2)!,
-    );
+    return ParsedLink(value: commentMatch.group(3)!, instance: commentMatch.group(2)!);
   }
 
   // Try new Lemmy format: /post/123/456
   final postCommentMatch = _lemmyPostCommentUrl.firstMatch(text);
   if (postCommentMatch != null && postCommentMatch.groupCount >= 4) {
-    return ParsedLink(
-      value: postCommentMatch.group(4)!,
-      instance: postCommentMatch.group(2)!,
-    );
+    return ParsedLink(value: postCommentMatch.group(4)!, instance: postCommentMatch.group(2)!);
   }
 
   return null;

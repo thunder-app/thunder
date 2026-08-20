@@ -64,22 +64,7 @@ class ThunderUser extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-        id,
-        name,
-        displayName,
-        avatar,
-        published,
-        updated,
-        actorId,
-        bio,
-        banner,
-        matrixUserId,
-        instanceId,
-        status,
-        counts,
-        context,
-      ];
+  List<Object?> get props => [id, name, displayName, avatar, published, updated, actorId, bio, banner, matrixUserId, instanceId, status, counts, context];
 
   ThunderUser copyWith({
     int? id,
@@ -132,13 +117,7 @@ class UserStatus extends Equatable {
   /// When the ban expires, when available.
   final DateTime? banExpires;
 
-  const UserStatus({
-    required this.banned,
-    required this.local,
-    required this.deleted,
-    required this.botAccount,
-    this.banExpires,
-  });
+  const UserStatus({required this.banned, required this.local, required this.deleted, required this.botAccount, this.banExpires});
 
   @override
   List<Object?> get props => [banned, local, deleted, botAccount, banExpires];

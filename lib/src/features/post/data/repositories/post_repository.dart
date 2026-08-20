@@ -98,12 +98,9 @@ class PostRepositoryImpl implements PostRepository {
   /// Creates a new PostRepositoryImpl.
   ///
   /// An optional [api] client and [localization] can be provided for testing.
-  PostRepositoryImpl({
-    required this.account,
-    ThunderApiClient? api,
-    LocalizationService localization = const ThunderLocalizationService(),
-  })  : _api = ResolvedApiClient(account: account, api: api),
-        _localization = localization;
+  PostRepositoryImpl({required this.account, ThunderApiClient? api, LocalizationService localization = const ThunderLocalizationService()})
+    : _api = ResolvedApiClient(account: account, api: api),
+      _localization = localization;
 
   @override
   Future<PostDetail?> getPost(int postId, {int? commentId}) async {
@@ -113,11 +110,7 @@ class PostRepositoryImpl implements PostRepository {
     final parsedPost = await parsePostWithCurrentPreferences(response.post);
     final parsedCrossPosts = await Future.wait(response.crossPosts.map(parsePostWithCurrentPreferences));
 
-    return PostDetail(
-      post: parsedPost,
-      moderators: response.moderators,
-      crossPosts: parsedCrossPosts,
-    );
+    return PostDetail(post: parsedPost, moderators: response.moderators, crossPosts: parsedCrossPosts);
   }
 
   @override
@@ -155,10 +148,7 @@ class PostRepositoryImpl implements PostRepository {
       showSaved: showSaved,
     );
 
-    return PostList(
-      posts: await parsePosts(response.posts),
-      nextPage: response.nextPage,
-    );
+    return PostList(posts: await parsePosts(response.posts), nextPage: response.nextPage);
   }
 
   @override

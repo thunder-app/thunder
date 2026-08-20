@@ -7,17 +7,9 @@ import 'package:thunder/src/core/domain/models/thunder_comment.dart';
 import 'package:thunder/src/core/domain/models/thunder_post.dart';
 import 'package:thunder/src/core/app/repository_factories.dart';
 
-enum DraftPersistenceResult {
-  saved,
-  deleted,
-  skipped,
-}
+enum DraftPersistenceResult { saved, deleted, skipped }
 
-enum DraftOpenResult {
-  opened,
-  retryableFailure,
-  abandoned,
-}
+enum DraftOpenResult { opened, retryableFailure, abandoned }
 
 class DraftContext {
   /// The type of draft
@@ -49,10 +41,7 @@ DraftContext resolveCommentDraftContext({required int? editingCommentId, require
     return DraftContext(draftType: DraftType.commentEdit, existingId: editingCommentId);
   }
 
-  return DraftContext(
-    draftType: parentCommentId != null ? DraftType.commentCreateFromComment : DraftType.commentCreateFromPost,
-    replyId: parentCommentId ?? postId,
-  );
+  return DraftContext(draftType: parentCommentId != null ? DraftType.commentCreateFromComment : DraftType.commentCreateFromPost, replyId: parentCommentId ?? postId);
 }
 
 /// Builds a post draft
@@ -83,14 +72,7 @@ Draft buildPostDraft({
 
 /// Builds a comment draft
 Draft buildCommentDraft({required DraftContext context, required int? languageId, required String body}) {
-  return Draft(
-    id: '',
-    draftType: context.draftType,
-    existingId: context.existingId,
-    replyId: context.replyId,
-    languageId: languageId,
-    body: body,
-  );
+  return Draft(id: '', draftType: context.draftType, existingId: context.existingId, replyId: context.replyId, languageId: languageId, body: body);
 }
 
 /// Restores the draft

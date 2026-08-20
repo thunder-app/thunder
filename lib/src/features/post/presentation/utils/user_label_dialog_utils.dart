@@ -35,11 +35,7 @@ Future<({UserLabel? userLabel, bool deleted})> showUserLabelEditorDialog(BuildCo
             textInputAction: TextInputAction.done,
             keyboardType: TextInputType.text,
             controller: controller,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: l10n.label,
-              hintText: l10n.userLabelHint,
-            ),
+            decoration: InputDecoration(border: const OutlineInputBorder(), labelText: l10n.label, hintText: l10n.userLabelHint),
             autofocus: true,
           ),
         ],

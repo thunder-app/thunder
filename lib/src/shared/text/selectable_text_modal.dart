@@ -59,10 +59,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                           onPressed: () => setState(() => viewSource = !viewSource),
                           label: l10n.viewSource,
                         ),
-                        ThunderActionChip(
-                          onPressed: () => (selectableRegionKey.currentState as SelectableRegionState).selectAll(),
-                          label: l10n.selectAll,
-                        ),
+                        ThunderActionChip(onPressed: () => (selectableRegionKey.currentState as SelectableRegionState).selectAll(), label: l10n.selectAll),
                         ThunderActionChip(
                           backgroundColor: copySuccess ? chipColor : null,
                           trailingIcon: copySuccess ? Icons.check_rounded : null,
@@ -108,10 +105,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                               contextMenuBuilder: (context, selectableRegionState) {
                                 // While this isn't strictly needed right now, it's here so that when we upgrade the Flutter version, we'll get "Share" for free.
                                 // This comment canbe deleted at that time.
-                                return AdaptiveTextSelectionToolbar.buttonItems(
-                                  buttonItems: selectableRegionState.contextMenuButtonItems,
-                                  anchors: selectableRegionState.contextMenuAnchors,
-                                );
+                                return AdaptiveTextSelectionToolbar.buttonItems(buttonItems: selectableRegionState.contextMenuButtonItems, anchors: selectableRegionState.contextMenuAnchors);
                               },
                               child: Column(
                                 children: [
@@ -136,14 +130,11 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                                             style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                                             textScaleFactor: contentFontSizeScale.textScaleFactor,
                                           )
-                                        : CommonMarkdownBody(
-                                            body: text,
-                                            isComment: true,
-                                          ),
+                                        : CommonMarkdownBody(body: text, isComment: true),
                                   ),
                                 ],
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -155,12 +146,7 @@ void showSelectableTextModal(BuildContext context, {String? title, required Stri
                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 26.0, right: 16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FilledButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Text(l10n.close),
-                      ),
-                    ],
+                    children: [FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.close))],
                   ),
                 ),
                 const SizedBox(height: 24.0),

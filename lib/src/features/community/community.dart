@@ -1,6 +1,8 @@
 export 'domain/enums/community_action.dart';
 export 'domain/models/community_detail.dart';
+
 export 'package:thunder/src/core/domain/models/thunder_community.dart';
+
 export 'data/repositories/community_repository.dart';
 export 'data/repositories/favorite_repository.dart';
 export 'data/repositories/anonymous_subscriptions_repository.dart';

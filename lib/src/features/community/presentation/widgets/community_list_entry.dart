@@ -29,12 +29,7 @@ class CommunityListEntry extends StatefulWidget {
   /// The account to use for resolving the community to a different instance
   final Account? resolutionAccount;
 
-  const CommunityListEntry({
-    super.key,
-    required this.community,
-    this.indicateFavorites = true,
-    this.resolutionAccount,
-  });
+  const CommunityListEntry({super.key, required this.community, this.indicateFavorites = true, this.resolutionAccount});
 
   @override
   State<CommunityListEntry> createState() => _CommunityListEntryState();
@@ -84,12 +79,7 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
 
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${widget.community.title}\n${generateCommunityFullName(
-        context,
-        widget.community.name,
-        widget.community.title,
-        fetchInstanceNameFromUrl(widget.community.actorId),
-      )}',
+      message: '${widget.community.title}\n${generateCommunityFullName(context, widget.community.name, widget.community.title, fetchInstanceNameFromUrl(widget.community.actorId))}',
       preferBelow: false,
       child: ListTile(
         leading: CommunityAvatar(community: widget.community, radius: 25),
@@ -106,17 +96,11 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
               ),
             ),
             if (widget.community.counts.subscribers != null) ...[
-              Text(
-                ' · ${formatLongNumber(widget.community.counts.subscribers!)}',
-                semanticsLabel: l10n.countSubscribers(widget.community.counts.subscribers!),
-              ),
+              Text(' · ${formatLongNumber(widget.community.counts.subscribers!)}', semanticsLabel: l10n.countSubscribers(widget.community.counts.subscribers!)),
               const SizedBox(width: 4),
               const Icon(Icons.people_rounded, size: 16.0),
             ],
-            if (widget.indicateFavorites && favourited) ...const [
-              Text(' · '),
-              Icon(Icons.star_rounded, size: 15),
-            ]
+            if (widget.indicateFavorites && favourited) ...const [Text(' · '), Icon(Icons.star_rounded, size: 15)],
           ],
         ),
         trailing: widget.resolutionAccount == null
@@ -127,14 +111,12 @@ class _CommunityListEntryState extends State<CommunityListEntry> {
                 },
                 icon: Semantics(
                   label: subscriptionButtonLabel,
-                  child: Icon(
-                    switch (community.context.subscribed) {
-                      SubscriptionStatus.notSubscribed => Icons.add_circle_outline_rounded,
-                      SubscriptionStatus.pending => Icons.pending_outlined,
-                      SubscriptionStatus.subscribed => Icons.remove_circle_outline_rounded,
-                      _ => null,
-                    },
-                  ),
+                  child: Icon(switch (community.context.subscribed) {
+                    SubscriptionStatus.notSubscribed => Icons.add_circle_outline_rounded,
+                    SubscriptionStatus.pending => Icons.pending_outlined,
+                    SubscriptionStatus.subscribed => Icons.remove_circle_outline_rounded,
+                    _ => null,
+                  }),
                 ),
                 tooltip: subscriptionButtonLabel,
                 visualDensity: VisualDensity.compact,

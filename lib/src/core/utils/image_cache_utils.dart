@@ -54,8 +54,6 @@ Future<void> clearImageCache({Duration? expiration = const Duration(days: 7)}) a
     final oldObjects = await repo.getOldObjects(expiration);
     if (oldObjects.isEmpty) break;
 
-    await Future.wait([
-      for (final cacheObject in oldObjects) cacheManager.store.removeCachedFile(cacheObject),
-    ]);
+    await Future.wait([for (final cacheObject in oldObjects) cacheManager.store.removeCachedFile(cacheObject)]);
   }
 }

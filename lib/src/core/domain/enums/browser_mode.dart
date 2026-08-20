@@ -1,5 +1,1 @@
-enum BrowserMode {
-  inApp,
-  customTabs,
-  external,
-}
+enum BrowserMode { inApp, customTabs, external }

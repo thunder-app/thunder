@@ -54,36 +54,11 @@ enum GeneralPostAction {
 }
 
 enum GeneralQuickPostAction {
-  upvote(
-    enabledIcon: Icons.arrow_upward_rounded,
-    disabledIcon: Icons.arrow_upward_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  downvote(
-    enabledIcon: Icons.arrow_downward_rounded,
-    disabledIcon: Icons.arrow_downward_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  save(
-    enabledIcon: Icons.star_rounded,
-    disabledIcon: Icons.star_outline_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  read(
-    enabledIcon: Icons.mark_email_read_outlined,
-    disabledIcon: Icons.mark_email_unread_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  ),
-  hide(
-    enabledIcon: Icons.visibility_off_rounded,
-    disabledIcon: Icons.visibility_rounded,
-    permissionType: PermissionType.user,
-    requiresAuthentication: true,
-  );
+  upvote(enabledIcon: Icons.arrow_upward_rounded, disabledIcon: Icons.arrow_upward_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  downvote(enabledIcon: Icons.arrow_downward_rounded, disabledIcon: Icons.arrow_downward_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  save(enabledIcon: Icons.star_rounded, disabledIcon: Icons.star_outline_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  read(enabledIcon: Icons.mark_email_read_outlined, disabledIcon: Icons.mark_email_unread_rounded, permissionType: PermissionType.user, requiresAuthentication: true),
+  hide(enabledIcon: Icons.visibility_off_rounded, disabledIcon: Icons.visibility_rounded, permissionType: PermissionType.user, requiresAuthentication: true);
 
   /// The icon to use for the action when it is enabled
   final IconData enabledIcon;
@@ -300,17 +275,17 @@ class _GeneralPostActionBottomSheetPageState extends State<GeneralPostActionBott
             onTap: () => widget.onSwitchActivePage(page),
             onLongPress: switch (page) {
               GeneralPostAction.user => () => copyActivityPubFullName(
-                    type: ActivityPubFullNameType.user,
-                    name: widget.post.creator?.name,
-                    displayName: widget.post.creator?.displayName,
-                    instance: fetchInstanceNameFromUrl(widget.post.creator?.actorId),
-                  ),
+                type: ActivityPubFullNameType.user,
+                name: widget.post.creator?.name,
+                displayName: widget.post.creator?.displayName,
+                instance: fetchInstanceNameFromUrl(widget.post.creator?.actorId),
+              ),
               GeneralPostAction.community => () => copyActivityPubFullName(
-                    type: ActivityPubFullNameType.community,
-                    name: widget.post.community?.name,
-                    displayName: widget.post.community?.title,
-                    instance: fetchInstanceNameFromUrl(widget.post.community?.actorId),
-                  ),
+                type: ActivityPubFullNameType.community,
+                name: widget.post.community?.name,
+                displayName: widget.post.community?.title,
+                instance: fetchInstanceNameFromUrl(widget.post.community?.actorId),
+              ),
               _ => null,
             },
           ),

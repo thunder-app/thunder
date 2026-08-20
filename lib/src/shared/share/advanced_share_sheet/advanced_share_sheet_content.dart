@@ -15,11 +15,7 @@ import 'package:thunder/src/shared/share/advanced_share_sheet/advanced_share_she
 import 'package:thunder/src/core/services/preferences_store.dart';
 
 class AdvancedShareSheetContent extends StatefulWidget {
-  const AdvancedShareSheetContent({
-    super.key,
-    required this.post,
-    required this.initialOptions,
-  });
+  const AdvancedShareSheetContent({super.key, required this.post, required this.initialOptions});
 
   /// The post to share.
   final ThunderPost post;
@@ -109,24 +105,13 @@ class _AdvancedShareSheetContentState extends State<AdvancedShareSheetContent> {
 
         try {
           final file = await DefaultCacheManager().getSingleFile(thumbnailUrl);
-          await SharePlus.instance.share(
-            ShareParams(
-              files: [XFile(file.path)],
-              text: text,
-              sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
-            ),
-          );
+          await SharePlus.instance.share(ShareParams(files: [XFile(file.path)], text: text, sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1)));
         } finally {
           if (mounted) setState(() => _isDownloading = false);
         }
       }
     } else if (text != null) {
-      await SharePlus.instance.share(
-        ShareParams(
-          text: text,
-          sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
-        ),
-      );
+      await SharePlus.instance.share(ShareParams(text: text, sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1)));
     }
 
     if (mounted) {
@@ -150,12 +135,7 @@ class _AdvancedShareSheetContentState extends State<AdvancedShareSheetContent> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _AdvancedSharePreview(
-                    post: _post,
-                    options: _options,
-                    generatedImage: snapshot.data,
-                    isGeneratingImage: isGeneratingImage,
-                  ),
+                  _AdvancedSharePreview(post: _post, options: _options, generatedImage: snapshot.data, isGeneratingImage: isGeneratingImage),
                   const SizedBox(height: 20.0),
                   _AdvancedShareOptionsSection(
                     post: _post,
@@ -168,11 +148,7 @@ class _AdvancedShareSheetContentState extends State<AdvancedShareSheetContent> {
                     onIncludeExternalLinkChanged: (value) => _updateOption((options) => options.includeExternalLink = value, regeneratesImage: false),
                   ),
                   const SizedBox(height: 12.0),
-                  _AdvancedShareActions(
-                    canShare: advancedShareCanShare(_options, _post) && !isGeneratingImage,
-                    isDownloading: _isDownloading,
-                    onShare: () => _share(snapshot.data),
-                  ),
+                  _AdvancedShareActions(canShare: advancedShareCanShare(_options, _post) && !isGeneratingImage, isDownloading: _isDownloading, onShare: () => _share(snapshot.data)),
                 ],
               ),
             ),
@@ -184,12 +160,7 @@ class _AdvancedShareSheetContentState extends State<AdvancedShareSheetContent> {
 }
 
 class _AdvancedSharePreview extends StatelessWidget {
-  const _AdvancedSharePreview({
-    required this.post,
-    required this.options,
-    required this.generatedImage,
-    required this.isGeneratingImage,
-  });
+  const _AdvancedSharePreview({required this.post, required this.options, required this.generatedImage, required this.isGeneratingImage});
 
   /// The post to share.
   final ThunderPost post;
@@ -215,46 +186,23 @@ class _AdvancedSharePreview extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _AdvancedShareSectionTitle(title: l10n.preview),
-        if (!advancedShareCanShare(options, post))
-          Text(
-            l10n.nothingToShare,
-            style: theme.textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
-          ),
+        if (!advancedShareCanShare(options, post)) Text(l10n.nothingToShare, style: theme.textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic)),
         if (!advancedShareIsImageCustomized(options, post) && options.includeImage && thumbnailUrl != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(12.0),
             clipBehavior: Clip.hardEdge,
-            child: ShareImagePreview(
-              url: thumbnailUrl,
-              isExpandable: true,
-              isComment: true,
-              showFullHeightImages: true,
-              altText: advancedSharePrimaryMedia(post)?.altText,
-            ),
+            child: ShareImagePreview(url: thumbnailUrl, isExpandable: true, isComment: true, showFullHeightImages: true, altText: advancedSharePrimaryMedia(post)?.altText),
           ),
         if (advancedShareIsImageCustomized(options, post))
           generatedImage != null && !isGeneratingImage
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
                   clipBehavior: Clip.hardEdge,
-                  child: ShareImagePreview(
-                    bytes: generatedImage!,
-                    isExpandable: true,
-                    isComment: true,
-                    showFullHeightImages: true,
-                  ),
+                  child: ShareImagePreview(bytes: generatedImage!, isExpandable: true, isComment: true, showFullHeightImages: true),
                 )
               : const CircularProgressIndicator(),
-        if (options.includePostLink)
-          Text(
-            post.apId,
-            style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),
-          ),
-        if (options.includeExternalLink && externalLink != null)
-          Text(
-            externalLink,
-            style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),
-          ),
+        if (options.includePostLink) Text(post.apId, style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline)),
+        if (options.includeExternalLink && externalLink != null) Text(externalLink, style: theme.textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline)),
       ],
     );
   }
@@ -304,45 +252,15 @@ class _AdvancedShareOptionsSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _AdvancedShareSectionTitle(title: l10n.image),
-        ThunderToggleOption(
-          title: l10n.includeTitle,
-          iconEnabled: Icons.title_rounded,
-          iconDisabled: Icons.title_rounded,
-          value: options.includeTitle,
-          onChanged: onIncludeTitleChanged,
-        ),
+        ThunderToggleOption(title: l10n.includeTitle, iconEnabled: Icons.title_rounded, iconDisabled: Icons.title_rounded, value: options.includeTitle, onChanged: onIncludeTitleChanged),
         if (advancedShareHasImage(post))
-          ThunderToggleOption(
-            title: l10n.includeImage,
-            iconEnabled: Icons.image_rounded,
-            iconDisabled: Icons.image_rounded,
-            value: options.includeImage,
-            onChanged: onIncludeImageChanged,
-          ),
+          ThunderToggleOption(title: l10n.includeImage, iconEnabled: Icons.image_rounded, iconDisabled: Icons.image_rounded, value: options.includeImage, onChanged: onIncludeImageChanged),
         if (advancedShareHasText(post))
-          ThunderToggleOption(
-            title: l10n.includeText,
-            iconEnabled: Icons.comment_rounded,
-            iconDisabled: Icons.comment_rounded,
-            value: options.includeText,
-            onChanged: onIncludeTextChanged,
-          ),
-        ThunderToggleOption(
-          title: l10n.includeCommunity,
-          iconEnabled: Icons.people_rounded,
-          iconDisabled: Icons.people_rounded,
-          value: options.includeCommnity,
-          onChanged: onIncludeCommunityChanged,
-        ),
+          ThunderToggleOption(title: l10n.includeText, iconEnabled: Icons.comment_rounded, iconDisabled: Icons.comment_rounded, value: options.includeText, onChanged: onIncludeTextChanged),
+        ThunderToggleOption(title: l10n.includeCommunity, iconEnabled: Icons.people_rounded, iconDisabled: Icons.people_rounded, value: options.includeCommnity, onChanged: onIncludeCommunityChanged),
         const SizedBox(height: 20.0),
         _AdvancedShareSectionTitle(title: l10n.link(0)),
-        ThunderToggleOption(
-          title: l10n.includePostLink,
-          iconEnabled: Icons.link_rounded,
-          iconDisabled: Icons.link_rounded,
-          value: options.includePostLink,
-          onChanged: onIncludePostLinkChanged,
-        ),
+        ThunderToggleOption(title: l10n.includePostLink, iconEnabled: Icons.link_rounded, iconDisabled: Icons.link_rounded, value: options.includePostLink, onChanged: onIncludePostLinkChanged),
         if (advancedShareHasExternalLink(post))
           ThunderToggleOption(
             title: l10n.includeExternalLink,
@@ -370,21 +288,14 @@ class _AdvancedShareSectionTitle extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Text(
-          title,
-          style: theme.textTheme.titleLarge,
-        ),
+        child: Text(title, style: theme.textTheme.titleLarge),
       ),
     );
   }
 }
 
 class _AdvancedShareActions extends StatelessWidget {
-  const _AdvancedShareActions({
-    required this.canShare,
-    required this.isDownloading,
-    required this.onShare,
-  });
+  const _AdvancedShareActions({required this.canShare, required this.isDownloading, required this.onShare});
 
   /// Whether the post can be shared.
   final bool canShare;
@@ -402,10 +313,7 @@ class _AdvancedShareActions extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.cancel),
-        ),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
         const SizedBox(width: 5.0),
         FilledButton(
           onPressed: canShare ? onShare : null,
@@ -415,17 +323,10 @@ class _AdvancedShareActions extends StatelessWidget {
                 const Positioned.fill(
                   child: Align(
                     alignment: Alignment.center,
-                    child: SizedBox(
-                      width: 15,
-                      height: 15,
-                      child: CircularProgressIndicator(color: Colors.white),
-                    ),
+                    child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Colors.white)),
                   ),
                 ),
-              Text(
-                l10n.share,
-                style: TextStyle(color: isDownloading ? Colors.transparent : null),
-              ),
+              Text(l10n.share, style: TextStyle(color: isDownloading ? Colors.transparent : null)),
             ],
           ),
         ),

@@ -25,14 +25,7 @@ class CommentCardButtonActions extends StatefulWidget {
   /// The function to call when opening the bottom sheet
   final void Function() onBottomSheetOpen;
 
-  const CommentCardButtonActions({
-    super.key,
-    required this.account,
-    required this.comment,
-    required this.isOwnComment,
-    required this.onAction,
-    required this.onBottomSheetOpen,
-  });
+  const CommentCardButtonActions({super.key, required this.account, required this.comment, required this.isOwnComment, required this.onAction, required this.onBottomSheetOpen});
 
   @override
   State<CommentCardButtonActions> createState() => _CommentCardButtonActionsState();
@@ -75,30 +68,12 @@ class _CommentCardButtonActionsState extends State<CommentCardButtonActions> {
     final upvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.upvoteColor.color);
     final downvoteColor = context.select<ThemePreferencesCubit, Color>((cubit) => cubit.state.downvoteColor.color);
 
-    final widgets = [
-      _CommentCardButtonAction(
-        icon: Icons.more_horiz_rounded,
-        label: l10n.actions,
-        onAction: widget.onBottomSheetOpen,
-      )
-    ];
+    final widgets = [_CommentCardButtonAction(icon: Icons.more_horiz_rounded, label: l10n.actions, onAction: widget.onBottomSheetOpen)];
 
     if (widget.isOwnComment) {
-      widgets.add(
-        _CommentCardButtonAction(
-          icon: Icons.edit_rounded,
-          label: l10n.edit,
-          onAction: () => widget.onAction(SwipeAction.edit),
-        ),
-      );
+      widgets.add(_CommentCardButtonAction(icon: Icons.edit_rounded, label: l10n.edit, onAction: () => widget.onAction(SwipeAction.edit)));
     } else {
-      widgets.add(
-        _CommentCardButtonAction(
-          icon: Icons.reply_rounded,
-          label: l10n.reply(1),
-          onAction: () => widget.onAction(SwipeAction.reply),
-        ),
-      );
+      widgets.add(_CommentCardButtonAction(icon: Icons.reply_rounded, label: l10n.reply(1), onAction: () => widget.onAction(SwipeAction.reply)));
     }
 
     widgets.add(
@@ -121,11 +96,7 @@ class _CommentCardButtonActionsState extends State<CommentCardButtonActions> {
       );
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: widgets,
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.center, children: widgets);
   }
 }
 
@@ -142,12 +113,7 @@ class _CommentCardButtonAction extends StatelessWidget {
   /// The action to perform when the icon is pressed
   final void Function() onAction;
 
-  const _CommentCardButtonAction({
-    required this.icon,
-    required this.label,
-    this.color,
-    required this.onAction,
-  });
+  const _CommentCardButtonAction({required this.icon, required this.label, this.color, required this.onAction});
 
   @override
   Widget build(BuildContext context) {

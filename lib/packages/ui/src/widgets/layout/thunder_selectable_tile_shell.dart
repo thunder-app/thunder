@@ -51,10 +51,7 @@ class ThunderSelectableTileShell extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: radius,
-          child: AnimatedSize(
-            duration: const Duration(milliseconds: 250),
-            child: child,
-          ),
+          child: AnimatedSize(duration: const Duration(milliseconds: 250), child: child),
         ),
       ),
     );

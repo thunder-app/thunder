@@ -5,11 +5,7 @@ import 'package:thunder/packages/ui/src/theme/thunder_theme.dart';
 /// Italic empty-state text, typically used inside a sliver list.
 @immutable
 class ThunderEmptyText extends StatelessWidget {
-  const ThunderEmptyText({
-    super.key,
-    required this.message,
-    this.padding = const EdgeInsets.only(left: 24.0, bottom: 16.0),
-  });
+  const ThunderEmptyText({super.key, required this.message, this.padding = const EdgeInsets.only(left: 24.0, bottom: 16.0)});
 
   /// Empty-state message text.
   final String message;

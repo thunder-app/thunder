@@ -183,10 +183,7 @@ class _UserSelectorState extends State<UserSelector> {
   Future<void> _switchProfile() async {
     if (!widget.enableAccountSwitching) return;
 
-    final newAccount = await showAccountPickerSheet(
-      context,
-      currentAccount: widget.account,
-    );
+    final newAccount = await showAccountPickerSheet(context, currentAccount: widget.account);
 
     if (newAccount == null || !mounted || widget.account.id == newAccount.id) {
       return;
@@ -206,11 +203,7 @@ class _UserSelectorState extends State<UserSelector> {
     try {
       final resolvedContent = await (widget.contentResolver ?? FeatureAccountContentResolver()).resolve(
         account: newAccount,
-        request: FeatureAccountResolutionRequest(
-          communityActorId: widget.communityActorId,
-          postActorId: widget.postActorId,
-          parentCommentActorId: widget.parentCommentActorId,
-        ),
+        request: FeatureAccountResolutionRequest(communityActorId: widget.communityActorId, postActorId: widget.postActorId, parentCommentActorId: widget.parentCommentActorId),
       );
 
       if (widget.communityActorId?.isNotEmpty == true && resolvedContent.community == null) {
