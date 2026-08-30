@@ -77,6 +77,9 @@ jobs:
           ./flutter/bin/flutter config --no-analytics
           ./flutter/bin/flutter --version
 
+      - name: Verify Flutter version sources
+        run: ./scripts/check-flutter-version.sh
+
       - name: Dependencies
         run: flutter pub get
 
@@ -155,6 +158,9 @@ jobs:
           rm -f flutter/bin/cache/flutter.version.json flutter/version
           ./flutter/bin/flutter config --no-analytics
           ./flutter/bin/flutter --version
+
+      - name: Verify Flutter version sources
+        run: ./scripts/check-flutter-version.sh
 
       - name: Install Flutter dependencies
         run: flutter pub get

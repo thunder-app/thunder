@@ -42,6 +42,9 @@ jobs:
           ./flutter/bin/flutter config --no-analytics
           ./flutter/bin/flutter --version
 
+      - name: Verify Flutter version sources
+        run: ./scripts/check-flutter-version.sh
+
       - name: Dependencies
         run: flutter pub get
 

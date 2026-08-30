@@ -19,11 +19,18 @@ class AppLocalizationsCs extends AppLocalizations {
   String get accessibility => 'Přístupnost';
 
   @override
-  String get accessibilityProfilesDescription => 'Profily přístupnosti umožňují aplikaci několika nastavení najednou pro dosažení určitého požadavku přístupnosti.';
+  String get accessibilityProfilesDescription =>
+      'Profily přístupnosti umožňují aplikaci několika nastavení najednou pro dosažení určitého požadavku přístupnosti.';
 
   @override
   String account(num count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Accounts', one: 'Account', zero: 'Account');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Accounts',
+      one: 'Account',
+      zero: 'Account',
+    );
     return '$_temp0 ';
   }
 
@@ -33,7 +40,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get accountSettingOverrideWarning => 'Your account settings override the following settings';
+  String get accountSettingOverrideWarning =>
+      'Your account settings override the following settings';
 
   @override
   String get accountSettings => 'Nastavení Účtu';
@@ -44,7 +52,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get accountSettingsImportedSuccessfully => 'Lemmy account settings imported successfully!';
+  String get accountSettingsImportedSuccessfully =>
+      'Lemmy account settings imported successfully!';
 
   @override
   String accountSwitchParentCommentNotFound(Object instance) {
@@ -78,7 +87,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get addAccount => 'Přidat Účet';
 
   @override
-  String get addAccountToSeeProfile => 'Přihlaste se pro zobrazení vašeho účtu.';
+  String get addAccountToSeeProfile =>
+      'Přihlaste se pro zobrazení vašeho účtu.';
 
   @override
   String get addAnonymousInstance => 'Přidat Anonymní Instanci';
@@ -133,7 +143,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get allPosts => 'Všechny Příspěvky';
 
   @override
-  String get allowOpenSupportedLinks => 'Dovolte aplikaci otevírat podporované odkazy.';
+  String get allowOpenSupportedLinks =>
+      'Dovolte aplikaci otevírat podporované odkazy.';
 
   @override
   String get alreadyPostedTo => 'Už přidáno na';
@@ -206,7 +217,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get backToTop => 'Zpět Nahoru';
 
   @override
-  String get backgroundCheckWarning => 'Note that notification checks will consume additional battery';
+  String get backgroundCheckWarning =>
+      'Note that notification checks will consume additional battery';
 
   @override
   String get ban => 'Ban';
@@ -286,7 +298,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get cancel => 'Zrušit';
 
   @override
-  String get cannotReportOwnComment => 'Není možné nahlásit svůj vlastní komentář.';
+  String get cannotReportOwnComment =>
+      'Není možné nahlásit svůj vlastní komentář.';
 
   @override
   String get cantBlockAdmin => 'Není možné zablokovat administrátora instance.';
@@ -301,7 +314,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get cardView => 'Zobrazení Karet';
 
   @override
-  String get cardViewDescription => 'Abyste upravili nastavení, povolte zobrazení karet';
+  String get cardViewDescription =>
+      'Abyste upravili nastavení, povolte zobrazení karet';
 
   @override
   String get cardViewSettings => 'Nastavení Zobrazení Karet';
@@ -316,7 +330,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get changePassword => 'Change Password';
 
   @override
-  String get changePasswordWarning => 'To change your password, you will be redirected to your instance site. \n\nAre you sure you want to continue?';
+  String get changePasswordWarning =>
+      'To change your password, you will be redirected to your instance site. \n\nAre you sure you want to continue?';
 
   @override
   String get changeSort => 'Změňte Řazení';
@@ -342,10 +357,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get clearedCache => 'Mezipaměť úspěšně promazána.';
 
   @override
-  String get clearedDatabase => 'Lokální databáze promazána. Restartujte Thunder pro aplikování těchto změn.';
+  String get clearedDatabase =>
+      'Lokální databáze promazána. Restartujte Thunder pro aplikování těchto změn.';
 
   @override
-  String get clearedUserPreferences => 'Všechna uživatelská nastavení byla vymazána';
+  String get clearedUserPreferences =>
+      'Všechna uživatelská nastavení byla vymazána';
 
   @override
   String get close => 'Zavřít';
@@ -360,7 +377,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get collapseInformation => 'Schovat Informace';
 
   @override
-  String get collapseParentCommentBodyOnGesture => 'Při Složení Schovat Nadřazený Komentář';
+  String get collapseParentCommentBodyOnGesture =>
+      'Při Složení Schovat Nadřazený Komentář';
 
   @override
   String get collapsePost => 'Složit příspěvek';
@@ -396,7 +414,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get combineNavAndFab => 'Sloučit PAT a Navigační Tlačítka';
 
   @override
-  String get combineNavAndFabDescription => 'Plovoucí Akční Tlačítko se bude nacházet mezi navigačními tlačítky.';
+  String get combineNavAndFabDescription =>
+      'Plovoucí Akční Tlačítko se bude nacházet mezi navigačními tlačítky.';
 
   @override
   String get comfortable => 'Comfortable';
@@ -435,7 +454,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get commentSwipeActions => 'Comment Swipe Actions';
 
   @override
-  String get commentSwipeGesturesHint => 'Chcete využívat tlačítka? Povolte je v sekci komentářů v základním nastavení.';
+  String get commentSwipeGesturesHint =>
+      'Chcete využívat tlačítka? Povolte je v sekci komentářů v základním nastavení.';
 
   @override
   String get comments => 'Komentáře';
@@ -476,7 +496,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get compactView => 'Kompaktní Zobrazení';
 
   @override
-  String get compactViewDescription => 'Pro úpravu nastavení, povolte kompaktní zobrazení';
+  String get compactViewDescription =>
+      'Pro úpravu nastavení, povolte kompaktní zobrazení';
 
   @override
   String get compactViewSettings => 'Nastavení Kompaktního Zobrazení';
@@ -494,16 +515,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get confirmLogOutTitle => 'Odhlásit Se?';
 
   @override
-  String get confirmMarkAllAsReadBody => 'Jste si jistí, že chcete označit všechny zprávy jako přečtené?';
+  String get confirmMarkAllAsReadBody =>
+      'Jste si jistí, že chcete označit všechny zprávy jako přečtené?';
 
   @override
   String get confirmMarkAllAsReadTitle => 'Označit Vše Jako Přečtené?';
 
   @override
-  String get confirmResetCommentPreferences => 'Toto resetuje všechna nastavení komentářů. Opravdu chcete pokračovat?';
+  String get confirmResetCommentPreferences =>
+      'Toto resetuje všechna nastavení komentářů. Opravdu chcete pokračovat?';
 
   @override
-  String get confirmResetPostPreferences => 'Toto resetuje všechna nastavení příspěvků. Opravdu chcete pokračovat?';
+  String get confirmResetPostPreferences =>
+      'Toto resetuje všechna nastavení příspěvků. Opravdu chcete pokračovat?';
 
   @override
   String get confirmUnsubscription => 'Are you sure you want to unsubscribe?';
@@ -538,16 +562,20 @@ class AppLocalizationsCs extends AppLocalizations {
   String get copyText => 'Kopírovat Text';
 
   @override
-  String get couldNotDetermineCommentDelete => 'Error: Could not determine post to delete the comment.';
+  String get couldNotDetermineCommentDelete =>
+      'Error: Could not determine post to delete the comment.';
 
   @override
-  String get couldNotDeterminePostComment => 'Error: Could not determine post to comment to.';
+  String get couldNotDeterminePostComment =>
+      'Error: Could not determine post to comment to.';
 
   @override
-  String get couldntCreateReport => 'Vaše nahlášení komentáře proběhlo neúspěšně. Zkuste to prosím pozdějí';
+  String get couldntCreateReport =>
+      'Vaše nahlášení komentáře proběhlo neúspěšně. Zkuste to prosím pozdějí';
 
   @override
-  String get couldntFindPost => 'Unable to load the requested post. It may have been deleted or removed.';
+  String get couldntFindPost =>
+      'Unable to load the requested post. It may have been deleted or removed.';
 
   @override
   String countComments(Object count) {
@@ -637,7 +665,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get currentSinglePress => 'Nyní nastaveno na jedno klepnutí';
 
   @override
-  String get customizeSwipeActions => 'Přizpůsobit swipe akce (klepněte pro změnu)';
+  String get customizeSwipeActions =>
+      'Přizpůsobit swipe akce (klepněte pro změnu)';
 
   @override
   String get dangerZone => 'Zóna Smrti';
@@ -646,7 +675,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get dark => 'Tmavé';
 
   @override
-  String get databaseExportWarning => 'The database may contain sensitive information related to your Lemmy account. If you export it, you should not share it with anyone. Do you want to proceed?';
+  String get databaseExportWarning =>
+      'The database may contain sensitive information related to your Lemmy account. If you export it, you should not share it with anyone. Do you want to proceed?';
 
   @override
   String databaseExportedSuccessfully(Object savedFilePath) {
@@ -654,13 +684,16 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get databaseImportedSuccessfully => 'The database was imported successfully!';
+  String get databaseImportedSuccessfully =>
+      'The database was imported successfully!';
 
   @override
-  String get databaseNotExportedSuccessfully => 'The database was not exported successfully or the operation was canceled.';
+  String get databaseNotExportedSuccessfully =>
+      'The database was not exported successfully or the operation was canceled.';
 
   @override
-  String get databaseNotImportedSuccessfully => 'The database was not imported successfully, or the operation was canceled.';
+  String get databaseNotImportedSuccessfully =>
+      'The database was not imported successfully, or the operation was canceled.';
 
   @override
   String get dateFormat => 'Date Format';
@@ -669,10 +702,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get debug => 'Debug';
 
   @override
-  String get debugDescription => 'Následující debug nastavení by mělo být využito jen pro řešení problémů.';
+  String get debugDescription =>
+      'Následující debug nastavení by mělo být využito jen pro řešení problémů.';
 
   @override
-  String get debugNotificationsDescription => 'Use the following options to troubleshoot issues related to notifications.';
+  String get debugNotificationsDescription =>
+      'Use the following options to troubleshoot issues related to notifications.';
 
   @override
   String get decline => 'Decline';
@@ -696,16 +731,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get deleteAccount => 'Vymazat Účet';
 
   @override
-  String get deleteAccountDescription => 'Pro permanentní odstranění účtu budete přesměrováni na stránku Vaší instance. \n\nOpravdu chcete pokračovat?';
+  String get deleteAccountDescription =>
+      'Pro permanentní odstranění účtu budete přesměrováni na stránku Vaší instance. \n\nOpravdu chcete pokračovat?';
 
   @override
   String get deleteComment => 'Delete Comment';
 
   @override
-  String get deleteDraftConfirmation => 'Are you sure you want to delete this draft?';
+  String get deleteDraftConfirmation =>
+      'Are you sure you want to delete this draft?';
 
   @override
-  String get deleteImageConfirmMessage => 'Are you sure you want to delete this image?';
+  String get deleteImageConfirmMessage =>
+      'Are you sure you want to delete this image?';
 
   @override
   String get deleteImageConfirmTitle => 'Delete?';
@@ -714,19 +752,22 @@ class AppLocalizationsCs extends AppLocalizations {
   String get deleteLocalDatabase => 'Vymazat Místní Databázi';
 
   @override
-  String get deleteLocalDatabaseDescription => 'Tato akce odstraní místní databázi a odhlásí Vás ze Všech Vašich účtů. \n\nOpravdu chcete pokračovat?';
+  String get deleteLocalDatabaseDescription =>
+      'Tato akce odstraní místní databázi a odhlásí Vás ze Všech Vašich účtů. \n\nOpravdu chcete pokračovat?';
 
   @override
   String get deleteLocalPreferences => 'Vymazat Místní Nastavení';
 
   @override
-  String get deleteLocalPreferencesDescription => 'Toto vymaže veškerá uživatelská přizpůsobení a nastavení v aplikaci Thunder. \n\nOpravdu chcete pokračovat?';
+  String get deleteLocalPreferencesDescription =>
+      'Toto vymaže veškerá uživatelská přizpůsobení a nastavení v aplikaci Thunder. \n\nOpravdu chcete pokračovat?';
 
   @override
   String get deletePost => 'Delete Post';
 
   @override
-  String get deleteUserLabelConfirmation => 'Are you sure you want to delete the label?';
+  String get deleteUserLabelConfirmation =>
+      'Are you sure you want to delete the label?';
 
   @override
   String get deleted => 'Deleted';
@@ -744,7 +785,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get deletedPost => 'Deleted post';
 
   @override
-  String get deselectUndeterminedWarning => 'If you deselect Undetermined, you will not see most content.';
+  String get deselectUndeterminedWarning =>
+      'If you deselect Undetermined, you will not see most content.';
 
   @override
   String detailedReason(Object reason) {
@@ -770,7 +812,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get discussionLanguages => 'Discussion Languages';
 
   @override
-  String get discussionLanguagesTooltip => 'Content is filtered to the selected languages.';
+  String get discussionLanguagesTooltip =>
+      'Content is filtered to the selected languages.';
 
   @override
   String get dismissRead => 'Dismiss Read';
@@ -788,7 +831,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get doNotShowAgain => 'Do Not Show Again';
 
   @override
-  String get doNotSupportMultipleUnifiedPushApps => 'Found multiple compatible apps; please install only one';
+  String get doNotSupportMultipleUnifiedPushApps =>
+      'Found multiple compatible apps; please install only one';
 
   @override
   String get downloadingMedia => 'Stahuji média pro sdílení…';
@@ -827,7 +871,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get emptyInbox => 'Žádné Příchozí Zprávy';
 
   @override
-  String get emptyUri => 'Tento odkaz je neplatný. Pro pokračování poskytněte platný dynamický odkaz.';
+  String get emptyUri =>
+      'Tento odkaz je neplatný. Pro pokračování poskytněte platný dynamický odkaz.';
 
   @override
   String get enableCommentNavigation => 'Povolit Navigaci v Komentářích';
@@ -839,13 +884,16 @@ class AppLocalizationsCs extends AppLocalizations {
   String get enableFeedFab => 'Povolit Plovoucí Tlačítko na Feedech';
 
   @override
-  String get enableFloatingButtonOnFeeds => 'Povolit Plovoucí Tlačítko Na Feedech';
+  String get enableFloatingButtonOnFeeds =>
+      'Povolit Plovoucí Tlačítko Na Feedech';
 
   @override
-  String get enableFloatingButtonOnPosts => 'Povolit Plovoucí Tlačítko Na Příspěvcích';
+  String get enableFloatingButtonOnPosts =>
+      'Povolit Plovoucí Tlačítko Na Příspěvcích';
 
   @override
-  String get enableInboxNotifications => 'Zapnout Oznámení Doručených Zpráv (Experimentální)';
+  String get enableInboxNotifications =>
+      'Zapnout Oznámení Doručených Zpráv (Experimentální)';
 
   @override
   String get enablePostFab => 'Povolit Plovoucí Tlačítko na Příspěvcích';
@@ -867,34 +915,42 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get errorImportingAccountSettings => 'There was an error importing the settings. The file might not be in the right format.';
+  String get errorImportingAccountSettings =>
+      'There was an error importing the settings. The file might not be in the right format.';
 
   @override
   String get errorInitializingClient => 'Error initializing client';
 
   @override
-  String get errorLoadingAccountSettings => 'There was an error loading the settings file or the operation was canceled.';
+  String get errorLoadingAccountSettings =>
+      'There was an error loading the settings file or the operation was canceled.';
 
   @override
-  String get errorMarkingReplyRead => 'There was an error marking the reply as read.';
+  String get errorMarkingReplyRead =>
+      'There was an error marking the reply as read.';
 
   @override
-  String get errorMarkingReplyUnread => 'There was an error marking the reply as unread.';
+  String get errorMarkingReplyUnread =>
+      'There was an error marking the reply as unread.';
 
   @override
   String get errorNoActiveInstance => 'No active instance found';
 
   @override
-  String get errorParsingJson => 'There was an error parsing the selected file. It may not be valid JSON.';
+  String get errorParsingJson =>
+      'There was an error parsing the selected file. It may not be valid JSON.';
 
   @override
-  String get errorSavingAccountSettings => 'There was an error saving the settings file or the operation was canceled.';
+  String get errorSavingAccountSettings =>
+      'There was an error saving the settings file or the operation was canceled.';
 
   @override
-  String get exceptionProcessingUri => 'Při zpracování odkazu nastala chyba. Je možné, že toto na vaší instanci není dostupné.';
+  String get exceptionProcessingUri =>
+      'Při zpracování odkazu nastala chyba. Je možné, že toto na vaší instanci není dostupné.';
 
   @override
-  String get excessiveApiCallsWarning => 'Your feed may be taking a while to load due to keyword filters.';
+  String get excessiveApiCallsWarning =>
+      'Your feed may be taking a while to load due to keyword filters.';
 
   @override
   String get expand => 'Expand';
@@ -924,7 +980,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get experimentalFeatures => 'Experimental Features';
 
   @override
-  String get experimentalFeaturesDescription => 'These features are still in development and may be unstable. Use them at your own risk. You must restart Thunder to take effect.';
+  String get experimentalFeaturesDescription =>
+      'These features are still in development and may be unstable. Use them at your own risk. You must restart Thunder to take effect.';
 
   @override
   String get exploreInstance => 'Explore instance';
@@ -933,13 +990,16 @@ class AppLocalizationsCs extends AppLocalizations {
   String get exportDatabase => 'Export Database';
 
   @override
-  String get exportDatabaseSubtitle => 'The database contains info about accounts, favorites, anonymous subscriptions, and user labels.';
+  String get exportDatabaseSubtitle =>
+      'The database contains info about accounts, favorites, anonymous subscriptions, and user labels.';
 
   @override
-  String get exportLemmyAccountSettingsDescription => 'Export Lemmy account settings';
+  String get exportLemmyAccountSettingsDescription =>
+      'Export Lemmy account settings';
 
   @override
-  String get exportSettingsSubtitle => 'The settings includes all of the preferences that you have configured in Thunder.';
+  String get exportSettingsSubtitle =>
+      'The settings includes all of the preferences that you have configured in Thunder.';
 
   @override
   String get extraLarge => 'Extra Velké';
@@ -950,7 +1010,9 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String failedToCommunicateWithThunderNotificationServer(Object serverAddress) {
+  String failedToCommunicateWithThunderNotificationServer(
+    Object serverAddress,
+  ) {
     return 'Failed to communicate with Thunder notification server at $serverAddress.';
   }
 
@@ -974,7 +1036,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get failedToUpdateNotificationSettings => 'Failed to update notification settings';
+  String get failedToUpdateNotificationSettings =>
+      'Failed to update notification settings';
 
   @override
   String get favorite => 'Favorite';
@@ -1016,10 +1079,12 @@ class AppLocalizationsCs extends AppLocalizations {
       'Thunder má plně nastavitelné PAT, které podporuje pár gest.\n- Swipněte nahoru pro zobrazení dalších PAT možností\n- Swipněte nahoru/dolů pro schování či zobrazení PAT\n\nPro přizpůsobení hlavní a sekundární akce PAT, dlouze podržte na jedné níže uvedené možnosti.';
 
   @override
-  String get floatingActionButtonLongPressDescription => 'denotes the FAB\'s long-press action.';
+  String get floatingActionButtonLongPressDescription =>
+      'denotes the FAB\'s long-press action.';
 
   @override
-  String get floatingActionButtonSinglePressDescription => 'denotes the FAB\'s single-press action.';
+  String get floatingActionButtonSinglePressDescription =>
+      'denotes the FAB\'s single-press action.';
 
   @override
   String get fonts => 'Fonty';
@@ -1028,10 +1093,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get forward => 'Vpřed';
 
   @override
-  String get foundUnifiedPushDistribtorApp => 'Found compatible app; restart Thunder to connect';
+  String get foundUnifiedPushDistribtorApp =>
+      'Found compatible app; restart Thunder to connect';
 
   @override
-  String get fullScreenNavigationSwipeDescription => 'Swipněte kdekoliv pro návrat zpět, pokud jsou gesta z leva do prava vypnutá';
+  String get fullScreenNavigationSwipeDescription =>
+      'Swipněte kdekoliv pro návrat zpět, pokud jsou gesta z leva do prava vypnutá';
 
   @override
   String get fullscreen => 'Fullscreen';
@@ -1058,10 +1125,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get guestModeFeedSettings => 'Guest Mode Feed Settings';
 
   @override
-  String get guestModeFeedSettingsLabel => 'The following settings are only applied to guest accounts. To adjust feed settings for your account, go to Account Settings.';
+  String get guestModeFeedSettingsLabel =>
+      'The following settings are only applied to guest accounts. To adjust feed settings for your account, go to Account Settings.';
 
   @override
-  String get havingIssuesWithNotifications => 'Having issues with notifications?';
+  String get havingIssuesWithNotifications =>
+      'Having issues with notifications?';
 
   @override
   String get hidCommunity => 'Hid Community';
@@ -1109,7 +1178,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get imagePeekDuration => 'Image Peek Duration';
 
   @override
-  String get imagePeekDurationDescription => 'Duration of long press before image peek is triggered';
+  String get imagePeekDurationDescription =>
+      'Duration of long press before image peek is triggered';
 
   @override
   String get importDatabase => 'Import Database';
@@ -1118,10 +1188,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importExportDatabase => 'Import/Export Thunder Database';
 
   @override
-  String get importExportLemmyAccountSettings => 'Import/Export Lemmy Account Settings';
+  String get importExportLemmyAccountSettings =>
+      'Import/Export Lemmy Account Settings';
 
   @override
-  String get importExportLemmyAccountSettingsSubtitle => 'Includes subscribed communities, blocklists, and account preferences';
+  String get importExportLemmyAccountSettingsSubtitle =>
+      'Includes subscribed communities, blocklists, and account preferences';
 
   @override
   String get importExportSettings => 'Importovat/Exportovat Nastavení';
@@ -1130,7 +1202,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importExportThunderSettings => 'Import/Export Thunder Settings';
 
   @override
-  String get importLemmyAccountSettingsDescription => 'Import Lemmy account settings';
+  String get importLemmyAccountSettingsDescription =>
+      'Import Lemmy account settings';
 
   @override
   String get importSettings => 'Importovat Nastavení';
@@ -1204,7 +1277,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get instances => 'Instances';
 
   @override
-  String get internetOrInstanceIssues => 'Buď nejste připojení k internetu, nebo je v tuto chvíli Vaše instance nedostupná.';
+  String get internetOrInstanceIssues =>
+      'Buď nejste připojení k internetu, nebo je v tuto chvíli Vaše instance nedostupná.';
 
   @override
   String get invalidUrl => 'Invalid URL format';
@@ -1215,7 +1289,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get keywordFilterDescription => 'Filtruje příspěvky obsahující klíčová slova v nadpise či obsahu';
+  String get keywordFilterDescription =>
+      'Filtruje příspěvky obsahující klíčová slova v nadpise či obsahu';
 
   @override
   String get keywordFilters => 'Filtry Klíčových Slov';
@@ -1230,7 +1305,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get languageFilters => 'Looking for language filters?';
 
   @override
-  String get languageNotAllowed => 'Komunita, do které se snažíte nahrát svůj příspěvek, nepovoluje příspěvky ve vybraném jazyku. Zkuste jiný jazyk.';
+  String get languageNotAllowed =>
+      'Komunita, do které se snažíte nahrát svůj příspěvek, nepovoluje příspěvky ve vybraném jazyku. Zkuste jiný jazyk.';
 
   @override
   String get large => 'Velký';
@@ -1246,7 +1322,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String link(num count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Links', one: 'Link', zero: 'Link');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Links',
+      one: 'Link',
+      zero: 'Link',
+    );
     return '$_temp0 ';
   }
 
@@ -1254,13 +1336,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get linkActions => 'Link Actions';
 
   @override
-  String get linkHandlingCustomTabs => 'Otevřít v systémovém webovém prohlížeči v aplikaci';
+  String get linkHandlingCustomTabs =>
+      'Otevřít v systémovém webovém prohlížeči v aplikaci';
 
   @override
   String get linkHandlingCustomTabsShort => 'In-app embedded';
 
   @override
-  String get linkHandlingExternal => 'Externě otevřít systémový webový prohlížeč';
+  String get linkHandlingExternal =>
+      'Externě otevřít systémový webový prohlížeč';
 
   @override
   String get linkHandlingExternalShort => 'Externí';
@@ -1329,16 +1413,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get loginSucceeded => 'Přihlášený.';
 
   @override
-  String get loginToPerformAction => 'Pro provedení tohoto úkolu se musíte přihlásit.';
+  String get loginToPerformAction =>
+      'Pro provedení tohoto úkolu se musíte přihlásit.';
 
   @override
   String get loginToSeeInbox => 'Pro zobrazení přijaté pošty se přihlaste';
 
   @override
-  String get lookingForAccountSpecificFeedSettings => 'Looking for account-specific feed settings?';
+  String get lookingForAccountSpecificFeedSettings =>
+      'Looking for account-specific feed settings?';
 
   @override
-  String get malformedUri => 'Daný odkaz je v nepodporovaném formátu. Zkontrolujte si, jestli je platný.';
+  String get malformedUri =>
+      'Daný odkaz je v nepodporovaném formátu. Zkontrolujte si, jestli je platný.';
 
   @override
   String get manageAccounts => 'Spravovat Účty';
@@ -1375,7 +1462,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String mention(num count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Mentions', one: 'Mention', zero: 'Mention');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Mentions',
+      one: 'Mention',
+      zero: 'Mention',
+    );
     return '$_temp0';
   }
 
@@ -1384,7 +1477,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String message(num count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Messages', one: 'Message', zero: 'Message');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Messages',
+      one: 'Message',
+      zero: 'Message',
+    );
     return '$_temp0';
   }
 
@@ -1432,7 +1531,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String moderator(num count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Moderators', one: 'Moderator', zero: 'Moderator');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Moderators',
+      one: 'Moderator',
+      zero: 'Moderator',
+    );
     return '$_temp0';
   }
 
@@ -1452,7 +1557,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get mustBeLoggedInComment => 'Pro komentování se musíte přihlásit';
 
   @override
-  String get mustBeLoggedInPost => 'Pro vytvoření příspěvku se musíte přihlásit';
+  String get mustBeLoggedInPost =>
+      'Pro vytvoření příspěvku se musíte přihlásit';
 
   @override
   String get names => 'Names';
@@ -1473,13 +1579,16 @@ class AppLocalizationsCs extends AppLocalizations {
   String get navigation => 'Navigace';
 
   @override
-  String get nestedCommentIndicatorColor => 'Barva Indikátoru Podřazeného Komentáře';
+  String get nestedCommentIndicatorColor =>
+      'Barva Indikátoru Podřazeného Komentáře';
 
   @override
-  String get nestedCommentIndicatorStyle => 'Styl Indikátoru Podřazeného Komentáře';
+  String get nestedCommentIndicatorStyle =>
+      'Styl Indikátoru Podřazeného Komentáře';
 
   @override
-  String get networkErrorMessage => 'Unable to reach the server. Check your connection and try again.';
+  String get networkErrorMessage =>
+      'Unable to reach the server. Check your connection and try again.';
 
   @override
   String get never => 'Never';
@@ -1563,7 +1672,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noProfileBioSet => 'No profile bio set';
 
   @override
-  String get noReferencesToImage => 'No posts or comments were found containing this image. However, it may be used elsewhere on the internet.';
+  String get noReferencesToImage =>
+      'No posts or comments were found containing this image. However, it may be used elsewhere on the internet.';
 
   @override
   String get noReplies => 'No replies';
@@ -1584,7 +1694,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noUsersFound => 'Žádní uživatelé nenalezeni.';
 
   @override
-  String get noVisibleComments => 'Comments may not be visible because the community is blocked.';
+  String get noVisibleComments =>
+      'Comments may not be visible because the community is blocked.';
 
   @override
   String get none => 'None';
@@ -1608,7 +1719,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String notifications(num count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Notifications', one: 'Notifications', zero: 'Notification');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Notifications',
+      one: 'Notifications',
+      zero: 'Notification',
+    );
     return '$_temp0';
   }
 
@@ -1616,7 +1733,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get notificationsBehaviourSettings => 'Oznámení';
 
   @override
-  String get notificationsNotAllowed => 'Oznámení pro Thunder nejsou v systémovém nastavení povolena';
+  String get notificationsNotAllowed =>
+      'Oznámení pro Thunder nejsou v systémovém nastavení povolena';
 
   @override
   String get notificationsWarningDialog =>
@@ -1647,7 +1765,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get onWifi => 'On Wifi';
 
   @override
-  String get onlyModsCanPostInCommunity => 'V této komunitě mohou přispívat jen moderátoři';
+  String get onlyModsCanPostInCommunity =>
+      'V této komunitě mohou přispívat jen moderátoři';
 
   @override
   String get open => 'Otevřeno';
@@ -1665,7 +1784,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get openInstance => 'Otevřít Instanci';
 
   @override
-  String get openLinksInExternalBrowser => 'Otevírat Odkazy v Externích Prohlížečích';
+  String get openLinksInExternalBrowser =>
+      'Otevírat Odkazy v Externích Prohlížečích';
 
   @override
   String get openLinksInReaderMode => 'Otevírat Odkazy v Módu Čtení';
@@ -1697,10 +1817,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get permissionDenied => 'Povolení Zamítnuto';
 
   @override
-  String get permissionDeniedMessage => 'Thunder k uložení tohoto obrázku potřebuje některá povolení, která byla zamítnuta.';
+  String get permissionDeniedMessage =>
+      'Thunder k uložení tohoto obrázku potřebuje některá povolení, která byla zamítnuta.';
 
   @override
-  String get piefedSupportBeta => 'PieFed support is currently in beta.\nNot all features are supported yet.';
+  String get piefedSupportBeta =>
+      'PieFed support is currently in beta.\nNot all features are supported yet.';
 
   @override
   String get pinPostToCommunity => 'Pin Post to Community';
@@ -1737,7 +1859,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get postBodySettings => 'Nastavení Obsahu Příspěvku';
 
   @override
-  String get postBodySettingsDescription => 'Toto nastavení ovlivňuje nadpis obsahu u příspěvku';
+  String get postBodySettingsDescription =>
+      'Toto nastavení ovlivňuje nadpis obsahu u příspěvku';
 
   @override
   String get postBodyShowCommunityInstance => 'Show Community Instance';
@@ -1758,13 +1881,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get postFlairs => 'Flairs';
 
   @override
-  String get postFlairsUnavailable => 'No flair options available for this community';
+  String get postFlairsUnavailable =>
+      'No flair options available for this community';
 
   @override
   String get postLocked => 'Příspěvek zamčen. Odpovědi nejsou povoleny.';
 
   @override
-  String get postMetadataInstructions => 'You can customize the metadata information by dragging and dropping the desired information';
+  String get postMetadataInstructions =>
+      'You can customize the metadata information by dragging and dropping the desired information';
 
   @override
   String get postNSFW => 'Označit jako NSFW';
@@ -1782,7 +1907,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get postSwipeActions => 'Možnosti Swipování u Příspěvku';
 
   @override
-  String get postSwipeGesturesHint => 'Chcete spíš používat tlačítka? Změňte, jaká tlačítka se zobrazují na příspěvkových kartách v základním nastavení.';
+  String get postSwipeGesturesHint =>
+      'Chcete spíš používat tlačítka? Změňte, jaká tlačítka se zobrazují na příspěvkových kartách v základním nastavení.';
 
   @override
   String get postTags => 'Tags';
@@ -1879,7 +2005,8 @@ class AppLocalizationsCs extends AppLocalizations {
       'Configure the push notification server. The server must be properly configured to send push notifications to your device.\n\n **Only enter a server that you trust with your credentials.**';
 
   @override
-  String get rateLimitErrorMessage => 'You have hit the rate limit for this request. Please wait and try again later.';
+  String get rateLimitErrorMessage =>
+      'You have hit the rate limit for this request. Please wait and try again later.';
 
   @override
   String get reachedTheBottom => 'Hmmm. Vypadá to, že tu nic dalšího není.';
@@ -1977,7 +2104,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String reply(num count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Replies', one: 'Reply', zero: 'Reply');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Replies',
+      one: 'Reply',
+      zero: 'Reply',
+    );
     return '$_temp0';
   }
 
@@ -1985,7 +2118,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get replyColor => 'Reply Color';
 
   @override
-  String get replyNotSupported => 'Odpovídat z tohoto zobrazení v tuto chvíli ještě není podporované';
+  String get replyNotSupported =>
+      'Odpovídat z tohoto zobrazení v tuto chvíli ještě není podporované';
 
   @override
   String get replyToComment => 'Reply to Comment';
@@ -2091,7 +2225,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get screenReaderProfile => 'Profil Čtecího Zařízení';
 
   @override
-  String get screenReaderProfileDescription => 'Optimalizuje Thunder pro čtecí zařízení snížením počtu celkových prvků a odstraněním potenciálně protichůdných gest.';
+  String get screenReaderProfileDescription =>
+      'Optimalizuje Thunder pro čtecí zařízení snížením počtu celkových prvků a odstraněním potenciálně protichůdných gest.';
 
   @override
   String get search => 'Hledat';
@@ -2172,22 +2307,27 @@ class AppLocalizationsCs extends AppLocalizations {
   String get send => 'Send';
 
   @override
-  String get sendBackgroundTestLocalNotification => 'Send background test local notification';
+  String get sendBackgroundTestLocalNotification =>
+      'Send background test local notification';
 
   @override
-  String get sendBackgroundTestUnifiedPushNotification => 'Send background test UnifiedPush notification';
+  String get sendBackgroundTestUnifiedPushNotification =>
+      'Send background test UnifiedPush notification';
 
   @override
   String get sendTestLocalNotification => 'Send test local notification';
 
   @override
-  String get sendTestUnifiedPushNotification => 'Send test UnifiedPush notification';
+  String get sendTestUnifiedPushNotification =>
+      'Send test UnifiedPush notification';
 
   @override
-  String get sensitiveContentWarning => 'May contain sensitive content. Tap to reveal.';
+  String get sensitiveContentWarning =>
+      'May contain sensitive content. Tap to reveal.';
 
   @override
-  String get sentRequestForTestNotification => 'Sent request for test notification.';
+  String get sentRequestForTestNotification =>
+      'Sent request for test notification.';
 
   @override
   String serverErrorComments(Object message) {
@@ -2204,7 +2344,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get setShortPress => 'Nastavit akci na krátké podržení';
 
   @override
-  String get settingOverrideLabel => 'These settings override Thunder\'s default settings.';
+  String get settingOverrideLabel =>
+      'These settings override Thunder\'s default settings.';
 
   @override
   String settingTypeNotSupported(Object settingType) {
@@ -2220,16 +2361,20 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get settingsFeedCards => 'Toto nastavení ovlivňuje karty na hlavním feedu. Akce jsou vždy dostupné po otevření daného příspěvku.';
+  String get settingsFeedCards =>
+      'Toto nastavení ovlivňuje karty na hlavním feedu. Akce jsou vždy dostupné po otevření daného příspěvku.';
 
   @override
-  String get settingsImportedSuccessfully => 'Settings were imported successfully!';
+  String get settingsImportedSuccessfully =>
+      'Settings were imported successfully!';
 
   @override
-  String get settingsNotExportedSuccessfully => 'Settings were not saved successfully, or the operation was canceled.';
+  String get settingsNotExportedSuccessfully =>
+      'Settings were not saved successfully, or the operation was canceled.';
 
   @override
-  String get settingsNotImportedSuccessfully => 'Settings were not imported successfully or the operation was canceled.';
+  String get settingsNotImportedSuccessfully =>
+      'Settings were not imported successfully or the operation was canceled.';
 
   @override
   String get settingsPage => 'Settings Page';
@@ -2376,7 +2521,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get showHiddenPosts => 'Show Hidden Posts';
 
   @override
-  String get showInAppUpdateNotifications => 'Buďte upozorněni, když na GitHubu vyjdou nové verze';
+  String get showInAppUpdateNotifications =>
+      'Buďte upozorněni, když na GitHubu vyjdou nové verze';
 
   @override
   String get showLess => 'Zobrazit méně';
@@ -2388,7 +2534,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get showNavigationLabels => 'Show Navigation Labels';
 
   @override
-  String get showNavigationLabelsDescription => 'Whether to display labels beneath the bottom navigation buttons';
+  String get showNavigationLabelsDescription =>
+      'Whether to display labels beneath the bottom navigation buttons';
 
   @override
   String get showNsfwContent => 'Show NSFW Content';
@@ -2403,7 +2550,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get showPostAuthor => 'Zobrazit Autora Příspěvku';
 
   @override
-  String get showPostAuthorSubtitle => 'Post author is always shown in community feeds';
+  String get showPostAuthorSubtitle =>
+      'Post author is always shown in community feeds';
 
   @override
   String get showPostCommunityFirst => 'Show Community and Author First';
@@ -2448,7 +2596,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get showUpdateChangelogs => 'Show Update Changelogs';
 
   @override
-  String get showUpdateChangelogsSubtitle => 'Display a list of changes after an update';
+  String get showUpdateChangelogsSubtitle =>
+      'Display a list of changes after an update';
 
   @override
   String get showUserAvatar => 'Show User Avatar';
@@ -2463,10 +2612,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get sidebar => 'Boční Panel';
 
   @override
-  String get sidebarBottomNavDoubleTapDescription => 'Dvoj-klikem na spodní navigaci otevřete boční panel';
+  String get sidebarBottomNavDoubleTapDescription =>
+      'Dvoj-klikem na spodní navigaci otevřete boční panel';
 
   @override
-  String get sidebarBottomNavSwipeDescription => 'Pro otevření bočního panelu swipněte na spodní navigaci';
+  String get sidebarBottomNavSwipeDescription =>
+      'Pro otevření bočního panelu swipněte na spodní navigaci';
 
   @override
   String get small => 'Malé';
@@ -2567,7 +2718,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get systemDarkMode => 'Pure Black';
 
   @override
-  String get systemDarkModeDescription => 'Enable pure black theme for dark mode';
+  String get systemDarkModeDescription =>
+      'Enable pure black theme for dark mode';
 
   @override
   String get tabletMode => 'Režim Tabletu (zobrazení 2 sloupců)';
@@ -2582,10 +2734,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get teal => 'Teal';
 
   @override
-  String get testBackgroundNotificationDescription => 'Thunder will close itself and then attempt to generate a notification in the background. (It will take at least 15 minutes.)';
+  String get testBackgroundNotificationDescription =>
+      'Thunder will close itself and then attempt to generate a notification in the background. (It will take at least 15 minutes.)';
 
   @override
-  String get testBackgroundUnifiedPushNotificationDescription => 'Thunder will ask the notification server to send a delayed notification and then close itself. (It may take a few minutes.)';
+  String get testBackgroundUnifiedPushNotificationDescription =>
+      'Thunder will ask the notification server to send a delayed notification and then close itself. (It may take a few minutes.)';
 
   @override
   String get text => 'Text';
@@ -2631,22 +2785,28 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get timeoutComments => 'Error: Timeout when attempting to fetch comments';
+  String get timeoutComments =>
+      'Error: Timeout when attempting to fetch comments';
 
   @override
-  String get timeoutErrorMessage => 'There was a timeout waiting for a response.';
+  String get timeoutErrorMessage =>
+      'There was a timeout waiting for a response.';
 
   @override
-  String get timeoutSaveComment => 'Chyba: Při pokusu uložit komentář vypršel časový limit';
+  String get timeoutSaveComment =>
+      'Chyba: Při pokusu uložit komentář vypršel časový limit';
 
   @override
-  String get timeoutSavingPost => 'Chyba: Při pokusu uložit příspěvek vypršel časový limit.';
+  String get timeoutSavingPost =>
+      'Chyba: Při pokusu uložit příspěvek vypršel časový limit.';
 
   @override
-  String get timeoutUpvoteComment => 'Chyba: Při pokusu hodnocení komentáře vypršel časový limit';
+  String get timeoutUpvoteComment =>
+      'Chyba: Při pokusu hodnocení komentáře vypršel časový limit';
 
   @override
-  String get timeoutVotingPost => 'Chyba: Při pokusu hodnocení příspěvku vypršel časový limit.';
+  String get timeoutVotingPost =>
+      'Chyba: Při pokusu hodnocení příspěvku vypršel časový limit.';
 
   @override
   String get toggelRead => 'Toggle Read';
@@ -2704,7 +2864,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get transferredModToCommunity => 'Transferred Community';
 
   @override
-  String get translationsMayNotBeComplete => 'Berte na vědomí, že překlady nemusí být dokončeny';
+  String get translationsMayNotBeComplete =>
+      'Berte na vědomí, že překlady nemusí být dokončeny';
 
   @override
   String get trendingCommunities => 'Populární Komunity';
@@ -2721,7 +2882,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get unableToFindCommunityOnInstance => 'Unable to find the selected community on the selected user\'s instance.';
+  String get unableToFindCommunityOnInstance =>
+      'Unable to find the selected community on the selected user\'s instance.';
 
   @override
   String get unableToFindInstance => 'Nebylo možné najít instanci';
@@ -2902,7 +3064,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get upvoted => 'Upvoted';
 
   @override
-  String get uriNotSupported => 'V tuto chvíli tento typ odkazu není podporován.';
+  String get uriNotSupported =>
+      'V tuto chvíli tento typ odkazu není podporován.';
 
   @override
   String get url => 'URL';
@@ -2914,7 +3077,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get useApplePushNotifications => 'Use APNs Notifications';
 
   @override
-  String get useApplePushNotificationsDescription => 'Uses Apple\'s Push Notification service';
+  String get useApplePushNotificationsDescription =>
+      'Uses Apple\'s Push Notification service';
 
   @override
   String get useCompactView => 'Povolit pro malé příspěvky, zakázat pro velké.';
@@ -2923,7 +3087,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get useLocalNotifications => 'Use Local Notifications (Experimental)';
 
   @override
-  String get useLocalNotificationsDescription => 'Periodically checks for notifications in the background';
+  String get useLocalNotificationsDescription =>
+      'Periodically checks for notifications in the background';
 
   @override
   String get useMaterialYouTheme => 'Použít Téma Material You';
@@ -2935,7 +3100,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get useProfilePictureForDrawer => 'Use Profile Picture for Drawer';
 
   @override
-  String get useProfilePictureForDrawerSubtitle => 'When logged in, shows the user\'s profile picture in place of the drawer icon';
+  String get useProfilePictureForDrawerSubtitle =>
+      'When logged in, shows the user\'s profile picture in place of the drawer icon';
 
   @override
   String useSuggestedTitle(Object title) {
@@ -2946,7 +3112,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get useUnifiedPushNotifications => 'Use UnifiedPush Notifications';
 
   @override
-  String get useUnifiedPushNotificationsDescription => 'Requires a compatible app';
+  String get useUnifiedPushNotificationsDescription =>
+      'Requires a compatible app';
 
   @override
   String get user => 'User';
@@ -2969,7 +3136,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get userLabels => 'User Labels';
 
   @override
-  String get userLabelsSettingsPageDescription => 'You can add, modify, or remove labels associated with users.';
+  String get userLabelsSettingsPageDescription =>
+      'You can add, modify, or remove labels associated with users.';
 
   @override
   String get userNameColor => 'User Name Color';
@@ -2984,7 +3152,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get userProfiles => 'Uživatelské Profily';
 
   @override
-  String get userSettingDescription => 'Tato nastavení se synchronizují s Vašim Lemmy účtem a jsou použity jen u daného účtu.';
+  String get userSettingDescription =>
+      'Tato nastavení se synchronizují s Vašim Lemmy účtem a jsou použity jen u daného účtu.';
 
   @override
   String get userStyle => 'User Style';
@@ -3097,7 +3266,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String xYearsOld(num count, Object x) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$x years old', one: '$x year old', zero: '$x year old');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$x years old',
+      one: '$x year old',
+      zero: '$x year old',
+    );
     return '$_temp0';
   }
 

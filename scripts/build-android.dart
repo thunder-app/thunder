@@ -1,12 +1,14 @@
 // ignore_for_file: avoid_print, file_names
 import 'dart:io';
 
+final flutterExecutable = Platform.environment['FLUTTER_EXECUTABLE'] ?? 'flutter/bin/flutter';
+
 /// This script automatically generates the release files for the current version,
 /// and stores the release files in /release directory.
 void buildRelease() {
   // Check if Flutter is installed
   print('Checking if Flutter is installed...');
-  ProcessResult flutterResult = Process.runSync('flutter', ['--version']);
+  ProcessResult flutterResult = Process.runSync(flutterExecutable, ['--version']);
 
   if (flutterResult.exitCode != 0) {
     print('Flutter is not installed. Please install Flutter and try again.');
@@ -26,7 +28,7 @@ void buildRelease() {
 
   // Build for Android
   print('\nStarting Android build...');
-  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--release', '--flavor', 'production', '--no-tree-shake-icons']);
+  ProcessResult androidResult = Process.runSync(flutterExecutable, ['build', 'apk', '--release', '--flavor', 'production', '--no-tree-shake-icons']);
   stdout.write(androidResult.stdout);
   stderr.write(androidResult.stderr);
 

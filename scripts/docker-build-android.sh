@@ -49,4 +49,4 @@ export GRADLE_USER_HOME=${HOME}
 fi
 
 # Build the APK
-docker run --privileged --rm -ti --user "$(id -u)" -e "HOME=/home/builder" --name thunder-builder -v "${PWD}:${PWD}" -v "${PWD}/build/docker:/home/builder" -v "${PWD}/build/docker/flutter/gradle/build:/opt/flutter/packages/flutter_tools/gradle/build"  -v "${PWD}/build/docker/flutter/gradle/.gradle:/opt/flutter/packages/flutter_tools/gradle/.gradle" -w "${PWD}" thunder-builder bash -ic 'dart scripts/build-android.dart'
+docker run --privileged --rm -ti --user "$(id -u)" -e "HOME=/home/builder" -e "FLUTTER_EXECUTABLE=/opt/flutter/bin/flutter" --name thunder-builder -v "${PWD}:${PWD}" -v "${PWD}/build/docker:/home/builder" -v "${PWD}/build/docker/flutter/gradle/build:/opt/flutter/packages/flutter_tools/gradle/build"  -v "${PWD}/build/docker/flutter/gradle/.gradle:/opt/flutter/packages/flutter_tools/gradle/.gradle" -w "${PWD}" thunder-builder bash -ic 'dart scripts/build-android.dart'

@@ -42,7 +42,7 @@
       {
         "match": ".*.arb",
         "isAsync": false,
-        "cmd": "dart pub global activate arb_utils && arb_utils generate-meta ./lib/l10n/app_en.arb && arb_utils sort ./lib/l10n/app_en.arb && flutter gen-l10n"
+        "cmd": "./flutter/bin/dart pub global activate arb_utils && arb_utils generate-meta ./lib/l10n/app_en.arb && arb_utils sort ./lib/l10n/app_en.arb && ./flutter/bin/flutter gen-l10n"
       }
     ]
   },
@@ -50,5 +50,5 @@
     "**/.git": true,
     "flutter/**": true
   },
-  "dart.flutterSdkPath": ".fvm/versions/stable"
+  "dart.flutterSdkPath": "flutter"
 }

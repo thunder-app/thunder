@@ -1,26 +1,27 @@
-#Stage 1 - Install dependencies and build the app in a build environment
-FROM debian:latest AS build-env
+ARG FLUTTER_BUILD_PLATFORM=linux/amd64
+FROM --platform=${FLUTTER_BUILD_PLATFORM} debian:bookworm-slim AS build-env
 
-# Install flutter dependencies
-RUN apt-get update
-RUN apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback lib32stdc++6 python3 sed
-RUN apt-get clean
-# Clone the flutter repo
-RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter
-# Set flutter path
+ARG FLUTTER_VERSION=3.47.2
+ARG FLUTTER_LINUX_SHA256=447878859d01ca9bfdb99a85f245af07ed8a15fedcd9d189c4749e8e92d1f185
+
+RUN apt-get update && \
+    apt-get install -y ca-certificates curl git unzip wget xz-utils && \
+    wget --quiet "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -O /tmp/flutter.tar.xz && \
+    echo "${FLUTTER_LINUX_SHA256}  /tmp/flutter.tar.xz" | sha256sum --check --status && \
+    mkdir -p /usr/local && \
+    tar xf /tmp/flutter.tar.xz -C /usr/local && \
+    rm /tmp/flutter.tar.xz && \
+    apt-get clean
+
 ENV PATH="${PATH}:/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin"
 
-# Run flutter doctor
+RUN git config --global --add safe.directory /usr/local/flutter
 RUN flutter doctor -v
-RUN flutter channel stable
-RUN flutter upgrade
 
-# Copy files to container and build
 RUN mkdir /app/
 COPY . /app/
 WORKDIR /app/
 RUN flutter build web --no-tree-shake-icons
 
-# Stage 2 - Create the run-time image
 FROM nginx:stable-alpine
 COPY --from=build-env /app/build/web /usr/share/nginx/html

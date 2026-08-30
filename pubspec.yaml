@@ -4,8 +4,8 @@ publish_to: none
 version: 0.9.0-4+99
 
 environment:
-  sdk: ^3.13.0
-  flutter: ">=3.47.1 <4.0.0"
+  sdk: ^3.13.2
+  flutter: ">=3.47.2 <4.0.0"
 
 dependencies:
   flutter:
@@ -20,83 +20,85 @@ dependencies:
     git:
       url: https://github.com/thunder-app/image-dimension-parser.git
       ref: d9bfec9dfe6a53b2d032129ce56311ec02796a29
-  l10n_esperanto: ^2.0.14
-  android_intent_plus: ^6.0.0
-  app_links: ^7.0.0
+  l10n_esperanto: ^3.0.0
+  android_intent_plus: ^6.1.0
+  app_links: ^7.2.1
   auto_size_text: ^3.0.0
-  back_button_interceptor: ^8.0.0
-  background_fetch: ^1.5.0
-  bloc: ^9.0.0
+  back_button_interceptor: ^8.0.4
+  background_fetch: ^1.7.0
+  bloc: ^9.2.1
   bloc_concurrency: ^0.3.0
-  cached_network_image: ^3.2.3
-  collection: ^1.17.0
-  connectivity_plus: ^7.0.0
-  drift: ^2.32.0
-  drift_flutter: ^0.3.0
-  dynamic_color: ^1.6.5
-  equatable: ^2.0.5
+  cached_network_image: ^4.0.0
+  collection: ^1.19.1
+  connectivity_plus: ^7.3.1
+  drift: ^2.34.3
+  drift_flutter: ^0.3.1
+  dynamic_color: ^1.9.0
+  equatable: ^2.1.0
   expandable: ^5.0.1
   fading_edge_scrollview: ^4.1.1
-  flex_color_scheme: ^8.1.1
+  flex_color_scheme: ^8.4.0
   flutter_bloc: ^9.1.1
-  flutter_cache_manager: ^3.3.0
-  flutter_custom_tabs: ^2.0.0-beta.1
+  flutter_cache_manager: ^3.4.2
+  flutter_custom_tabs: ^2.6.0
   flutter_displaymode: ^0.7.0
-  flutter_file_dialog: ^3.0.2
+  flutter_file_dialog: ^3.3.2
   keyboard_detection: ^0.8.1
-  flutter_local_notifications: ^22.0.1
-  flutter_markdown: ^0.7.3+1
-  flutter_native_splash: ^2.4.7
+  flutter_local_notifications: ^22.3.0
+  flutter_markdown: ^0.7.7+1
+  flutter_native_splash: ^2.4.8
   flutter_sharing_intent: ^2.0.4
   flutter_staggered_grid_view: ^0.7.0
   flutter_typeahead: ^6.0.0
-  gal: ^2.2.0
-  html: ^0.15.4
+  gal: ^2.3.3
+  html: ^0.15.7
   html_unescape: ^2.0.0
-  http: ^1.2.1
-  image_picker: ^1.0.0
-  intl: ^0.20.2
-  jovial_svg: ^1.1.19
-  markdown: ^7.2.2
+  http: ^1.6.0
+  image_picker: ^1.2.3
+  intl: ^0.20.3
+  jovial_svg: ^1.1.30
+  markdown: ^7.3.1
   overlay_support: ^2.1.0
-  path: ^1.8.3
-  path_provider: ^2.1.5
-  permission_handler: ^12.0.0+1
+  path: ^1.9.1
+  path_provider: ^2.1.6
+  permission_handler: ^12.0.3
   screenshot: ^3.0.0
-  share_plus: ^13.1.0
-  shared_preferences: ^2.1.2
-  smooth_highlight: ^0.1.1
-  stream_transform: ^2.1.0
+  share_plus: ^13.3.0
+  shared_preferences: ^2.5.5
+  smooth_highlight: ^0.1.2
+  stream_transform: ^2.1.2
   super_sliver_list: ^0.4.1
-  unifiedpush: 6.1.0
-  url_launcher: ^6.1.11
+  unifiedpush: ^6.2.0
+  webcrypto: 0.6.0
+  url_launcher: ^6.3.2
   # There is an intentional space between the packge name and colon below. Do not remove!
   version : ^3.0.2
-  video_player: ^2.9.2
+  video_player: ^2.14.0
+  video_player_android: 2.12.0
   visibility_detector: ^0.4.0+2
-  webview_flutter: ^4.2.2
-  webview_flutter_android: ^4.1.0
-  webview_flutter_wkwebview: ^3.5.0
+  webview_flutter: ^4.14.1
+  webview_flutter_android: ^4.14.1
+  webview_flutter_wkwebview: ^3.26.1
   youtube_player_flutter: ^10.0.1
-  youtube_player_iframe: ^6.0.0
+  youtube_player_iframe: ^6.0.2
   freezed_annotation: ^3.1.0
-  freezed: ^3.2.2
-  image: ^4.5.4
-  sqlite3: ^3.0.0
+  freezed: ^4.0.1
+  image: ^4.9.2
+  sqlite3: ^3.5.2
   flutter_avif: ^3.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   bloc_test: ^10.0.0
-  build_runner: ^2.5.4
-  drift_dev: ^2.28.0
-  flutter_launcher_icons: ^0.14.1
+  build_runner: ^2.16.0
+  drift_dev: ^2.34.5
+  flutter_launcher_icons: ^0.14.4
   flutter_lints: ^6.0.0
-  mocktail: ^1.0.4
-  sqflite: ^2.4.0
-  sqflite_common_ffi: ^2.3.4
-  bloc_lint: ^0.4.0
+  mocktail: ^1.0.5
+  sqflite: ^2.4.3
+  sqflite_common_ffi: ^2.4.2+1
+  bloc_lint: ^0.4.2
 
 flutter:
   uses-material-design: true

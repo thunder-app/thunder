@@ -1,10 +1,14 @@
-FROM ubuntu:22.04
+ARG FLUTTER_BUILD_PLATFORM=linux/amd64
+FROM --platform=${FLUTTER_BUILD_PLATFORM} ubuntu:22.04
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV ANDROID_SDK_ROOT /opt/android-sdk-linux
-ENV PATH "${PATH}:/opt/flutter/bin:/root/.pub-cache/bin:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:/opt/android-sdk-linux/platform-tools"
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
+ENV PATH="${PATH}:/opt/flutter/bin:/root/.pub-cache/bin:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:/opt/android-sdk-linux/platform-tools"
 
 ENV HOME=/root
+
+ARG FLUTTER_VERSION=3.47.2
+ARG FLUTTER_LINUX_SHA256=447878859d01ca9bfdb99a85f245af07ed8a15fedcd9d189c4749e8e92d1f185
 
 RUN \
     # Prereqs
@@ -13,7 +17,7 @@ RUN \
         bash \
         curl \
         file \
-        git 2.x \
+        git \
         unzip \
         xz-utils \
         zip \
@@ -39,7 +43,7 @@ RUN \
     mv ${ANDROID_SDK_ROOT}/cmdline-tools/cmdline-tools ${ANDROID_SDK_ROOT}/cmdline-tools/latest && \
     rm -v /tmp/tools.zip && \
     mkdir -p /root/.android/ && touch /root/.android/repositories.cfg &&\
-    apt-get install -y --no-install-recommends openjdk-18-jdk openjdk-18-jre &&\
+    apt-get install -y --no-install-recommends openjdk-17-jdk openjdk-17-jre &&\
     yes | sdkmanager --licenses &&\
     sdkmanager --update &&\
     sdkmanager --install "platforms;android-28" &&\
@@ -49,8 +53,10 @@ RUN \
     sdkmanager --install "platforms;android-32" &&\
     sdkmanager --install "platforms;android-33" &&\
     sdkmanager --install "platforms;android-34" &&\
-    sdkmanager --install "build-tools;30.0.3" &&\
-    sdkmanager --install "ndk;23.1.7779620" &&\
+    sdkmanager --install "platforms;android-35" &&\
+    sdkmanager --install "platforms;android-36" &&\
+    sdkmanager --install "build-tools;36.0.0" &&\
+    sdkmanager --install "ndk;28.2.13676358" &&\
     sdkmanager --install "cmake;3.22.1" &&\
     sdkmanager --install platform-tools &&\
     sdkmanager --install emulator &&\
@@ -60,7 +66,8 @@ RUN \
 ARG DEV_UID=0
 RUN \
     # Flutter
-    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.19.2-stable.tar.xz -O /tmp/flutter.tar.xz &&\
+    wget --quiet "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -O /tmp/flutter.tar.xz &&\
+    echo "${FLUTTER_LINUX_SHA256}  /tmp/flutter.tar.xz" | sha256sum --check --status &&\
     mkdir -p /opt &&\
     cd /opt &&\
     tar xf /tmp/flutter.tar.xz &&\

@@ -149,11 +149,11 @@ Thunder is developed with Flutter, and is built to support both iOS and Android.
 
 To build the app from source, a few steps are required.
 
-1. Set up and install Flutter. For more information, visit https://docs.flutter.dev/get-started/install.
-2. Ensure that you are on Flutter's `stable` channel using `flutter channel stable`.
-2. Clone this repository and fetch the dependencies using `flutter pub get`
-4. Run `flutter gen-l10n` to generate the localization files.
-5. Optional: Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions. This step is only required if you want to build a release version of the app.
+1. Clone this repository with its pinned Flutter submodule using `git clone --recurse-submodules -j8 git@github.com:thunder-app/thunder.git`.
+2. If the repository is already cloned, initialize the pinned SDK using `git submodule update --init --recursive`.
+3. Fetch dependencies using `./flutter/bin/flutter pub get`.
+4. Run `./flutter/bin/flutter gen-l10n` to generate the localization files.
+5. Optional: Run `./flutter/bin/dart scripts/build.dart` to build the iOS and Android release versions.
 
 ### Building with Docker
 
@@ -187,9 +187,9 @@ Thunder uses [Drift](https://drift.simonbinder.eu/) (a wrapper around SQLite) to
 
 1. Add any new tables or columns in `lib\src\core\database\tables.dart`
 2. Increment the schema version in `lib\src\core\database\database.dart`
-3. Run `dart run drift_dev make-migrations` to generate the proper migration logic and tests. This will automatically create the new schema version.
+3. Run `./flutter/bin/dart run drift_dev make-migrations` to generate the proper migration logic and tests. This will automatically create the new schema version.
 4. Implement the migration logic in `lib\src\core\database\database.dart`
-5. Run build_runner to regenerate the files: `dart run build_runner build`
+5. Run build_runner to regenerate the files: `./flutter/bin/dart run build_runner build`
 
 ## Conventions
 

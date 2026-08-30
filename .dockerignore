@@ -2,6 +2,7 @@ scripts/docker*
 docker
 build
 .dart_tool
+flutter
 key.properties
 keystore.jks
 android
