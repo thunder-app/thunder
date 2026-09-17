@@ -1609,7 +1609,7 @@
   "@unbannedUser": {
     "description": "Short decription for moderator action to unban a user"
   },
-  "unbannedUserFromCommunity": "Odblokovaný používateľ z komunity",
+  "unbannedUserFromCommunity": "Odblokovaný používateľ {username} z komunity",
   "@unbannedUserFromCommunity": {
     "description": "Short decription for moderator action to unban a user from a community"
   },

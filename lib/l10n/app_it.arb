@@ -1625,7 +1625,7 @@
   "@user": {
     "description": "Role name for user"
   },
-  "unbannedUserFromCommunity": "Sbanna Utente dalla Comunità",
+  "unbannedUserFromCommunity": "Sbannato {username} dalla comunità",
   "@unbannedUserFromCommunity": {
     "description": "Short decription for moderator action to unban a user from a community"
   },
