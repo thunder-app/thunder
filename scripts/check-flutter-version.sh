@@ -39,9 +39,9 @@ fi
 
 check_contains .metadata "revision: \"$FLUTTER_REVISION\""
 check_contains pubspec.yaml "sdk: ^$DART_VERSION"
-check_contains pubspec.yaml "flutter: \">=$FLUTTER_VERSION <4.0.0\""
+check_contains pubspec.yaml "flutter: \"$FLUTTER_VERSION\""
 check_contains pubspec.lock "dart: \">=$DART_VERSION <4.0.0\""
-check_contains pubspec.lock "flutter: \">=$FLUTTER_VERSION <4.0.0\""
+check_contains pubspec.lock "flutter: \"$FLUTTER_VERSION\""
 check_contains .fvmrc "\"flutter\": \"$FLUTTER_VERSION\""
 check_contains .vscode/settings.json "\"dart.flutterSdkPath\": \"flutter\""
 check_contains docker/Dockerfile "ARG FLUTTER_VERSION=$FLUTTER_VERSION"

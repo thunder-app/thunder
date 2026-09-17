@@ -59,6 +59,12 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Resolve Flutter submodule commit
         id: flutter-submodule
         run: echo "sha=$(git rev-parse HEAD:flutter)" >> "$GITHUB_OUTPUT"
@@ -82,6 +88,26 @@ jobs:
 
       - name: Dependencies
         run: flutter pub get
+
+      - name: Patch Android dependency linker options
+        shell: bash
+        run: |
+          set -euo pipefail
+          # https://github.com/thunder-app/thunder/issues/2120
+          package_root() {
+            jq -er --arg name "$1" '.packages[] | select(.name == $name) | .rootUri | sub("^file://"; "")' .dart_tool/package_config.json
+          }
+
+          jni_cmake="$(package_root jni)/src/CMakeLists.txt"
+          webcrypto_cmake="$(package_root webcrypto)/android/CMakeLists.txt"
+
+          for patch in "$jni_cmake|jni" "$webcrypto_cmake|webcrypto"; do
+            cmake_file=${patch%|*}
+            target=${patch##*|}
+            option="target_link_options($target PRIVATE \"-Wl,--build-id=none\")"
+            grep -Fxq "$option" "$cmake_file" || printf '\n%s\n' "$option" >> "$cmake_file"
+            [[ $(grep -Fxc "$option" "$cmake_file") -eq 1 ]]
+          done
 
       - name: Build Android APKs (unsigned)
         run: |
