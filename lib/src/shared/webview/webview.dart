@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/src/core/config/config.dart';
 import 'package:thunder/src/shared/links/link_bottom_sheet.dart';

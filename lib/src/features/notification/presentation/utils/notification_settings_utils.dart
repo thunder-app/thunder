@@ -1,6 +1,6 @@
 // Flutter imports
 import 'package:android_intent_plus/android_intent.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // Package imports
 import 'package:thunder/l10n/generated/app_localizations.dart';

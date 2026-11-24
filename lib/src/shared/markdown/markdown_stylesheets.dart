@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart' as legacy_material; // ignore: deprecated_member_use, migrate_design_widgets
 
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -62,7 +63,7 @@ MarkdownStyleSheet getNormalStyleSheet(BuildContext context) {
   final theme = Theme.of(context);
   final surface = theme.colorScheme.surfaceContainerHighest;
 
-  return MarkdownStyleSheet.fromTheme(theme).copyWith(
+  return MarkdownStyleSheet.fromTheme(legacy_material.Theme.of(context)).copyWith(
     blockquoteDecoration: BoxDecoration(
       color: surface,
       border: Border(left: BorderSide(color: theme.colorScheme.primary.withValues(alpha: 0.75), width: 4)),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Text that applies a manual scale factor while ignoring system text scaling.
 ///

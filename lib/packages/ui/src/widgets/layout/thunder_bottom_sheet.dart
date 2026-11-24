@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Title row for Thunder bottom sheets with optional leading and trailing slots.
 @immutable

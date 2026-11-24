@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +14,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:thunder/src/shared/media/media_utils.dart';
 import 'package:thunder/src/shared/markdown/extended_markdown.dart';
+import 'package:thunder/src/shared/markdown/legacy_markdown_surface.dart';
 import 'package:thunder/src/shared/markdown/markdown_lemmy_link.dart';
 import 'package:thunder/src/shared/markdown/markdown_spoiler.dart';
 import 'package:thunder/src/shared/markdown/markdown_subsuperscript.dart';
@@ -102,21 +103,23 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
 
     return ExcludeSemantics(
       excluding: !accessibilityOn,
-      child: RepaintBoundary(
-        child: ExtendedMarkdownBody(
-          data: widget.body,
-          extensionSet: _customExtensionSet,
-          inlineSyntaxes: _inlineSyntaxes,
-          builders: _builders,
-          sizedImageBuilder: (config) =>
-              widget.hidden ? const SizedBox.shrink() : MarkdownImageWidget(uri: config.uri, alt: config.alt, nsfw: widget.nsfw, isComment: widget.isComment, imageMaxWidth: widget.imageMaxWidth),
-          onTapLink: (text, url, title) {
-            if (url != null) handleLink(navigationContext, url: url);
-          },
-          onLongPressLink: (text, url, title) {
-            if (url != null) handleLinkLongPress(navigationContext, text, url);
-          },
-          styleSheet: styleSheet.copyWith(textScaler: _getTextScaler()),
+      child: LegacyMarkdownSurface(
+        child: RepaintBoundary(
+          child: ExtendedMarkdownBody(
+            data: widget.body,
+            extensionSet: _customExtensionSet,
+            inlineSyntaxes: _inlineSyntaxes,
+            builders: _builders,
+            sizedImageBuilder: (config) =>
+                widget.hidden ? const SizedBox.shrink() : MarkdownImageWidget(uri: config.uri, alt: config.alt, nsfw: widget.nsfw, isComment: widget.isComment, imageMaxWidth: widget.imageMaxWidth),
+            onTapLink: (text, url, title) {
+              if (url != null) handleLink(navigationContext, url: url);
+            },
+            onLongPressLink: (text, url, title) {
+              if (url != null) handleLinkLongPress(navigationContext, text, url);
+            },
+            styleSheet: styleSheet.copyWith(textScaler: _getTextScaler()),
+          ),
         ),
       ),
     );

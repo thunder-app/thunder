@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as legacy_cupertino; // ignore: deprecated_member_use, migrate_design_widgets
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as legacy_material; // ignore: deprecated_member_use, migrate_design_widgets
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:markdown/markdown.dart' as md;
@@ -245,15 +246,17 @@ kFallbackStyle = (BuildContext context, MarkdownStyleSheetBaseTheme? baseTheme) 
   MarkdownStyleSheet result;
   switch (baseTheme) {
     case MarkdownStyleSheetBaseTheme.platform:
-      result = (!kIsWeb && (Platform.isIOS || Platform.isMacOS)) ? MarkdownStyleSheet.fromCupertinoTheme(CupertinoTheme.of(context)) : MarkdownStyleSheet.fromTheme(Theme.of(context));
+      result = (!kIsWeb && (Platform.isIOS || Platform.isMacOS))
+          ? MarkdownStyleSheet.fromCupertinoTheme(legacy_cupertino.CupertinoTheme.of(context))
+          : MarkdownStyleSheet.fromTheme(legacy_material.Theme.of(context));
       break;
     case MarkdownStyleSheetBaseTheme.cupertino:
-      result = MarkdownStyleSheet.fromCupertinoTheme(CupertinoTheme.of(context));
+      result = MarkdownStyleSheet.fromCupertinoTheme(legacy_cupertino.CupertinoTheme.of(context));
       break;
     case MarkdownStyleSheetBaseTheme.material:
     // ignore: no_default_cases
     default:
-      result = MarkdownStyleSheet.fromTheme(Theme.of(context));
+      result = MarkdownStyleSheet.fromTheme(legacy_material.Theme.of(context));
   }
 
   return result.copyWith(

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A [NavigationBar] that handles custom gestures.
 class ThunderBottomNavigationBar extends StatefulWidget {

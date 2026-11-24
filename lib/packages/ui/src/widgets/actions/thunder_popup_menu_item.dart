@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Standardized popup menu item with a leading icon and optional trailing widget.
 class ThunderPopupMenuItem<T> extends PopupMenuItem<T> {

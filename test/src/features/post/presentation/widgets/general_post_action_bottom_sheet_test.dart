@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:thunder/src/features/post/presentation/widgets/post_bottom_sheet/general_post_action_bottom_sheet.dart';

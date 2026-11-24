@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 import 'package:dynamic_color/dynamic_color.dart';
@@ -10,10 +10,10 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
-import 'package:overlay_support/overlay_support.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/src/core/shell/shell_chrome_cubit.dart';
+import 'package:thunder/src/core/shell/legacy_ui_compatibility.dart';
 import 'package:thunder/src/core/state/thunder_bloc.dart';
 import 'package:thunder/src/core/config/global_context.dart';
 import 'package:thunder/packages/ui/ui.dart';
@@ -129,35 +129,35 @@ class _ThunderAppState extends State<ThunderApp> {
 
               final Locale? locale = LanguageLocal.parseLanguageTag(appLanguageCode ?? 'en');
 
-              return OverlaySupport.global(
-                child: AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
-                  child: MaterialApp(
-                    title: 'Thunder',
-                    locale: locale,
-                    localizationsDelegates: const [...AppLocalizations.localizationsDelegates, MaterialLocalizationsEo.delegate, CupertinoLocalizationsEo.delegate],
-                    supportedLocales: const [...AppLocalizations.supportedLocales, Locale('eo')],
-                    themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
-                    theme: theme,
-                    darkTheme: darkTheme,
-                    debugShowCheckedModeBanner: false,
-                    scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
-                    scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
-                    home: Session(
-                      builder: (context, sessionState) {
-                        final account = sessionState.activeAccount!;
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: FlexColorScheme.themedSystemNavigationBar(context, systemNavBarStyle: FlexSystemNavBarStyle.transparent),
+                child: MaterialApp(
+                  title: 'Thunder',
+                  locale: locale,
+                  localizationsDelegates: const [AppLocalizations.delegate, MaterialLocalizationsEo.delegate, CupertinoLocalizationsEo.delegate, ...GlobalMaterialLocalizations.delegates],
+                  supportedLocales: const [...AppLocalizations.supportedLocales, Locale('eo')],
+                  themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                  theme: theme,
+                  darkTheme: darkTheme,
+                  debugShowCheckedModeBanner: false,
+                  scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                  navigatorKey: thunderNavigatorKey,
+                  builder: (context, child) => LegacyUiCompatibility(child: child!),
+                  scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
+                  home: Session(
+                    builder: (context, sessionState) {
+                      final account = sessionState.activeAccount!;
 
-                        return SessionScope(
-                          account: account,
-                          generation: sessionState.generation,
-                          profileBloc: createProfileBloc,
-                          inboxBloc: createInboxBloc,
-                          searchBloc: createSearchBloc,
-                          feedBloc: createFeedBloc,
-                          builder: (context, profileState) => Thunder(pageController: thunderPageController),
-                        );
-                      },
-                    ),
+                      return SessionScope(
+                        account: account,
+                        generation: sessionState.generation,
+                        profileBloc: createProfileBloc,
+                        inboxBloc: createInboxBloc,
+                        searchBloc: createSearchBloc,
+                        feedBloc: createFeedBloc,
+                        builder: (context, profileState) => Thunder(pageController: thunderPageController),
+                      );
+                    },
                   ),
                 ),
               );

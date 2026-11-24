@@ -48,6 +48,13 @@ subprojects { subproject ->
 
     plugins.withId("com.android.library") {
         configureJavaJvmTarget()
+
+        if (subproject.name in ["jni", "webcrypto"]) {
+            // Omit linker build IDs from these release libraries so downstream APK builds can match.
+            subproject.android.buildTypes.named("release") {
+                externalNativeBuild.cmake.arguments "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none"
+            }
+        }
     }
 
     plugins.withId("org.jetbrains.kotlin.android") {
