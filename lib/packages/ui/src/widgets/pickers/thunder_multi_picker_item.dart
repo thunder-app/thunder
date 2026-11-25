@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Configuration for a single button in [ThunderMultiPickerItem].
 @immutable

@@ -30,6 +30,7 @@ export 'src/widgets/dialogs/thunder_dialog.dart';
 export 'src/widgets/dialogs/thunder_typeahead_dialog.dart';
 export 'src/widgets/fab/thunder_expandable_fab.dart';
 export 'src/widgets/feedback/thunder_snackbar.dart';
+export 'src/widgets/feedback/thunder_overlay.dart';
 export 'src/widgets/identity/thunder_scalable_text.dart';
 export 'src/widgets/layout/thunder_bottom_sheet.dart';
 export 'src/widgets/layout/thunder_composer_bar.dart';

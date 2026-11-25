@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:thunder/packages/ui/src/widgets/common/thunder_skeleton_bar.dart';
 

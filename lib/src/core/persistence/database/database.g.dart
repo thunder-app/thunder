@@ -1630,7 +1630,7 @@ final class $$AccountsTableReferences extends BaseReferences<_$AppDatabase, $Acc
   $$AccountsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$SessionStateTableTable, List<SessionStateTableData>> _sessionStateTableRefsTable(_$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.sessionStateTable, aliasName: $_aliasNameGenerator(db.accounts.id, db.sessionStateTable.accountId));
+      MultiTypedResultKey.fromTable(db.sessionStateTable, aliasName: 'accounts__id__session_state__account_id');
 
   $$SessionStateTableTableProcessedTableManager get sessionStateTableRefs {
     final manager = $$SessionStateTableTableTableManager($_db, $_db.sessionStateTable).filter((f) => f.accountId.id.sqlEquals($_itemColumn<int>('id')!));
@@ -1775,7 +1775,7 @@ class $$AccountsTableTableManager
             Value<int> listIndex = const Value.absent(),
             Value<ThreadiversePlatform?> platform = const Value.absent(),
           }) => AccountsCompanion.insert(id: id, username: username, jwt: jwt, instance: instance, anonymous: anonymous, userId: userId, listIndex: listIndex, platform: platform),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), $$AccountsTableReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable<$AccountsTable, Account>(table), $$AccountsTableReferences(db, table, e))).toList(),
           prefetchHooksCallback: ({sessionStateTableRefs = false}) {
             return PrefetchHooks(
               db: db,
@@ -1784,11 +1784,12 @@ class $$AccountsTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (sessionStateTableRefs)
-                    await $_getPrefetchedData<Account, $AccountsTable, SessionStateTableData>(
+                    await $_getPrefetchedDataByColumns<Account, $AccountsTable, SessionStateTableData, $SessionStateTableTable>(
                       currentTable: table,
                       referencedTable: $$AccountsTableReferences._sessionStateTableRefsTable(db),
                       managerFromTypedResult: (p0) => $$AccountsTableReferences(db, table, p0).sessionStateTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) => referencedItems.where((e) => e.accountId == item.id),
+                      currentColumn: 'id',
+                      referencedColumn: 'account_id',
                       typedResults: items,
                     ),
                 ];
@@ -1870,7 +1871,7 @@ class $$FavoritesTableTableManager
               FavoritesCompanion(id: id, accountId: accountId, communityId: communityId),
           createCompanionCallback: ({Value<int> id = const Value.absent(), required int accountId, required int communityId}) =>
               FavoritesCompanion.insert(id: id, accountId: accountId, communityId: communityId),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable<$FavoritesTable, Favorite>(table), BaseReferences<_$AppDatabase, $FavoritesTable, Favorite>(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -1970,7 +1971,8 @@ class $$LocalSubscriptionsTableTableManager
           }) => LocalSubscriptionsCompanion(id: id, name: name, title: title, actorId: actorId, icon: icon),
           createCompanionCallback: ({Value<int> id = const Value.absent(), required String name, required String title, required String actorId, Value<String?> icon = const Value.absent()}) =>
               LocalSubscriptionsCompanion.insert(id: id, name: name, title: title, actorId: actorId, icon: icon),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) =>
+              p0.map((e) => (e.readTable<$LocalSubscriptionsTable, LocalSubscription>(table), BaseReferences<_$AppDatabase, $LocalSubscriptionsTable, LocalSubscription>(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -2046,7 +2048,7 @@ class $$UserLabelsTableTableManager
           updateCompanionCallback: ({Value<int> id = const Value.absent(), Value<String> username = const Value.absent(), Value<String> label = const Value.absent()}) =>
               UserLabelsCompanion(id: id, username: username, label: label),
           createCompanionCallback: ({Value<int> id = const Value.absent(), required String username, required String label}) => UserLabelsCompanion.insert(id: id, username: username, label: label),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable<$UserLabelsTable, UserLabel>(table), BaseReferences<_$AppDatabase, $UserLabelsTable, UserLabel>(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -2267,7 +2269,7 @@ class $$DraftsTableTableManager
                 languageId: languageId,
                 body: body,
               ),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable<$DraftsTable, Draft>(table), BaseReferences<_$AppDatabase, $DraftsTable, Draft>(db, table, e))).toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -2293,7 +2295,7 @@ typedef $$SessionStateTableTableUpdateCompanionBuilder = SessionStateTableCompan
 final class $$SessionStateTableTableReferences extends BaseReferences<_$AppDatabase, $SessionStateTableTable, SessionStateTableData> {
   $$SessionStateTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $AccountsTable _accountIdTable(_$AppDatabase db) => db.accounts.createAlias($_aliasNameGenerator(db.sessionStateTable.accountId, db.accounts.id));
+  static $AccountsTable _accountIdTable(_$AppDatabase db) => db.accounts.createAlias('session_state__account_id__accounts__id');
 
   $$AccountsTableProcessedTableManager? get accountId {
     final $_column = $_itemColumn<int>('account_id');
@@ -2398,7 +2400,7 @@ class $$SessionStateTableTableTableManager
               SessionStateTableCompanion(singleton: singleton, accountId: accountId),
           createCompanionCallback: ({Value<int> singleton = const Value.absent(), Value<int?> accountId = const Value.absent()}) =>
               SessionStateTableCompanion.insert(singleton: singleton, accountId: accountId),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), $$SessionStateTableTableReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0.map((e) => (e.readTable<$SessionStateTableTable, SessionStateTableData>(table), $$SessionStateTableTableReferences(db, table, e))).toList(),
           prefetchHooksCallback: ({accountId = false}) {
             return PrefetchHooks(
               db: db,

@@ -1,0 +1,46 @@
+name: Release information
+
+on:
+  workflow_call:
+    inputs:
+      dry_run:
+        type: boolean
+        default: false
+    outputs:
+      version:
+        value: ${{ jobs.release_info.outputs.version }}
+      prerelease:
+        value: ${{ jobs.release_info.outputs.prerelease }}
+
+jobs:
+  release_info:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.generate-version-info.outputs.version }}
+      prerelease: ${{ steps.generate-version-info.outputs.prerelease }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read release version from pubspec.yaml
+        id: generate-version-info
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          version=$(awk '/^version:[[:space:]]/ { print $2; exit }' pubspec.yaml | tr -d "'\"")
+          version=${version%%+*}
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Set a release version in pubspec.yaml, such as 0.9.0 or 0.9.0-5."
+            exit 1
+          fi
+          if [[ "$DRY_RUN" == false && "$GITHUB_REF" != "refs/tags/$version" ]]; then
+            echo "::error::To publish this release, run the workflow from the $version tag."
+            exit 1
+          fi
+          prerelease=false
+          if [[ "$version" == *-* ]]; then
+            prerelease=true
+          fi
+          printf 'version=%s\nprerelease=%s\n' "$version" "$prerelease" >> "$GITHUB_OUTPUT"

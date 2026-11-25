@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:l10n_esperanto/l10n_esperanto.dart';
 
 import 'package:thunder/l10n/generated/app_localizations.dart';
 import 'package:thunder/packages/ui/ui.dart';
@@ -46,7 +47,7 @@ class _AppStartupGateState extends State<AppStartupGate> {
 
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: const [AppLocalizations.delegate, MaterialLocalizationsEo.delegate, CupertinoLocalizationsEo.delegate, ...GlobalMaterialLocalizations.delegates],
           supportedLocales: AppLocalizations.supportedLocales,
           themeMode: ThemeMode.system,
           home: Scaffold(

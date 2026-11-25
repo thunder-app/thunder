@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:thunder/src/features/instance/data/constants/known_instances.dart';
 import 'package:thunder/src/features/session/api.dart';

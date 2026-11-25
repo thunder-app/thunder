@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:thunder/packages/ui/ui.dart';
 import 'package:thunder/src/core/navigation/navigation_utils.dart';

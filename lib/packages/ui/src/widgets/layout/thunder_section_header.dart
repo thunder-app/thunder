@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:thunder/packages/ui/src/widgets/layout/thunder_section_divider.dart';
 import 'package:thunder/packages/ui/src/widgets/layout/thunder_section_title.dart';

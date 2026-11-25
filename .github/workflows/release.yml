@@ -12,256 +12,27 @@ on:
         default: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   release_info:
-    runs-on: ubuntu-latest
-
-    outputs:
-      version: ${{ steps.generate-version-info.outputs.version }}
-      prerelease: ${{ steps.generate-version-info.outputs.prerelease }}
-      tag: ${{ steps.generate-version-info.outputs.tag }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Read pubspec.yaml version
-        id: extract-version
-        uses: NiklasLehnfeld/flutter-version-number-action@main
-        with:
-          file-path: pubspec.yaml
-
-      - name: Generate version information
-        id: generate-version-info
-        run: |
-          VERSION=${{ steps.extract-version.outputs.version-number }}
-          VERSION=$(echo "$VERSION" | cut -d '+' -f 1)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          PRERELEASE=false
-          if [[ "$VERSION" == *-* ]]; then
-            PRERELEASE=true
-          fi
-          echo "prerelease=$PRERELEASE" >> $GITHUB_OUTPUT
-          TAG="$VERSION"
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "Info: version=$VERSION | tag=${TAG} | prerelease=$PRERELEASE"
+    uses: ./.github/workflows/release-info.yml
+    with:
+      dry_run: ${{ inputs.dry_run == true }}
 
   build_android:
     needs: release_info
-    runs-on: ubuntu-latest
-    environment: production
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
-
-      - name: Resolve Flutter submodule commit
-        id: flutter-submodule
-        run: echo "sha=$(git rev-parse HEAD:flutter)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Flutter toolchain
-        uses: actions/cache@v4
-        with:
-          path: flutter/bin/cache
-          key: flutter-${{ runner.os }}-${{ steps.flutter-submodule.outputs.sha }}
-
-      - name: Set up Flutter from submodule
-        run: |
-          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
-          git -C flutter fetch --tags --force origin
-          rm -f flutter/bin/cache/flutter.version.json flutter/version
-          ./flutter/bin/flutter config --no-analytics
-          ./flutter/bin/flutter --version
-
-      - name: Verify Flutter version sources
-        run: ./scripts/check-flutter-version.sh
-
-      - name: Dependencies
-        run: flutter pub get
-
-      - name: Build Android APKs (unsigned)
-        run: |
-          # Signing is applied only when android/key.properties exists (see android/app/build.gradle).
-          flutter build apk --split-per-abi --release --flavor production
-          rm ./build/app/outputs/flutter-apk/*.sha1
-          ls -l ./build/app/outputs/flutter-apk/
-
-      - name: Sign Android Split APKs
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        run: |
-          echo "${KEYSTORE_BASE64}" | base64 -d > apksign.keystore
-          for apk in ./build/app/outputs/flutter-apk/*-release*.apk; do
-            unsignedFn=${apk/-release/-unsigned}
-            mv "$apk" "$unsignedFn"
-            ${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | tail -1)/apksigner sign --ks apksign.keystore --ks-pass pass:"${KEYSTORE_PASSWORD}" --out "${apk}" "${unsignedFn}"
-            echo "${apk} | $(shasum -a 256 ${apk} | cut -d " " -f 1)"
-          done
-          rm apksign.keystore
-          echo "Finished signing Android Split APKs"
-
-      - name: Rename Android Split APKs
-        run: |
-          for apk in ./build/app/outputs/flutter-apk/*-release*.apk; do
-            # Extract architecture from filename (e.g., app-arm64-v8a-production-release.apk -> arm64-v8a)
-            filename=$(basename "$apk")
-            arch="universal" # fallback
-
-            if [[ "$filename" == *"-arm64-v8a-"* ]]; then
-              arch="arm64-v8a"
-            elif [[ "$filename" == *"-armeabi-v7a-"* ]]; then
-              arch="armeabi-v7a"
-            elif [[ "$filename" == *"-x86_64-"* ]]; then
-              arch="x86_64"
-            fi
-
-            mv "$apk" "./build/app/outputs/flutter-apk/thunder-v${{ needs.release_info.outputs.version }}-${arch}.apk"
-          done
-
-      - name: Upload Android APK artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-android-apks
-          path: ./build/app/outputs/flutter-apk/thunder-v${{ needs.release_info.outputs.version }}-*.apk
-          if-no-files-found: error
+    uses: ./.github/workflows/release-android.yml
+    with:
+      version: ${{ needs.release_info.outputs.version }}
+    secrets: inherit
 
   build_ios:
     needs: release_info
-    runs-on: macos-26
-    environment: production
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
-
-      - name: Resolve Flutter submodule commit
-        id: flutter-submodule
-        run: echo "sha=$(git rev-parse HEAD:flutter)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Flutter toolchain
-        uses: actions/cache@v4
-        with:
-          path: flutter/bin/cache
-          key: flutter-${{ runner.os }}-${{ steps.flutter-submodule.outputs.sha }}
-
-      - name: Set up Flutter from submodule
-        run: |
-          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
-          git -C flutter fetch --tags --force origin
-          rm -f flutter/bin/cache/flutter.version.json flutter/version
-          ./flutter/bin/flutter config --no-analytics
-          ./flutter/bin/flutter --version
-
-      - name: Verify Flutter version sources
-        run: ./scripts/check-flutter-version.sh
-
-      - name: Install Flutter dependencies
-        run: flutter pub get
-
-      - name: Precache iOS Flutter engine
-        run: flutter precache --ios
-
-      - name: Install iOS pods
-        working-directory: ios
-        run: pod install
-
-      - name: Prepare iOS Swift package cache
-        run: |
-          rm -rf "$RUNNER_TEMP/swiftpm"
-          rm -rf "$HOME/Library/Caches/org.swift.swiftpm/artifacts"
-          mkdir -p "$RUNNER_TEMP/swiftpm/source" "$RUNNER_TEMP/swiftpm/cache"
-
-      - name: Resolve iOS Swift packages
-        run: |
-          xcodebuild -resolvePackageDependencies \
-            -workspace ios/Runner.xcworkspace \
-            -scheme production \
-            -clonedSourcePackagesDirPath "$RUNNER_TEMP/swiftpm/source" \
-            -packageCachePath "$RUNNER_TEMP/swiftpm/cache" \
-            -onlyUsePackageVersionsFromResolvedFile \
-            -skipPackageUpdates
-
-      - name: Decode App Store Connect API key
-        env:
-          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
-          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-        run: |
-          set -euo pipefail
-          for secret_name in APP_STORE_CONNECT_API_KEY_BASE64 APP_STORE_CONNECT_API_KEY_ID APP_STORE_CONNECT_ISSUER_ID; do
-            if [[ -z "${!secret_name}" ]]; then
-              echo "$secret_name is not set"
-              exit 1
-            fi
-          done
-          key_path="$RUNNER_TEMP/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
-          if ! printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$key_path" 2>/dev/null; then
-            printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 -D > "$key_path"
-          fi
-          chmod 600 "$key_path"
-          echo "APP_STORE_CONNECT_API_KEY_PATH=$key_path" >> "$GITHUB_ENV"
-
-      - name: Archive iOS app
-        env:
-          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-        run: |
-          xcodebuild archive \
-            -workspace ios/Runner.xcworkspace \
-            -scheme production \
-            -configuration Release-production \
-            -sdk iphoneos \
-            -destination 'generic/platform=iOS' \
-            -archivePath "$RUNNER_TEMP/Thunder.xcarchive" \
-            -clonedSourcePackagesDirPath "$RUNNER_TEMP/swiftpm/source" \
-            -packageCachePath "$RUNNER_TEMP/swiftpm/cache" \
-            -onlyUsePackageVersionsFromResolvedFile \
-            -skipPackageUpdates \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$APP_STORE_CONNECT_API_KEY_PATH" \
-            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
-            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
-            DEVELOPMENT_TEAM=L7P596HY6P \
-            CODE_SIGN_STYLE=Automatic
-
-      - name: Export iOS IPA
-        env:
-          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-        run: |
-          xcodebuild -exportArchive \
-            -archivePath "$RUNNER_TEMP/Thunder.xcarchive" \
-            -exportPath "$RUNNER_TEMP/ios-export" \
-            -exportOptionsPlist ios/ExportOptions.release.plist \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$APP_STORE_CONNECT_API_KEY_PATH" \
-            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
-            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"
-          mkdir -p ./build/ios/ipa
-          ipa_path=$(find "$RUNNER_TEMP/ios-export" -maxdepth 1 -name "*.ipa" -print -quit)
-          if [[ -z "$ipa_path" ]]; then
-            echo "No IPA was exported to $RUNNER_TEMP/ios-export"
-            exit 1
-          fi
-          mv "$ipa_path" "./build/ios/ipa/thunder-v${{ needs.release_info.outputs.version }}.ipa"
-
-      - name: Verify iOS IPA
-        run: |
-          unzip -l "./build/ios/ipa/thunder-v${{ needs.release_info.outputs.version }}.ipa" | grep 'Payload/Runner.app'
-
-      - name: Upload iOS IPA artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-ios-ipa
-          path: ./build/ios/ipa/thunder-v${{ needs.release_info.outputs.version }}.ipa
-          if-no-files-found: error
+    uses: ./.github/workflows/release-ios.yml
+    with:
+      version: ${{ needs.release_info.outputs.version }}
+    secrets: inherit
 
   publish_release:
     needs:
@@ -269,26 +40,22 @@ jobs:
       - build_android
       - build_ios
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' || github.event.inputs.dry_run == 'false' }}
+    if: ${{ !inputs.dry_run }}
+    permissions:
+      contents: write
 
     steps:
-      - name: Download Android APK artifacts
+      - name: Download release artifacts
         uses: actions/download-artifact@v4
         with:
-          name: release-android-apks
+          pattern: release-*
           path: release-artifacts
-
-      - name: Download iOS IPA artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: release-ios-ipa
-          path: release-artifacts
+          merge-multiple: true
 
       - name: Create draft release and upload artifacts
         uses: ncipollo/release-action@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: "${{ needs.release_info.outputs.tag }}"
+          tag: "${{ needs.release_info.outputs.version }}"
           prerelease: ${{ needs.release_info.outputs.prerelease }}
           draft: true
           artifacts: release-artifacts/thunder-v${{ needs.release_info.outputs.version }}-*.apk,release-artifacts/thunder-v${{ needs.release_info.outputs.version }}.ipa

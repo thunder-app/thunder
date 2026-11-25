@@ -1,5 +1,5 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:thunder/packages/ui/src/widgets/layout/thunder_bottom_sheet.dart';
 import 'package:thunder/packages/ui/src/widgets/pickers/thunder_picker_item.dart';

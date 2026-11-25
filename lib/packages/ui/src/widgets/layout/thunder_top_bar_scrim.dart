@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Status-bar fill shown when the top app bar is hidden during scroll.
 @immutable

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Row with a width-constrained leading slot and trailing action widgets.
 @immutable
