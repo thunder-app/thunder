@@ -1635,7 +1635,7 @@
   "@placeholderText": {
     "description": "Placeholder text for any previews. This comes from https://www.lipsum.com/"
   },
-  "unbannedUserFromCommunity": "Usuario no expulsado de la comunidad",
+  "unbannedUserFromCommunity": "Se anuló la expulsión de {username} de la comunidad",
   "@unbannedUserFromCommunity": {
     "description": "Short decription for moderator action to unban a user from a community"
   },
