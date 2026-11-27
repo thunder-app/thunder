@@ -33,7 +33,8 @@ class LegacyUiCompatibility extends StatelessWidget {
           legacy_localizations.GlobalCupertinoLocalizations.delegate,
           legacy_localizations.GlobalWidgetsLocalizations.delegate,
         ],
-        child: child,
+        // The legacy Cupertino theme sets the default icon color to its accent.
+        child: IconTheme(data: IconTheme.of(context), child: child),
       ),
     );
   }

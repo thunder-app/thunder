@@ -11,6 +11,9 @@ include:
   - package:flutter_lints/flutter.yaml
   - package:bloc_lint/recommended.yaml
 
+formatter:
+  page_width: 200
+
 analyzer:
   errors:
     use_build_context_synchronously: ignore

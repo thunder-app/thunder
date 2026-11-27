@@ -42,10 +42,10 @@
 
 <div align="center">
   <br>
-    <img src="./docs/assets/screenshot_2.png" alt="Comments" width="150">
-    <img src="./docs/assets/screenshot_1.png" alt="Card View" width="170">
-    <img src="./docs/assets/screenshot_3.png" alt="Compact View" width="170">
-    <img src="./docs/assets/screenshot_4.png" alt="Customizability" width="150">
+    <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png" alt="Thunder’s light mode feed with a photo of Mount Rainier" width="160">
+    <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png" alt="Follow the thread: nested replies in dark mode" width="160">
+    <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/6_en-US.png" alt="Card or compact: two ways to browse the feed" width="160">
+    <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/7_en-US.png" alt="Set your swipes: customize gestures for posts and comments" width="160">
   <br>
 </div>
 
@@ -71,7 +71,7 @@ Pre-releases are available in the [Releases](https://github.com/hjiangsu/thunder
 
 ### iOS
 
-General releases can be obtained officially through [App Store](https://play.google.com/store/apps/details?id=com.hjiangsu.thunder), or through GitHub releases.
+General releases can be obtained officially through the [App Store](https://apps.apple.com/iq/app/thunder-for-lemmy/id6450518497), or through GitHub releases.
 
 Pre-releases are available through [TestFlight](https://testflight.apple.com/join/9n8xrqvH). An alternative is to download the corresponding IPA file in the [Releases](https://github.com/hjiangsu/thunder/releases) section and install it through [AltStore](https://altstore.io/).
 

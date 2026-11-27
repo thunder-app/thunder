@@ -1,46 +1,162 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
+skip_docs
 
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+THUNDER_ROOT = File.expand_path("..", __dir__)
+ANDROID_METADATA = File.join(THUNDER_ROOT, "fastlane/metadata/android")
+ANDROID_BUNDLE = "build/app/outputs/bundle/productionRelease/app-production-release.aab"
 
-default_platform(:android)
+def release_artifact(path, extension)
+  absolute = File.expand_path(path.to_s, THUNDER_ROOT)
+  UI.user_error!("Provide an existing #{extension} file") unless File.file?(absolute) && File.extname(absolute) == extension
+  absolute
+end
 
-lane :playstore do
-  gradle(
-    task: 'assemble',
-    build_type: 'Release'
-  )
-  upload_to_play_store # Uploads the APK built in the gradle step above and releases it to all production users
+def listing_directory(path)
+  return nil if path.nil?
+
+  absolute = File.expand_path(path, THUNDER_ROOT)
+  UI.user_error!("Listing directory is missing or empty: #{absolute}") if path.empty? || !File.directory?(absolute) || Dir.empty?(absolute)
+  absolute
+end
+
+def thunder_app_store_key
+  key_id = ENV["APP_STORE_CONNECT_API_KEY_ID"]
+  issuer_id = ENV["APP_STORE_CONNECT_ISSUER_ID"]
+  key_path = ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+  key_base64 = ENV["APP_STORE_CONNECT_API_KEY_BASE64"]
+
+  if key_id.to_s.empty? || issuer_id.to_s.empty?
+    UI.user_error!("Set APP_STORE_CONNECT_API_KEY_ID and APP_STORE_CONNECT_ISSUER_ID")
+  end
+
+  credential = if !key_path.to_s.empty?
+    { key_filepath: release_artifact(key_path, ".p8") }
+  elsif !key_base64.to_s.empty?
+    { key_content: key_base64, is_key_content_base64: true }
+  else
+    UI.user_error!("Set APP_STORE_CONNECT_API_KEY_PATH or APP_STORE_CONNECT_API_KEY_BASE64")
+  end
+
+  app_store_connect_api_key(key_id: key_id, issuer_id: issuer_id, **credential)
 end
 
 platform :android do
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test")
+  desc "Build the signed production Android App Bundle"
+  lane :build do
+    unless File.file?(File.join(THUNDER_ROOT, "android/key.properties"))
+      UI.user_error!("Configure the Play upload key in android/key.properties before building an AAB")
+    end
+
+    Dir.chdir(THUNDER_ROOT) do
+      sh("flutter/bin/flutter", "build", "appbundle", "--release", "--flavor", "production")
+    end
+    UI.success(release_artifact(ANDROID_BUNDLE, ".aab"))
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+  desc "Upload a signed AAB to Google Play"
+  lane :upload do |options|
+    track = options.fetch(:track, "internal")
+    upload_to_play_store(
+      aab: release_artifact(options.fetch(:aab, ANDROID_BUNDLE), ".aab"),
+      track: track,
+      release_status: options.fetch(:release_status, track == "production" ? "draft" : "completed"),
+      validate_only: options.fetch(:validate_only, false),
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
   end
 
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+  desc "Update the Google Play listing copy, graphics, and screenshots"
+  lane :metadata do |options|
+    upload_to_play_store(
+      metadata_path: ANDROID_METADATA,
+      validate_only: options.fetch(:validate_only, false),
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: false,
+      skip_upload_changelogs: true,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      sync_image_upload: true
+    )
+  end
+end
+
+platform :ios do
+  desc "Build the production IPA with local Xcode signing"
+  lane :build do
+    Dir.chdir(THUNDER_ROOT) do
+      sh("flutter/bin/flutter", "build", "ipa", "--release", "--flavor", "production", "--export-options-plist=ios/ExportOptions.release.plist")
+    end
+  end
+
+  desc "Upload a signed IPA to App Store Connect for TestFlight"
+  lane :upload do |options|
+    ipa = release_artifact(options[:ipa], ".ipa")
+    upload_to_testflight(
+      ipa: ipa,
+      api_key: thunder_app_store_key,
+      skip_submission: true,
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Update metadata or screenshots for an editable App Store version"
+  lane :metadata do |options|
+    version = options[:version].to_s
+    UI.user_error!("Provide the App Store version with version:<version>") if version.empty?
+
+    metadata = listing_directory(options[:metadata])
+    screenshots = listing_directory(options[:screenshots])
+    UI.user_error!("Provide metadata:<directory> or screenshots:<directory>") unless metadata || screenshots
+
+    upload_to_app_store(
+      api_key: thunder_app_store_key,
+      app_version: version,
+      metadata_path: metadata,
+      screenshots_path: screenshots,
+      skip_metadata: metadata.nil?,
+      skip_screenshots: screenshots.nil?,
+      overwrite_screenshots: !screenshots.nil? && options.fetch(:overwrite_screenshots, false),
+      skip_binary_upload: true,
+      submit_for_review: false,
+      run_precheck_before_submit: false,
+      force: true
+    )
+  end
+
+  desc "Submit a specific uploaded build to Apple for review with manual release"
+  lane :submit do |options|
+    version = options[:version].to_s
+    build_number = options[:build_number].to_s
+    if version.empty? || !build_number.match?(/\A\d+(?:\.\d+){0,2}\z/)
+      UI.user_error!("Provide version:<version> and build_number:<build number>")
+    end
+
+    api_key = thunder_app_store_key
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    app = Spaceship::ConnectAPI::App.find(app_identifier)
+    editable_version = app&.get_edit_app_store_version
+    unless editable_version && editable_version.version_string == version
+      UI.user_error!("App Store Connect has no editable iOS version matching #{version}")
+    end
+
+    manual_release = Spaceship::ConnectAPI::AppStoreVersion::ReleaseType::MANUAL
+    editable_version.update(attributes: { releaseType: manual_release }) unless editable_version.release_type == manual_release
+
+    upload_to_app_store(
+      api_key: api_key,
+      app_version: version,
+      build_number: build_number,
+      skip_app_version_update: true,
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: true,
+      submit_for_review: true,
+      precheck_include_in_app_purchases: false,
+      force: true
+    )
   end
 end

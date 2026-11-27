@@ -24,6 +24,9 @@ class SwipePicker<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Card(
+        elevation: 0,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+        clipBehavior: Clip.antiAlias,
         child: Padding(
           padding: const EdgeInsets.only(left: 1, top: 1, bottom: 0),
           child: Row(
