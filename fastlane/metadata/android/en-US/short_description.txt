@@ -1,1 +1,1 @@
-Thunder is an open source, cross-platform Lemmy client
+Thunder is an open source, cross-platform Lemmy and PieFed client

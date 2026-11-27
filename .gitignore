@@ -9,6 +9,3 @@ release
 # Flutter
 .dart_tool
 .flutter-plugins-dependencies
-
-# FVM Version Cache
-.fvm/
