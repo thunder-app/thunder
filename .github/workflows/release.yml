@@ -8,45 +8,257 @@ on:
     inputs:
       dry_run:
         type: boolean
-        description: Is this a dry run (do not generate draft release)?
+        description: Build artifacts without creating a GitHub release or deploying to stores
         default: true
 
 permissions:
   contents: read
 
 jobs:
-  release_info:
-    uses: ./.github/workflows/release-info.yml
-    with:
-      dry_run: ${{ inputs.dry_run == true }}
+  info:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.info.outputs.version }}
+      ios_version: ${{ steps.info.outputs.ios_version }}
+      build_number: ${{ steps.info.outputs.build_number }}
+      prerelease: ${{ steps.info.outputs.prerelease }}
+      notes_file: ${{ steps.info.outputs.notes_file }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate release version and notes
+        id: info
+        env:
+          DRY_RUN: ${{ inputs.dry_run == true }}
+        run: |
+          if [[ "$DRY_RUN" == true ]]; then
+            python3 scripts/prepare-release.py --check --notes
+          else
+            python3 scripts/prepare-release.py --check --ref "$GITHUB_REF"
+          fi
 
   build_android:
-    needs: release_info
-    uses: ./.github/workflows/release-android.yml
-    with:
-      version: ${{ needs.release_info.outputs.version }}
-    secrets: inherit
+    needs: info
+    runs-on: ubuntu-24.04
+    environment: production
+    env:
+      VERSION: ${{ needs.info.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: ./.github/actions/setup-android-release
+
+      - name: Build unsigned Android APKs
+        run: flutter build apk --no-pub --split-per-abi --release --flavor production
+
+      - name: Sign Android APKs
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          keystore=$(mktemp "$RUNNER_TEMP/apksign.XXXXXX")
+          trap 'rm -f "$keystore"' EXIT
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$keystore"
+          apk_dir=build/app/outputs/flutter-apk
+          for arch in arm64-v8a armeabi-v7a x86_64; do
+            unsigned_apk="$apk_dir/app-$arch-production-release.apk"
+            signed_apk="$apk_dir/thunder-v$VERSION-$arch.apk"
+            "$ANDROID_RELEASE_BUILD_TOOLS/zipalign" -c -P 16 4 "$unsigned_apk"
+            # Android 7+ supports v2 signatures. Preserve Gradle's ZIP layout for apksigcopier.
+            "$ANDROID_RELEASE_BUILD_TOOLS/apksigner" sign --alignment-preserved true --v1-signing-enabled false \
+              --ks "$keystore" --ks-pass env:KEYSTORE_PASSWORD --out "$signed_apk" "$unsigned_apk"
+            "$ANDROID_RELEASE_BUILD_TOOLS/apksigner" verify "$signed_apk"
+            sha256sum "$signed_apk"
+          done
+
+      - name: Build Play App Bundle
+        run: flutter build appbundle --no-pub --release --flavor production
+
+      - name: Sign the Play App Bundle with the upload key
+        env:
+          PLAY_UPLOAD_KEYSTORE_BASE64: ${{ secrets.PLAY_UPLOAD_KEYSTORE_BASE64 }}
+          PLAY_UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.PLAY_UPLOAD_KEYSTORE_PASSWORD }}
+          PLAY_UPLOAD_KEY_ALIAS: ${{ secrets.PLAY_UPLOAD_KEY_ALIAS }}
+          PLAY_UPLOAD_KEY_PASSWORD: ${{ secrets.PLAY_UPLOAD_KEY_PASSWORD }}
+        run: |
+          : "${PLAY_UPLOAD_KEYSTORE_BASE64:?Set the Play upload keystore secret}"
+          : "${PLAY_UPLOAD_KEYSTORE_PASSWORD:?Set the Play upload keystore password secret}"
+          : "${PLAY_UPLOAD_KEY_ALIAS:?Set the Play upload key alias secret}"
+          : "${PLAY_UPLOAD_KEY_PASSWORD:=$PLAY_UPLOAD_KEYSTORE_PASSWORD}"
+          keystore=$(mktemp "$RUNNER_TEMP/play-upload.XXXXXX")
+          trap 'rm -f "$keystore"' EXIT
+          printf '%s' "$PLAY_UPLOAD_KEYSTORE_BASE64" | base64 --decode > "$keystore"
+          bundle=build/app/outputs/bundle/productionRelease/app-production-release.aab
+          jarsigner -keystore "$keystore" -storepass:env PLAY_UPLOAD_KEYSTORE_PASSWORD \
+            -keypass:env PLAY_UPLOAD_KEY_PASSWORD "$bundle" "$PLAY_UPLOAD_KEY_ALIAS"
+          jarsigner -verify "$bundle"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-android-apks
+          path: build/app/outputs/flutter-apk/thunder-v${{ env.VERSION }}-*.apk
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: play-android-aab
+          path: build/app/outputs/bundle/productionRelease/app-production-release.aab
+          if-no-files-found: error
+
+  verify_android:
+    needs: [info, build_android]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: ./.github/actions/setup-android-release
+
+      - name: Rebuild unsigned Android APKs
+        run: flutter build apk --no-pub --split-per-abi --release --flavor production
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-android-apks
+          path: release-candidate
+
+      - name: Verify release APKs against the rebuilds
+        env:
+          VERSION: ${{ needs.info.outputs.version }}
+          APKSIGCOPIER_SKIP_REALIGNMENT: '1'
+        run: |
+          python3 -m venv "$RUNNER_TEMP/apk-verifier"
+          "$RUNNER_TEMP/apk-verifier/bin/pip" install --require-hashes --only-binary=:all: \
+            -r <(printf '%s\n' \
+              'apksigcopier==1.1.1 --hash=sha256:0834bb7d6f3607bb0994cf8cd2e26b8f0c9d481e13b75872e0fa9cec052e519b' \
+              'click==8.1.8 --hash=sha256:63c132bbbed01578a06712a2d1f497bb62d9c1c0d329b7903a866228027263b2')
+          for arch in arm64-v8a armeabi-v7a x86_64; do
+            signed="release-candidate/thunder-v$VERSION-$arch.apk"
+            rebuilt="build/app/outputs/flutter-apk/app-$arch-production-release.apk"
+            reproduced="$RUNNER_TEMP/reproduced-$arch.apk"
+            "$RUNNER_TEMP/apk-verifier/bin/apksigcopier" copy "$signed" "$rebuilt" "$reproduced"
+            "$ANDROID_RELEASE_BUILD_TOOLS/apksigner" verify "$reproduced"
+            if ! cmp -s "$signed" "$reproduced"; then
+              echo "::error::$arch APK is not byte-identical to the rebuilt APK."
+              sha256sum "$signed" "$reproduced"
+              exit 1
+            fi
+            printf 'Reproduced %s: ' "$arch"
+            sha256sum "$signed"
+          done
 
   build_ios:
-    needs: release_info
-    uses: ./.github/workflows/release-ios.yml
-    with:
-      version: ${{ needs.release_info.outputs.version }}
-    secrets: inherit
+    needs: info
+    runs-on: macos-26
+    environment: production
+    env:
+      IPA_PATH: build/ios/ipa/thunder-v${{ needs.info.outputs.version }}.ipa
+      IOS_VERSION: ${{ needs.info.outputs.ios_version }}
+      BUILD_NUMBER: ${{ needs.info.outputs.build_number }}
+      APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-  publish_release:
-    needs:
-      - release_info
-      - build_android
-      - build_ios
-    runs-on: ubuntu-latest
+      - uses: ./.github/actions/setup-flutter
+
+      - name: Precache iOS Flutter engine
+        run: flutter precache --ios
+
+      - name: Install iOS pods
+        working-directory: ios
+        run: pod install
+
+      - name: Decode App Store Connect API key
+        env:
+          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+        run: |
+          : "${APP_STORE_CONNECT_API_KEY_BASE64:?Set the App Store Connect API key secret}"
+          : "${APP_STORE_CONNECT_API_KEY_ID:?Set the App Store Connect API key ID secret}"
+          : "${APP_STORE_CONNECT_ISSUER_ID:?Set the App Store Connect issuer ID secret}"
+          key_path="$RUNNER_TEMP/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$key_path"
+          chmod 600 "$key_path"
+          echo "APP_STORE_CONNECT_API_KEY_PATH=$key_path" >> "$GITHUB_ENV"
+
+      - name: Archive iOS app
+        run: |
+          rm -rf "$HOME/Library/Caches/org.swift.swiftpm/artifacts"
+          xcodebuild archive \
+            -workspace ios/Runner.xcworkspace \
+            -scheme production \
+            -configuration Release-production \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Thunder.xcarchive" \
+            -clonedSourcePackagesDirPath "$RUNNER_TEMP/swiftpm/source" \
+            -packageCachePath "$RUNNER_TEMP/swiftpm/cache" \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackageUpdates \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$APP_STORE_CONNECT_API_KEY_PATH" \
+            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
+            DEVELOPMENT_TEAM=L7P596HY6P \
+            CODE_SIGN_STYLE=Automatic \
+            "FLUTTER_BUILD_NAME=$IOS_VERSION" \
+            "FLUTTER_BUILD_NUMBER=$BUILD_NUMBER"
+
+      - name: Export iOS IPA
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Thunder.xcarchive" \
+            -exportPath "$RUNNER_TEMP/ios-export" \
+            -exportOptionsPlist ios/ExportOptions.release.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$APP_STORE_CONNECT_API_KEY_PATH" \
+            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"
+          mkdir -p "$(dirname "$IPA_PATH")"
+          ipa_path=$(find "$RUNNER_TEMP/ios-export" -maxdepth 1 -name "*.ipa" -print -quit)
+          if [[ -z "$ipa_path" ]]; then
+            echo "::error::No IPA was exported to $RUNNER_TEMP/ios-export"
+            exit 1
+          fi
+          mv "$ipa_path" "$IPA_PATH"
+
+      - name: Verify iOS IPA versions
+        run: |
+          extracted=$(mktemp -d "$RUNNER_TEMP/thunder-ipa.XXXXXX")
+          trap 'rm -rf "$extracted"' EXIT
+          unzip -q "$IPA_PATH" -d "$extracted"
+          app="$extracted/Payload/Runner.app"
+          for plist in "$app/Info.plist" "$app/PlugIns/Open In Thunder.appex/Info.plist"; do
+            version=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' "$plist")
+            build=$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' "$plist")
+            if [[ "$version" != "$IOS_VERSION" || "$build" != "$BUILD_NUMBER" ]]; then
+              echo "::error::Unexpected iOS version $version ($build) in $plist."
+              exit 1
+            fi
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-ios-ipa
+          path: ${{ env.IPA_PATH }}
+          if-no-files-found: error
+
+  # Nothing publishes unless every build and the reproducibility check passed.
+  publish_github:
+    needs: [info, build_android, verify_android, build_ios]
     if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - name: Download release artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
         with:
           pattern: release-*
           path: release-artifacts
@@ -55,8 +267,78 @@ jobs:
       - name: Create draft release and upload artifacts
         uses: ncipollo/release-action@v1
         with:
-          tag: "${{ needs.release_info.outputs.version }}"
-          prerelease: ${{ needs.release_info.outputs.prerelease }}
+          tag: ${{ needs.info.outputs.version }}
+          prerelease: ${{ needs.info.outputs.prerelease }}
           draft: true
-          artifacts: release-artifacts/thunder-v${{ needs.release_info.outputs.version }}-*.apk,release-artifacts/thunder-v${{ needs.release_info.outputs.version }}.ipa
+          artifacts: release-artifacts/thunder-v${{ needs.info.outputs.version }}-*.apk,release-artifacts/thunder-v${{ needs.info.outputs.version }}.ipa
+          bodyFile: ${{ needs.info.outputs.notes_file }}
           generateReleaseNotes: true
+
+  # Prereleases go to Play Beta. Full releases create a Production draft to finish in Play Console.
+  publish_play:
+    needs: [info, build_android, verify_android, build_ios]
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-24.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: play-android-aab
+          path: play-artifacts
+
+      - name: Upload to Google Play
+        env:
+          SUPPLY_JSON_KEY_DATA: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          NOTES_FILE: ${{ needs.info.outputs.notes_file }}
+          TRACK: ${{ needs.info.outputs.prerelease == 'true' && 'beta' || 'production' }}
+        run: |
+          : "${SUPPLY_JSON_KEY_DATA:?Set the Play service account JSON secret}"
+          bundle exec fastlane android upload "aab:play-artifacts/app-production-release.aab" \
+            "track:$TRACK" "notes:$NOTES_FILE"
+
+  # Prereleases go to TestFlight. Full releases also go to App Review with manual release.
+  publish_apple:
+    needs: [info, build_android, verify_android, build_ios]
+    if: ${{ !inputs.dry_run }}
+    runs-on: macos-26
+    environment: production
+    env:
+      VERSION: ${{ needs.info.outputs.version }}
+      IOS_VERSION: ${{ needs.info.outputs.ios_version }}
+      BUILD_NUMBER: ${{ needs.info.outputs.build_number }}
+      NOTES_FILE: ${{ needs.info.outputs.notes_file }}
+      TESTFLIGHT_GROUPS: ${{ vars.TESTFLIGHT_GROUPS }}
+      APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+      APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-ios-ipa
+          path: release-artifacts
+
+      - name: Upload IPA to App Store Connect
+        run: bundle exec fastlane ios upload "ipa:release-artifacts/thunder-v$VERSION.ipa"
+
+      - name: Distribute the build to TestFlight
+        run: |
+          bundle exec fastlane ios distribute "version:$IOS_VERSION" \
+            "build_number:$BUILD_NUMBER" "notes:$NOTES_FILE"
+
+      - name: Submit the build for App Review with manual release
+        if: ${{ needs.info.outputs.prerelease != 'true' }}
+        run: bundle exec fastlane ios submit "version:$IOS_VERSION" "build_number:$BUILD_NUMBER"

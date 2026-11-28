@@ -153,23 +153,7 @@ To build the app from source, a few steps are required.
 2. If the repository is already cloned, initialize the pinned SDK using `git submodule update --init --recursive`.
 3. Fetch dependencies using `./flutter/bin/flutter pub get`.
 4. Run `./flutter/bin/flutter gen-l10n` to generate the localization files.
-5. Optional: Run `./flutter/bin/dart scripts/build.dart` to build the iOS and Android release versions.
-
-### Building with Docker
-
-Alternatively, you can skip the prerequisite setup and build the Android application via docker with a single command:
-
-```bash
-./scripts/docker-build-android.sh
-```
-
-#### Developing with Docker
-
-You can also run your local development environment for Android via the Docker container, including connecting to ADB on the host machine.
-
-```
-./scripts/docker-dev-android.sh
-```
+5. Run `./flutter/bin/flutter build apk --flavor production` or `./flutter/bin/flutter build ios --flavor production --no-codesign` to try a local build.
 
 ### Troubleshooting
 

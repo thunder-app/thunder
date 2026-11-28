@@ -90,6 +90,7 @@
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
+		D458C5852B0D6F7E0090D826 /* Extension.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Extension.xcconfig; path = Flutter/Extension.xcconfig; sourceTree = "<group>"; };
 		807A4AF0F3FE369F0F15CC80 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		959ED66E8D54EDC18E99888A /* Pods-RunnerTests.release-development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release-development.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release-development.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
@@ -170,6 +171,7 @@
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
 				9740EEB31CF90195004384FC /* Generated.xcconfig */,
+				D458C5852B0D6F7E0090D826 /* Extension.xcconfig */,
 			);
 			name = Flutter;
 			sourceTree = "<group>";
@@ -978,6 +980,7 @@
 		};
 		D41A83482BAB391A004F5C45 /* Debug-development */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D458C5852B0D6F7E0090D826 /* Extension.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -987,7 +990,6 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = L7P596HY6P;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1002,7 +1004,6 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -1118,6 +1119,7 @@
 		};
 		D41A834C2BAB3923004F5C45 /* Release-development */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D458C5852B0D6F7E0090D826 /* Extension.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1127,7 +1129,6 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = L7P596HY6P;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1142,7 +1143,6 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1253,6 +1253,7 @@
 		};
 		D41A83502BAB392B004F5C45 /* Profile-development */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D458C5852B0D6F7E0090D826 /* Extension.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1262,7 +1263,6 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = L7P596HY6P;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1277,7 +1277,6 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1294,6 +1293,7 @@
 		};
 		D458C5812B0D6F7E0090D826 /* Debug-production */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D458C5852B0D6F7E0090D826 /* Extension.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1303,7 +1303,6 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = L7P596HY6P;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1318,7 +1317,6 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -1338,6 +1336,7 @@
 		};
 		D458C5822B0D6F7E0090D826 /* Release-production */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D458C5852B0D6F7E0090D826 /* Extension.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1347,7 +1346,6 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = L7P596HY6P;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1362,7 +1360,6 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1379,6 +1376,7 @@
 		};
 		D458C5832B0D6F7E0090D826 /* Profile-production */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D458C5852B0D6F7E0090D826 /* Extension.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1388,7 +1386,6 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = L7P596HY6P;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1403,7 +1400,6 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",

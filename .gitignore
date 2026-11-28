@@ -4,7 +4,6 @@
 
 # Build Artifacts
 build
-release
 
 # Flutter
 .dart_tool

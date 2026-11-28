@@ -1,0 +1,23 @@
+name: Set up Android release tools
+description: Set up Java, build tools, and Flutter for Android release builds
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-java@v6
+      with:
+        distribution: temurin
+        java-version: '17'
+
+    # Pin the zipalign and apksigner used for signing. Gradle automatically installs the NDK and platform it needs.
+    - name: Install Android build tools
+      shell: bash
+      run: |
+        "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "build-tools;36.0.0"
+        echo "ANDROID_RELEASE_BUILD_TOOLS=$ANDROID_HOME/build-tools/36.0.0" >> "$GITHUB_ENV"
+
+    - uses: ./.github/actions/setup-flutter
+
+    - name: Use the pinned Java for Gradle
+      shell: bash
+      run: flutter config --jdk-dir "$JAVA_HOME"

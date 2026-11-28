@@ -1,8 +1,10 @@
+require "fileutils"
+require "tmpdir"
+
 skip_docs
 
 THUNDER_ROOT = File.expand_path("..", __dir__)
 ANDROID_METADATA = File.join(THUNDER_ROOT, "fastlane/metadata/android")
-ANDROID_BUNDLE = "build/app/outputs/bundle/productionRelease/app-production-release.aab"
 
 def release_artifact(path, extension)
   absolute = File.expand_path(path.to_s, THUNDER_ROOT)
@@ -10,12 +12,13 @@ def release_artifact(path, extension)
   absolute
 end
 
-def listing_directory(path)
-  return nil if path.nil?
-
-  absolute = File.expand_path(path, THUNDER_ROOT)
-  UI.user_error!("Listing directory is missing or empty: #{absolute}") if path.empty? || !File.directory?(absolute) || Dir.empty?(absolute)
-  absolute
+def release_build(options)
+  version = options[:version].to_s
+  build_number = options[:build_number].to_s
+  if version.empty? || !build_number.match?(/\A\d+(?:\.\d+){0,2}\z/)
+    UI.user_error!("Provide version:<version> and build_number:<build number>")
+  end
+  [version, build_number]
 end
 
 def thunder_app_store_key
@@ -39,33 +42,41 @@ def thunder_app_store_key
   app_store_connect_api_key(key_id: key_id, issuer_id: issuer_id, **credential)
 end
 
+# Signs in to App Store Connect and returns the API key and Thunder's app.
+def thunder_app
+  api_key = thunder_app_store_key
+  app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+  app = Spaceship::ConnectAPI::App.find(app_identifier)
+  UI.user_error!("App Store Connect could not find #{app_identifier}") unless app
+  [api_key, app]
+end
+
 platform :android do
-  desc "Build the signed production Android App Bundle"
-  lane :build do
-    unless File.file?(File.join(THUNDER_ROOT, "android/key.properties"))
-      UI.user_error!("Configure the Play upload key in android/key.properties before building an AAB")
-    end
-
-    Dir.chdir(THUNDER_ROOT) do
-      sh("flutter/bin/flutter", "build", "appbundle", "--release", "--flavor", "production")
-    end
-    UI.success(release_artifact(ANDROID_BUNDLE, ".aab"))
-  end
-
-  desc "Upload a signed AAB to Google Play"
+  desc "Upload a signed AAB to Google Play with notes:<file> as the release notes"
   lane :upload do |options|
+    aab = release_artifact(options[:aab], ".aab")
+    notes = release_artifact(options[:notes], ".txt")
     track = options.fetch(:track, "internal")
-    upload_to_play_store(
-      aab: release_artifact(options.fetch(:aab, ANDROID_BUNDLE), ".aab"),
-      track: track,
-      release_status: options.fetch(:release_status, track == "production" ? "draft" : "completed"),
-      validate_only: options.fetch(:validate_only, false),
-      skip_upload_apk: true,
-      skip_upload_metadata: true,
-      skip_upload_changelogs: true,
-      skip_upload_images: true,
-      skip_upload_screenshots: true
-    )
+
+    Dir.mktmpdir("play-notes") do |notes_dir|
+      changelogs = File.join(notes_dir, "en-US/changelogs")
+      FileUtils.mkdir_p(changelogs)
+      FileUtils.cp(notes, File.join(changelogs, "default.txt"))
+
+      upload_to_play_store(
+        aab: aab,
+        metadata_path: notes_dir,
+        track: track,
+        # Production releases wait as a draft for a rollout in Play Console.
+        release_status: track == "production" ? "draft" : "completed",
+        validate_only: options.fetch(:validate_only, false),
+        skip_upload_apk: true,
+        skip_upload_metadata: true,
+        skip_upload_changelogs: false,
+        skip_upload_images: true,
+        skip_upload_screenshots: true
+      )
+    end
   end
 
   desc "Update the Google Play listing copy, graphics, and screenshots"
@@ -85,60 +96,46 @@ platform :android do
 end
 
 platform :ios do
-  desc "Build the production IPA with local Xcode signing"
-  lane :build do
-    Dir.chdir(THUNDER_ROOT) do
-      sh("flutter/bin/flutter", "build", "ipa", "--release", "--flavor", "production", "--export-options-plist=ios/ExportOptions.release.plist")
-    end
-  end
-
   desc "Upload a signed IPA to App Store Connect for TestFlight"
   lane :upload do |options|
-    ipa = release_artifact(options[:ipa], ".ipa")
     upload_to_testflight(
-      ipa: ipa,
+      ipa: release_artifact(options[:ipa], ".ipa"),
       api_key: thunder_app_store_key,
       skip_submission: true,
       skip_waiting_for_build_processing: true
     )
   end
 
-  desc "Update metadata or screenshots for an editable App Store version"
-  lane :metadata do |options|
-    version = options[:version].to_s
-    UI.user_error!("Provide the App Store version with version:<version>") if version.empty?
+  desc "Distribute an uploaded build to Thunder's external TestFlight groups with notes:<file>"
+  lane :distribute do |options|
+    version, build_number = release_build(options)
+    notes = File.read(release_artifact(options[:notes], ".txt")).strip
+    groups = ENV.fetch("TESTFLIGHT_GROUPS", "").split(",").map(&:strip).reject(&:empty?)
+    UI.user_error!("Set TESTFLIGHT_GROUPS to the external TestFlight group names or IDs") if groups.empty?
 
-    metadata = listing_directory(options[:metadata])
-    screenshots = listing_directory(options[:screenshots])
-    UI.user_error!("Provide metadata:<directory> or screenshots:<directory>") unless metadata || screenshots
+    api_key, app = thunder_app
+    external_groups = app.get_beta_groups.reject(&:is_internal_group)
+    unknown_groups = groups.reject { |group| external_groups.any? { |entry| entry.matches_identifiers?([group]) } }
+    UI.user_error!("Unknown external TestFlight groups: #{unknown_groups.join(', ')}") unless unknown_groups.empty?
 
-    upload_to_app_store(
-      api_key: thunder_app_store_key,
+    upload_to_testflight(
+      api_key: api_key,
+      app_platform: "ios",
       app_version: version,
-      metadata_path: metadata,
-      screenshots_path: screenshots,
-      skip_metadata: metadata.nil?,
-      skip_screenshots: screenshots.nil?,
-      overwrite_screenshots: !screenshots.nil? && options.fetch(:overwrite_screenshots, false),
-      skip_binary_upload: true,
-      submit_for_review: false,
-      run_precheck_before_submit: false,
-      force: true
+      build_number: build_number,
+      distribute_only: true,
+      distribute_external: true,
+      groups: groups,
+      changelog: notes
     )
   end
 
-  desc "Submit a specific uploaded build to Apple for review with manual release"
+  desc "Submit an uploaded build to Apple for review with manual release"
   lane :submit do |options|
-    version = options[:version].to_s
-    build_number = options[:build_number].to_s
-    if version.empty? || !build_number.match?(/\A\d+(?:\.\d+){0,2}\z/)
-      UI.user_error!("Provide version:<version> and build_number:<build number>")
-    end
+    version, build_number = release_build(options)
 
-    api_key = thunder_app_store_key
-    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-    app = Spaceship::ConnectAPI::App.find(app_identifier)
-    editable_version = app&.get_edit_app_store_version
+    api_key, app = thunder_app
+    editable_version = app.get_edit_app_store_version
     unless editable_version && editable_version.version_string == version
       UI.user_error!("App Store Connect has no editable iOS version matching #{version}")
     end

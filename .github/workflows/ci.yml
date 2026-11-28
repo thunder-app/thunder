@@ -13,97 +13,34 @@ permissions:
   contents: read
 
 jobs:
-  linting:
-    name: Linting & Formatting
+  checks:
+    name: Checks
     runs-on: ubuntu-latest
     steps:
-      - name: Install libsqlite3
-        run: sudo apt-get -y install libsqlite3-0 libsqlite3-dev
-
       - uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: recursive
 
-      - name: Set up Flutter from submodule
-        uses: ./.github/actions/setup-flutter
+      - uses: ./.github/actions/setup-flutter
 
-      - name: Dependencies
-        run: flutter pub get
+      - name: Check that the release versions agree
+        run: python3 scripts/prepare-release.py --check
 
-      - name: Install arb_utils to check sorting of translations
+      - name: Check that translations are sorted
         run: |
           dart pub global activate arb_utils
-          echo "${PUB_CACHE:-$HOME/.pub-cache}/bin" >> "$GITHUB_PATH"
+          # Use the installed executable; `dart pub global run` rejects Flutter packages.
+          "${PUB_CACHE:-$HOME/.pub-cache}/bin/arb_utils" sort lib/l10n/app_en.arb
+          git diff --exit-code lib/l10n/app_en.arb
 
-      - name: Copy translation file
-        run: cp ./lib/l10n/app_en.arb ./lib/l10n/app_en_tmp.arb
-
-      - name: Sort translation .arb file alphabetically
-        run: arb_utils sort ./lib/l10n/app_en.arb
-
-      - name: Check sorted translations against reference
+      - name: Check formatting, skipping generated files
         run: |
-          # Check if the contents of the destination file match the reference file
-          if cmp -s "./lib/l10n/app_en.arb" "./lib/l10n/app_en_tmp.arb"; then
-            echo "Translation entries are in alphabetical order."
-          else
-            echo "Translation entries are not in alphabetical order."
-            exit 1  # Fail the workflow if files are not the same
-          fi
+          git ls-files 'lib/*.dart' ':!:*.g.dart' ':!:*.steps.dart' ':!:*.freezed.dart' ':!:lib/l10n/generated/*' \
+            | xargs dart format -o none --set-exit-if-changed
 
-      - name: Linting
-        # We'll ignore info and warnings when performing this step
+      - name: Analyze
+        # Only errors fail the build.
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
-
-      - name: Find all auto-generated files (.g.dart, .steps.dart, .freezed.dart)
-        run: |
-          find lib -name "*.g.dart" -o -name "*.steps.dart" -o -name "*.freezed.dart" > generated_files.txt
-          cat generated_files.txt
-        id: find-generated-files
-
-      - name: Pre-format auto-generated files
-        run: |
-          if [ -s generated_files.txt ]; then
-            echo "Formatting generated files..."
-            xargs -a generated_files.txt dart format -l 200
-          else
-            echo "No generated files found to format"
-          fi
-
-      - name: Pre-format generated localizations
-        run: dart format lib/l10n/generated -l 200
-
-      - name: Formatting
-        run: dart format -o none --set-exit-if-changed -l 200 lib
 
       - name: Tests
         run: flutter test
-
-      # Read the version number
-      - name: Read pubspec.yaml version
-        id: output-pubspec-version
-        uses: NiklasLehnfeld/flutter-version-number-action@main
-        with:
-          file-path: pubspec.yaml
-
-      # Read the app_config.dart file
-      - name: Read app_config.dart version
-        id: output-globals-version
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: lib/src/core/config/app_config.dart
-
-      # Get just the first line of the app_config.dart file
-      - name: Get first line of app_config.dart file
-        uses: jungwinter/split@v2
-        id: split-globals-output
-        with:
-          msg: ${{ steps.output-globals-version.outputs.content }}
-          separator: '\n'
-
-      # Assert that the version has been updated in app_config.dart
-      - name: Assert app_config.dart has correct version
-        uses: nick-fields/assert-action@v1
-        with:
-          expected: const String currentVersion = '${{ steps.output-pubspec-version.outputs.version-number }}';
-          actual: ${{ steps.split-globals-output.outputs._0 }}

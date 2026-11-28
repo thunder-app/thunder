@@ -1,5 +1,5 @@
 name: Set up Flutter from submodule
-description: Use the Flutter SDK pinned by the checked-out Thunder commit
+description: Use the Flutter SDK pinned by the checked-out commit and install locked dependencies
 
 runs:
   using: composite
@@ -20,6 +20,9 @@ runs:
       run: |
         echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
         git -C flutter fetch --tags --force origin
-        rm -f flutter/bin/cache/flutter.version.json flutter/version
         ./flutter/bin/flutter config --no-analytics
         ./flutter/bin/flutter --version
+
+    - name: Install locked Flutter dependencies
+      shell: bash
+      run: ./flutter/bin/flutter pub get --enforce-lockfile
